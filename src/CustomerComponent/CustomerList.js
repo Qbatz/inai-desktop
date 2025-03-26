@@ -6,22 +6,55 @@ import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { enGB } from "date-fns/locale";
-import BasicVendor from "../VendorFile/BasicVendor";
-import DeleteVendor from './DeleteVendor';
-import Minus from '../Icon/minus-square.svg';
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import AddCustomer from './AddCustomer';
+import DeleteCustomer from './DeleteCustomer';
 
-function VendorList() {
+
+function CustomerList() {
 
   const [showPicker, setShowPicker] = useState(false);
+
   const [isVisible, setIsVisible] = useState(true)
   const [showPopup, setShowPopUp] = useState(null);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const popupRef = useRef(null);
   const pickerRef = useRef(null);
-  const [showDeleteVendor, setShowDeleteVendor] = useState(false)
-  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [showDeleteCustomer, setShowDeleteCustomer] = useState(false)
+
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+
+
+
+  const data = [
+    { id: 1, name: "Kelvinnnnnnnnnnnnnnnnnnnnnnnnnnnnnn", contact: "John", email: "john@example.commmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm", mobile: "8985685858", Amount: "₹5000" },
+
+    { id: 2, name: "Kelvin", contact: "John", email: "john@example.com", mobile: "8985685858", Amount: "₹5000" },
+
+    { id: 3, name: "Kelvin", contact: "John", email: "john@example.com", mobile: "8985685858", Amount: "₹5000" },
+
+    { id: 4, name: "Kelvin", contact: "John", email: "john@example.com", mobile: "8985685858", Amount: "₹5000" },
+
+    { id: 5, name: "Kelvin", contact: "John", email: "john@example.com", mobile: "8985685858", Amount: "₹5000" },
+
+    { id: 6, name: "Kelvin", contact: "John", email: "john@example.com", mobile: "8985685858", Amount: "₹5000" },
+
+    { id: 7, name: "Kelvin", contact: "John", email: "john@example.com", mobile: "8985685858", Amount: "₹5000" },
+
+    { id: 8, name: "Kelvin", contact: "John", email: "john@example.com", mobile: "8985685858", Amount: "₹5000" },
+
+  ];
+
+
+
+
+
+
+
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -32,24 +65,9 @@ function VendorList() {
 
 
 
-  const data = [
-    { id: 1, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 2, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-  ];
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+
 
   const handleSelect = (ranges) => {
     console.log("ranges", ranges)
@@ -57,7 +75,7 @@ function VendorList() {
     setShowPicker(false);
   };
 
-  const handleAddVendor = () => {
+  const handleAddCustomer = () => {
     setIsVisible(false)
   }
 
@@ -97,20 +115,24 @@ function VendorList() {
 
 
 
-  const handleDeleteVendorPopup = () => {
-    setShowDeleteVendor(true)
+  const handleDeleteCustomerPopup = () => {
+    setShowDeleteCustomer(true)
     setShowPopUp(null)
   }
 
-  const handleCloseForDeleteVedor = () => {
-    setShowDeleteVendor(false)
+  const handleCloseForDeleteCustomer = () => {
+    setShowDeleteCustomer(false)
   }
 
 
 
-  const handleEditVendor = () => {
+  const handleEditCustomer = () => {
     setIsVisible(false)
   }
+
+
+
+
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(Number(e.target.value));
@@ -127,29 +149,24 @@ function VendorList() {
 
 
   return (
-    <div className='bg-slate-100  min-h-fit w-full p-4 rounded-tl-lg rounded-tr-lg   m-0'>
+    <div className='bg-slate-100  h-fit w-full p-4 rounded-tl-lg rounded-tr-lg   m-0 '>
       {
         isVisible ?
 
-          <div className=' bg-white rounded-2xl h-fit ps-5 pt-3 pe-5'>
+          <div className='bg-white rounded-2xl h-fit  ps-5 pt-3 pe-5 relative'>
 
-            <div className="sticky top-0 z-10 flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2">
+            <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
+              <div>
+                <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black">Customer</h2>
+              </div>
 
-              <h2 className=" text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold font-Gilroy text-black">
-                Vendor
-              </h2>
-
-              <button
-                onClick={handleAddVendor}
-                className="px-6 md:px-8 lg:px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-xs md:text-base font-medium flex items-center gap-2"
-              >
-                <img src={PlusCircle} alt="plus" className="w-4 md:w-5 lg:w-4" />
-                Add Vendor
-              </button>
+              <div className="">
+                <button onClick={handleAddCustomer} className="px-6 md:px-8 lg:px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-xs md:text-base font-medium flex items-center gap-2">
+                  <img src={PlusCircle} alt="plus" className='w-4 md:w-5 lg:w-4' /> Add Customer</button>
+              </div>
             </div>
 
-
-            <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3 mb-2 pt-4 overflow-y-auto'>
+            <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3 mb-2 pt-4'>
               <div className="relative  col-span-7">
                 <SearchNormal1
                   size="16"
@@ -158,6 +175,7 @@ function VendorList() {
                 />
                 <input
                   type="text"
+                  placeholder='Search by ID, Support, or others'
                   className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
                 />
               </div>
@@ -166,12 +184,11 @@ function VendorList() {
                   className=" text-gray-500 h-4 w-4"
                 />
 
-                <label className="hidden xs:hidden sm:block md:block lg:block text-gray-500 font-Gilroy text-sm font-medium">
-                  Filters
-                </label>
-
-
+                <label className='block text-gray-500 font-Gilroy  text-sm font-medium'>Filters</label>
               </div>
+
+
+
               <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
                 <div
                   className="flex items-center cursor-pointer"
@@ -205,13 +222,17 @@ function VendorList() {
 
             </div>
 
-            <div className="flex-1 overflow-x-auto rounded-xl border border-slate-200 max-h-[340px] overflow-y-auto p-0 mt-4 mb-extra">
-              <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
+
+            <div
+              className="flex-1 overflow-x-auto rounded-xl border border-slate-200 max-h-[350px] overflow-y-auto p-0 mt-4 mb-extra "
+
+            >
+              <table
+
+                className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]"
+              >
                 <thead className="bg-slate-100 sticky top-0 z-10">
                   <tr>
-                    <th className="px-4 py-2">
-                      <img src={Minus} alt='Minus' />
-                    </th>
                     <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
                     <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
                     <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
@@ -225,12 +246,12 @@ function VendorList() {
                 <tbody className=" ">
                   {data.map((item, index) => (
                     <tr key={index} className="border-0">
-                      <td className=" px-4 py-2"> <img src={Minus} alt='Minus' /></td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.name}</td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contact}</td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.email}</td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.mobile}</td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.Amount}</td>
+
+                      <td className=" px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.name}</td>
+                      <td className=" px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.contact}</td>
+                      <td className=" px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]" >{item.email}</td>
+                      <td className=" px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.mobile}</td>
+                      <td className=" px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.Amount}</td>
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
                         <div onClick={(e) => handleShowPopup(item.id, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
                           <HiOutlineDotsVertical className="text-black p-0" />
@@ -250,10 +271,10 @@ function VendorList() {
                               className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
 
                             >
-                              <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy" onClick={() => handleEditVendor()}>
+                              <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy" onClick={() => handleEditCustomer()}>
                                 <Edit size="16" color="#205DA8" /> Edit
                               </div>
-                              <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy text-red-700" onClick={() => handleDeleteVendorPopup()}>
+                              <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy text-red-700" onClick={() => handleDeleteCustomerPopup()}>
                                 <Trash size="16" color="#B91C1C" /> Delete
                               </div>
                             </div>
@@ -267,13 +288,14 @@ function VendorList() {
               </table>
             </div>
 
+
+
             <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
               <div className="flex items-center gap-2">
-
                 <select
                   value={itemsPerPage}
                   onChange={handleItemsPerPageChange}
-                  className="border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none"
+                  className="px-1 py-1 border border-[#205DA8] rounded-md text-[#205DA8] font-bold cursor-pointer outline-none shadow-none"
                 >
                   <option value={4}>4</option>
                   <option value={10}>10</option>
@@ -281,40 +303,56 @@ function VendorList() {
                   <option value={100}>100</option>
                 </select>
               </div>
-
               <div className="flex items-center gap-4">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`p-2 rounded-full ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"}`}
-                >
-                  <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
-                </button>
+                <ul className="flex items-center list-none m-0 p-0 gap-4">
 
-                <span className="text-sm font-bold">{currentPage} of {totalPages}</span>
+                  <li>
+                    <button
+                      className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                        }`}
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
+                    </button>
+                  </li>
 
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className={`p-2 rounded-full ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"}`}
-                >
-                  <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#205DA8"} />
-                </button>
+
+                  <li className="text-sm font-bold">
+                    {currentPage} of {totalPages}
+                  </li>
+
+
+                  <li>
+                    <button
+                      className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                        }`}
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#1E45E1"} />
+                    </button>
+                  </li>
+                </ul>
               </div>
             </nav>
+
+
+
           </div>
-
           :
+          <AddCustomer />
+      }
 
-          <BasicVendor />
-      }
+
       {
-        showDeleteVendor &&
-        <DeleteVendor handleClose={handleCloseForDeleteVedor} />
+        showDeleteCustomer &&
+        <DeleteCustomer handleClose={handleCloseForDeleteCustomer} />
       }
+
+
     </div>
   )
 }
 
-export default VendorList;
-
+export default CustomerList;

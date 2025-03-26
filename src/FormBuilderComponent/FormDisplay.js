@@ -1,19 +1,102 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AdditionalFormField from './AdditionalFormField'
-import { useLocation } from "react-router-dom";
+import TextInput from '../Components/TextInput';
+import TextAreaComponent from '../Components/TextAreaComponent';
+import Radio from '../Components/Radio';
+import Checkbox from '../Components/CheckBox';
+import SelectComponent from '../Components/Select';
 
 function FormDisplay() {
 
-    const { state } = useLocation();
-    const fields = state?.fields || [];
-
-    console.log("state", state)
-
-
     const [display, setDisplay] = useState(false)
+    const [displayItems, setDisplayItems] = useState([])
+
+    const [formValues, setFormValues] = useState({});
 
     const handleAdditionalField = () => {
         setDisplay(true)
+    }
+
+    const handleCloseForm = () => {
+        setDisplay(false)
+    }
+
+
+
+    const updateDisplayItems = (item, isVisible) => {
+        setDisplayItems([...displayItems, item])
+        setFormValues((prev) => ({ ...prev, [item.title]: item.value || "" }));
+        setDisplay(isVisible)
+    }
+
+
+
+    const textInputCallbackForName = (title, newValue) => {
+        console.log("title", title, " newValue", newValue)
+
+        setFormValues((prev) => ({
+            ...prev,
+            [title]: newValue,
+        }));
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
+    };
+
+
+   
+
+
+
+    useEffect(() => {
+        console.log("displayItems", displayItems)
+    }, [displayItems])
+
+
+
+
+    const CallbackForTextArea = (title, newValue) => {
+        console.log("text Area", newValue)
+        setFormValues((prev) => ({
+            ...prev,
+            [title]: newValue,
+        }));
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
+    }
+
+
+    const RadioOptionsChange = (title, newValue) => {
+        console.log("Radio option", newValue, title)
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
+    }
+
+
+    const CheckboxOptionsChange = (title, newValue) => {
+        console.log("Checkbox option", newValue)
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
+    }
+
+
+
+    const SelectOptionsChange = (title, newValue) => {
+        console.log("Select option",newValue)
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
+        // setSelectedRadioValue((prev) => (prev === value ? "" : value));
+
+
     }
 
 
@@ -24,61 +107,40 @@ function FormDisplay() {
 
 
 
-                {fields.length > 0 && (
-                    fields.map((field, index) => (
+                {displayItems.length > 0 && (
+                    displayItems.map((field, index) => (
                         <div key={index} className="mb-4">
-                            <label className="block text-gray-700 mb-2 font-bold">{field.title}</label>
 
                             {field.type === "text" && (
-                                <input
-                                    type="text"
-                                    placeholder={field.placeholder}
-                                    defaultValue={field.value}
-                                    className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                                />
+                                <TextInput value={formValues[field.title] || ""} title={field.title} placeholder={field.placeholder} callback={(newValue) => textInputCallbackForName(field.title, newValue)} />
                             )}
 
-                            {field.type === "radio" && field.options?.map((option, idx) => (
-                                <label key={idx} className="mr-4">
-                                    <input
-                                        type="radio"
-                                        className="ml-2"
-                                        name={field.name}
-                                        value={option}
-                                        defaultChecked={field.defaultValue === option}
-                                    />
-                                    {option}
-                                </label>
-                            ))}
+                            {field.type === "radio" && <div>
+                                <label className="ps-4 block text-black mb-2 font-semibold capitalize font-Gilroy">{field.title}</label>
+                                {field.options?.map((option, idx) => {
+                                    console.log("select*********", option)
+                                    return <Radio id={`radio-${index}`} name={field.name} value={option} checked={field.value === option} key={idx} callback={()=>RadioOptionsChange(field.title, option)} />
+                                })}
+                            </div>
+                            }
 
-                            {field.type === "checkbox" && field.options?.map((option, idx) => (
-                                <label key={idx} className="mr-4">
-                                    <input
-                                        type="checkbox"
-                                        className="ml-2"
-                                        value={option}
-                                        defaultChecked={field.defaultValue?.includes(option)}
-                                    />
-                                    {option}
-                                </label>
-                            ))}
+
+                            {field.type === "checkbox" && <div>
+                                <label className="ps-4 block text-black mb-2 font-semibold capitalize font-Gilroy">{field.title}</label>
+                                {field.options?.map((option, idx) => (
+                                    <Checkbox title={field.title} name={field.name} value={option} Checked={field.defaultValue?.includes(option)} key={idx} callback={()=>CheckboxOptionsChange(field.title, option)} />
+                                ))}
+
+                            </div>
+                            }
 
                             {field.type === "select" && (
-                                <select className="w-full px-3 py-2 border rounded-md focus:outline-none">
-                                    {field.options.map((option, index) => (
-                                        <option key={index} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
+                                <SelectComponent title={field.title} field={field.options} callback={(newValue)=>SelectOptionsChange(field.title,newValue)} />
                             )}
 
                             {field.type === "textarea" && (
-                                <textarea
-                                    placeholder={field.placeholder}
-                                    defaultValue={field.value}
-                                    className="w-full px-3 py-2 border rounded-md focus:outline-none"
-                                />
+                                <TextAreaComponent placeholder={field.placeholder} value={field.value} title={field.title} callback={(newValue) =>CallbackForTextArea(field.title, newValue)} />
+
                             )}
                         </div>
                     ))
@@ -86,10 +148,10 @@ function FormDisplay() {
                 }
             </div>
 
-            <button className='bg-lime-600' onClick={handleAdditionalField} >+ Additional Field</button>
+            <button className='bg-[#205DA8] px-4 py-3 rounded-lg text-base font-bold text-white flex items-center m-5 ' onClick={handleAdditionalField} >+ Additional Field</button>
 
             {
-                display && <AdditionalFormField />
+                display && <AdditionalFormField update={updateDisplayItems} handleClose={handleCloseForm} />
             }
 
         </div>

@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import LoginImage from '../Images/Login_Image.svg';
 import InaiLogo from '../Images/Inai_Logo.svg';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import Robot from '../Images/Robot.svg';
 import { useNavigate } from 'react-router-dom'
+import ReCAPTCHA from 'react-google-recaptcha';
+import './ReCaptcha.css'
+import { InfoCircle } from "iconsax-react";
 
 
 function Login() {
@@ -13,27 +15,90 @@ function Login() {
   const [clientId, setClientId] = useState('');
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const [clientIdError, setClientIdError] = useState('');
+  const [userIdError, setUserIdError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [captchaError, setCaptchaError] = useState('')
 
-  const handleClientIdChange = (e) => setClientId(e.target.value);
-  const handleUserIdChange = (e) => setUserId(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
+  const handleClientIdChange = (e) => {
+    setClientIdError('');
+    setClientId(e.target.value)
+  };
+  const handleUserIdChange = (e) => {
+    setUserIdError('');
+    setUserId(e.target.value)
+  };
+  const handlePasswordChange = (e) => {
+    setPasswordError('');
+    setPassword(e.target.value)
+  };
+
+
   const [isNotRobot, setIsNotRobot] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState(null);
+
+
+
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+
   const handleNotRobotChange = (e) => setIsNotRobot(e.target.checked);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(clientId, userId, password);
+
+    let valid = true;
+
+    if (!clientId.trim()) {
+      setClientIdError('Client ID is required');
+      valid = false;
+    } else {
+      setClientIdError('');
+    }
+
+    if (!userId.trim()) {
+      setUserIdError('User ID is required');
+      valid = false;
+    } else {
+      setUserIdError('');
+    }
+
+    if (!password.trim()) {
+      setPasswordError('Password is required');
+      valid = false;
+    } else {
+      setPasswordError('');
+    }
+
+    if (!captchaValue) {
+      setCaptchaError('Please complete the CAPTCHA');
+      valid = false;
+    }
+
+    if (valid) {
+      console.log('Login successful!', { clientId, userId, password });
+    }
   };
+
 
 
   const handleNavigateCreateAccount = () => {
     navigate('./create-account')
   }
+
+
+
+  const handleCaptchaChange = (value) => {
+    // console.log(value, "value");
+    setCaptchaError('');
+    setCaptchaValue(value);
+
+  };
 
   return (
     <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4'>
@@ -73,6 +138,12 @@ function Login() {
                   placeholder='Enter your Client ID'
                   className=' w-full px-3 py-2 border rounded-xl focus:outline-none   md:text-md font-Gilroy  font-medium text-neutral-600'
                 />
+                {clientIdError &&
+                  <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                    <InfoCircle size="14" color="#DC2626" /> <p className='text-red-500 text-xs mt-1 font-Gilroy'>{clientIdError}</p>
+
+                  </div>
+                }
               </div>
 
 
@@ -86,6 +157,12 @@ function Login() {
                   onChange={handleUserIdChange}
                   className='w-full px-3 py-2 border rounded-xl focus:outline-none  md:text-md font-Gilroy  font-medium text-neutral-600'
                 />
+                {userIdError &&
+                  <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                    <InfoCircle size="14" color="#DC2626" />
+
+                    <p className='text-red-500 text-xs mt-1 font-Gilroy'>{userIdError}</p>
+                  </div>}
               </div>
               <div className='mb-2 relative'>
                 <label className='block text-black mb-2 text-start font-Gilroy font-medium text-sm' htmlFor='password'>Password <span className='text-red-500'>*</span></label>
@@ -106,6 +183,15 @@ function Login() {
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
+
+                {passwordError &&
+                  <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                    <InfoCircle size="14" color="#DC2626" />
+                    <p className='text-red-500 text-xs mt-1 font-Gilroy'>{passwordError}</p>
+                  </div>
+                }
+
+
               </div>
 
 
@@ -126,30 +212,27 @@ function Login() {
                   </label>                </div>
               </div>
 
-              <div className="mb-2 flex items-center justify-between w-full border border-[#205DA8] rounded-xl shadow-sm bg-white">
-                <div className="flex items-center gap-2 p-3">
-                  <input
-                    type="checkbox"
-                    id="notRobot"
-                    checked={isNotRobot} onChange={handleNotRobotChange}
-                    className="w-6 h-6 accent-[#205DA8] cursor-pointer"
-                  />
-                  <label htmlFor="notRobot" className="text-neutral-600 text-lg cursor-pointer font-Gilroy text-sm font-medium">
-                    I'm not a robot
-                  </label>
-                </div>
-                <div className="bg-[#205DA8] text-white border border-[#205DA8] flex items-center justify-center px-4 py-2 rounded-tr-xl rounded-br-xl">
-                  <img src={Robot} alt="Robot" />
-                </div>
+              <div className="p-0 w-fit font-Gilroy text-lg bg-white" style={{ transform: "scale(1.5,1)", transformOrigin: "0 0", border: "none",  }}>
+                <ReCAPTCHA
+                  sitekey="6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k"
+                  onChange={handleCaptchaChange}
+                  className='w-fit font-Gilroy bg-white'
+
+                />
               </div>
 
 
+              {captchaError &&
+                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                  <InfoCircle size="14" color="#DC2626" /><p className='text-red-500 text-xs mt-1 font-Gilroy'>{captchaError}</p>
+                </div>
+              }
               <button type='submit'
-                disabled={!isNotRobot}
+
                 onClick={handleSubmit}
                 className={`mt-2  font-Montserrat font-semibold text-base w-full p-[10px] rounded-xl transition duration-300 sm:text-lg ${isNotRobot
-                    ? 'bg-[#205DA8] text-white cursor-pointer'
-                    : 'bg-[#205DA8] text-white cursor-pointer'
+                  ? 'bg-[#205DA8] text-white cursor-pointer'
+                  : 'bg-[#205DA8] text-white cursor-pointer'
                   }`}>
                 Sign In
               </button>

@@ -1,18 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LoginImage from '../Images/Login_Image.svg';
 import InaiLogo from '../Images/Inai_Logo.svg';
-import Robot from '../Images/Robot.svg'
-import {useNavigate} from 'react-router-dom'
-
+import { useNavigate } from 'react-router-dom'
+import ReCAPTCHA from 'react-google-recaptcha';
+import { InfoCircle } from "iconsax-react";
+import { useDispatch } from 'react-redux';
+import { FORGOT_PASSWORD_API_CALL } from "../Utils/Constant";
 
 function ClientIDChange() {
 
-    
-const navigate =  useNavigate()
+    const dispatch = useDispatch();
+
+    const [email, setEmail] = useState("");
+    const [formError, setFormError] = useState({ email: "", captcha: "" });
+    const [captchaValue, setCaptchaValue] = useState(null);
+
+    const handleEmailChange = (e) => {
+        const value = e.target.value.toLowerCase();
+        setEmail(value);
+        setFormError((prevErrors) => ({ ...prevErrors, email: "" }));
+
+        const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
+        if (value && !emailRegex.test(value)) {
+            setFormError((prevErrors) => ({
+                ...prevErrors,
+                email: "Invalid email format ",
+            }));
+        }
+    };
+
+    const handleCaptchaChange = (value) => {
+        console.log(value, "value");
+
+        setCaptchaValue(value);
+        setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
+    };
+    const navigate = useNavigate()
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        let errors = { email: "", captcha: "" };
+        if (email && captchaValue) {
+            dispatch({ type: FORGOT_PASSWORD_API_CALL, payload: { email: email, recaptcha: captchaValue } })
+
+        }
+
+        if (!email) {
+            errors.email = "Email is required.";
+        } else {
+            const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
+            if (!emailRegex.test(email)) {
+                errors.email = "Invalid email format ";
+            }
+        }
+
+
+        if (!captchaValue) {
+            errors.captcha = "Please verify that you are not a robot.";
+        }
+
+
+        if (errors.email || errors.captcha) {
+            setFormError(errors);
+            return;
+        }
+    };
 
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center '>
-           
+
             <div className='bg-white  h-full   max-w-6xl w-full rounded-3xl shadow-lg'>
 
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-10'>
@@ -55,35 +111,35 @@ const navigate =  useNavigate()
                                     type='text'
                                     name='username'
                                     autoComplete='username'
+                                    onChange={handleEmailChange}
                                     autoCorrect='off'
                                     placeholder='Enter Verify Your Email'
                                     className='w-full h-14 px-3 py-2 border rounded-xl focus:outline-none  text-sm font-Gilroy  font-medium text-neutral-600'
                                 />
+                                {formError.email && (
+                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formError.email} </p>)}
                             </div>
 
+                            <div className="mt-6 flex flex-col items-center justify-center">
+
+                                <ReCAPTCHA
+                                    sitekey='6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k'
+                                    onChange={handleCaptchaChange}
+                                />
 
 
-
-
-                            <div className="mt-6 flex items-center justify-between w-full border border-gray-300 rounded-xl shadow-sm bg-white">
-                                <div className="flex items-center gap-2 p-2 pl-4">
-                                    <input
-                                        type="checkbox"
-                                        id="notRobot"
-                                        className="w-6 h-6 accent-[#205DA8] cursor-pointer"
-                                    />
-                                    <label htmlFor="notRobot" className="text-neutral-600 text-lg cursor-pointer font-Gilroy text-sm font-medium">
-                                        I'm not a robot
-                                    </label>
-                                </div>
-                                <div className="bg-[#205DA8] text-white flex items-center justify-center px-4 py-2 rounded-tr-xl rounded-br-xl">
-
-                                    <img src={Robot} alt='Robot' className="h-10 w-10 sm:h-14 sm:w-12 md:h-10 md:w-14 object-contain" />
-                                </div>
+                                {formError.captcha && (
+                                    <div className="mt-2 w-full text-center">
+                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                            <InfoCircle size="14" color="#DC2626" /> {formError.captcha}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
 
-
-                            <button type='submit'className='mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg'>
+                            <button type='submit' className='mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg'
+                                onClick={handleSubmit}>
                                 Submit
                             </button>
 

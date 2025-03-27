@@ -4,7 +4,7 @@ import {
     RESET_CODE,
     SUCCESS_CODE_NO,
     ERROR_CODE_NO
-  } from "../utils/constants";
+  } from "../../Utils/Constant";
 
 export const initialState = {
 
@@ -17,6 +17,7 @@ export const initialState = {
 }
 
 const CommonReducer = (state = initialState, action) => {
+console.log('state',state,action);
 
     switch (action.type) {
         case ERROR_CODE:

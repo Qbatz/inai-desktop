@@ -9,7 +9,8 @@ import ForgotUserName from './LandingPages/ForgotUserName';
 import Sidebar from './Components/Sidebar';
 import CustomerDetails from './CustomerComponent/CustomerDetails';
 import ForgotClientId from './LandingPages/ForgotClientId'
-import ForgotPassword from './LandingPages/ForgotPassword'
+import ForgotPassword from './LandingPages/ForgotPassword';
+import SignUp from  './LandingPages/SignUp'
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
       <Router>  
         <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/sign-up" element={<SignUp />} />
           <Route path="/form-display" element={<FormDisplay />} />
           <Route path="/add-customer" element={<AddCustomer />} />
           <Route path="/create-account" element={<CreateAccount />} />

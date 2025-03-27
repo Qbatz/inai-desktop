@@ -7,7 +7,7 @@ import SignUpReducer from "./SignUpReducer";
 
 const RootReducer = combineReducers({
     signIn: SignInReducer,
-    commonReducer: CommonReducer,
+    Common: CommonReducer,
     createReducer:CreateReducer,
     signUpReducer:SignUpReducer,
 })

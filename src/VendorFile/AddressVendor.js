@@ -97,7 +97,7 @@ function AddressVendor() {
         shippingGoogleMap,
         sameAsOffice,
       };
-      console.log("Form submitted successfully");
+      console.log("Form submitted successfully", payload);
     }
   };
 

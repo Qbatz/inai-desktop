@@ -34,7 +34,6 @@ function Login() {
   };
 
 
-  const [isNotRobot, setIsNotRobot] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [captchaValue, setCaptchaValue] = useState(null);
 
@@ -47,7 +46,7 @@ function Login() {
   };
 
 
-  const handleNotRobotChange = (e) => setIsNotRobot(e.target.checked);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -81,7 +80,7 @@ function Login() {
     }
 
     if (valid) {
-      console.log('Login successful!', { clientId, userId, password });
+      
     }
   };
 
@@ -94,8 +93,7 @@ function Login() {
 
 
   const handleCaptchaChange = (value) => {
-    // console.log(value, "value");
-    setCaptchaError('');
+       setCaptchaError('');
     setCaptchaValue(value);
 
   };
@@ -230,10 +228,8 @@ function Login() {
               <button type='submit'
 
                 onClick={handleSubmit}
-                className={`mt-2  font-Montserrat font-semibold text-base w-full p-[10px] rounded-xl transition duration-300 sm:text-lg ${isNotRobot
-                  ? 'bg-[#205DA8] text-white cursor-pointer'
-                  : 'bg-[#205DA8] text-white cursor-pointer'
-                  }`}>
+                className='mt-2  font-Montserrat font-semibold text-base w-full p-[10px] rounded-xl transition duration-300 sm:text-lg 
+                 bg-[#205DA8] text-white cursor-pointer' >
                 Sign In
               </button>
 

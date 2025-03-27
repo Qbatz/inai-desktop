@@ -80,24 +80,25 @@ function AddressVendor() {
 
   const handleNext = () => {
     if (validateForm()) {
-      // const payload = {
-      //   officeAddress1,
-      //   city,
-      //   state,
-      //   country,
-      //   postalCode,
-      //   landmark,
-      //   googleMap,
-      //   shippingAddress1,
-      //   shippingCity,
-      //   shippingState,
-      //   shippingCountry,
-      //   shippingPostalCode,
-      //   shippingLandmark,
-      //   shippingGoogleMap,
-      //   sameAsOffice,
-      // };
-      console.log("Form submitted successfully");
+     
+      const payload = {
+        officeAddress1,
+        city,
+        state,
+        country,
+        postalCode,
+        landmark,
+        googleMap,
+        shippingAddress1,
+        shippingCity,
+        shippingState,
+        shippingCountry,
+        shippingPostalCode,
+        shippingLandmark,
+        shippingGoogleMap,
+        sameAsOffice,
+      };
+      console.log("Form submitted successfully", payload);
     }
   };
 

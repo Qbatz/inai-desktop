@@ -1,0 +1,28 @@
+
+iframe{
+    background-color: #fff !important;
+    width: auto !important;
+    border: 1px solid #205DA8 !important;
+    border-radius: 12px !important;
+   
+}
+.recaptcha{
+    width: auto !important;
+}
+
+.recaptcha-checkbox-border {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background-color: #fff;
+    border: 1px solid #205DA8 !important;
+    font-size: 1px;
+    height: 14px;
+    position: absolute;
+    width: 14px;
+    z-index: 1;
+}
+.recaptcha-anchor-label span{
+    font-family: 'Gilroy' !important;
+}
+

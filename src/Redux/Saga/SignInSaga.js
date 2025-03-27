@@ -1,6 +1,9 @@
 import { takeEvery, call, put } from "redux-saga/effects";
 import { signIn, ForgotAction } from "../Action/SignInAction";
-import { SIGN_IN_REDUCER, SIGN_IN_SAGA, ERROR_CODE, FORGOT_PASSWORD_RESPONSE, FORGOT_PASSWORD_API_CALL } from "../../Utils/Constant";
+import {
+    SIGN_IN_REDUCER, SIGN_IN_SAGA, ERROR_CODE, FORGOT_PASSWORD_API_CALL,
+    SUCCESS_CODE,FORGOT_USER_API_CALL
+} from "../../Utils/Constant";
 
 
 function* handleSignIn(action) {
@@ -17,10 +20,40 @@ function* handleSignIn(action) {
 
 
 function* handleForgotPassword(forgot) {
-    const response = yield call(ForgotAction, forgot.payload)
-    console.log("response", response);
+ 
+    
+      try {
+            const response = yield call(ForgotAction, forgot.payload);
+          
+    
+    
+            if (response?.success || response?.status === 200) {
+                
+                yield put({ type: SUCCESS_CODE, payload: { response } });
+            }
+    
+            else if (response?.status === 400) {
+              
+                yield put({ type: ERROR_CODE, payload: { message: response?.message || "Invalid request" } });
+            }
+    
+            else {
+              
+                yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
+            }
+        } catch (error) {
+            const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
+          
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+        }
+}
+
+
+function* handleForgotUser(user) {
+    const response = yield call(ForgotAction, user.payload)
+    
     if (response.status === 200 || response.data.statusCode === 200) {
-        yield put({ type: FORGOT_PASSWORD_RESPONSE, payload: { response: response.data } })
+        yield put({ type: SUCCESS_CODE, payload: { response: response } })
 
     }
     if (response.status === 400 || response.data.statusCode === 400) {
@@ -28,10 +61,10 @@ function* handleForgotPassword(forgot) {
     }
 }
 
-
 function* SignInSaga() {
     yield takeEvery(SIGN_IN_SAGA, handleSignIn);
     yield takeEvery(FORGOT_PASSWORD_API_CALL, handleForgotPassword);
+    yield takeEvery(FORGOT_USER_API_CALL, handleForgotUser);
 }
 
 export default SignInSaga;

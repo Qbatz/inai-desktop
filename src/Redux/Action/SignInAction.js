@@ -10,7 +10,17 @@ export async function signIn() {
 
 
 export async function ForgotAction(forgot) {
-  return await AxiosConfig.post('/user/user/forgot-password', forgot, {
+  
+  
+  return await AxiosConfig.post('/user/forgot-password', forgot, {
     data : forgot
+  })
+}
+
+export async function ForgotPasswordAction(password) {
+ 
+  
+  return await AxiosConfig.post('/user/forgot-clientid', password, {
+    data : password
   })
 }

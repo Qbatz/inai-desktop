@@ -4,13 +4,17 @@ import InaiLogo from '../Images/Inai_Logo.svg';
 import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import { InfoCircle } from "iconsax-react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { FORGOT_PASSWORD_API_CALL } from "../Utils/Constant";
 
 function ClientIDChange() {
 
     const dispatch = useDispatch();
+    const state = useSelector(state => state)
 
+  
+
+    let resetPassword = useSelector(state => state?.Common?.resetPassword);
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
@@ -30,7 +34,7 @@ function ClientIDChange() {
     };
 
     const handleCaptchaChange = (value) => {
-        console.log(value, "value");
+       
 
         setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
@@ -137,7 +141,12 @@ function ClientIDChange() {
                                     </div>
                                 )}
                             </div>
-
+                            {resetPassword && (
+                                <div className="mt-4 text-green-800 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                   
+                                    {resetPassword}
+                                </div>
+                            )}
                             <button type='submit' className='mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg'
                                 onClick={handleSubmit}>
                                 Submit

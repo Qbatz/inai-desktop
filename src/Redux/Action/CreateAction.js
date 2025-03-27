@@ -1,15 +1,19 @@
-import axios from "axios";
+import AxiosConfig from "../../WebService/AxiosConfig.js";
 
 
 
-export async function CreateAction() {
-  return await axios.get(`${process.env.REACT_APP_BASE_URL}/create-account`, {
-   
+
+ 
+export async function CreateAction(Account) {
+  return await AxiosConfig.post('/user/email_verify', Account, {
+    data : Account
   })
 }
 
+
+
 export async function Sigup() {
-  return await axios.get(`${process.env.REACT_APP_BASE_URL}/Sign-up`, {
+  return await AxiosConfig.post('/Sign-up', {
    
   })
 }

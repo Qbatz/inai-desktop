@@ -3,11 +3,11 @@ export const SIGN_IN_SAGA = "Sign_in_Saga";
 export const ERROR_CODE = "Error_code";
 export const SUCCESS_CODE = "Success_code";
 export const RESET_CODE = "Reset_code";
+export const LOG_OUT = "Log-out";
 
-export const SUCCESS_CODE_NO = 200;
 
 
-export const ERROR_CODE_NO = 201;
+
 
 export const FORGOT_PASSWORD_RESPONSE = "Forgot_password_response";
 export const FORGOT_PASSWORD_API_CALL = "Forgot_password_api";

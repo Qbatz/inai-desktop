@@ -1,10 +1,9 @@
-import axios from "axios";
 import AxiosConfig from "../../WebService/AxiosConfig.js";
 
 
-export async function signIn() {
-  return await axios.get(`${process.env.REACT_APP_BASE_URL}/login`, {
-   
+export async function signIn(signIn) {
+  return await AxiosConfig.post(`/auth/token`,signIn, {
+   data:signIn
   })
 }
 

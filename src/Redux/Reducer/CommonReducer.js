@@ -2,9 +2,7 @@ import {
     ERROR_CODE,
     SUCCESS_CODE,
     RESET_CODE,
-    SUCCESS_CODE_NO,
-    ERROR_CODE_NO
-  } from "../../Utils/Constant";
+       } from "../../Utils/Constant";
 
 export const initialState = {
 
@@ -17,15 +15,15 @@ export const initialState = {
 }
 
 const CommonReducer = (state = initialState, action) => {
-console.log('state',state,action);
+
 
     switch (action.type) {
         case ERROR_CODE:
-            return { ...state,code : ERROR_CODE_NO, errorMessage:action.payload.message }
+            return { ...state, code : action.payload.statusCode , errorMessage:action.payload.message }
             case SUCCESS_CODE:
-                return { ...state, successCode: SUCCESS_CODE_NO , successMessage: action.payload.message}
+                return { ...state, successCode: action.payload.statusCode, successMessage: action.payload.message || ''}
                 case RESET_CODE:
-                    return { ...state, successCode: 0, errorMessage:'' , successMessage: "" }
+                    return { ...state, successCode: 0, code: 0,  errorMessage: '' , successMessage: "" }
 
         default:
             return state;

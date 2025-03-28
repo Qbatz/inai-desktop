@@ -5,22 +5,27 @@ import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { CREATE_ACCOUNT_API_CALL } from "../Utils/Constant";
+import { CREATE_ACCOUNT_API_CALL, RESET_CODE } from "../Utils/Constant";
 
 
 function CreateAccount() {
 
     const state = useSelector(state => state)
 
-    console.log("state", state);
-    
-    const errorMessage = useSelector(state => state?.common?.errorMessage);
-    const successMessage = useSelector(state => state?.common?.successMessage);
+
+    const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
+
+
+    const   emailid = useSelector(state => state?.Common?.  emailid)
+
+
+
+
 
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
-    const [showPopup, setShowPopup] = useState(false);
+
 
     const dispatch = useDispatch();
     const navigate = useNavigate()
@@ -40,7 +45,7 @@ function CreateAccount() {
     };
 
     const handleCaptchaChange = (value) => {
-        console.log(value, "value");
+        
 
         setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
@@ -51,7 +56,7 @@ function CreateAccount() {
         let errors = { email: "", captcha: "" };
         if (email && captchaValue) {
             dispatch({ type: CREATE_ACCOUNT_API_CALL, payload: { email: email, recaptcha: captchaValue } })
-// dispatch({type:SUCCESS_CODE})
+
         }
 
         if (!email) {
@@ -76,18 +81,59 @@ function CreateAccount() {
     };
 
 
-    console.log("email", email, captchaValue);
-  
-useEffect(()=>{
-    console.log('stateUseEffect', state);
-},[state])
+    // useEffect(() => {
+    //     if (state.Common.successCode === 200) {
+    //         setShowPopup(true);
+    //         setEmail("");
+    //         setCaptchaValue(null);
+
+    //         setTimeout(() => {
+    //             setShowPopup(false); 
+    //             dispatch({ type: RESET_CODE });
+    //         }, 1000); 
+    //     }
+    // }, [state.Common.successCode]);
+
+    useEffect(() => {
+        if (  emailid) {
+            setEmail("");
+            setCaptchaValue(null);
+            const timer = setTimeout(() => {
+                dispatch({ type: RESET_CODE });
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [  emailid, dispatch]);
+
+
+
+    
+
+    useEffect(() => {
+        
+        setErrorMessage(state?.Common?.errorMessage)
+       
+
+    }, [state.Common.errorMessage])
 
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center '>
 
             <div className='bg-white  h-full   max-w-6xl w-full rounded-3xl shadow-lg'>
 
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-10'>
+                {  emailid && (
+                    <div className="p-6 text-center">
+                        <h2 className="text-[#0AEB7A]"> <span className="text-[#77DAA9] text-lg font-semibold">Success!</span>
+
+                            Check your email <span className="font-bold">{  emailid}</span> to complete the registration.
+                            Check your Junk/Spam folder.
+                            Add <span className="font-semibold">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
+                        </h2>
+
+                    </div>)}
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4 px-6 py-2'>
+
 
                     <div className='flex flex-col items-center justify-center'>
                         <img src={LoginImage} className='w-full h-auto max-w-md object-contain' alt='Login' />
@@ -157,7 +203,7 @@ useEffect(()=>{
                             </div>
 
                             {errorMessage && (
-                                <div className='text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1'>
+                                <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
                                     <InfoCircle size="14" color="#DC2626" />
                                     {errorMessage}
                                 </div>
@@ -169,23 +215,9 @@ useEffect(()=>{
                                 Submit
                             </button>
 
-                            {showPopup && (
-                                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                    <div className="bg-white p-6 rounded-xl shadow-lg w-96 text-center">
-                                        <h2 className="text-green-600 text-lg font-semibold">Success!</h2>
-                                        <p className="text-gray-700 mt-2 text-sm">
-                                            Check your email <span className="font-bold">{successMessage}</span> to complete the registration. <br />
-                                            Check your Junk/Spam folder. <br />
-                                            Add <span className="font-semibold">noreply@inaippl.com</span> to your address book.
-                                        </p>
-                                        <button
-                                            className="mt-4 w-full bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-700 transition"
-                                            onClick={() => setShowPopup(false)}>
-                                            OK
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
+
+
+
 
                             <div className="text-start mt-4">
                                 <p className="text-black font-Montserrat font-normal text-base">

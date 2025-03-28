@@ -80,6 +80,7 @@ function AddressVendor() {
 
   const handleNext = () => {
     if (validateForm()) {
+     
       const payload = {
         officeAddress1,
         city,

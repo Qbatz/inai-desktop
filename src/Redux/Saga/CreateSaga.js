@@ -5,20 +5,34 @@ import { CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE } from "../../Utils/C
 
 function* handleCreateAccount(action) {
 
-    console.log('Action Received:', action);
+   
 
-    const response = yield call(CreateAction, action.payload);
-    console.log("API Response:", response);
+    try {
+        const response = yield call(CreateAction, action.payload);
+       
 
-    if (response.status === 200 || response.data?.statusCode === 200) {
-        console.log("Success Message from API:", response.data?.message);
-        yield put({ type: SUCCESS_CODE, payload: { message: response.data?.message } });
-    }
-    else if (response.status === 400 || response.data?.statusCode === 400) {
-        console.log('Error Response from Backend:', response.data?.message);
-        yield put({ type: ERROR_CODE, payload: { message: response.data?.message } });
+
+        if (response?.success || response?.status === 200) {
+            
+            yield put({ type: SUCCESS_CODE, payload: { response } });
+        }
+
+        else if (response?.status === 400) {
+         
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Invalid request" } });
+        }
+
+        else {
+           
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
+    
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }
 }
+
 
 
 function* CreateAccountSaga() {

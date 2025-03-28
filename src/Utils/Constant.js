@@ -12,6 +12,9 @@ export const LOG_OUT = "Log-out";
 export const FORGOT_PASSWORD_RESPONSE = "Forgot_password_response";
 export const FORGOT_PASSWORD_API_CALL = "Forgot_password_api";
 
+export const FORGOT_USER_RESPONSE = "Forgot_user_response";
+export const FORGOT_USER_API_CALL = "Forgot_user_api";
+
 
 export const CREATE_ACCOUNT_RESPONSE = "Create_account_Reducer";
 export const CREATE_ACCOUNT_API_CALL = "Create_account_Saga";

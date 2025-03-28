@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
+import { OTP_SEND_SAGA } from '../Utils/Constant'
+import { useDispatch, useSelector } from 'react-redux';
+
 
 export default function SignUp() {
+
+  const dispatch = useDispatch();
+  const state = useSelector(state => state)
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userId, setUserId] = useState("");
@@ -17,6 +23,9 @@ export default function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otpError, setOtpError] = useState("");
   const [otpSuccess, setOtpSuccess] = useState("");
+
+  const [mobileError, setMobileError] = useState('')
+
 
 
   const handleFirstName = (e) => {
@@ -98,9 +107,15 @@ export default function SignUp() {
   };
 
   const handleSENDOTP = () => {
-    if (validateForm()) {
-      setOtpSent(true);
+    if (!mobile.match(/^[0-9]{10}$/)) {
+      setMobileError("Mobile number must be 10 digits.")
     }
+    if (mobile) {
+      dispatch({ type: OTP_SEND_SAGA, payload: { mobile: mobile } })
+    }
+
+
+
   };
 
   const handleOtpChange = (e) => {
@@ -125,14 +140,90 @@ export default function SignUp() {
 
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-8">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold text-center text-black mb-6">
-          Sign Up
-        </h2>
+    <div className="flex items-center justify-center h-auto  w-full">
+      <div className="w-full max-w-lg bg-white p-6 rounded-lg ">
+
 
 
         <div className="mb-4">
+          <input
+            type="tel"
+            placeholder="Mobile *"
+            value={mobile}
+            maxLength={10}
+            onChange={handleMobile}
+            className="w-full h-12 px-3  font-Gilroy border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {mobileError && (
+            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+              <span><InfoCircle size="14" color="#DC2626" /></span> {mobileError} </p>)}
+        </div>
+
+        {!otpSent ? (
+          <button
+            className="w-32 h-10 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-800 transition "
+            onClick={handleSENDOTP}
+          >
+            SEND OTP
+          </button>
+        ) : (
+          <button
+            className="w-32 h-10 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-600 transition"
+            onClick={handleSENDOTP}
+          >
+            RESEND OTP
+          </button>
+        )}
+
+
+        {otpSent && (
+          <>
+            <input
+              type="text"
+              placeholder="Enter OTP *"
+              value={otp}
+              onChange={handleOtpChange}
+              className={`w-full h-12 px-3 border rounded-md focus:outline-none focus:ring-2 text-start 
+    ${otpError ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`}
+            />
+
+
+            {otpError && (
+              <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2">
+                <span><InfoCircle size="14" color="#DC2626" /></span> {otpError}
+              </p>
+            )}
+
+            <button
+              className="w-32 h-10 bg-green-600 font-Gilroy text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition"
+              onClick={handleVerifyOtp}
+            >
+              VERIFY OTP
+            </button>
+            {otpSuccess && (
+              <p className="text-green-600 font-medium text-sm flex items-center gap-1 pt-2">
+                {otpSuccess}
+              </p>
+            )}
+          </>
+        )}
+
+
+
+
+
+
+
+
+
+
+
+
+        {/*  <h2 className="text-2xl font-semibold text-center text-black mb-6 font-Gilroy">
+         Send
+        </h2> */}
+
+        {/* <div className="mb-4">
           <input
             type="text"
             placeholder="First Name *"
@@ -240,86 +331,18 @@ export default function SignUp() {
               {error.confirmPassword}
             </p>
           )}
-        </div>
+        </div> */}
 
 
-        <div className="mb-4">
-          <input
-            type="tel"
-            placeholder="Mobile *"
-            value={mobile}
-            onChange={handleMobile}
-            className="w-full h-12 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {error.mobile && (
-            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-              <span><InfoCircle size="14" color="#DC2626" /></span> {error.mobile} </p>)}
-        </div>
 
 
-        <div className="flex flex-col items-center gap-3">
 
-          {otpSent && (
-            <p className="text-green-600 font-medium text-sm flex items-center gap-1">
-              OTP sent successfully!
-            </p>
-          )}
-
-
-          {!otpSent ? (
-            <button
-              className="w-32 h-10 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
-              onClick={handleSENDOTP}
-            >
-              SEND OTP
-            </button>
-          ) : (
-            <button
-              className="w-32 h-10 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-600 transition"
-              onClick={handleSENDOTP}
-            >
-              RESEND OTP
-            </button>
-          )}
-
-
-          {otpSent && (
-            <>
-              <input
-                type="text"
-                placeholder="Enter OTP *"
-                value={otp}
-                onChange={handleOtpChange}
-                className={`w-full h-12 px-3 border rounded-md focus:outline-none focus:ring-2 text-start 
-    ${otpError ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-500"}`}
-              />
-
-
-              {otpError && (
-                <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2">
-                  <span><InfoCircle size="14" color="#DC2626" /></span> {otpError}
-                </p>
-              )}
-
-              <button
-                className="w-32 h-10 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition"
-                onClick={handleVerifyOtp}
-              >
-                VERIFY OTP
-              </button>
-              {otpSuccess && (
-                <p className="text-green-600 font-medium text-sm flex items-center gap-1 pt-2">
-                  {otpSuccess}
-                </p>
-              )}
-            </>
-          )}
-
+        {/* <div className="flex flex-col items-center gap-3">
 
           <button className="w-32 h-10 bg-blue-400 text-white font-semibold rounded-lg hover:bg-blue-500 transition">
             REGISTER
           </button>
-        </div>
+        </div> */}
 
 
 

@@ -2,7 +2,7 @@ import { takeEvery, call, put } from "redux-saga/effects";
 import { signIn, ForgotAction, ForgotPasswordAction } from "../Action/SignInAction";
 import {
     SIGN_IN_REDUCER, SIGN_IN_SAGA, ERROR_CODE, FORGOT_PASSWORD_API_CALL,
-    SUCCESS_CODE, FORGOT_USER_API_CALL, SUCCESS_CODE
+    SUCCESS_CODE, FORGOT_USER_API_CALL, 
 } from "../../Utils/Constant";
 
 
@@ -18,7 +18,9 @@ function* handleSignIn(action) {
             yield put({ type: ERROR_CODE, payload: { message: response.data.detail, statusCode: response.status } });
         }
     } catch (error) {
-        yield put({ type: ERROR_CODE, payload: { message: error.response?.data?.detail, statusCode: error.response.status || error.status } });
+        const errorMessage = error?.response?.data?.detail;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
     }
 }
 

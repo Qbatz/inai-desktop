@@ -38,6 +38,12 @@ function App({ isLogged_In }) {
     }
   }, [inaiLogin]);
 
+
+  console.log("successLogin",successLogin)
+
+console.log("isLogged_In app.js",isLogged_In )
+
+
   return (
     <div>
       <ToastContainer position="top-right"
@@ -62,7 +68,7 @@ function App({ isLogged_In }) {
                 <>
                   <Route path="/" element={<Login />} />
                   <Route path="/sign-up" element={<SignUp />} />
-                  <Route path="/create-account" element={<CreateAccount />} />
+                  <Route path="/register" element={<CreateAccount />} />
                   <Route path="/forgot-user-name" element={<ForgotUserName />} />
                   <Route path="/forgot-client-id" element={<ForgotClientId />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />

@@ -8,18 +8,23 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import './ReCaptcha.css'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { SIGN_IN_SAGA, RESET_CODE } from '../Utils/Constant'
+import { SIGN_IN_SAGA, RESET_CODE, LOG_IN } from '../Utils/Constant'
 import Cookies from 'universal-cookie';
 import { encryptData } from '../Crypto/crypto';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 
-function Login({ isLogged_In, message }) {
+function Login({ message, loginStatusCode}) {
 
   const navigate = useNavigate()
-  const state = useSelector(state => state)
+
   const dispatch = useDispatch();
+const state = useSelector(state => state)
+
+  console.log("loginStatusCode", loginStatusCode)
+
+console.log("state",state)
 
   const [clientId, setClientId] = useState('');
   const [userId, setUserId] = useState('');
@@ -64,7 +69,7 @@ function Login({ isLogged_In, message }) {
 
     e.preventDefault();
 
-    dispatch({ type: RESET_CODE })
+
 
 
     let valid = true;
@@ -106,7 +111,7 @@ function Login({ isLogged_In, message }) {
 
 
   const handleNavigateCreateAccount = () => {
-    navigate('./create-account')
+    navigate('./register')
   }
 
 
@@ -120,8 +125,8 @@ function Login({ isLogged_In, message }) {
 
 
   useEffect(() => {
-    if (isLogged_In) {
-      navigate("/");
+    if (loginStatusCode) {
+      dispatch({ type: LOG_IN })
       const encryptData_Login = encryptData(JSON.stringify(true));
       localStorage.setItem("inai_login", encryptData_Login.toString());
       const token = state.signIn.token;
@@ -132,7 +137,7 @@ function Login({ isLogged_In, message }) {
       dispatch({ type: RESET_CODE })
     }
 
-  }, [isLogged_In])
+  }, [loginStatusCode])
 
 
 
@@ -303,14 +308,13 @@ function Login({ isLogged_In, message }) {
 
 const mapsToProps = (state) => {
   return {
-    isLogged_In: state.signIn.isLoggedIn,
-    message: state.Common.errorMessage
-
+    message: state.Common.errorMessage,
+    loginStatusCode: state.Common.successCode,
   }
 }
 
 Login.propTypes = {
-  isLogged_In: PropTypes.bool.isRequired,
+  loginStatusCode: PropTypes.number,
   message: PropTypes.string
 }
 

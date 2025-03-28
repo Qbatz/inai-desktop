@@ -1,15 +1,14 @@
 import {all} from 'redux-saga/effects';
 import SignInSaga from './SignInSaga';
-import CreateSaga from  './CreateSaga'
-import SignUPSaga from './SignUpSaga';
+import SignUpSaga from './SignUpSaga'
 
 
 function* RootSaga() {
     
 yield all([
     SignInSaga(),
-    CreateSaga(),
-    SignUPSaga(),
+    SignUpSaga(),
+ 
 ])
 }
 export default RootSaga;

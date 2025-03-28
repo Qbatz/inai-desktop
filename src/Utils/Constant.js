@@ -4,9 +4,12 @@ export const ERROR_CODE = "Error_code";
 export const SUCCESS_CODE = "Success_code";
 export const RESET_CODE = "Reset_code";
 export const LOG_OUT = "Log-out";
+export const LOG_IN = "Log_in"
+export const SIGN_UP_VERIFICATION_REDUCER = "Sign_Up_Verification"
+export const SIGN_UP_VERIFICATION_SAGA = "Sign_Up_Verification_saga"
 
-
-
+export const OTP_SEND_REDUCER = "Otp_send_reducer"
+export const OTP_SEND_SAGA = "Otp_send_saga"
 
 
 export const FORGOT_PASSWORD_RESPONSE = "Forgot_password_response";

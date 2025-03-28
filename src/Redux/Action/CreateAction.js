@@ -14,8 +14,15 @@ export async function CreateAction(Account) {
 
 
 
-export async function Sigup() {
-  return await AxiosConfig.post('/Sign-up', {
-   
+export async function Verification(signup) {
+  return await AxiosConfig.post('/user/email-verify-confirm/', signup,{
+   data:signup
   })
+}
+
+
+export async function OtpSend(send) {
+  return await AxiosConfig.post('/user/reg-send-otp/', send,{
+   data:send
+})
 }

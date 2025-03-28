@@ -5,18 +5,21 @@ import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { CREATE_ACCOUNT_API_CALL, RESET_CODE } from "../Utils/Constant";
+import { CREATE_ACCOUNT_API_CALL, RESET_CODE, SIGN_UP_VERIFICATION_SAGA } from "../Utils/Constant";
+import SignUp from './SignUp';
 
 
 function CreateAccount() {
 
     const state = useSelector(state => state)
 
+    console.log("state", state)
+
 
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
 
 
-    const   emailid = useSelector(state => state?.Common?.  emailid)
+    const emailid = useSelector(state => state?.Common?.emailid)
 
 
 
@@ -45,7 +48,7 @@ function CreateAccount() {
     };
 
     const handleCaptchaChange = (value) => {
-        
+
 
         setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
@@ -95,7 +98,7 @@ function CreateAccount() {
     // }, [state.Common.successCode]);
 
     useEffect(() => {
-        if (  emailid) {
+        if (emailid) {
             setEmail("");
             setCaptchaValue(null);
             const timer = setTimeout(() => {
@@ -104,29 +107,60 @@ function CreateAccount() {
 
             return () => clearTimeout(timer);
         }
-    }, [  emailid, dispatch]);
+    }, [emailid, dispatch]);
 
 
 
-    
+
 
     useEffect(() => {
-        
+
         setErrorMessage(state?.Common?.errorMessage)
-       
+
 
     }, [state.Common.errorMessage])
+
+
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        console.log("params", params)
+
+        const verifyCode = params.get('verify_code');
+
+        if (verifyCode) {
+            console.log("verifyCode", verifyCode)
+            dispatch({ type: SIGN_UP_VERIFICATION_SAGA, payload: { verify_code: verifyCode } })
+        } else {
+            console.log("called &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+        }
+    }, []);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center '>
 
             <div className='bg-white  h-full   max-w-6xl w-full rounded-3xl shadow-lg'>
 
-                {  emailid && (
+                {emailid && (
                     <div className="p-6 text-center">
                         <h2 className="text-[#0AEB7A]"> <span className="text-[#77DAA9] text-lg font-semibold">Success!</span>
 
-                            Check your email <span className="font-bold">{  emailid}</span> to complete the registration.
+                            Check your email <span className="font-bold">{emailid}</span> to complete the registration.
                             Check your Junk/Spam folder.
                             Add <span className="font-semibold">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
                         </h2>
@@ -163,71 +197,95 @@ function CreateAccount() {
                             </div>
                         </div>
 
-                        <div className="w-full max-w-[450px]">
-                            <div className="mb-2">
-                                <label className="block text-black mb-2 text-start font-Gilroy font-normal text-sm" htmlFor="userId">
-                                    Verify Your Email
-                                </label>
-                                <input
-                                    id="userId"
-                                    type="text"
-                                    name="username"
-                                    onChange={handleEmailChange}
-                                    autoComplete="username"
-                                    autoCorrect="off"
-                                    placeholder="Enter Verify Your Email"
-                                    className="w-full h-14 px-3 py-2 border rounded-xl focus:outline-none text-sm font-Gilroy font-medium text-neutral-600"
-                                />
-                                {formError.email && (
-                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formError.email} </p>)}
-                            </div>
+                        {
+                            state.signUp.is_verified === 1 ? <> <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">Email is already Verified</label>
+
+                                <div className="w-full max-w-[450px]">
+                                    <div className="mb-2">
+                                        <label className="block text-black mb-2 text-start font-Gilroy font-normal text-sm" htmlFor="userId">
+                                            Verify Your Email
+                                        </label>
+                                        <input
+                                            id="userId"
+                                            type="text"
+                                            name="username"
+                                            onChange={handleEmailChange}
+                                            autoComplete="username"
+                                            autoCorrect="off"
+                                            placeholder="Enter Verify Your Email"
+                                            className="w-full h-14 px-3 py-2 border rounded-xl focus:outline-none text-sm font-Gilroy font-medium text-neutral-600"
+                                        />
+                                        {formError.email && (
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formError.email} </p>)}
+                                    </div>
 
 
 
-                            <div className="mt-6 flex flex-col items-center justify-center">
+                                    <div className="mt-6 flex flex-col items-center justify-center">
 
-                                <ReCAPTCHA
-                                    sitekey='6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k'
-                                    onChange={handleCaptchaChange}
-                                />
+                                        <ReCAPTCHA
+                                            sitekey='6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k'
+                                            onChange={handleCaptchaChange}
+                                        />
 
 
-                                {formError.captcha && (
-                                    <div className="mt-2 w-full text-center">
-                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
-                                            <InfoCircle size="14" color="#DC2626" /> {formError.captcha}
+                                        {formError.captcha && (
+                                            <div className="mt-2 w-full text-center">
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                                    <InfoCircle size="14" color="#DC2626" /> {formError.captcha}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {errorMessage && (
+                                        <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                            <InfoCircle size="14" color="#DC2626" />
+                                            {errorMessage}
+                                        </div>
+                                    )}
+                                    <button
+                                        type="submit"
+                                        className="mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg"
+                                        onClick={handleSubmit}>
+                                        Submit
+                                    </button>
+
+
+
+
+
+                                    <div className="text-start mt-4">
+                                        <p className="text-black font-Montserrat font-normal text-base">
+                                            Already have an account?{' '}
+                                            <span onClick={() => navigate("/")} className="cursor-pointer text-blue-500 hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
+                                                Sign In
+                                            </span>
                                         </p>
                                     </div>
-                                )}
-                            </div>
-
-                            {errorMessage && (
-                                <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
-                                    <InfoCircle size="14" color="#DC2626" />
-                                    {errorMessage}
                                 </div>
-                            )}
-                            <button
-                                type="submit"
-                                className="mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg"
-                                onClick={handleSubmit}>
-                                Submit
-                            </button>
+                            </>
+                                :
+
+                                <>
+
+
+                                    <SignUp />
+
+                                </>
+
+                        }
 
 
 
 
 
-                            <div className="text-start mt-4">
-                                <p className="text-black font-Montserrat font-normal text-base">
-                                    Already have an account?{' '}
-                                    <span onClick={() => navigate("/")} className="cursor-pointer text-blue-500 hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
-                                        Sign In
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
+
+
+
+
+
                     </div>
 
                 </div>

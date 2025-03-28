@@ -17,22 +17,20 @@ export const initialState = {
 }
 
 const CommonReducer = (state = initialState, action) => {
-
-    console.log("action", action)
     switch (action.type) {
         case ERROR_CODE:
             return { ...state, code: action.payload.statusCode, errorMessage: action.payload.message }
-            case SUCCESS_CODE:
-                const data = action.payload.response?.data || {};  
-                return {
-                    ...state,
-                    successCode: action.payload.statusCode || 0,
-                    successMessage: action.payload.message || '',
-                    emailid: data.email || '',
-                    resetPassword: data.resetPassword || '',
-                    resetUser: data.resetUser || '',
-                }
-            
+        case SUCCESS_CODE:
+            const data = action.payload.response?.data || {};
+            return {
+                ...state,
+                successCode: action.payload.statusCode || 0,
+                successMessage: action.payload.message || '',
+                emailid: data.email || '',
+                resetPassword: data.resetPassword || '',
+                resetUser: data.resetUser || '',
+            }
+
         case RESET_CODE:
             return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "", emailid: "" }
 

@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
-import { OTP_SEND_SAGA, OTP_VERIFY_SAGA ,ACCOUNT_REGISTER_SAGA, RESET_CODE} from '../Utils/Constant'
+import { OTP_SEND_SAGA, OTP_VERIFY_SAGA, ACCOUNT_REGISTER_SAGA, RESET_CODE } from '../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
 
 
@@ -21,7 +22,6 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [otpError, setOtpError] = useState("");
-  const [otpSuccess, setOtpSuccess] = useState("");
   const [showMobile, setShowMobile] = useState(true)
   const [showOtp, setShowOtp] = useState(false)
   const [mobileError, setMobileError] = useState('')
@@ -81,7 +81,7 @@ export default function SignUp() {
     specialChar: /[!@#$%^&*(),.?":{}|<>]/,
   };
 
- 
+
 
 
 
@@ -106,7 +106,7 @@ export default function SignUp() {
 
   const handleOtpChange = (e) => {
 
-  dispatch({ type: RESET_CODE })
+    dispatch({ type: RESET_CODE })
     const value = e.target.value;
 
     if (/^\d{0,6}$/.test(value)) {
@@ -170,22 +170,24 @@ export default function SignUp() {
 
   const handleRegister = () => {
     if (validateForm()) {
-      
-      dispatch({ type: ACCOUNT_REGISTER_SAGA , 
-         payload: {
-        email: emailId,
-        email_verify_token: state.signUp?.verifyCode || '',  
-        first_name: firstName,
-        last_name: lastName,
-        password: password,
-        password2: confirmPassword,
-        phone: mobile,
-        mobile: mobile,  
-        otp: state.signUp?.otpValue || '',
-        sent_otp: 1,
-        otp_verified: 1,
-        username: userId
-    }})
+
+      dispatch({
+        type: ACCOUNT_REGISTER_SAGA,
+        payload: {
+          email: emailId,
+          email_verify_token: state.signUp?.verifyCode || '',
+          first_name: firstName,
+          last_name: lastName,
+          password: password,
+          password2: confirmPassword,
+          phone: mobile,
+          mobile: mobile,
+          otp: state.signUp?.otpValue || '',
+          sent_otp: 1,
+          otp_verified: 1,
+          username: userId
+        }
+      })
     }
 
   }
@@ -196,7 +198,7 @@ export default function SignUp() {
 
 
 
-{state.Common.successMessage && <label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3" >{state.Common.successMessage}</label> }
+        {state.Common.successMessage && <label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3" >{state.Common.successMessage}</label>}
 
 
         {
@@ -329,8 +331,8 @@ export default function SignUp() {
 
             <div className="mb-4 relative">
               <input
-autoComplete="new-password"
-autoCorrect="off"
+                autoComplete="new-password"
+                autoCorrect="off"
 
                 type={showPassword ? "text" : "password"}
                 placeholder="Password *"
@@ -389,21 +391,6 @@ autoCorrect="off"
 
           </>
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       </div>
     </div>

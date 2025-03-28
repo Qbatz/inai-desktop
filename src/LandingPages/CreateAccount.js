@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import LoginImage from '../Images/Login_Image.svg';
 import InaiLogo from '../Images/Inai_Logo.svg';
@@ -5,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { CREATE_ACCOUNT_API_CALL, RESET_CODE, SIGN_UP_VERIFICATION_SAGA ,STORE_VERIFY_CODE} from "../Utils/Constant";
+import { CREATE_ACCOUNT_API_CALL, RESET_CODE, SIGN_UP_VERIFICATION_SAGA, STORE_VERIFY_CODE } from "../Utils/Constant";
 import SignUp from './SignUp';
 
 
@@ -13,16 +14,8 @@ function CreateAccount() {
 
     const state = useSelector(state => state)
 
-    console.log("state", state)
-
-
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
-
-
     const emailid = useSelector(state => state?.Common?.emailid)
-
-
-
 
 
     const [email, setEmail] = useState("");
@@ -48,8 +41,6 @@ function CreateAccount() {
     };
 
     const handleCaptchaChange = (value) => {
-
-
         setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
     };
@@ -70,32 +61,14 @@ function CreateAccount() {
                 errors.email = "Invalid email format ";
             }
         }
-
-
         if (!captchaValue) {
             errors.captcha = "Please verify that you are not a robot.";
         }
-
-
         if (errors.email || errors.captcha) {
             setFormError(errors);
             return;
         }
     };
-
-
-    // useEffect(() => {
-    //     if (state.Common.successCode === 200) {
-    //         setShowPopup(true);
-    //         setEmail("");
-    //         setCaptchaValue(null);
-
-    //         setTimeout(() => {
-    //             setShowPopup(false); 
-    //             dispatch({ type: RESET_CODE });
-    //         }, 1000); 
-    //     }
-    // }, [state.Common.successCode]);
 
     useEffect(() => {
         if (emailid) {
@@ -114,40 +87,20 @@ function CreateAccount() {
 
 
     useEffect(() => {
-
         setErrorMessage(state?.Common?.errorMessage)
-
-
     }, [state.Common.errorMessage])
 
 
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-        console.log("params", params)
-
         const verifyCode = params.get('verify_code');
-
         if (verifyCode) {
-            console.log("verifyCode", verifyCode)
             dispatch({ type: SIGN_UP_VERIFICATION_SAGA, payload: { verify_code: verifyCode } })
-
             dispatch({ type: STORE_VERIFY_CODE, payload: verifyCode })
-
         } else {
-            console.log("called &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         }
     }, [window.location.search]);
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -201,8 +154,8 @@ function CreateAccount() {
                         </div>
 
                         {
-                            state.signUp.is_verified === 0 || state.signUp.is_verified === null  ? <>
-                             <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 &&  "Email is already Verified" }</label> 
+                            state.signUp.is_verified === 0 || state.signUp.is_verified === null ? <>
+                                <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 && "Email is already Verified"}</label>
 
                                 <div className="w-full max-w-[450px]">
                                     <div className="mb-2">

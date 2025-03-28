@@ -1,30 +1,23 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { CreateAction, Verification, OtpSend, OtpVerified , AccountRegister} from "../Action/CreateAction";
-import {ACCOUNT_REGISTER_SAGA, ACCOUNT_REGISTER_REDUCER,  OTP_VERIFY_SAGA, OTP_VERIFY_REDUCER , OTP_SEND_REDUCER, OTP_SEND_SAGA, CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE, SIGN_UP_VERIFICATION_SAGA, SIGN_UP_VERIFICATION_REDUCER } from "../../Utils/Constant";
+import { CreateAction, Verification, OtpSend, OtpVerified, AccountRegister } from "../Action/CreateAction";
+import { ACCOUNT_REGISTER_SAGA, ACCOUNT_REGISTER_REDUCER, OTP_VERIFY_SAGA, OTP_VERIFY_REDUCER, OTP_SEND_REDUCER, OTP_SEND_SAGA, CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE, SIGN_UP_VERIFICATION_SAGA, SIGN_UP_VERIFICATION_REDUCER } from "../../Utils/Constant";
 
 
 function* handleCreateAccount(action) {
 
     try {
         const response = yield call(CreateAction, action.payload);
-
         if (response?.success || response?.status === 200) {
-
             yield put({ type: SUCCESS_CODE, payload: { response } });
         }
-
         else if (response?.status === 400) {
-
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Invalid request" } });
         }
-
         else {
-
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
-
         yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }
 }
@@ -48,7 +41,6 @@ function* handleVerification(action) {
 function* handleSendOtp(action) {
     try {
         const response = yield call(OtpSend, action.payload);
-        console.log("response", response)
         if (response?.success || response?.status === 200) {
             yield put({ type: OTP_SEND_REDUCER, payload: { response: response.data } });
             yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message } });
@@ -66,10 +58,9 @@ function* handleSendOtp(action) {
 function* handleOtpVerified(action) {
     try {
         const response = yield call(OtpVerified, action.payload);
-        console.log("response", response)
         if (response?.success || response?.status === 200) {
             yield put({ type: OTP_VERIFY_REDUCER, payload: { response: response.data } });
-            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message , statusCode: response.status} });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
@@ -86,8 +77,8 @@ function* handleAccountRegister(action) {
         const response = yield call(AccountRegister, action.payload);
         console.log("response", response)
         if (response?.success || response?.status === 200) {
-            yield put({ type: ACCOUNT_REGISTER_REDUCER , payload: { response: response.data } });
-            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message , statusCode: response.status} });
+            yield put({ type: ACCOUNT_REGISTER_REDUCER, payload: { response: response.data } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });

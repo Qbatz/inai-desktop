@@ -27,7 +27,8 @@ const CommonReducer = (state = initialState, action) => {
 
             return {
                 ...state, successCode: action.payload.statusCode, successMessage: action.payload.message || '',   emailid: action.payload.response.data.email,
-                resetPassword: action.payload.response.data.message, resetUser: action.payload.response.data.message
+                resetPassword: action.payload.response?.data.message, resetUser: action.payload.response.data.message, resetpage : action.payload.response.data.message,
+               resetverify:action.payload?.response?.data.message 
             }
         case RESET_CODE:
             return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "",   emailid: "" }

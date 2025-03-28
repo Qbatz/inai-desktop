@@ -245,16 +245,17 @@ function Login({ isLogged_In, message }) {
                   <label htmlFor='staySignedIn' className='text-black font-Gilroy text-sm font-medium'>Stay signed in</label></div>
                 <div>
                   <label className="text-[#205DA8] font-Gilroy text-sm font-medium">
-                    <span onClick={() => navigate("/forgot-user-name")} className="cursor-pointer hover:underline">
-                      Username
-                    </span> /{" "}
-                    <span onClick={() => navigate("/forgot-client-id")} className="cursor-pointer hover:underline">
-                      Client ID
-                    </span> /{" "}
-                    <span onClick={() => navigate("/forgot-password")} className="cursor-pointer hover:underline">
+                    <span
+                      onClick={() => navigate("/forgot-user-name")}
+                      className="cursor-pointer hover:underline"
+                    >
+                      Username / Client ID
+                    </span> / {""}
+                    <span onClick={() => navigate("/password")} className="cursor-pointer hover:underline">
                       Password?
                     </span>
-                  </label>                </div>
+                  </label>
+                </div>
               </div>
 
               <div className="p-0 w-fit font-Gilroy text-lg bg-white" style={{ transform: "scale(1.5,1)", transformOrigin: "0 0", border: "none", }}>

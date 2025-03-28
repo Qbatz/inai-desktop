@@ -16,6 +16,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { decryptData } from './Crypto/crypto';
+import ResetPassword from './LandingPages/ResetPassword';
 
 function App({ isLogged_In }) {
 
@@ -61,11 +62,12 @@ function App({ isLogged_In }) {
               (
                 <>
                   <Route path="/" element={<Login />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/sign-up" element={<SignUp />} />
                   <Route path="/create-account" element={<CreateAccount />} />
                   <Route path="/forgot-user-name" element={<ForgotUserName />} />
                   <Route path="/forgot-client-id" element={<ForgotClientId />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/password" element={<ForgotPassword />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
 
                 </>

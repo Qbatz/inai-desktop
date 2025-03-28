@@ -91,6 +91,20 @@ function ClientIDChange() {
         }
     }, [resetPassword, dispatch]);
 
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        console.log("params", params)
+
+        const verifyCode = params.get('verify_code');
+
+        if (verifyCode) {
+            console.log("verifyCode", verifyCode)
+            dispatch({ type: 'jj', payload: { verify_code: verifyCode } })
+        } else {
+            console.log("called")
+        }
+    }, [dispatch]);
+
 
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center '>

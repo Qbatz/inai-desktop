@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LoginImage from '../Images/Login_Image.svg';
 import InaiLogo from '../Images/Inai_Logo.svg';
 import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { FORGOT_PASSWORD_API_CALL } from "../Utils/Constant";
+import { FORGOT_PASSWORD_API_CALL, RESET_CODE } from "../Utils/Constant";
 
 function ClientIDChange() {
 
     const dispatch = useDispatch();
     const state = useSelector(state => state)
 
-  
+    const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
 
-    let resetPassword = useSelector(state => state?.Common?.resetPassword);
+    const resetPassword = useSelector(state => state?.Common?.resetPassword);
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
+
+    useEffect(() => {
+
+        setErrorMessage(state?.Common?.errorMessage)
+
+
+    }, [state.Common.errorMessage])
 
     const handleEmailChange = (e) => {
         const value = e.target.value.toLowerCase();
@@ -34,7 +41,7 @@ function ClientIDChange() {
     };
 
     const handleCaptchaChange = (value) => {
-       
+
 
         setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
@@ -69,6 +76,21 @@ function ClientIDChange() {
             return;
         }
     };
+
+    useEffect(() => {
+        if (resetPassword) {
+            setEmail("");
+            setCaptchaValue(null);
+            setFormError({ email: "", captcha: "" });
+
+            const timer = setTimeout(() => {
+                dispatch({ type: RESET_CODE });
+            }, 2000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [resetPassword, dispatch]);
+
 
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center '>
@@ -143,8 +165,14 @@ function ClientIDChange() {
                             </div>
                             {resetPassword && (
                                 <div className="mt-4 text-green-800 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
-                                   
+
                                     {resetPassword}
+                                </div>
+                            )}
+                            {errorMessage && (
+                                <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                    <InfoCircle size="14" color="#DC2626" />
+                                    {errorMessage}
                                 </div>
                             )}
                             <button type='submit' className='mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg'

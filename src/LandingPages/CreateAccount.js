@@ -16,7 +16,7 @@ function CreateAccount() {
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
 
 
-    const email_ID = useSelector(state => state?.Common?.email_ID)
+    const   emailid = useSelector(state => state?.Common?.  emailid)
 
 
 
@@ -95,7 +95,7 @@ function CreateAccount() {
     // }, [state.Common.successCode]);
 
     useEffect(() => {
-        if (email_ID) {
+        if (  emailid) {
             setEmail("");
             setCaptchaValue(null);
             const timer = setTimeout(() => {
@@ -104,7 +104,7 @@ function CreateAccount() {
 
             return () => clearTimeout(timer);
         }
-    }, [email_ID, dispatch]);
+    }, [  emailid, dispatch]);
 
 
 
@@ -122,11 +122,11 @@ function CreateAccount() {
 
             <div className='bg-white  h-full   max-w-6xl w-full rounded-3xl shadow-lg'>
 
-                {email_ID && (
+                {  emailid && (
                     <div className="p-6 text-center">
                         <h2 className="text-[#0AEB7A]"> <span className="text-[#77DAA9] text-lg font-semibold">Success!</span>
 
-                            Check your email <span className="font-bold">{email_ID}</span> to complete the registration.
+                            Check your email <span className="font-bold">{  emailid}</span> to complete the registration.
                             Check your Junk/Spam folder.
                             Add <span className="font-semibold">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
                         </h2>

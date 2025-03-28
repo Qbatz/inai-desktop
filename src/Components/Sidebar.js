@@ -16,10 +16,41 @@ import Dot from '../Icon/Dot_s.svg'
 import Topbar from './Topbar'
 import CustomerList from "../CustomerComponent/CustomerList";
 import { Chart2, LoginCurve, Setting2, I24Support, Receipt1, Receipt2 } from "iconsax-react";
+import { useDispatch} from 'react-redux';
+import { LOG_OUT } from "../Utils/Constant";
+import { encryptData } from "../Crypto/crypto";
+
 
 
 function Sidebar() {
+
+
+
+    
+    const dispatch = useDispatch();
+
     const [activeItem, setActiveItem] = useState("dashboard");
+
+    const [isLogout, setIsLogout] = useState(false)
+
+    const handleConfirmLogout = () => {
+        dispatch({ type: LOG_OUT });
+        const encryptDataLogin = encryptData(JSON.stringify(false));
+        localStorage.setItem("inai_login", encryptDataLogin.toString());
+        setIsLogout(false)
+    }
+
+    const handleLogout = () => {
+        setIsLogout(true)
+    }
+
+
+    const handleCloseLogout = () => {
+        setIsLogout(false)
+    }
+
+
+
 
     return (
         <div className="grid grid-cols-[auto_1fr] h-screen overflow-hidden">
@@ -115,7 +146,7 @@ function Sidebar() {
                         <p className="text-xs text-gray-500">rakulpreet@gmail.com</p>
                     </div>
 
-                   
+
 
                 </div>
                 <nav className="py-2 px-4">
@@ -140,7 +171,7 @@ function Sidebar() {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-1 cursor-pointer ${activeItem === "logout" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => setActiveItem("logout")}
+                            onClick={() => handleLogout()}
                         >
                             <LoginCurve size="22" color={activeItem === "logout" ? "#205DA8" : "#0F172A"} />
 
@@ -162,10 +193,58 @@ function Sidebar() {
                     {activeItem === "product" && <Product />}
                     {activeItem === "client" && <CustomerList />}
                 </div>
+
+
+
+           
+
+
+
+            <div className={`fixed inset-0   flex items-center justify-center ${isLogout ? "visible" : "hidden"} bg-black bg-opacity-50`}>
+                <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6">
+                    <div className="flex justify-center border-b-0">
+                        <h2 className="text-[18px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">
+                            Logout?
+                        </h2>
+                    </div>
+
+                    <div className="text-center text-[14px] text-[#646464] font-medium mt-[20px] font-Gilroy">
+                        Are you sure you want to Logout?
+                    </div>
+
+                    <div className="flex justify-center border-t-0 mt-[10px] space-x-4">
+                        <button
+                            data-testid='button-close-logout'
+                            className="font-Gilroy w-[160px] h-[52px] rounded-lg border border-[#205DA8] text-[#205DA8] font-semibold text-[14px] bg-white"
+                            onClick={handleCloseLogout}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            data-testid='button-logout'
+                            className="font-Gilroy w-[160px] h-[52px] rounded-lg bg-[#205DA8] text-white font-semibold text-[14px]"
+                            onClick={handleConfirmLogout}
+                        >
+                            Logout
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            </div>
+
+
+
+
+
+
+
+
         </div>
     );
 }
+
+
 
 export default Sidebar;
 

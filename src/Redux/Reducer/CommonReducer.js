@@ -2,9 +2,7 @@ import {
     ERROR_CODE,
     SUCCESS_CODE,
     RESET_CODE,
-    SUCCESS_CODE_NO,
-    ERROR_CODE_NO
-  } from "../../Utils/Constant";
+} from "../../Utils/Constant";
 
 export const initialState = {
 
@@ -12,9 +10,8 @@ export const initialState = {
     errorMessage: "",
     successCode: 0,
     successMessage: "",
-    email_ID :"",
-    loginUser: "sujithy@s3remotica.com",
-    resetPassword:""
+      emailid: "",
+    resetPassword: ""
 
 
 }
@@ -24,17 +21,16 @@ const CommonReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case ERROR_CODE:
-          
-            
-            return { ...state,code : ERROR_CODE_NO, errorMessage:action.payload.message }
-            case SUCCESS_CODE:
-               
-                
-                return { ...state, successCode: SUCCESS_CODE_NO , successMessage: action.payload.message, email_ID : action.payload.response.data.email ,
-                   resetPassword : action.payload.response.data.message, resetUser:action.payload.response.data.message
-                }
-                case RESET_CODE:
-                    return { ...state, successCode: 0, errorMessage:'' , successMessage: "" ,email_ID : ""}
+            return { ...state, code: action.payload.statusCode, errorMessage: action.payload.message }
+        case SUCCESS_CODE:
+
+
+            return {
+                ...state, successCode: action.payload.statusCode, successMessage: action.payload.message || '',   emailid: action.payload.response.data.email,
+                resetPassword: action.payload.response.data.message, resetUser: action.payload.response.data.message
+            }
+        case RESET_CODE:
+            return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "",   emailid: "" }
 
         default:
             return state;

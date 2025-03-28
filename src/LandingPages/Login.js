@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
 import LoginImage from '../Images/Login_Image.svg';
 import InaiLogo from '../Images/Inai_Logo.svg';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -6,11 +7,19 @@ import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import './ReCaptcha.css'
 import { InfoCircle } from "iconsax-react";
+import { useDispatch, useSelector } from 'react-redux';
+import { SIGN_IN_SAGA, RESET_CODE } from '../Utils/Constant'
+import Cookies from 'universal-cookie';
+import { encryptData } from '../Crypto/crypto';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 
-function Login() {
+function Login({ isLogged_In, message }) {
 
   const navigate = useNavigate()
+  const state = useSelector(state => state)
+  const dispatch = useDispatch();
 
   const [clientId, setClientId] = useState('');
   const [userId, setUserId] = useState('');
@@ -21,14 +30,17 @@ function Login() {
   const [captchaError, setCaptchaError] = useState('')
 
   const handleClientIdChange = (e) => {
+    dispatch({ type: RESET_CODE })
     setClientIdError('');
     setClientId(e.target.value)
   };
   const handleUserIdChange = (e) => {
+    dispatch({ type: RESET_CODE })
     setUserIdError('');
     setUserId(e.target.value)
   };
   const handlePasswordChange = (e) => {
+    dispatch({ type: RESET_CODE })
     setPasswordError('');
     setPassword(e.target.value)
   };
@@ -49,12 +61,19 @@ function Login() {
 
 
   const handleSubmit = (e) => {
+
     e.preventDefault();
+
+    dispatch({ type: RESET_CODE })
+
 
     let valid = true;
 
     if (!clientId.trim()) {
       setClientIdError('Client ID is required');
+      valid = false;
+    } else if (!/^\d+$/.test(clientId.trim())) {
+      setClientIdError('Client ID must be an integer');
       valid = false;
     } else {
       setClientIdError('');
@@ -80,7 +99,7 @@ function Login() {
     }
 
     if (valid) {
-      
+      dispatch({ type: SIGN_IN_SAGA, payload: { company_code: clientId, username: userId, password: password } })
     }
   };
 
@@ -93,10 +112,31 @@ function Login() {
 
 
   const handleCaptchaChange = (value) => {
-       setCaptchaError('');
+    setCaptchaError('');
     setCaptchaValue(value);
 
   };
+
+
+
+  useEffect(() => {
+    if (isLogged_In) {
+      navigate("/");
+      const encryptData_Login = encryptData(JSON.stringify(true));
+      localStorage.setItem("inai_login", encryptData_Login.toString());
+      const token = state.signIn.token;
+      if (token) {
+        const cookies = new Cookies();
+        cookies.set('inai-token', token, { path: '/' });
+      }
+      dispatch({ type: RESET_CODE })
+    }
+
+  }, [isLogged_In])
+
+
+
+
 
   return (
     <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4'>
@@ -124,6 +164,13 @@ function Login() {
               <label className='block text-neutral-600 font-Montserrat font-normal text-base'>Enter your details below to access your INAI account.</label>
             </div>
 
+
+
+            {
+              message && <label className='block text-red-600 font-Gilroy font-normal text-sm  mb-1'>{message}</label>
+            }
+
+
             <div className='w-full max-w-[450px]'>
 
               <div className='mb-2'>
@@ -146,11 +193,11 @@ function Login() {
 
 
               <div className='mb-2'>
-                <label className='block text-black mb-2 text-start font-Gilroy font-medium text-sm' htmlFor='userId'>User ID <span className='text-red-500'>*</span></label>
+                <label className='block text-black mb-2 text-start font-Gilroy font-medium text-sm' htmlFor='userId'>User Name <span className='text-red-500'>*</span></label>
                 <input
                   id='userId'
                   type='text'
-                  placeholder='Enter your User ID'
+                  placeholder='Enter your User Name'
                   value={userId}
                   onChange={handleUserIdChange}
                   className='w-full px-3 py-2 border rounded-xl focus:outline-none  md:text-md font-Gilroy  font-medium text-neutral-600'
@@ -210,7 +257,7 @@ function Login() {
                   </label>                </div>
               </div>
 
-              <div className="p-0 w-fit font-Gilroy text-lg bg-white" style={{ transform: "scale(1.5,1)", transformOrigin: "0 0", border: "none",  }}>
+              <div className="p-0 w-fit font-Gilroy text-lg bg-white" style={{ transform: "scale(1.5,1)", transformOrigin: "0 0", border: "none", }}>
                 <ReCAPTCHA
                   sitekey="6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k"
                   onChange={handleCaptchaChange}
@@ -254,4 +301,19 @@ function Login() {
   );
 }
 
-export default Login;
+const mapsToProps = (state) => {
+  return {
+    isLogged_In: state.signIn.isLoggedIn,
+    message: state.Common.errorMessage
+
+  }
+}
+
+Login.propTypes = {
+  isLogged_In: PropTypes.bool.isRequired,
+  message: PropTypes.string
+}
+
+
+
+export default connect(mapsToProps)(Login);

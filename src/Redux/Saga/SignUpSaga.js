@@ -1,6 +1,6 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { CreateAction, Verification, OtpSend } from "../Action/CreateAction";
-import { OTP_SEND_REDUCER, OTP_SEND_SAGA, CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE, SIGN_UP_VERIFICATION_SAGA, SIGN_UP_VERIFICATION_REDUCER } from "../../Utils/Constant";
+import { CreateAction, Verification, OtpSend, OtpVerified , AccountRegister} from "../Action/CreateAction";
+import {ACCOUNT_REGISTER_SAGA, ACCOUNT_REGISTER_REDUCER,  OTP_VERIFY_SAGA, OTP_VERIFY_REDUCER , OTP_SEND_REDUCER, OTP_SEND_SAGA, CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE, SIGN_UP_VERIFICATION_SAGA, SIGN_UP_VERIFICATION_REDUCER } from "../../Utils/Constant";
 
 
 function* handleCreateAccount(action) {
@@ -51,9 +51,46 @@ function* handleSendOtp(action) {
         console.log("response", response)
         if (response?.success || response?.status === 200) {
             yield put({ type: OTP_SEND_REDUCER, payload: { response: response.data } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message } });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.message || error?.message;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+    }
+}
+
+
+function* handleOtpVerified(action) {
+    try {
+        const response = yield call(OtpVerified, action.payload);
+        console.log("response", response)
+        if (response?.success || response?.status === 200) {
+            yield put({ type: OTP_VERIFY_REDUCER, payload: { response: response.data } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message , statusCode: response.status} });
+        }
+        else {
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.message || error?.message;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+    }
+}
+
+
+function* handleAccountRegister(action) {
+    try {
+        const response = yield call(AccountRegister, action.payload);
+        console.log("response", response)
+        if (response?.success || response?.status === 200) {
+            yield put({ type: ACCOUNT_REGISTER_REDUCER , payload: { response: response.data } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message , statusCode: response.status} });
+        }
+        else {
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message;
@@ -67,6 +104,10 @@ function* CreateAccountSaga() {
     yield takeEvery(CREATE_ACCOUNT_API_CALL, handleCreateAccount);
     yield takeEvery(SIGN_UP_VERIFICATION_SAGA, handleVerification);
     yield takeEvery(OTP_SEND_SAGA, handleSendOtp);
+    yield takeEvery(OTP_VERIFY_SAGA, handleOtpVerified);
+    yield takeEvery(ACCOUNT_REGISTER_SAGA, handleAccountRegister);
+
+
 
 }
 

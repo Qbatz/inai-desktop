@@ -11,6 +11,13 @@ export const SIGN_UP_VERIFICATION_SAGA = "Sign_Up_Verification_saga"
 export const OTP_SEND_REDUCER = "Otp_send_reducer"
 export const OTP_SEND_SAGA = "Otp_send_saga"
 
+export const STORE_VERIFY_CODE = 'STORE_VERIFY_CODE'
+
+export const OTP_VERIFY_REDUCER = "Otp_verify_reducer"
+export const OTP_VERIFY_SAGA = "Otp_verify_saga"
+
+export const ACCOUNT_REGISTER_REDUCER = "Account_created"
+export const ACCOUNT_REGISTER_SAGA = "Account_saga"
 
 export const FORGOT_PASSWORD_RESPONSE = "Forgot_password_response";
 export const FORGOT_PASSWORD_API_CALL = "Forgot_password_api";

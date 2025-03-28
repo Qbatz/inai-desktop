@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { CREATE_ACCOUNT_API_CALL, RESET_CODE, SIGN_UP_VERIFICATION_SAGA } from "../Utils/Constant";
+import { CREATE_ACCOUNT_API_CALL, RESET_CODE, SIGN_UP_VERIFICATION_SAGA ,STORE_VERIFY_CODE} from "../Utils/Constant";
 import SignUp from './SignUp';
 
 
@@ -131,10 +131,13 @@ function CreateAccount() {
         if (verifyCode) {
             console.log("verifyCode", verifyCode)
             dispatch({ type: SIGN_UP_VERIFICATION_SAGA, payload: { verify_code: verifyCode } })
+
+            dispatch({ type: STORE_VERIFY_CODE, payload: verifyCode })
+
         } else {
             console.log("called &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
         }
-    }, []);
+    }, [window.location.search]);
 
 
 
@@ -152,9 +155,9 @@ function CreateAccount() {
 
 
     return (
-        <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center '>
+        <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4'>
 
-            <div className='bg-white  h-full   max-w-6xl w-full rounded-3xl shadow-lg'>
+            <div className='bg-white  h-auto max-w-6xl rounded-3xl shadow-lg !mt-[8px] !mb-[10px]'>
 
                 {emailid && (
                     <div className="p-6 text-center">
@@ -198,7 +201,8 @@ function CreateAccount() {
                         </div>
 
                         {
-                            state.signUp.is_verified === 1 ? <> <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">Email is already Verified</label>
+                            state.signUp.is_verified === 0 || state.signUp.is_verified === null  ? <>
+                             <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 &&  "Email is already Verified" }</label> 
 
                                 <div className="w-full max-w-[450px]">
                                     <div className="mb-2">

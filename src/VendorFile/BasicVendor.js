@@ -33,7 +33,9 @@ function BasicVendor({ handleClose, vendorDetails }) {
     const [pan, setPan] = useState('');
     const [legal, setLegal] = useState('');
     const [nature, setNature] = useState('');
-    const [additionalContacts, setAdditionalContacts] = useState([]);
+    const [additionalContacts, setAdditionalContacts] = useState([
+        { name: "", contactNumber: "", email: "", designation: "" }
+    ]);
     const [formErrors, setFormErrors] = useState({});
     const [basicDetails, setBasicDetails] = useState('')
 
@@ -155,11 +157,11 @@ function BasicVendor({ handleClose, vendorDetails }) {
         }
         if (!designation.trim()) errors.designation = "Designation is required";
         if (!gstVat.trim()) errors.gstVat = "GST/VAT is required";
-        if (!cin.trim()) errors.cin = "CIN is required";
-        if (!tan.trim()) errors.tan = "TAN is required";
-        if (!pan.trim()) errors.pan = "PAN is required";
-        if (!legal) errors.legal = "Select Legal Status";
-        if (!nature) errors.nature = "Select Nature of Business";
+        // if (!cin.trim()) errors.cin = "CIN is required";
+        // if (!tan.trim()) errors.tan = "TAN is required";
+        // if (!pan.trim()) errors.pan = "PAN is required";
+        // if (!legal) errors.legal = "Select Legal Status";
+        // if (!nature) errors.nature = "Select Nature of Business";
         // --
 
 
@@ -216,46 +218,35 @@ function BasicVendor({ handleClose, vendorDetails }) {
     };
 
 
-    useEffect(() => {
-        if (state.Common.successCode === 200) {
-            setBusinessName('');
-            setContactPerson('');
-            setContactNumber('');
-            setEmail('');
-            setDesignation('');
-            setGstVat('');
-            setAdditionalContacts([]);
-            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
-            dispatch({ type: RESET_CODE })
-        }
-
-    }, [state.Common.successCode])
-
+  
     const handleNextClick = () => {
-        setActiveTab(2);
-        const formattedAdditionalContacts = additionalContacts.map(contact => ({
-            name: contact.name,
-            contactNumber: Number(contact.contactNumber),
-            contactEmail: contact.email,
-            designation: contact.designation
-        }));
+        if (validateForm()) {
+
+            setActiveTab(2);
+            const formattedAdditionalContacts = additionalContacts.map(contact => ({
+                name: contact.name,
+                contactNumber: Number(contact.contactNumber),
+                contactEmail: contact.email,
+                designation: contact.designation
+            }));
 
 
-        const payload = {
+            const payload = {
 
-            vendor_id: '',
-            businessName: businessName,
-            contactPersonName: contactPerson,
-            contactNumber: contactNumber,
-            emailId: email,
-            designation: designation,
-            gstvat: gstVat,
-            additionalContactInfo: formattedAdditionalContacts,
+                vendor_id: '',
+                businessName: businessName,
+                contactPersonName: contactPerson,
+                contactNumber: contactNumber,
+                emailId: email,
+                designation: designation,
+                gstvat: gstVat,
+                additionalContactInfo: formattedAdditionalContacts,
 
 
+            }
+
+            setBasicDetails(payload)
         }
-
-        setBasicDetails(payload)
 
     };
 
@@ -300,11 +291,57 @@ function BasicVendor({ handleClose, vendorDetails }) {
         setActiveTab(id);
     };
 
+    useEffect(() => {
+        if (vendorDetails) {
+            setBusinessName(vendorDetails.businessName || '');
+            setContactPerson(vendorDetails.contactPersonName || '');
+            setContactNumber(vendorDetails.contactNumber || '');
+            setEmail(vendorDetails.emailId || '');
+            setDesignation(vendorDetails.designation || '');
+            setGstVat(vendorDetails.gstvat || '');
+           
+                    setAdditionalContacts(
+                        (vendorDetails.additionalContactInfo || []).map((item) => ({
+                            name: item.name || "",
+                            contactNumber: item.contactNumber || "",
+                            email: item.contactEmail || "", 
+                            designation: item.designation || ""
+                        }))
+                    );
+              
+            
+                   }
+    }, [vendorDetails]);
+    
+    useEffect(() => {
+        if (state.Common.successCode === 200) {
+            setBusinessName('');
+            setContactPerson('');
+            setContactNumber('');
+            setEmail('');
+            setDesignation('');
+            setGstVat('');
+            setAdditionalContacts([]);
+            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
+            dispatch({ type: RESET_CODE })
+        }
+
+    }, [state.Common.successCode])
+
+
+
+
+
+
+
+
+
+
     return (
         <div className="bg-blueGray-100  w-full">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-xl font-Gilroy">Vendor</h3>
+                    <h3 className="font-semibold text-xl font-Gilroy">{basicDetails ? 'Add Vendor' : 'Edit Vendor'}</h3>
                     <div onClick={handleClose} className="cursor-pointer text-xl font-bold">X</div>
                 </div>
 
@@ -312,7 +349,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                 <div className="sticky top-0  z-10 overflow-x-auto">
                     <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">
                         {tabs.map((tab) => (
-                            <button
+                            <button disabled
                                 key={tab.id}
                                 className={`px-4 py-2 font-Gilroy  md:px-6 lg:px-8 text-base
           ${activeTab === tab.id
@@ -436,8 +473,8 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.gstVat} </p>)}
                                     </div>
-                                    <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN <span className='text-red-500'>*</span></label>
+                                    {/* <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN </label>
                                         <input
 
                                             type='text'
@@ -451,7 +488,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.cin} </p>)}
                                     </div>
                                     <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  <span className='text-red-500'>*</span></label>
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  </label>
                                         <input
 
                                             type='text'
@@ -465,7 +502,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.pan} </p>)}
                                     </div>
                                     <div>
-                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN  <span className='text-red-500'>*</span></label>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN  </label>
                                         <input
 
                                             type='text'
@@ -480,7 +517,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     </div>
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                            Legal Status Firm <span className='text-red-500'>*</span>
+                                            Legal Status Firm 
                                         </label>
                                         <select
                                             id='legalStatusFirm'
@@ -500,7 +537,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     </div>
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                            Nature of Business <span className='text-red-500'>*</span>
+                                            Nature of Business 
                                         </label>
                                         <select
                                             id='natureOfBusiness'
@@ -518,7 +555,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                         {formErrors.nature && (
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.nature} </p>)}
-                                    </div>
+                                    </div> */}
 
 
                                 </div>
@@ -528,7 +565,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
                                     {additionalContacts.map((contact, index) => (
                                         <div key={contact.id} className="mt-4 p-4 ">
-                                            <h2 className="text-xl font-semibold mb-2 text-black">
+                                            <h2 className="text-xl font-semibold mb-2 text-black font-Gilroy">
                                                 Additional Contact {index + 1}
                                             </h2>
                                             <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-3">
@@ -635,8 +672,8 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
 
                         </div>}
-                    {activeTab === 2 && <div> <AddressVendor handleBack={handleBackBasic} handleNextToBank={handleNextToBank} /></div>}
-                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} payload={payload} /></div>}
+                    {activeTab === 2 && <div> <AddressVendor handleBack={handleBackBasic} handleNextToBank={handleNextToBank}  vendorDetails={vendorDetails}/></div>}
+                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} payload={payload} vendorDetail={vendorDetails} /></div>}
                 </div>
             </div>
         </div>

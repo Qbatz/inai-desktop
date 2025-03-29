@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA,VENDOR_SAGA } from '../Utils/Constant'
+import { VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA } from '../Utils/Constant'
 
 
 function BankVendor(props) {
@@ -32,7 +32,8 @@ function BankVendor(props) {
   const [siftCode, setSiftCode] = useState("");
   const [intermediaryDetails, setIntermediaryDetails] = useState("");
   const [iban, setIban] = useState('');
-
+  const [bankAddress2, setBankAddress2] = useState('');
+  const [bankAddress3, setBankAddress3] = useState('');
   const [formErrors, setFormErrors] = useState({});
 
 
@@ -87,6 +88,18 @@ function BankVendor(props) {
     setBankAddress(e.target.value)
     clearError("bankAddress");
   };
+
+  const handleBankAddress2Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, bankAddress2: "" }));
+    setBankAddress2(e.target.value);
+  };
+
+  const handleBankAddress3Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, bankAddress3: "" }));
+    setBankAddress3(e.target.value);
+  };
+
+
   const handleBankCountryChange = (e) => {
     clearError("bankCountry");
     setBankCountry(e.target.value);
@@ -148,69 +161,7 @@ function BankVendor(props) {
     props.hanldeBackToAddress(2)
   }
 
-  const FullFormvaliddateForm = () => {
-    let errors = {};
- 
-    const businessName = props?.basicDetails?.businessName || "";
-    const contactPerson = props?.basicDetails?.contactPersonName || "";
-    const contactNumber = props?.basicDetails?.contactNumber || "";
-    const email = props?.basicDetails?.emailId || "";
-    const designation = props?.basicDetails?.designation || "";
-    const gstVat = props?.basicDetails?.gstvat || "";
-    const cin = props?.basicDetails?.cin || "";
-    const tan = props?.basicDetails?.tan || "";
-    const pan = props?.basicDetails?.pan || "";
-    const legal = props?.basicDetails?.legalStatus || "";
-    const nature = props?.basicDetails?.natureOfBusiness || "";
 
-    const beneficiaryName = props?.bankDetails?.beneficiaryName || "";
-    const accountNumber = props?.bankDetails?.accountNumber || "";
-    const bankName = props?.bankDetails?.bankName || "";
-    const ifscCode = props?.bankDetails?.ifscCode || "";
-    const swift = props?.bankDetails?.swiftCode || "";
-    const bankAddress = props?.bankDetails?.bankAddress || "";
-
-    const city = props?.payload?.address?.[0]?.city || "";
-    const postalCode = props?.payload?.address?.[0]?.postalCode || "";
-    const shippingCity = props?.payload?.address?.[1]?.city || "";
-    const shippingPostalCode = props?.payload?.address?.[1]?.postalCode || "";
-
-        if (!businessName.trim()) errors.businessName = "Business Name is required";
-    if (!contactPerson.trim()) errors.contactPerson = "Contact Person is required";
-    if (!contactNumber.trim() || !/^\d{10}$/.test(contactNumber)) errors.contactNumber = "Enter a valid 10-digit Contact Number";
-
-    if (!email.trim()) {
-        errors.email = "Email is required";
-    } else {
-        const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
-        if (!emailRegex.test(email)) errors.email = "Invalid Email format";
-    }
-
-    if (!designation.trim()) errors.designation = "Designation is required";
-    if (!gstVat.trim()) errors.gstVat = "GST/VAT is required";
-    if (!cin.trim()) errors.cin = "CIN is required";
-    if (!tan.trim()) errors.tan = "TAN is required";
-    if (!pan.trim()) errors.pan = "PAN is required";
-    if (!legal) errors.legal = "Select Legal Status";
-    if (!nature) errors.nature = "Select Nature of Business";
-
-    if (!beneficiaryName) errors.beneficiaryName = 'Beneficiary Name is required';
-    if (!accountNumber) errors.accountNumber = 'Account Number is required';
-    if (accountNumber && !/^\d{9,18}$/.test(accountNumber)) errors.accountNumber = 'Account Number must be 9-18 digits';
-    if (!bankName) errors.bankName = 'Bank Name is required';
-    if (!ifscCode) errors.ifscCode = 'IFSC Code is required';
-    if (!swift) errors.swift = 'SWIFT Code is required';
-    if (!bankAddress) errors.bankAddress = 'Bank Address is required';
-
-    if (!city.trim()) errors.city = "City is required";
-    if (!postalCode.trim()) errors.postalCode = "Postal Code is required";
-    if (!shippingCity.trim()) errors.shippingCity = "Shipping City is required";
-    if (!shippingPostalCode.trim()) errors.shippingPostalCode = "Shipping Postal Code is required";
-
-      setFormErrors(errors);
-
-    
-};
 
 
 
@@ -218,66 +169,66 @@ function BankVendor(props) {
 
 
   const handleSubmit = () => {
-    if(FullFormvaliddateForm()){
-    const addresses = props?.payload?.address || []; 
-    const payload = {
+    if (validateForm()) {
+      const addresses = props?.payload?.address || [];
+      const payload = {
         vendor_details: {
-            basic_info: {
-                businessName: props?.basicDetails?.businessName || "",
-                contactPersonName: props?.basicDetails?.contactPersonName || "",
-                contactNumber: props?.basicDetails?.contactNumber || "",
-                emailId: props?.basicDetails?.emailId || "",
-                designation: props?.basicDetails?.designation || "",
-                gstvat: props?.basicDetails?.gstvat || ""
+          basic_info: {
+            businessName: props?.basicDetails?.businessName || "",
+            contactPersonName: props?.basicDetails?.contactPersonName || "",
+            contactNumber: props?.basicDetails?.contactNumber || "",
+            emailId: props?.basicDetails?.emailId || "",
+            designation: props?.basicDetails?.designation || "",
+            gstvat: props?.basicDetails?.gstvat || ""
+          },
+          additionalContactInfo: props?.basicDetails?.additionalContactInfo || [],
+
+          address_info: [
+            {
+              doorNo: addresses[0]?.doorNo || "",
+              street: addresses[0]?.street || "",
+              locality: addresses[0]?.locality || "",
+              city: addresses[0]?.city || "",
+              postalCode: addresses[0]?.postalCode || "",
+              landMark: addresses[0]?.landMark || "",
+              mapLink: addresses[0]?.mapLink || "",
+              addressType: addresses[0]?.addressType || 1
             },
-            additionalContactInfo: props?.basicDetails?.additionalContactInfo || [],
-
-            address_info: [
-                {
-                    doorNo: addresses[0]?.doorNo || "",
-                    street: addresses[0]?.street || "",
-                    locality: addresses[0]?.locality || "",
-                    city: addresses[0]?.city || "",
-                    postalCode: addresses[0]?.postalCode || "",
-                    landMark: addresses[0]?.landMark || "",
-                    mapLink: addresses[0]?.mapLink || "",
-                    addressType: addresses[0]?.addressType || 1
-                },
-                {
-                    doorNo: addresses[1]?.doorNo || "",
-                    street: addresses[1]?.street || "",
-                    locality: addresses[1]?.locality || "",
-                    city: addresses[1]?.city || "",
-                    postalCode: addresses[1]?.postalCode || "",
-                    landMark: addresses[1]?.landMark || "",
-                    mapLink: addresses[1]?.mapLink || "",
-                    addressType: addresses[1]?.addressType || 2
-                }
-            ],
-
-            bankDetails: {
-                name: beneficiaryName,
-                accountNo: accountNumber,
-                bankName: bankName,
-                ifscCode: ifscCode,
-                address1: bankAddress,
-                address2: "address2",
-                address3: "address3",
-                country: bankCountry,
-                routingBank: intermediaryBank,
-                swiftCode: swift,
-                routingBankAddress: intermediaryDetails,
-                routingAccountIndusand: iban
+            {
+              doorNo: addresses[1]?.doorNo || "",
+              street: addresses[1]?.street || "",
+              locality: addresses[1]?.locality || "",
+              city: addresses[1]?.city || "",
+              postalCode: addresses[1]?.postalCode || "",
+              landMark: addresses[1]?.landMark || "",
+              mapLink: addresses[1]?.mapLink || "",
+              addressType: addresses[1]?.addressType || 2
             }
-        }
-    };
+          ],
 
-    dispatch({
+          bankDetails: {
+            name: beneficiaryName,
+            accountNo: accountNumber,
+            bankName: bankName,
+            ifscCode: ifscCode,
+            address1: bankAddress,
+            address2: bankAddress2,
+            address3: bankAddress3,
+            country: bankCountry,
+            routingBank: intermediaryBank,
+            swiftCode: swift,
+            routingBankAddress: intermediaryDetails,
+            routingAccountIndusand: iban
+          }
+        }
+      };
+
+      dispatch({
         type: CREATE_VENDOR_SAGA,
         payload: payload
-    });
-  }
-};
+      });
+    }
+  };
 
 
   const handleSaveClick = () => {
@@ -293,8 +244,8 @@ function BankVendor(props) {
             bankName: bankName,
             ifscCode: ifscCode,
             address1: bankAddress,
-            address2: "address2",
-            address3: "address3",
+            address2: bankAddress2,
+            address3: bankAddress3,
             country: bankCountry,
             routingBank: intermediaryBank,
             swiftCode: swift,
@@ -317,18 +268,38 @@ function BankVendor(props) {
       setBankName("");
       setIfscCode("");
       setBankAddress("");
+      setBankAddress2("");
+      setBankAddress3("");
       setBankCountry("");
       setIntermediaryBank("");
       setSwift("");
       setIntermediaryDetails("");
       setIban("");
-       dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
+      dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
       dispatch({ type: RESET_CODE });
     }
   }, [state.Common.successCode]);
 
 
+ useEffect(() => {
+  if (props.vendorDetail?.bankDetails?.length > 0) {
+    const bank = props.vendorDetail.bankDetails[0];
 
+    setBeneficiaryName(bank.name || "");
+    setAccountNumber(bank.accountNo || "");
+    setBankName(bank.bankName || "");
+    setIfscCode(bank.ifscCode || "");
+    setBankAddress(bank.address1 || "");
+    setBankAddress2(bank.address2 || "");
+    setBankAddress3(bank.address3 || "");
+    setBankCountry(bank.country || "");
+    setIntermediaryBank(bank.routingBank || "");
+    setSwift(bank.swiftCode || "");
+    setIntermediaryDetails(bank.routingBankAddress || "");
+    setIban(bank.routingAccountIndusand || "");
+}
+  }, [props.vendorDetails]); 
+  
 
 
 
@@ -338,7 +309,7 @@ function BankVendor(props) {
 
         <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Bank Detail</h2>
 
-        
+
 
 
         <div className='max-h-[250px] overflow-y-auto  
@@ -453,7 +424,7 @@ function BankVendor(props) {
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.swift} </p>)}
             </div>
-            <div className='mb-2 items-center'>
+            {/* <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>AD Code</label>
 
               <input
@@ -464,7 +435,7 @@ function BankVendor(props) {
                 placeholder='Enter AD Code'
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
-            </div>
+            </div> */}
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address</label>
 
@@ -482,6 +453,44 @@ function BankVendor(props) {
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress} </p>)}
 
             </div>
+          
+            <div className='mb-2 items-center'>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 2</label>
+
+              <input
+                type='text'
+                value={bankAddress2}
+                onChange={handleBankAddress2Change}
+                placeholder='Enter Bank Address 2'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+
+              {formErrors.bankAddress2 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress2}
+                </p>
+              )}
+            </div>
+
+         
+            <div className='mb-2 items-center'>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 3</label>
+
+              <input
+                type='text'
+                value={bankAddress3}
+                onChange={handleBankAddress3Change}
+                placeholder='Enter Bank Address 3'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+
+              {formErrors.bankAddress3 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress3}
+                </p>
+              )}
+            </div>
+
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
                 Bank Country

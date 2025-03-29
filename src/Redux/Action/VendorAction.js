@@ -35,3 +35,10 @@ export async function AddVendor(bank) {
    data: bank
   })
 }
+
+
+export async function EditVendor(bank) {
+  return await AxiosConfig.post('/usr/vendor/vendorUniqueId',bank,{
+   data: bank
+  })
+}

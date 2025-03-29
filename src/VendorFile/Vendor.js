@@ -76,6 +76,7 @@ const [ vendorDetails, setVendorDetails] =useState('')
   const handleAddVendor = () => {
     setShowAddVendor(true)
     setIsVisible(false)
+    setVendorDetails('')
   }
 
 
@@ -170,6 +171,7 @@ useEffect(()=>{
 
 
   const handleEditVendor = (vendorDetails) => {
+    console.log("vendorDetails",vendorDetails)
     setShowAddVendor(true)
     setIsVisible(false)
     setVendorDetails(vendorDetails)
@@ -295,12 +297,12 @@ useEffect(()=>{
                     <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contactNumber}</td>
                     <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.Amount || '-'}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
-                      <div onClick={(e) => handleShowPopup(item.id, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
+                      <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
                         <HiOutlineDotsVertical className="text-black p-0" />
 
 
 
-                        {showPopup === item.id && (
+                        {showPopup === index && (
                           <div
                             ref={popupRef}
 

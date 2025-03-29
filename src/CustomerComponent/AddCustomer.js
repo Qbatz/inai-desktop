@@ -33,11 +33,6 @@ function AddCustomer() {
     ]);
 
 
-
-
-
-
-
     const [bankDetailsList, setBankDetailsList] = useState([
         {
             beneficiaryCurrency: "",

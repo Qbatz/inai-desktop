@@ -17,6 +17,9 @@ export const initialState = {
 }
 
 const CommonReducer = (state = initialState, action) => {
+
+console.log("action reducer",action)
+
     switch (action.type) {
         case ERROR_CODE:
             return { ...state, code: action.payload.statusCode, errorMessage: action.payload.message }

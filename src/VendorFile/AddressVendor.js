@@ -1,7 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
+import { VENDOR_ADDRESS_INFO_SAGA, RESET_CODE,VENDOR_SAGA } from '../Utils/Constant';
+import { useDispatch, useSelector } from 'react-redux';
 
-function AddressVendor() {
+
+
+function AddressVendor(props) {
+  const dispatch = useDispatch();
+  const stateData = useSelector(state => state)
+
+
+  console.log("state", stateData)
 
   const [officeAddress1, setOfficeAddress1] = useState("");
   const [city, setCity] = useState("");
@@ -21,7 +30,9 @@ function AddressVendor() {
   const [shippingGoogleMap, setShippingGoogleMap] = useState("");
   const [sameAsOffice, setSameAsOffice] = useState(false);
 
-
+  const handleBackToBasic = () => {
+    props.handleBack(1)
+  }
 
   const handleOfficeAddress1Change = (e) => setOfficeAddress1(e.target.value);
   const handleCityChange = (e) => {
@@ -59,48 +70,134 @@ function AddressVendor() {
   };
   const handleShippingLandmarkChange = (e) => setShippingLandmark(e.target.value);
   const handleShippingGoogleMapChange = (e) => setShippingGoogleMap(e.target.value);
-  const handleCheckboxChange = () => setSameAsOffice(!sameAsOffice);
+
+  const handleCheckboxChange = (e) => {
+    setSameAsOffice(e.target.checked);
+
+    if (e.target.checked) {
+      setShippingAddress1(officeAddress1);
+      setShippingCity(city);
+      setShippingState(state);
+      setShippingCountry(country);
+      setShippingPostalCode(postalCode);
+      setShippingLandmark(landmark);
+      setShippingGoogleMap(googleMap);
+    } else {
+      setShippingAddress1('');
+      setShippingCity('');
+      setShippingState('');
+      setShippingCountry('');
+      setShippingPostalCode('');
+      setShippingLandmark('');
+      setShippingGoogleMap('');
+    }
+  };
 
   const validateForm = () => {
     let errors = {};
-
-
     if (!city.trim()) errors.city = "City is required";
-
     if (!postalCode.trim()) errors.postalCode = "Postal Code is required";
-
-
     if (!shippingCity.trim()) errors.shippingCity = "City is required";
-
     if (!shippingPostalCode.trim()) errors.shippingPostalCode = "Postal Code is required";
-
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleNext = () => {
-    if (validateForm()) {
-     
-      const payload = {
-        officeAddress1,
-        city,
-        state,
-        country,
-        postalCode,
-        landmark,
-        googleMap,
-        shippingAddress1,
-        shippingCity,
-        shippingState,
-        shippingCountry,
-        shippingPostalCode,
-        shippingLandmark,
-        shippingGoogleMap,
-        sameAsOffice,
-      };
-      console.log("Form submitted successfully", payload);
-    }
+    const payloadData = {
+      vendorId: stateData.vendor.vendorId,
+      address: [
+          {
+              doorNo: officeAddress1,   
+              street: "",
+              locality: "",
+              city: city,
+              postalCode: postalCode,
+              landMark: landmark,
+              mapLink: googleMap,
+              addressType: 1
+          },
+          {
+              doorNo: shippingAddress1,
+              street: "",
+              locality: "",
+              city: shippingCity,
+              postalCode: shippingPostalCode,
+              landMark: shippingLandmark,
+              mapLink: shippingGoogleMap,
+              addressType: 2
+          }
+      ]
   };
+
+    props.handleNextToBank(3,  payloadData)
+
+    
+ 
+  };
+
+  const handleSaveClick = () => {
+    if (validateForm()) {
+
+
+      const payload = {
+        vendorId: stateData.vendor.vendorId,
+        address: [
+          {
+            doorNo: officeAddress1,
+            street: "",
+            locality: "",
+            city: city,
+            postalCode: postalCode,
+            landMark: landmark,
+            mapLink: googleMap,
+            addressType: 1
+          },
+          {
+            doorNo: shippingAddress1,
+            street: "",
+            locality: "",
+            city: shippingCity,
+            postalCode: shippingPostalCode,
+            landMark: shippingLandmark,
+            mapLink: shippingGoogleMap,
+            addressType: 2
+          }
+        ]
+      };
+
+
+      dispatch({
+        type: VENDOR_ADDRESS_INFO_SAGA,
+        payload: payload
+      });
+
+
+    }
+  }
+
+  useEffect(() => {
+    if (stateData.Common.successCode === 200) {
+      setOfficeAddress1("");
+      setCity("");
+      setState("");
+      setCountry("");
+      setPostalCode("");
+      setLandmark("");
+      setGoogleMap("");
+      setShippingAddress1("");
+      setShippingCity("");
+      setShippingState("");
+      setShippingCountry("");
+      setShippingPostalCode("");
+      setShippingLandmark("");
+      setShippingGoogleMap("");
+       dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
+      dispatch({ type: RESET_CODE });
+    }
+  }, [stateData.Common.successCode]);
+
+
 
 
   return (
@@ -113,8 +210,7 @@ function AddressVendor() {
                           lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3'>
           <h4 className="text-base font-medium mb-4 font-Gilroy text-black">Office Address </h4>
           <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
-
-
+            
             <div className='mb-2 items-center '>
               <input
                 id='clientId'
@@ -149,6 +245,7 @@ function AddressVendor() {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               >
                 <option value="">Select State</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
                 <option value="California">California</option>
                 <option value="Texas">Texas</option>
                 <option value="New York">New York</option>
@@ -340,18 +437,30 @@ function AddressVendor() {
         </div>
         <div className="flex flex-col xs:flex-row sm:flex-row  justify-between mb-2 mt-4">
           <button
-            className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat  text-base font-semibold"
+            onClick={handleBackToBasic}
+            className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat  text-base font-semibold font-Montserrat"
 
           >
             Back
           </button>
 
-          <button
-            className="px-10 py-2 bg-blue-800 rounded-lg text-white font-Montserrat  text-base font-semibold"
-            onClick={handleNext}
-          >
-            Next
-          </button>
+          <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
+            <button
+              type="button"
+              className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
+              onClick={handleSaveClick} >
+              Save & Exit
+            </button>
+            <button
+              className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat  text-base font-medium  font-Montserrat"
+              onClick={handleNext}
+            >
+              Next
+            </button>
+          </div>
+
+
+
         </div>
 
 

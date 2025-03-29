@@ -31,23 +31,14 @@ function* handleForgotPassword(forgot) {
 
     try {
         const response = yield call(ForgotAction, forgot.payload);
-
-
-
         if (response?.success || response?.status === 200) {
-
             yield put({ type: SUCCESS_CODE, payload: { response } });
         }
-
-
-
         else {
-
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
-
         yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }
 }
@@ -58,23 +49,15 @@ function* handleForgotUser(user) {
 
     try {
         const response = yield call(ForgotPasswordAction, user.payload);
-
         console.log('response', response);
-
         if (response?.success || response?.status === 200) {
-
             yield put({ type: SUCCESS_CODE, payload: { response } });
         }
-
-
-
         else {
-
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
-
         yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }
 }

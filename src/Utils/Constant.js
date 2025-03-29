@@ -38,3 +38,29 @@ export const VENDOR_REDUCER = "Vendor_Reducer";
 export const VENDOR_SAGA = "Vendor_Saga";
 
 
+export const VENDOR_BASIC_INFO_REDUCER = "Vendor_Basic_Info_Reducer";
+export const VENDOR_BASIC_INFO_SAGA = "Vendor_Basic_Info_Saga";
+
+export const VENDOR_ADDRESS_INFO_REDUCER = "Vendor_Address_Info_Reducer";
+export const VENDOR_ADDRESS_INFO_SAGA = "Vendor_Address_Info_Saga";
+
+
+export const VENDOR_BANK_INFO_REDUCER = "Vendor_Bank_Info_Reducer";
+export const VENDOR_BANK_INFO_SAGA = "Vendor_Bank_Info_Saga";
+
+
+export const CREATE_VENDOR_REDUCER = "Create_Vendor_Reducer";
+export const CREATE_VENDOR_SAGA = "Create_Vendor_Saga";
+
+
+
+
+
+
+
+
+
+
+
+
+

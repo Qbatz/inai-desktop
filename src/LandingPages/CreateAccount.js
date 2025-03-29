@@ -154,7 +154,7 @@ function CreateAccount() {
                         </div>
 
                         {
-                            state.signUp.is_verified === 0 || state.signUp.is_verified === null ? <>
+                            state.signUp.is_verified === 1 || state.signUp.is_verified === null ? <>
                                 <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 && "Email is already Verified"}</label>
 
                                 <div className="w-full max-w-[450px]">

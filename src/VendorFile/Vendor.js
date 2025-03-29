@@ -30,7 +30,7 @@ function VendorList() {
   const pickerRef = useRef(null);
   const [showDeleteVendor, setShowDeleteVendor] = useState(false)
   const [vendorList, setVendorList] = useState([])
-  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 const [ vendorDetails, setVendorDetails] =useState('')
 
@@ -42,30 +42,10 @@ const [ vendorDetails, setVendorDetails] =useState('')
       key: "selection",
     },
   ]);
+ 
+  const paginatedData = vendorList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-
-
-
-
-
-  const data = [
-    { id: 1, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 2, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-  ];
-
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(vendorList.length / itemsPerPage);
 
   const handleSelect = (ranges) => {
     console.log("ranges", ranges)
@@ -129,6 +109,7 @@ useEffect(()=>{
 
 
   const handleClose = () => {
+    dispatch({ type: RESET_CODE })
     setShowAddVendor(false)
     setIsVisible(true)
   }
@@ -288,7 +269,7 @@ useEffect(()=>{
                 </tr>
               </thead>
               <tbody className=" ">
-                {vendorList.map((item, index) => (
+                {paginatedData.map((item, index) => (
                   <tr key={index} className="border-0">
                     {/* <td className=" px-4 py-2"> <img src={Minus} alt='Minus' /></td> */}
                     <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.businessName}</td>
@@ -340,7 +321,7 @@ useEffect(()=>{
                 onChange={handleItemsPerPageChange}
                 className="border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none"
               >
-                <option value={4}>4</option>
+                
                 <option value={10}>10</option>
                 <option value={50}>50</option>
                 <option value={100}>100</option>

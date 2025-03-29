@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
-import { VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA } from '../Utils/Constant';
+import { RESET_VENDOR_ID,VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA } from '../Utils/Constant';
 import { useDispatch, useSelector } from 'react-redux';
 
 
@@ -183,7 +183,7 @@ function AddressVendor(props) {
   const handleSaveClick = () => {
     if (validateForm()) {
       const payload = {
-        vendorId: stateData.vendor.vendorId ||   props.vendorDetails?.vendorId || " ",
+        vendorId: stateData.vendor.vendorId ||   props.vendorDetails?.vendorId || "",
         address: [
           {
             doorNo: officeAddress1,
@@ -240,6 +240,7 @@ function AddressVendor(props) {
       setShippingGoogleMap("");
       dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
       dispatch({ type: RESET_CODE });
+      dispatch({ type: RESET_VENDOR_ID})
     }
   }, [stateData.Common.successCode]);
 
@@ -589,7 +590,7 @@ function AddressVendor(props) {
           <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
             <button
               type="button"
-              className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
+              className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
               onClick={handleSaveClick} >
               Save & Exit
             </button>

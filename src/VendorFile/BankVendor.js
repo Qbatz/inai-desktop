@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA,EDIT_VENDOR_SAGA } from '../Utils/Constant'
+import { RESET_VENDOR_ID,VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA,EDIT_VENDOR_SAGA } from '../Utils/Constant'
 
 
 function BankVendor(props) {
@@ -293,7 +293,7 @@ if(props.vendorDetail){
     dispatch({
       type: VENDOR_BANK_INFO_SAGA,
       payload: {
-        vendorId: state.vendor.vendorId || props.payload?.vendorId || " ",
+        vendorId: state.vendor.vendorId || props.payload?.vendorId || props?.vendorDetail?.vendorId || "",
         bankDetails: [
           {
             name: beneficiaryName,
@@ -334,6 +334,7 @@ if(props.vendorDetail){
       setIban("");
       dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
       dispatch({ type: RESET_CODE });
+      dispatch({ type: RESET_VENDOR_ID})
     }
   }, [state.Common.successCode]);
 
@@ -430,8 +431,8 @@ if(props.vendorDetail){
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankName} </p>)}
             </div>
-            <div className='mb-2 items-center  '>
-              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Barnch </label>
+            {/* <div className='mb-2 items-center  '>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Branch </label>
               <input
                 id='clientId'
                 type='text'
@@ -441,7 +442,7 @@ if(props.vendorDetail){
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
 
-            </div>
+            </div> */}
 
           </div>
 
@@ -494,7 +495,7 @@ if(props.vendorDetail){
               />
             </div> */}
             <div className='mb-2 items-center'>
-              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address</label>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 1         <span className='text-red-500'>*</span></label>
 
               <input
                 id='clientId'
@@ -643,7 +644,7 @@ if(props.vendorDetail){
           <div className="flex flex-col xs:flex-row sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
             <button
               type="button"
-              className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
+              className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
               onClick={handleSaveClick} >
               Save & Exit
             </button>

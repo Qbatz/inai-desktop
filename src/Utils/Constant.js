@@ -57,7 +57,7 @@ export const CREATE_VENDOR_SAGA = "Create_Vendor_Saga";
 export const EDIT_VENDOR_REDUCER = "Edit_Vendor_Reducer";
 export const EDIT_VENDOR_SAGA = "Edit_Vendor_Saga";
 
-
+export const RESET_VENDOR_ID = "Reset_Vendor_Id";
 
 
 

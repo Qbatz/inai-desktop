@@ -3,7 +3,7 @@ import AddressVendor from "./AddressVendor";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA, EDIT_VENDOR_SAGA } from "../Utils/Constant";
+import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID} from "../Utils/Constant";
 import { X } from "lucide-react";
 
 function BasicVendor({ handleClose, vendorDetails }) {
@@ -323,6 +323,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
             setAdditionalContacts([]);
             dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
             dispatch({ type: RESET_CODE })
+            dispatch({ type: RESET_VENDOR_ID})
         }
 
     }, [state.Common.successCode])
@@ -340,7 +341,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
         <div className="bg-blueGray-100  w-full">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4">
                 <div className="flex items-center justify-between pe-12 mb-4">
-                    <h3 className="font-semibold text-xl font-Gilroy">{basicDetails ? 'Edit Vendor' : 'Add Vendor'}</h3>
+                    <h3 className="font-semibold text-xl font-Gilroy">{vendorDetails ? 'Edit Vendor' : 'Add Vendor'}</h3>
                     <div onClick={handleClose} className="cursor-pointer text-lg font-bold border border-slate-400 rounded-full p-1 text-slate-500 hover:bg-slate-100 transition">
                         <X size={20} />
                     </div>                </div>
@@ -350,7 +351,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                     <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">
                         {tabs.map((tab) => (
                             <button
-                                key={tab.id}
+                                key={tab.id} disabled
                                 className={`px-4 py-2 font-Gilroy  md:px-6 lg:px-8 text-base
           ${activeTab === tab.id
                                         ? "border-b-4 border-[#205DA8] text-[#205DA8] font-semibold text-base"
@@ -419,7 +420,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact  Number<span className='text-red-500'>*</span> </label>
                                         <input
-                                            id='clientId'
+                                           
                                             type='text'
                                             value={contactNumber}
                                             onChange={handleContactNumberChange}
@@ -433,7 +434,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID <span className='text-red-500'>*</span> </label>
                                         <input
-                                            id='clientId'
+                                           
                                             type='text'
                                             value={email}
                                             onChange={handleEmailChange}
@@ -447,7 +448,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div>
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Designation <span className='text-red-500'>*</span> </label>
                                         <input
-                                            id='clientId'
+                                         
                                             type='text'
                                             value={designation}
                                             onChange={handleDesignationChange}
@@ -461,8 +462,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>GST/VAT <span className='text-red-500'>*</span></label>
                                         <input
-                                            id='clientId'
-                                            type='text'
+                                                                                       type='text'
                                             value={gstVat}
                                             onChange={handleGstVatChange}
                                             placeholder='Enter GST/VAT'
@@ -656,7 +656,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                             <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
                                 <button
                                     type="button"
-                                    className="w-full sm:w-auto font-medium font-Montserrat px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
+                                    className="w-full sm:w-auto font-medium font-Montserrat px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
                                     onClick={handleSaveClick} >
                                     Save & Exit
                                 </button>

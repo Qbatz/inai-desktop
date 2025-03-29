@@ -3,8 +3,8 @@ import AddressVendor from "./AddressVendor";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA } from "../Utils/Constant";
-
+import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA, EDIT_VENDOR_SAGA } from "../Utils/Constant";
+import { X } from "lucide-react";
 
 function BasicVendor({ handleClose, vendorDetails }) {
 
@@ -199,26 +199,25 @@ function BasicVendor({ handleClose, vendorDetails }) {
                 contactEmail: contact.email,
                 designation: contact.designation
             }));
-
             dispatch({
                 type: VENDOR_BASIC_INFO_SAGA,
                 payload: {
-                    vendor_id: '',
-                    businessName: businessName,
+                    vendor_id: vendorDetails?.vendorId || "",
+                    businessName,
                     contactPersonName: contactPerson,
-                    contactNumber: contactNumber,
+                    contactNumber,
                     emailId: email,
-                    designation: designation,
+                    designation,
                     gstvat: gstVat,
                     additionalContactInfo: formattedAdditionalContacts,
-
                 }
             });
+
         }
     };
 
 
-  
+
     const handleNextClick = () => {
         if (validateForm()) {
 
@@ -299,20 +298,20 @@ function BasicVendor({ handleClose, vendorDetails }) {
             setEmail(vendorDetails.emailId || '');
             setDesignation(vendorDetails.designation || '');
             setGstVat(vendorDetails.gstvat || '');
-           
-                    setAdditionalContacts(
-                        (vendorDetails.additionalContactInfo || []).map((item) => ({
-                            name: item.name || "",
-                            contactNumber: item.contactNumber || "",
-                            email: item.contactEmail || "", 
-                            designation: item.designation || ""
-                        }))
-                    );
-              
-            
-                   }
+
+            setAdditionalContacts(
+                (vendorDetails.additionalContactInfo || []).map((item) => ({
+                    name: item.name || "",
+                    contactNumber: item.contactNumber || "",
+                    email: item.contactEmail || "",
+                    designation: item.designation || ""
+                }))
+            );
+
+
+        }
     }, [vendorDetails]);
-    
+
     useEffect(() => {
         if (state.Common.successCode === 200) {
             setBusinessName('');
@@ -340,16 +339,17 @@ function BasicVendor({ handleClose, vendorDetails }) {
     return (
         <div className="bg-blueGray-100  w-full">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4">
-                <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-xl font-Gilroy">{basicDetails ? 'Add Vendor' : 'Edit Vendor'}</h3>
-                    <div onClick={handleClose} className="cursor-pointer text-xl font-bold">X</div>
-                </div>
+                <div className="flex items-center justify-between pe-12 mb-4">
+                    <h3 className="font-semibold text-xl font-Gilroy">{basicDetails ? 'Edit Vendor' : 'Add Vendor'}</h3>
+                    <div onClick={handleClose} className="cursor-pointer text-lg font-bold border border-slate-400 rounded-full p-1 text-slate-500 hover:bg-slate-100 transition">
+                        <X size={20} />
+                    </div>                </div>
 
 
                 <div className="sticky top-0  z-10 overflow-x-auto">
                     <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">
                         {tabs.map((tab) => (
-                            <button disabled
+                            <button
                                 key={tab.id}
                                 className={`px-4 py-2 font-Gilroy  md:px-6 lg:px-8 text-base
           ${activeTab === tab.id
@@ -672,7 +672,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
 
                         </div>}
-                    {activeTab === 2 && <div> <AddressVendor handleBack={handleBackBasic} handleNextToBank={handleNextToBank}  vendorDetails={vendorDetails}/></div>}
+                    {activeTab === 2 && <div> <AddressVendor handleBack={handleBackBasic} handleNextToBank={handleNextToBank} vendorDetails={vendorDetails} /></div>}
                     {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} payload={payload} vendorDetail={vendorDetails} /></div>}
                 </div>
             </div>

@@ -192,7 +192,7 @@ useEffect(()=>{
 
 
   return (
-    <div className='bg-slate-100  min-h-fit w-full p-4 rounded-tl-lg rounded-tr-lg   m-0'>
+    <div className='bg-slate-100  h-fit w-full p-4 rounded-tl-lg rounded-tr-lg   m-0'>
       {
         isVisible &&
 

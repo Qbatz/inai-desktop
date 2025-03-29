@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA } from '../Utils/Constant'
+import { VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA,EDIT_VENDOR_SAGA } from '../Utils/Constant'
 
 
 function BankVendor(props) {
@@ -165,13 +165,13 @@ function BankVendor(props) {
 
 
 
-
+console.log("props",props)
 
 
   const handleSubmit = () => {
     if (validateForm()) {
       const addresses = props?.payload?.address || [];
-      const payload = {
+      const AddPayload = {
         vendor_details: {
           basic_info: {
             businessName: props?.basicDetails?.businessName || "",
@@ -223,10 +223,67 @@ function BankVendor(props) {
         }
       };
 
-      dispatch({
-        type: CREATE_VENDOR_SAGA,
-        payload: payload
-      });
+      const EditPayload = {
+        vendor_id: props?.vendorDetail?.vendorId || "",
+        businessName: props?.basicDetails?.businessName || "",
+        contactPersonName: props?.basicDetails?.contactPersonName || "",
+        contactNumber: props?.basicDetails?.contactNumber || "",
+        emailId: props?.basicDetails?.emailId || "",
+        designation: props?.basicDetails?.designation || "",
+        gstvat: props?.basicDetails?.gstvat || "",
+        additionalContactInfo: props?.basicDetails?.additionalContactInfo || [],
+        address: [
+            {
+                doorNo: addresses[0]?.doorNo || "",
+                street: addresses[0]?.street || "",
+                locality: addresses[0]?.locality || "",
+                city: addresses[0]?.city || "",
+                postalCode: addresses[0]?.postalCode || "",
+                landMark: addresses[0]?.landMark || "",
+                mapLink: addresses[0]?.mapLink || "",
+                addressType: addresses[0]?.addressType || 1
+            },
+            {
+                doorNo: addresses[1]?.doorNo || "",
+                street: addresses[1]?.street || "",
+                locality: addresses[1]?.locality || "",
+                city: addresses[1]?.city || "",
+                postalCode: addresses[1]?.postalCode || "",
+                landMark: addresses[1]?.landMark || "",
+                mapLink: addresses[1]?.mapLink || "",
+                addressType: addresses[1]?.addressType || 2
+            }
+        ],
+        bankDetails: [{
+            name: beneficiaryName || "",
+            accountNo: accountNumber || "",
+            bankName: bankName || "",
+            ifscCode: ifscCode || "",
+            address1: bankAddress || "",
+            address2: bankAddress2 || "",
+            address3: bankAddress3 || "",
+            country: bankCountry || "",
+            routingBank: intermediaryBank || "",
+            swiftCode: swift || "",
+            routingBankAddress: intermediaryDetails || "",
+            routingAccountIndusand: iban || ""
+        }]
+    }
+    console.log("EditPayload",EditPayload)
+
+if(props.vendorDetail){
+  dispatch({
+    type: EDIT_VENDOR_SAGA,
+    payload: EditPayload
+  });
+}else{
+  dispatch({
+    type: CREATE_VENDOR_SAGA,
+    payload: AddPayload
+  });
+}
+
+    
     }
   };
 
@@ -236,7 +293,7 @@ function BankVendor(props) {
     dispatch({
       type: VENDOR_BANK_INFO_SAGA,
       payload: {
-        vendorId: state?.vendor?.vendorId || "VEN-13937536",
+        vendorId: state.vendor.vendorId || props.payload?.vendorId || " ",
         bankDetails: [
           {
             name: beneficiaryName,
@@ -298,7 +355,7 @@ function BankVendor(props) {
     setIntermediaryDetails(bank.routingBankAddress || "");
     setIban(bank.routingAccountIndusand || "");
 }
-  }, [props.vendorDetails]); 
+  }, [props.vendorDetail]); 
   
 
 

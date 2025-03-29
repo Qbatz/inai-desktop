@@ -183,7 +183,7 @@ function AddressVendor(props) {
   const handleSaveClick = () => {
     if (validateForm()) {
       const payload = {
-        vendorId: stateData.vendor.vendorId,
+        vendorId: stateData.vendor.vendorId ||   props.vendorDetails?.vendorId || " ",
         address: [
           {
             doorNo: officeAddress1,
@@ -247,7 +247,7 @@ function AddressVendor(props) {
     if (props.vendorDetails && props.vendorDetails.address) {
       const officeAddress = props.vendorDetails.address.find(addr => addr.addressType === 1) || {};
       const shippingAddress = props.vendorDetails.address.find(addr => addr.addressType === 2) || {};
-      
+
       setOfficeAddress1(officeAddress.doorNo || "");
       setOfficeAddress2(officeAddress.street || "");
       setOfficeAddress3(officeAddress.locality || "");

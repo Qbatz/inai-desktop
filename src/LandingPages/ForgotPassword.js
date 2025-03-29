@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import LoginImage from '../Images/Login_Image.svg';
 import InaiLogo from '../Images/Inai_Logo.svg';
@@ -91,19 +92,7 @@ function ClientIDChange() {
         }
     }, [resetPassword, dispatch]);
 
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        console.log("params", params)
-
-        const verifyCode = params.get('verify_code');
-
-        if (verifyCode) {
-            console.log("verifyCode", verifyCode)
-            dispatch({ type: 'jj', payload: { verify_code: verifyCode } })
-        } else {
-            console.log("called")
-        }
-    }, [dispatch]);
+   
 
 
     return (

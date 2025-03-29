@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
@@ -14,7 +15,7 @@ const ReSetPassword = () => {
     const [errorResetMessage, setErrorResetMessage] = useState(state?.Common?.errorMessage)
     const resetverify = useSelector(state => state?.Common?.resetverify)
 
-    // const resetpage = useSelector(state => state?.Common?.resetpage);
+
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
 
     const [password, setPassword] = useState("");
@@ -30,19 +31,9 @@ const ReSetPassword = () => {
     const [hash, setHash] = useState(null);
     const [loading, setLoading] = useState(false);
     const [hasherror, sethashError] = useState("");
-    const verifyHash = async () => {
-        try {
-            setLoading(true);
-            sethashError("");
 
-            dispatch({ type: RESET_PAGE_API_CALL, payload: { verify_code: verifycode } })
+ 
 
-        } catch (err) {
-            sethashError("Error verifying link.");
-        } finally {
-            setLoading(false);
-        }
-    };
     useEffect(() => {
 
         setErrorMessage(state?.Common?.errorMessage)
@@ -58,20 +49,32 @@ const ReSetPassword = () => {
         setTimeout(() => {
             dispatch({ type: RESET_CODE });
         }, 1000);
-    }, [state.Common.errorMessage,dispatch])
+    }, [state.Common.errorMessage, dispatch])
 
+
+    
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const hashValue = queryParams.get("hash");
-
+    
         if (hashValue) {
             setHash(hashValue);
-            verifyHash(hashValue);
+            setLoading(true); 
+            sethashError(""); 
+    
+            try {
+                dispatch({ type: RESET_PAGE_API_CALL, payload: { verify_code: verifycode } });
+            } catch (error) {
+                sethashError("Error verifying link. Please try again.");
+            } finally {
+                setLoading(false);
+            }
         }
     }, [location.search]);
-
-  
+    
+    
+    
 
 
 
@@ -117,7 +120,7 @@ const ReSetPassword = () => {
     };
 
     const handleSubmit = (e) => {
-        // e.preventDefault();
+        
 
         if (validateForm()) {
             if (password && confirmPassword) {
@@ -126,7 +129,7 @@ const ReSetPassword = () => {
                 dispatch({ type: RESET_PASSWORD_API_CALL, payload: { password: password, password2: confirmPassword, verify_code: verifycode } })
 
             }
-            // setSuccess(true);
+           
             setTimeout(() => {
                 setSuccess(false);
                 setPassword("");

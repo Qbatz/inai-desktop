@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import LoginImage from '../Images/Login_Image.svg';
 import InaiLogo from '../Images/Inai_Logo.svg';
@@ -74,18 +75,7 @@ function CreateAccount() {
     };
 
 
-    // useEffect(() => {
-    //     if (state.Common.successCode === 200) {
-    //         setShowPopup(true);
-    //         setEmail("");
-    //         setCaptchaValue(null);
-
-    //         setTimeout(() => {
-    //             setShowPopup(false); 
-    //             dispatch({ type: RESET_CODE });
-    //         }, 1000); 
-    //     }
-    // }, [state.Common.successCode]);
+   
 
     useEffect(() => {
         if (emailid) {

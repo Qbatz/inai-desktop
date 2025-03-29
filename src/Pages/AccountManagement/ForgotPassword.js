@@ -1,20 +1,21 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import LoginImage from '../Images/Login_Image.svg';
-import InaiLogo from '../Images/Inai_Logo.svg';
-import { InfoCircle } from "iconsax-react";
-import { useNavigate } from 'react-router-dom';
+import LoginImage from '../../Asset/Images/Login_Image.svg';
+import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
+import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
+import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { FORGOT_USER_API_CALL, RESET_CODE } from "../Utils/Constant";
+import { FORGOT_PASSWORD_API_CALL, RESET_CODE } from "../../Utils/Constant";
 
-function UserName() {
+function ClientIDChange() {
 
     const dispatch = useDispatch();
     const state = useSelector(state => state)
 
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
 
-    const resetUser = useSelector(state => state?.Common?.resetUser);
+    const resetPassword = useSelector(state => state?.Common?.resetPassword);
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
@@ -52,7 +53,7 @@ function UserName() {
         e.preventDefault();
         let errors = { email: "", captcha: "" };
         if (email && captchaValue) {
-            dispatch({ type: FORGOT_USER_API_CALL, payload: { email: email, captcha: captchaValue } })
+            dispatch({ type: FORGOT_PASSWORD_API_CALL, payload: { email: email, recaptcha: captchaValue } })
 
         }
 
@@ -78,7 +79,7 @@ function UserName() {
     };
 
     useEffect(() => {
-        if (resetUser) {
+        if (resetPassword) {
             setEmail("");
             setCaptchaValue(null);
             setFormError({ email: "", captcha: "" });
@@ -89,7 +90,9 @@ function UserName() {
 
             return () => clearTimeout(timer);
         }
-    }, [resetUser, dispatch]);
+    }, [resetPassword, dispatch]);
+
+   
 
 
     return (
@@ -121,7 +124,7 @@ function UserName() {
                         </div>
 
                         <div className='text-start mb-2'>
-                            <label className='block text-28px font-semibold font-Gilroy pt-4'>Forgot Username</label>
+                            <label className='block text-28px font-semibold font-Gilroy pt-4'>Forgot Password </label>
                         </div>
 
 
@@ -147,9 +150,6 @@ function UserName() {
                                         <span><InfoCircle size="14" color="#DC2626" /></span> {formError.email} </p>)}
                             </div>
 
-
-
-
                             <div className="mt-6 flex flex-col items-center justify-center">
 
                                 <ReCAPTCHA
@@ -166,10 +166,10 @@ function UserName() {
                                     </div>
                                 )}
                             </div>
-                            {resetUser && (
+                            {resetPassword && (
                                 <div className="mt-4 text-green-800 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
 
-                                    {resetUser}
+                                    {resetPassword}
                                 </div>
                             )}
                             {errorMessage && (
@@ -178,7 +178,6 @@ function UserName() {
                                     {errorMessage}
                                 </div>
                             )}
-
                             <button type='submit' className='mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg'
                                 onClick={handleSubmit}>
                                 Submit
@@ -189,7 +188,7 @@ function UserName() {
                                 <p className="text-black font-Montserrat font-normal text-base">
                                     Already have an account?{' '}
                                     <span onClick={() => navigate("/")}
-                                        className=" cursor-pointer text-[#205DA8] hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat"
+                                        className="cursor-pointer text-[#205DA8] hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat"
                                     >
                                         Sign In
                                     </span>
@@ -204,4 +203,4 @@ function UserName() {
     );
 }
 
-export default UserName;
+export default ClientIDChange;

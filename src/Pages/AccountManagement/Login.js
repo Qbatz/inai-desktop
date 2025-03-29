@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import LoginImage from '../Images/Login_Image.svg';
-import InaiLogo from '../Images/Inai_Logo.svg';
+import LoginImage from '../../Asset/Images/Login_Image.svg';
+import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import './ReCaptcha.css'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { SIGN_IN_SAGA, RESET_CODE } from '../Utils/Constant'
+import { SIGN_IN_SAGA, RESET_CODE } from '../../Utils/Constant'
 import Cookies from 'universal-cookie';
-import { encryptData } from '../Crypto/crypto';
+import { encryptData } from '../../Crypto/crypto';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 

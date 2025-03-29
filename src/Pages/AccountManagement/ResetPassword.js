@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import { RESET_PAGE_API_CALL, RESET_CODE, RESET_PASSWORD_API_CALL } from "../Utils/Constant";
+import { RESET_PAGE_API_CALL, RESET_CODE, RESET_PASSWORD_API_CALL } from "../../Utils/Constant";
 import { useDispatch, useSelector } from 'react-redux';
 
 const ReSetPassword = () => {

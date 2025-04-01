@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { DELETE_CUSTOMER_SAGA } from '../../Utils/Constant'
+import { DELETE_CUSTOMER_SAGA, GET_CUSTOMER_LIST_SAGA, RESET_CODE } from '../../Utils/Constant'
 
 
 
-function DeleteCustomer({ handleClose }) {
+function DeleteCustomer({ handleClose, deleteCustomerId }) {
 
 
 
@@ -13,8 +13,20 @@ function DeleteCustomer({ handleClose }) {
 
 
     const handleDeleteCustomer = () => {
-        dispatch({ type: DELETE_CUSTOMER_SAGA, })
+        if (deleteCustomerId) {
+            dispatch({ type: DELETE_CUSTOMER_SAGA, payload: deleteCustomerId })
+        }
     }
+
+    useEffect(() => {
+        if (state.Common.successCode === 200) {
+
+            dispatch({ type: GET_CUSTOMER_LIST_SAGA });
+            dispatch({ type: RESET_CODE })
+        }
+
+    }, [state.Common.successCode])
+
 
 
     return (

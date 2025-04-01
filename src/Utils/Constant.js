@@ -90,7 +90,8 @@ export const DELETE_CUSTOMER_SAGA = "Delete_Customer_Saga";
 
 
 
-
+export const GET_CUSTOMER_LIST_REDUCER = "Get_Customer_List_Reducer";
+export const GET_CUSTOMER_LIST_SAGA = "Get_Customer_List_Saga";
 
 
 

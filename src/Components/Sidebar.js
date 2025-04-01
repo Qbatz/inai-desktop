@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Dashboard from "./Dashboard";
-import Vendor from "../VendorFile/Vendor";
+import Dashboard from "../Pages/Dashboard";
+import Vendor from "../Pages/VendorFile/Vendor";
 import Product from "./Product";
 import InaiLogo from "../Images/Inai_Logo.svg";
 import ClientIcon from '../Icon/Client_S.svg';

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import Login from './LandingPages/Login'
+import Login from './Pages/AccountManagement/Login'
 import FormDisplay from './FormBuilderComponent/FormDisplay';
 import './App.css'
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import AddCustomer from './CustomerComponent/AddCustomer';
-import CreateAccount from './LandingPages/CreateAccount';
-import ForgotUserName from './LandingPages/ForgotUserName';
+import CreateAccount from './Pages/AccountManagement/CreateAccount';
+import ForgotUserName from './Pages/AccountManagement/ForgotUserName';
 import Sidebar from './Components/Sidebar';
 import CustomerDetails from './CustomerComponent/CustomerDetails';
-import ForgotClientId from './LandingPages/ForgotClientId'
-import ForgotPassword from './LandingPages/ForgotPassword';
-import SignUp from './LandingPages/SignUp'
+import ForgotClientId from './Pages/AccountManagement/ForgotClientId'
+import ForgotPassword from './Pages/AccountManagement/ForgotPassword';
+import SignUp from './Pages/AccountManagement/SignUp'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { connect } from 'react-redux';
@@ -19,10 +19,7 @@ import { decryptData } from './Crypto/crypto';
 import { LOG_OUT } from './Utils/Constant'
 import Cookies from 'universal-cookie';
 import { useDispatch } from 'react-redux';
-
-
-
-
+import ResetPassword from './Pages/AccountManagement/ResetPassword';
 
 function App({ isLogged_In }) {
   const dispatch = useDispatch();
@@ -105,11 +102,12 @@ function App({ isLogged_In }) {
               (
                 <>
                   <Route path="/" element={<Login />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/sign-up" element={<SignUp />} />
                   <Route path="/register" element={<CreateAccount />} />
                   <Route path="/forgot-user-name" element={<ForgotUserName />} />
                   <Route path="/forgot-client-id" element={<ForgotClientId />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/password" element={<ForgotPassword />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
 
                 </>

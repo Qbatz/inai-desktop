@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react'
-import PlusCircle from '../Images/Plus_Circle.svg'
+import PlusCircle from '../../Asset/Images/Plus_Circle.svg'
 import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2 } from "iconsax-react";
-import Filter from '../Images/filter.png'
+import Filter from '../../Asset/Images/filter.png'
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { enGB } from "date-fns/locale";
-import BasicVendor from "../VendorFile/BasicVendor";
+import BasicVendor from "./BasicVendor";
 import DeleteVendor from './DeleteVendor';
-import Minus from '../Icon/minus-square.svg';
+import Minus from '../../Asset/Icon/minus-square.svg';
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { RESET_CODE, VENDOR_SAGA } from '../Utils/Constant'

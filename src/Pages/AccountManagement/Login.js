@@ -1,16 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
-import LoginImage from '../Images/Login_Image.svg';
-import InaiLogo from '../Images/Inai_Logo.svg';
+import LoginImage from '../../Asset/Images/Login_Image.svg';
+import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import './ReCaptcha.css'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
+<<<<<<< HEAD:src/LandingPages/Login.js
 import { SIGN_IN_SAGA, RESET_CODE, LOG_IN } from '../Utils/Constant'
+=======
+import { SIGN_IN_SAGA, RESET_CODE } from '../../Utils/Constant'
+>>>>>>> 05d12882372ba162a36402b2f2724e78e6ef6e12:src/Pages/AccountManagement/Login.js
 import Cookies from 'universal-cookie';
-import { encryptData } from '../Crypto/crypto';
+import { encryptData } from '../../Crypto/crypto';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -250,16 +254,17 @@ console.log("state",state)
                   <label htmlFor='staySignedIn' className='text-black font-Gilroy text-sm font-medium'>Stay signed in</label></div>
                 <div>
                   <label className="text-[#205DA8] font-Gilroy text-sm font-medium">
-                    <span onClick={() => navigate("/forgot-user-name")} className="cursor-pointer hover:underline">
-                      Username
-                    </span> /{" "}
-                    <span onClick={() => navigate("/forgot-client-id")} className="cursor-pointer hover:underline">
-                      Client ID
-                    </span> /{" "}
-                    <span onClick={() => navigate("/forgot-password")} className="cursor-pointer hover:underline">
+                    <span
+                      onClick={() => navigate("/forgot-user-name")}
+                      className="cursor-pointer hover:underline"
+                    >
+                      Username / Client ID
+                    </span> / {""}
+                    <span onClick={() => navigate("/password")} className="cursor-pointer hover:underline">
                       Password?
                     </span>
-                  </label>                </div>
+                  </label>
+                </div>
               </div>
 
               <div className="p-0 w-fit font-Gilroy text-lg bg-white" style={{ transform: "scale(1.5,1)", transformOrigin: "0 0", border: "none", }}>

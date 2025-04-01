@@ -1,26 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import LoginImage from '../Images/Login_Image.svg';
-import InaiLogo from '../Images/Inai_Logo.svg';
+import LoginImage from '../../Asset/Images/Login_Image.svg';
+import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
 import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { CREATE_ACCOUNT_API_CALL, RESET_CODE } from "../Utils/Constant";
+import { CREATE_ACCOUNT_API_CALL, RESET_CODE } from "../../Utils/Constant";
 
 
 function CreateAccount() {
 
     const state = useSelector(state => state)
-
-
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
-
-
-    const   emailid = useSelector(state => state?.Common?.  emailid)
-
-
-
-
+    const emailid = useSelector(state => state?.Common?.emailid)
 
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
@@ -45,7 +38,8 @@ function CreateAccount() {
     };
 
     const handleCaptchaChange = (value) => {
-        
+
+        console.log('value', value);
 
         setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
@@ -81,21 +75,10 @@ function CreateAccount() {
     };
 
 
-    // useEffect(() => {
-    //     if (state.Common.successCode === 200) {
-    //         setShowPopup(true);
-    //         setEmail("");
-    //         setCaptchaValue(null);
-
-    //         setTimeout(() => {
-    //             setShowPopup(false); 
-    //             dispatch({ type: RESET_CODE });
-    //         }, 1000); 
-    //     }
-    // }, [state.Common.successCode]);
+   
 
     useEffect(() => {
-        if (  emailid) {
+        if (emailid) {
             setEmail("");
             setCaptchaValue(null);
             const timer = setTimeout(() => {
@@ -104,16 +87,16 @@ function CreateAccount() {
 
             return () => clearTimeout(timer);
         }
-    }, [  emailid, dispatch]);
+    }, [emailid, dispatch]);
 
 
 
-    
+
 
     useEffect(() => {
-        
+
         setErrorMessage(state?.Common?.errorMessage)
-       
+
 
     }, [state.Common.errorMessage])
 
@@ -122,11 +105,11 @@ function CreateAccount() {
 
             <div className='bg-white  h-full   max-w-6xl w-full rounded-3xl shadow-lg'>
 
-                {  emailid && (
+                {emailid && (
                     <div className="p-6 text-center">
                         <h2 className="text-[#0AEB7A]"> <span className="text-[#77DAA9] text-lg font-semibold">Success!</span>
 
-                            Check your email <span className="font-bold">{  emailid}</span> to complete the registration.
+                            Check your email <span className="font-bold">{emailid}</span> to complete the registration.
                             Check your Junk/Spam folder.
                             Add <span className="font-semibold">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
                         </h2>

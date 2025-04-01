@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import LoginImage from '../Images/Login_Image.svg';
-import InaiLogo from '../Images/Inai_Logo.svg';
-import Robot from '../Images/Robot.svg'
+import LoginImage from '../../Asset/Images/Login_Image.svg';
+import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
+import Robot from '../../Asset/Images/Robot.svg'
 import {useNavigate} from 'react-router-dom'
 
 function ClientIDChange() {

@@ -200,7 +200,7 @@ function Sidebar() {
 
 
 
-            <div className={`fixed inset-0   flex items-center justify-center ${isLogout ? "visible" : "hidden"} bg-black bg-opacity-50`}>
+            <div className={`fixed inset-0  z-50 flex items-center justify-center ${isLogout ? "visible" : "hidden"} bg-black bg-opacity-50`}>
                 <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6">
                     <div className="flex justify-center border-b-0">
                         <h2 className="text-[18px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">

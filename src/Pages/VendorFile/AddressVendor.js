@@ -1,9 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
+import { RESET_VENDOR_ID,VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA } from '../Utils/Constant';
+import { useDispatch, useSelector } from 'react-redux';
 
-function AddressVendor() {
+
+
+function AddressVendor(props) {
+  const dispatch = useDispatch();
+  const stateData = useSelector(state => state)
+
+
+  console.log("state", stateData)
 
   const [officeAddress1, setOfficeAddress1] = useState("");
+  const [officeAddress2, setOfficeAddress2] = useState('');
+  const [officeAddress3, setOfficeAddress3] = useState('');
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
@@ -13,6 +24,8 @@ function AddressVendor() {
   const [formErrors, setFormErrors] = useState({});
 
   const [shippingAddress1, setShippingAddress1] = useState("");
+  const [shippingAddress2, setShippingAddress2] = useState('');
+  const [shippingAddress3, setShippingAddress3] = useState('');
   const [shippingCity, setShippingCity] = useState("");
   const [shippingState, setShippingState] = useState("");
   const [shippingCountry, setShippingCountry] = useState("");
@@ -21,9 +34,28 @@ function AddressVendor() {
   const [shippingGoogleMap, setShippingGoogleMap] = useState("");
   const [sameAsOffice, setSameAsOffice] = useState(false);
 
+  const handleBackToBasic = () => {
+    props.handleBack(1)
+  }
+
+  const handleOfficeAddress1Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress1: "" }));
+    setOfficeAddress1(e.target.value)
+  };
+
+  const handleOfficeAddress2Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress2: "" }));
+    setOfficeAddress2(e.target.value);
+  };
+
+  const handleOfficeAddress3Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress3: "" }));
+    setOfficeAddress3(e.target.value);
+  };
 
 
-  const handleOfficeAddress1Change = (e) => setOfficeAddress1(e.target.value);
+
+
   const handleCityChange = (e) => {
     setFormErrors((prevErrors) => ({ ...prevErrors, city: "" }));
     setCity(e.target.value);
@@ -40,8 +72,24 @@ function AddressVendor() {
     }
   };
   const handleLandmarkChange = (e) => setLandmark(e.target.value);
+
   const handleGoogleMapChange = (e) => setGoogleMap(e.target.value);
-  const handleShippingAddress1Change = (e) => setShippingAddress1(e.target.value);
+
+  const handleShippingAddress1Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress1: "" }));
+    setShippingAddress1(e.target.value)
+  };
+
+
+  const handleShippingAddress2Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress2: "" }));
+    setShippingAddress2(e.target.value);
+  };
+
+  const handleShippingAddress3Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress3: "" }));
+    setShippingAddress3(e.target.value);
+  };
   const handleShippingCity = (e) => {
     setFormErrors((prevErrors) => ({ ...prevErrors, shippingCity: "" }));
     setShippingCity(e.target.value);
@@ -59,48 +107,171 @@ function AddressVendor() {
   };
   const handleShippingLandmarkChange = (e) => setShippingLandmark(e.target.value);
   const handleShippingGoogleMapChange = (e) => setShippingGoogleMap(e.target.value);
-  const handleCheckboxChange = () => setSameAsOffice(!sameAsOffice);
+
+  const handleCheckboxChange = (e) => {
+    setSameAsOffice(e.target.checked);
+
+    if (e.target.checked) {
+      setShippingAddress1(officeAddress1);
+         setShippingAddress2(officeAddress2);
+      setShippingAddress3(officeAddress3);
+      setShippingCity(city);
+      setShippingState(state);
+      setShippingCountry(country);
+      setShippingPostalCode(postalCode);
+      setShippingLandmark(landmark);
+      setShippingGoogleMap(googleMap);
+    } else {
+      setShippingAddress1('');
+      setShippingCity('');
+      setShippingState('');
+      setShippingCountry('');
+      setShippingPostalCode('');
+      setShippingLandmark('');
+      setShippingGoogleMap('');
+    }
+  };
 
   const validateForm = () => {
     let errors = {};
 
-
+    if (!officeAddress1.trim()) errors.officeAddress1 = "OfficeAddress is required";
     if (!city.trim()) errors.city = "City is required";
-
     if (!postalCode.trim()) errors.postalCode = "Postal Code is required";
 
-
+    if (!shippingAddress1.trim()) errors.shippingAddress1 = "Shipping Address is required";
     if (!shippingCity.trim()) errors.shippingCity = "City is required";
-
     if (!shippingPostalCode.trim()) errors.shippingPostalCode = "Postal Code is required";
-
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
   const handleNext = () => {
     if (validateForm()) {
-     
-      const payload = {
-        officeAddress1,
-        city,
-        state,
-        country,
-        postalCode,
-        landmark,
-        googleMap,
-        shippingAddress1,
-        shippingCity,
-        shippingState,
-        shippingCountry,
-        shippingPostalCode,
-        shippingLandmark,
-        shippingGoogleMap,
-        sameAsOffice,
+      const payloadData = {
+        vendorId: stateData.vendor.vendorId,
+        address: [
+          {
+            doorNo: officeAddress1,
+            street: officeAddress2,
+            locality: officeAddress3,
+            city: city,
+            postalCode: postalCode,
+            landMark: landmark,
+            mapLink: googleMap,
+            addressType: 1
+          },
+          {
+            doorNo: shippingAddress1,
+            street: shippingAddress2,
+            locality: shippingAddress3,
+            city: shippingCity,
+            postalCode: shippingPostalCode,
+            landMark: shippingLandmark,
+            mapLink: shippingGoogleMap,
+            addressType: 2
+          }
+        ]
       };
-      console.log("Form submitted successfully", payload);
+
+      props.handleNextToBank(3, payloadData)
+
     }
+
   };
+
+  const handleSaveClick = () => {
+    if (validateForm()) {
+      const payload = {
+        vendorId: stateData.vendor.vendorId ||   props.vendorDetails?.vendorId || "",
+        address: [
+          {
+            doorNo: officeAddress1,
+            street: officeAddress2,
+            locality: officeAddress3,
+            city: city,
+            postalCode: postalCode,
+            landMark: landmark,
+            mapLink: googleMap,
+            addressType: 1
+          },
+          {
+            doorNo: shippingAddress1,
+            street: shippingAddress2,
+            locality: shippingAddress3,
+            city: shippingCity,
+            postalCode: shippingPostalCode,
+            landMark: shippingLandmark,
+            mapLink: shippingGoogleMap,
+            addressType: 2
+          }
+        ]
+      };
+
+
+      dispatch({
+        type: VENDOR_ADDRESS_INFO_SAGA,
+        payload: payload
+      });
+
+
+    }
+  }
+
+  useEffect(() => {
+    if (stateData.Common.successCode === 200) {
+      setOfficeAddress1("");
+      setOfficeAddress2("");
+      setOfficeAddress3("");
+      setCity("");
+      setState("");
+      setCountry("");
+      setPostalCode("");
+      setLandmark("");
+      setGoogleMap("");
+      setShippingAddress1("");
+      setShippingAddress2("");
+      setShippingAddress3("");
+      setShippingCity("");
+      setShippingState("");
+      setShippingCountry("");
+      setShippingPostalCode("");
+      setShippingLandmark("");
+      setShippingGoogleMap("");
+      dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
+      dispatch({ type: RESET_CODE });
+      dispatch({ type: RESET_VENDOR_ID})
+    }
+  }, [stateData.Common.successCode]);
+
+  useEffect(() => {
+    if (props.vendorDetails && props.vendorDetails.address) {
+      const officeAddress = props.vendorDetails.address.find(addr => addr.addressType === 1) || {};
+      const shippingAddress = props.vendorDetails.address.find(addr => addr.addressType === 2) || {};
+
+      setOfficeAddress1(officeAddress.doorNo || "");
+      setOfficeAddress2(officeAddress.street || "");
+      setOfficeAddress3(officeAddress.locality || "");
+      setCity(officeAddress.city || "");
+      setState(officeAddress.state || "");
+      setCountry(officeAddress.country || "");
+      setPostalCode(officeAddress.postalCode || "");
+      setLandmark(officeAddress.landMark || "");
+      setGoogleMap(officeAddress.mapLink || "");
+  
+   
+      setShippingAddress1(shippingAddress.doorNo || "");
+      setShippingAddress2(shippingAddress.street || "");
+      setShippingAddress3(shippingAddress.locality || "");
+      setShippingCity(shippingAddress.city || "");
+      setShippingState(shippingAddress.state || "");
+      setShippingCountry(shippingAddress.country || "");
+      setShippingPostalCode(shippingAddress.postalCode || "");
+      setShippingLandmark(shippingAddress.landMark || "");
+      setShippingGoogleMap(shippingAddress.mapLink || "");
+    }
+  }, [props.vendorDetails]); 
+  
 
 
   return (
@@ -114,7 +285,6 @@ function AddressVendor() {
           <h4 className="text-base font-medium mb-4 font-Gilroy text-black">Office Address </h4>
           <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
-
             <div className='mb-2 items-center '>
               <input
                 id='clientId'
@@ -124,8 +294,44 @@ function AddressVendor() {
                 placeholder='Enter Address Line 1'
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
-
+              {formErrors.officeAddress1 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress1} </p>)}
             </div>
+
+            <div className='mb-2 items-center'>
+              <input
+                type='text'
+                value={officeAddress2}
+                onChange={handleOfficeAddress2Change}
+                placeholder='Enter Address Line 2'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+              {formErrors.officeAddress2 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress2}
+                </p>
+              )}
+            </div>
+
+            <div className='mb-2 items-center'>
+              <input
+                type='text'
+                value={officeAddress3}
+                onChange={handleOfficeAddress3Change}
+                placeholder='Enter Address Line 3'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+              {formErrors.officeAddress3 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress3}
+                </p>
+              )}
+            </div>
+
+
+
+
 
             <div className='mb-2  items-center'>
               <input
@@ -149,6 +355,7 @@ function AddressVendor() {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               >
                 <option value="">Select State</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
                 <option value="California">California</option>
                 <option value="Texas">Texas</option>
                 <option value="New York">New York</option>
@@ -241,8 +448,41 @@ function AddressVendor() {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
 
+              {formErrors.shippingAddress1 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingAddress1} </p>)}
+
+
+            </div>
+            <div className='mb-2 items-center'>
+              <input
+                type='text'
+                value={shippingAddress2}
+                onChange={handleShippingAddress2Change}
+                placeholder='Enter Shipping Address Line 2'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+              {formErrors.shippingAddress2 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingAddress2}
+                </p>
+              )}
             </div>
 
+            <div className='mb-2 items-center'>
+              <input
+                type='text'
+                value={shippingAddress3}
+                onChange={handleShippingAddress3Change}
+                placeholder='Enter Shipping Address Line 3'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+              {formErrors.shippingAddress3 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingAddress3}
+                </p>
+              )}
+            </div>
             <div className='mb-2  items-center'>
               <input
                 id='clientId'
@@ -340,18 +580,30 @@ function AddressVendor() {
         </div>
         <div className="flex flex-col xs:flex-row sm:flex-row  justify-between mb-2 mt-4">
           <button
-            className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat  text-base font-semibold"
+            onClick={handleBackToBasic}
+            className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat  text-base font-semibold font-Montserrat"
 
           >
             Back
           </button>
 
-          <button
-            className="px-10 py-2 bg-blue-800 rounded-lg text-white font-Montserrat  text-base font-semibold"
-            onClick={handleNext}
-          >
-            Next
-          </button>
+          <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
+            <button
+              type="button"
+              className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
+              onClick={handleSaveClick} >
+              Save & Exit
+            </button>
+            <button
+              className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat  text-base font-medium  font-Montserrat"
+              onClick={handleNext}
+            >
+              Next
+            </button>
+          </div>
+
+
+
         </div>
 
 

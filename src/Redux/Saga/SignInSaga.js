@@ -18,7 +18,9 @@ function* handleSignIn(action) {
             yield put({ type: ERROR_CODE, payload: { message: response.data.detail, statusCode: response.status } });
         }
     } catch (error) {
-        yield put({ type: ERROR_CODE, payload: { message: error.response?.data?.detail, statusCode: error.response.status || error.status } });
+        const errorMessage = error?.response?.data?.detail;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
     }
 }
 
@@ -51,7 +53,6 @@ function* handleForgotUser(user) {
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
-
         yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }
 }
@@ -67,8 +68,8 @@ function* handleResetPage(reset) {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
         }
     } catch (error) {
+        console.log('/user/reset-passwordResponse',error);
         const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
-
         yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }
 }

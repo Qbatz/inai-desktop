@@ -10,18 +10,35 @@ import BasicVendor from "./BasicVendor";
 import DeleteVendor from './DeleteVendor';
 import Minus from '../../Asset/Icon/minus-square.svg';
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { useDispatch, useSelector } from 'react-redux';
+import { RESET_CODE, VENDOR_SAGA } from '../Utils/Constant'
+import VendorDetails from './VendorDetails'
+
 
 function VendorList() {
 
+
+  const dispatch = useDispatch();
+  const state = useSelector(state => state)
+
+
+
   const [showPicker, setShowPicker] = useState(false);
   const [isVisible, setIsVisible] = useState(true)
+  const [showAddVendor, setShowAddVendor] = useState(false)
   const [showPopup, setShowPopUp] = useState(null);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const popupRef = useRef(null);
   const pickerRef = useRef(null);
   const [showDeleteVendor, setShowDeleteVendor] = useState(false)
-  const [itemsPerPage, setItemsPerPage] = useState(4);
+  const [vendorList, setVendorList] = useState([])
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [vendorDetails, setVendorDetails] = useState('')
+  const [deleteVendorId, setDeleteVendorId] = useState('')
+  const [showParticularVendor, setShowParticularVendor] = useState(false)
+  const [particularVendorDetails, setParticularVendorDetails] = useState('')
+
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -30,26 +47,8 @@ function VendorList() {
     },
   ]);
 
-
-
-  const data = [
-    { id: 1, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 2, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 3, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 4, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-    { id: 5, name: "Kellie Turcotte", contact: "Kellie Turcotte", email: "kellie@gmail.com", mobile: "+91 9876543210", Amount: "₹2500" },
-  ];
-
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const paginatedData = vendorList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(vendorList.length / itemsPerPage);
 
   const handleSelect = (ranges) => {
     console.log("ranges", ranges)
@@ -58,8 +57,86 @@ function VendorList() {
   };
 
   const handleAddVendor = () => {
+    setShowAddVendor(true)
     setIsVisible(false)
+    setVendorDetails('')
   }
+
+  const handleClose = () => {
+    dispatch({ type: RESET_CODE })
+    setShowAddVendor(false)
+    setIsVisible(true)
+  }
+
+  const handleShowPopup = (id, event) => {
+    const { top, left, height } = event.target.getBoundingClientRect();
+    setPopupPosition({
+      top: top + height + 5,
+      left: left - 150,
+    });
+    setShowPopUp(showPopup === id ? null : id);
+  };
+
+
+
+
+  const handleDeleteVendorPopup = (item) => {
+
+    setShowDeleteVendor(true)
+    setDeleteVendorId(item.vendorId)
+    setShowPopUp(null)
+  }
+
+  const handleCloseForDeleteVedor = () => {
+    setShowDeleteVendor(false)
+  }
+
+  const handleEditVendor = (vendorDetails) => {
+    console.log("vendorDetails", vendorDetails)
+    setShowAddVendor(true)
+    setIsVisible(false)
+    setVendorDetails(vendorDetails)
+  }
+
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  };
+
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+
+  const handleViewVendor = (item) => {
+    setShowParticularVendor(true)
+    setIsVisible(false)
+    setParticularVendorDetails(item)
+  }
+
+  const handleCloseViewVendor = () => {
+    setShowParticularVendor(false)
+    setIsVisible(true)
+  }
+
+
+  // useEffect/////////////////////////////////////////////
+
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setShowPopUp(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -76,66 +153,66 @@ function VendorList() {
   }, [showPicker]);
 
 
-  const handleShowPopup = (id, event) => {
-    const { top, left, height } = event.target.getBoundingClientRect();
-    setPopupPosition({
-      top: top + height + 5,
-      left: left - 150,
-    });
-    setShowPopUp(showPopup === id ? null : id);
-  };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        setShowPopUp(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-
-
-  const handleDeleteVendorPopup = () => {
-    setShowDeleteVendor(true)
-    setShowPopUp(null)
-  }
-
-  const handleCloseForDeleteVedor = () => {
-    setShowDeleteVendor(false)
-  }
-
-
-
-  const handleEditVendor = () => {
-    setIsVisible(false)
-  }
-
-  const handleItemsPerPageChange = (e) => {
-    setItemsPerPage(Number(e.target.value));
-    setCurrentPage(1);
-  };
-
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
+    if (state.Common.successCode === 200) {
+      setShowDeleteVendor(false)
+      setShowAddVendor(false)
+      // setIsVisible(true)
+      dispatch({ type: RESET_CODE })
     }
-  };
+
+  }, [state.Common.successCode])
+
+
+
+  useEffect(() => {
+    dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
+  }, [])
+
+
+  console.log("state", state)
+
+  useEffect(() => {
+    if (state.Common.successCode === 200) {
+      setVendorList(state.vendor?.vendorList)
+
+      setTimeout(() => {
+        dispatch({ type: RESET_CODE })
+      }, 5000)
+
+    }
+
+  }, [state.Common.successCode])
+
+
+
+
+
+
+console.log("isVisible",isVisible)
+
+
 
 
 
   return (
-    <div className='bg-slate-100  min-h-fit w-full p-4 rounded-tl-lg rounded-tr-lg   m-0'>
-      {
-        isVisible ?
+
+    <>
+      <div className='bg-slate-100  h-fit w-full p-4 rounded-tl-lg rounded-tr-lg   m-0'>
+
+        {
+          state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
+        }
+        {
+          isVisible ?
 
           <div className=' bg-white rounded-2xl h-fit ps-5 pt-3 pe-5'>
 
+
             <div className="sticky top-0 z-10 flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2">
 
-              <h2 className=" text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold font-Gilroy text-black">
+              <h2 className=" text-lg sm:text-xl md:text-xl lg:text-xl font-semibold font-Gilroy text-black">
                 Vendor
               </h2>
 
@@ -209,9 +286,9 @@ function VendorList() {
               <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
                 <thead className="bg-slate-100 sticky top-0 z-10">
                   <tr>
-                    <th className="px-4 py-2">
-                      <img src={Minus} alt='Minus' />
-                    </th>
+                    {/* <th className="px-4 py-2">
+                    <img src={Minus} alt='Minus' />
+                  </th> */}
                     <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
                     <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
                     <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
@@ -223,21 +300,21 @@ function VendorList() {
                   </tr>
                 </thead>
                 <tbody className=" ">
-                  {data.map((item, index) => (
+                  {paginatedData.map((item, index) => (
                     <tr key={index} className="border-0">
-                      <td className=" px-4 py-2"> <img src={Minus} alt='Minus' /></td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.name}</td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contact}</td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.email}</td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.mobile}</td>
-                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.Amount}</td>
+                      {/* <td className=" px-4 py-2"> <img src={Minus} alt='Minus' /></td> */}
+                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
+                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contactPersonName}</td>
+                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.emailId}</td>
+                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contactNumber}</td>
+                      <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.Amount || '-'}</td>
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
-                        <div onClick={(e) => handleShowPopup(item.id, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
+                        <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
                           <HiOutlineDotsVertical className="text-black p-0" />
 
 
 
-                          {showPopup === item.id && (
+                          {showPopup === index && (
                             <div
                               ref={popupRef}
 
@@ -250,10 +327,10 @@ function VendorList() {
                               className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
 
                             >
-                              <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy" onClick={() => handleEditVendor()}>
+                              <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy" onClick={() => handleEditVendor(item)}>
                                 <Edit size="16" color="#205DA8" /> Edit
                               </div>
-                              <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy text-red-700" onClick={() => handleDeleteVendorPopup()}>
+                              <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy text-red-700" onClick={() => handleDeleteVendorPopup(item)}>
                                 <Trash size="16" color="#B91C1C" /> Delete
                               </div>
                             </div>
@@ -275,7 +352,7 @@ function VendorList() {
                   onChange={handleItemsPerPageChange}
                   className="border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none"
                 >
-                  <option value={4}>4</option>
+
                   <option value={10}>10</option>
                   <option value={50}>50</option>
                   <option value={100}>100</option>
@@ -303,16 +380,33 @@ function VendorList() {
               </div>
             </nav>
           </div>
+:
+null
+        }
+        {
+          showAddVendor &&
+          <BasicVendor handleClose={handleClose} vendorDetails={vendorDetails} />}
 
-          :
+        {
+          showDeleteVendor &&
+          <DeleteVendor handleClose={handleCloseForDeleteVedor} deleteVendorId={deleteVendorId} />
+        }
 
-          <BasicVendor />
-      }
-      {
-        showDeleteVendor &&
-        <DeleteVendor handleClose={handleCloseForDeleteVedor} />
-      }
-    </div>
+        {
+          showParticularVendor &&
+          <VendorDetails handleCloseVendor={handleCloseViewVendor} particularVendorDetails={particularVendorDetails} />
+        }
+
+
+
+
+
+
+
+
+      </div>
+
+    </>
   )
 }
 

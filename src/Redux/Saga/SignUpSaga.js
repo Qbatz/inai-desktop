@@ -1,27 +1,105 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { Sigup } from "../Action/CreateAction";
-import { SIGN_UP_REDUCER, SIGN_UP_SAGA ,ERROR_CODE} from "../../Utils/Constant";
+import { CreateAction, Verification, OtpSend, OtpVerified, AccountRegister } from "../Action/CreateAction";
+import { ACCOUNT_REGISTER_SAGA, ACCOUNT_REGISTER_REDUCER, OTP_VERIFY_SAGA, OTP_VERIFY_REDUCER, OTP_SEND_REDUCER, OTP_SEND_SAGA, CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE, SIGN_UP_VERIFICATION_SAGA, SIGN_UP_VERIFICATION_REDUCER } from "../../Utils/Constant";
 
 
-function* handleSignUp(action) {
-    const response = yield call(Sigup,action.payload)
-    if (response.status === 200 || response.data.statusCode === 200) {
-       yield put({ type:SIGN_UP_REDUCER, payload:{response: response.data}})
-      
+function* handleCreateAccount(action) {
+
+    try {
+        const response = yield call(CreateAction, action.payload);
+        if (response?.success || response?.status === 200) {
+            yield put({ type: SUCCESS_CODE, payload: { response } });
+        }
+        else if (response?.status === 400) {
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Invalid request" } });
+        }
+        else {
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }
-    if (response.status === 201 || response.data.statusCode === 201) {
-        yield put({ type:ERROR_CODE, payload:{message: response.data.message}})
-     }
-
-  
- }
+}
 
 
+function* handleVerification(action) {
+    try {
+        const response = yield call(Verification, action.payload);
+        if (response?.success || response?.status === 200) {
+            yield put({ type: SIGN_UP_VERIFICATION_REDUCER, payload: { is_verified: response.data.data.is_verified } });
+        }
+        else {
+            yield put({ type: ERROR_CODE, payload: { message: response?.message } });
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.message || error?.message;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+    }
+}
+
+function* handleSendOtp(action) {
+    try {
+        const response = yield call(OtpSend, action.payload);
+        if (response?.success || response?.status === 200) {
+            yield put({ type: OTP_SEND_REDUCER, payload: { response: response.data } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message } });
+        }
+        else {
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.message || error?.message;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+    }
+}
+
+
+function* handleOtpVerified(action) {
+    try {
+        const response = yield call(OtpVerified, action.payload);
+        if (response?.success || response?.status === 200) {
+            yield put({ type: OTP_VERIFY_REDUCER, payload: { response: response.data } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status } });
+        }
+        else {
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.message || error?.message;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+    }
+}
+
+
+function* handleAccountRegister(action) {
+    try {
+        const response = yield call(AccountRegister, action.payload);
+        console.log("response", response)
+        if (response?.success || response?.status === 200) {
+            yield put({ type: ACCOUNT_REGISTER_REDUCER, payload: { response: response.data } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status } });
+        }
+        else {
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.message || error?.message;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+    }
+}
 
 
 
+function* CreateAccountSaga() {
+    yield takeEvery(CREATE_ACCOUNT_API_CALL, handleCreateAccount);
+    yield takeEvery(SIGN_UP_VERIFICATION_SAGA, handleVerification);
+    yield takeEvery(OTP_SEND_SAGA, handleSendOtp);
+    yield takeEvery(OTP_VERIFY_SAGA, handleOtpVerified);
+    yield takeEvery(ACCOUNT_REGISTER_SAGA, handleAccountRegister);
 
-function* SignUpSaga(){
-    yield takeEvery(SIGN_UP_SAGA, handleSignUp)
- }
- export default SignUpSaga;
+
+
+}
+
+export default CreateAccountSaga;

@@ -16,10 +16,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { decryptData } from './Crypto/crypto';
+import { LOG_OUT } from './Utils/Constant'
+import Cookies from 'universal-cookie';
+import { useDispatch } from 'react-redux';
 import ResetPassword from './Pages/AccountManagement/ResetPassword';
 
 function App({ isLogged_In }) {
-
+  const dispatch = useDispatch();
+  const cookies = new Cookies();
   const [successLogin, setSuccessLogin] = useState(null)
   const [inaiLogin, setInaiLogin] = useState(localStorage.getItem("inai_login"));
 
@@ -35,21 +39,57 @@ function App({ isLogged_In }) {
   useEffect(() => {
     if (inaiLogin) {
       const decryptedData = decryptData(inaiLogin);
-        setSuccessLogin(decryptedData);
+      setSuccessLogin(decryptedData === "true" ? true : false);
+    } else {
+      setSuccessLogin(false);
     }
   }, [inaiLogin]);
+
+  const [tokenAccessDenied, setTokenAccessDenied] = useState(Number(cookies.get('access-denied-inai') || 0));
+
+
+  console.log("tokenAccessDenied", tokenAccessDenied, "successLogin", successLogin, "isLogged_In", isLogged_In, typeof successLogin)
+
+  useEffect(() => {
+    if (tokenAccessDenied === 206) {
+      dispatch({ type: LOG_OUT });
+      localStorage.removeItem("inai_login");
+      setSuccessLogin(false);
+      cookies.set('access-denied-inai', null, { path: '/', expires: new Date(0) });
+
+    }
+  }, [tokenAccessDenied]);
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTokenAccessDenied(Number(cookies.get('access-denied-inai')));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+
+
+
 
   return (
     <div>
       <ToastContainer position="top-right"
         autoClose={2000}
         hideProgressBar={true}
-        style={{ fontFamily: "Gilroy", fontSize: "16px" }} />
+        closeButton={false}
+        closeOnClick={true}
+        pauseOnHover={true}
+        draggable={true}
+        progress={undefined}
+        style={{ fontFamily: "Gilroy", fontSize: "14px" }} />
       <Router>
         <Routes>
 
           {
-            isLogged_In === true || successLogin === true ? (
+            isLogged_In || successLogin ? (
               <>
                 <Route path="/" element={<Sidebar />} />
                 <Route path="/form-display" element={<FormDisplay />} />
@@ -64,7 +104,7 @@ function App({ isLogged_In }) {
                   <Route path="/" element={<Login />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/sign-up" element={<SignUp />} />
-                  <Route path="/create-account" element={<CreateAccount />} />
+                  <Route path="/register" element={<CreateAccount />} />
                   <Route path="/forgot-user-name" element={<ForgotUserName />} />
                   <Route path="/forgot-client-id" element={<ForgotClientId />} />
                   <Route path="/password" element={<ForgotPassword />} />

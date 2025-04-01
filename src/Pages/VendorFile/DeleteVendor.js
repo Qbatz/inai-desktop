@@ -1,13 +1,18 @@
 import React from 'react'
+import { DELETE_VENDOR_SAGA } from '../Utils/Constant'
+import { useDispatch } from 'react-redux'
+function DeleteCustomer({ handleClose, deleteVendorId }) {
 
-function DeleteCustomer({handleClose}) {
+    const dispatch = useDispatch()
+
+    console.log("deleteVendorId", deleteVendorId)
 
 
-
-
-
-
-
+    const handleDeleteVendor = () => {
+        if (deleteVendorId) {
+            dispatchEvent({ type: DELETE_VENDOR_SAGA, payload: { VendorId: deleteVendorId } })
+        }
+    }
 
 
     return (
@@ -27,14 +32,15 @@ function DeleteCustomer({handleClose}) {
 
 
                 <div className="flex justify-center border-t-0 mt-[10px] space-x-4">
-                    <button  
-                    onClick={handleClose}
+                    <button
+                        onClick={handleClose}
                         className="w-[160px] h-[52px] rounded-lg border border-[#205DA8] text-[#205DA8] font-semibold text-[14px] bg-white font-Montserrat"
 
                     >
                         Cancel
                     </button>
                     <button
+                        onClick={handleDeleteVendor}
                         className="w-[160px] h-[52px] rounded-lg bg-[#205DA8] text-white font-semibold text-[14px] font-Montserrat"
 
                     >

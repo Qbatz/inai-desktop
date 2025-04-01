@@ -1,4 +1,4 @@
-import { SIGN_IN_REDUCER, LOG_OUT } from "../../Utils/Constant";
+import { SIGN_IN_REDUCER, LOG_OUT, LOG_IN } from "../../Utils/Constant";
 
 export const initialState = {
    
@@ -12,8 +12,11 @@ export const initialState = {
     switch (action.type) {
 
        case SIGN_IN_REDUCER:
-          return { ...state, token : action.payload.token, isLoggedIn: true  }
+          return { ...state, token : action.payload.token }
  
+          case LOG_IN:
+            return { ...state,  isLoggedIn: true  }
+   
           case LOG_OUT:
           return { ...state,  isLoggedIn: false  }
  

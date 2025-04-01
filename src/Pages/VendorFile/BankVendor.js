@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { RESET_VENDOR_ID,VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA,EDIT_VENDOR_SAGA } from '../Utils/Constant'
+import { RESET_VENDOR_ID,VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA,EDIT_VENDOR_SAGA } from '../../Utils/Constant'
 
 
 function BankVendor(props) {
@@ -10,10 +10,7 @@ function BankVendor(props) {
 
   const dispatch = useDispatch();
   const state = useSelector(state => state)
-
-
   console.log("state", state)
-
   console.log("basicDetails", props.basicDetails, "payload", props.payload)
 
 

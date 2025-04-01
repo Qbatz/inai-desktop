@@ -2,7 +2,7 @@ import { SIGN_UP_VERIFICATION_REDUCER, OTP_SEND_REDUCER, STORE_VERIFY_CODE } fro
 
 export const initialState = {
 
-   is_verified: 0,
+   is_verified: null,
    otpValue: 0,
    verifyCode: ''
 }

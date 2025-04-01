@@ -3,7 +3,7 @@ import AddressVendor from "./AddressVendor";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID } from "../Utils/Constant";
+import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID } from "../../Utils/Constant";
 import { X } from "lucide-react";
 
 function BasicVendor({ handleClose, vendorDetails }) {

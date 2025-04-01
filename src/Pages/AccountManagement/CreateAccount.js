@@ -1,8 +1,4 @@
-<<<<<<< HEAD:src/LandingPages/CreateAccount.js
-/* eslint-disable react-hooks/exhaustive-deps */
-=======
 /* eslint-disable react-hooks/exhaustive-deps */
->>>>>>> 05d12882372ba162a36402b2f2724e78e6ef6e12:src/Pages/AccountManagement/CreateAccount.js
 import React, { useEffect, useState } from 'react';
 import LoginImage from '../../Asset/Images/Login_Image.svg';
 import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
@@ -10,26 +6,17 @@ import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-<<<<<<< HEAD:src/LandingPages/CreateAccount.js
-import { CREATE_ACCOUNT_API_CALL, RESET_CODE, SIGN_UP_VERIFICATION_SAGA, STORE_VERIFY_CODE } from "../Utils/Constant";
+import { CREATE_ACCOUNT_API_CALL, RESET_CODE, SIGN_UP_VERIFICATION_SAGA, STORE_VERIFY_CODE } from "../../Utils/Constant";
 import SignUp from './SignUp';
-=======
-import { CREATE_ACCOUNT_API_CALL, RESET_CODE } from "../../Utils/Constant";
->>>>>>> 05d12882372ba162a36402b2f2724e78e6ef6e12:src/Pages/AccountManagement/CreateAccount.js
+
 
 
 function CreateAccount() {
 
     const state = useSelector(state => state)
-<<<<<<< HEAD:src/LandingPages/CreateAccount.js
-
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
     const emailid = useSelector(state => state?.Common?.emailid)
 
-=======
-    const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
-    const emailid = useSelector(state => state?.Common?.emailid)
->>>>>>> 05d12882372ba162a36402b2f2724e78e6ef6e12:src/Pages/AccountManagement/CreateAccount.js
 
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
@@ -54,12 +41,7 @@ function CreateAccount() {
     };
 
     const handleCaptchaChange = (value) => {
-<<<<<<< HEAD:src/LandingPages/CreateAccount.js
-=======
-
         console.log('value', value);
-
->>>>>>> 05d12882372ba162a36402b2f2724e78e6ef6e12:src/Pages/AccountManagement/CreateAccount.js
         setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
     };
@@ -88,13 +70,9 @@ function CreateAccount() {
             return;
         }
     };
+  
 
-<<<<<<< HEAD:src/LandingPages/CreateAccount.js
-=======
 
-   
-
->>>>>>> 05d12882372ba162a36402b2f2724e78e6ef6e12:src/Pages/AccountManagement/CreateAccount.js
     useEffect(() => {
         if (emailid) {
             setEmail("");
@@ -112,14 +90,7 @@ function CreateAccount() {
 
 
     useEffect(() => {
-<<<<<<< HEAD:src/LandingPages/CreateAccount.js
         setErrorMessage(state?.Common?.errorMessage)
-=======
-
-        setErrorMessage(state?.Common?.errorMessage)
-
-
->>>>>>> 05d12882372ba162a36402b2f2724e78e6ef6e12:src/Pages/AccountManagement/CreateAccount.js
     }, [state.Common.errorMessage])
 
 
@@ -186,8 +157,7 @@ function CreateAccount() {
                         </div>
 
                         {
-                            state.signUp.is_verified === 1 || state.signUp.is_verified === null ? <>
-                                <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 && "Email is already Verified"}</label>
+                            state.signUp.is_verified === null ? <>
 
                                 <div className="w-full max-w-[450px]">
                                     <div className="mb-2">
@@ -255,7 +225,7 @@ function CreateAccount() {
                                     </div>
                                 </div>
                             </>
-                                :
+                                :  state.signUp.is_verified === 0 ?
 
                                 <>
 
@@ -263,6 +233,9 @@ function CreateAccount() {
                                     <SignUp />
 
                                 </>
+                                :
+                                <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 && "Email is already Verified"}</label>
+
 
                         }
 

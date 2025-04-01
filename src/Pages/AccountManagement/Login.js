@@ -8,11 +8,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import './ReCaptcha.css'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-<<<<<<< HEAD:src/LandingPages/Login.js
-import { SIGN_IN_SAGA, RESET_CODE, LOG_IN } from '../Utils/Constant'
-=======
-import { SIGN_IN_SAGA, RESET_CODE } from '../../Utils/Constant'
->>>>>>> 05d12882372ba162a36402b2f2724e78e6ef6e12:src/Pages/AccountManagement/Login.js
+import { SIGN_IN_SAGA, RESET_CODE, LOG_IN } from '../../Utils/Constant'
 import Cookies from 'universal-cookie';
 import { encryptData } from '../../Crypto/crypto';
 import { connect } from 'react-redux';

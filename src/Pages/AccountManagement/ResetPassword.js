@@ -64,7 +64,7 @@ const ReSetPassword = () => {
             sethashError(""); 
     
             try {
-                dispatch({ type: RESET_PAGE_API_CALL, payload: { verify_code: verifycode } });
+                dispatch({ type: RESET_PAGE_API_CALL, payload: { verify_code: hashValue } });
             } catch (error) {
                 sethashError("Error verifying link. Please try again.");
             } finally {
@@ -126,7 +126,7 @@ const ReSetPassword = () => {
             if (password && confirmPassword) {
                 console.log("dispacth");
 
-                dispatch({ type: RESET_PASSWORD_API_CALL, payload: { password: password, password2: confirmPassword, verify_code: verifycode } })
+                dispatch({ type: RESET_PASSWORD_API_CALL, payload: { password: password, password2: confirmPassword, verify_code: hash } })
 
             }
            

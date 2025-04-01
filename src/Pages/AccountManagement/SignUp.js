@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
-import { OTP_SEND_SAGA, OTP_VERIFY_SAGA, ACCOUNT_REGISTER_SAGA, RESET_CODE } from '../Utils/Constant'
+import { OTP_SEND_SAGA, OTP_VERIFY_SAGA, ACCOUNT_REGISTER_SAGA, RESET_CODE } from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
 
 

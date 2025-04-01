@@ -59,10 +59,11 @@ export const EDIT_VENDOR_SAGA = "Edit_Vendor_Saga";
 
 export const RESET_VENDOR_ID = "Reset_Vendor_Id";
 
+export const DELETE_VENDOR_REDUCER = "Delete_Vendor_Reducer";
+export const DELETE_VENDOR_SAGA = "Delete_Vendor_Saga";
 
-
-
-
+export const VIEW_VENDOR_REDUCER = "View_Vendor_Reducer";
+export const VIEW_VENDOR_SAGA = "View_Vendor_Saga";
 
 
 

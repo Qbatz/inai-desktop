@@ -4,14 +4,16 @@ import {
    VENDOR_ADDRESS_INFO_REDUCER,
    VENDOR_BANK_INFO_REDUCER,
    CREATE_VENDOR_REDUCER,
-   VENDOR_REDUCER
+   VENDOR_REDUCER,
+   VIEW_VENDOR_REDUCER
 } from "../../Utils/Constant";
 
 
 
 export const initialState = {
    vendorId: '',
-   vendorList: []
+   vendorList: [],
+   ParticularVendorList: []
 }
 
 const VendorReducer = (state = initialState, action) => {
@@ -35,6 +37,8 @@ const VendorReducer = (state = initialState, action) => {
       case RESET_VENDOR_ID:
          return { ...state, vendorId: '' }
 
+      case VIEW_VENDOR_REDUCER:
+         return { ...state, ParticularVendorList: action.payload.Vendor }
 
 
       default:

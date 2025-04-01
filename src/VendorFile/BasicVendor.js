@@ -3,7 +3,7 @@ import AddressVendor from "./AddressVendor";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID} from "../Utils/Constant";
+import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID } from "../Utils/Constant";
 import { X } from "lucide-react";
 
 function BasicVendor({ handleClose, vendorDetails }) {
@@ -322,8 +322,10 @@ function BasicVendor({ handleClose, vendorDetails }) {
             setGstVat('');
             setAdditionalContacts([]);
             dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
-            dispatch({ type: RESET_CODE })
-            dispatch({ type: RESET_VENDOR_ID})
+            setTimeout(() => {
+                // dispatch({ type: RESET_CODE })
+                dispatch({ type: RESET_VENDOR_ID })
+            }, 6000)
         }
 
     }, [state.Common.successCode])
@@ -420,7 +422,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact  Number<span className='text-red-500'>*</span> </label>
                                         <input
-                                           
+
                                             type='text'
                                             value={contactNumber}
                                             onChange={handleContactNumberChange}
@@ -434,7 +436,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID <span className='text-red-500'>*</span> </label>
                                         <input
-                                           
+
                                             type='text'
                                             value={email}
                                             onChange={handleEmailChange}
@@ -448,7 +450,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div>
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Designation <span className='text-red-500'>*</span> </label>
                                         <input
-                                         
+
                                             type='text'
                                             value={designation}
                                             onChange={handleDesignationChange}
@@ -462,7 +464,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>GST/VAT <span className='text-red-500'>*</span></label>
                                         <input
-                                                                                       type='text'
+                                            type='text'
                                             value={gstVat}
                                             onChange={handleGstVatChange}
                                             placeholder='Enter GST/VAT'

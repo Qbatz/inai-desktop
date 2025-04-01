@@ -43,15 +43,15 @@ function App({ isLogged_In }) {
     if (inaiLogin) {
       const decryptedData = decryptData(inaiLogin);
       setSuccessLogin(decryptedData === "true" ? true : false);
-    }else {
+    } else {
       setSuccessLogin(false);
-  }
+    }
   }, [inaiLogin]);
 
   const [tokenAccessDenied, setTokenAccessDenied] = useState(Number(cookies.get('access-denied-inai') || 0));
 
 
-console.log("tokenAccessDenied",tokenAccessDenied ,"successLogin",successLogin,"isLogged_In",isLogged_In ,typeof successLogin)
+  console.log("tokenAccessDenied", tokenAccessDenied, "successLogin", successLogin, "isLogged_In", isLogged_In, typeof successLogin)
 
   useEffect(() => {
     if (tokenAccessDenied === 206) {
@@ -82,7 +82,12 @@ console.log("tokenAccessDenied",tokenAccessDenied ,"successLogin",successLogin,"
       <ToastContainer position="top-right"
         autoClose={2000}
         hideProgressBar={true}
-        style={{ fontFamily: "Gilroy", fontSize: "16px" }} />
+        closeButton={false}
+        closeOnClick={true}
+        pauseOnHover={true}
+        draggable={true}
+        progress={undefined}
+        style={{ fontFamily: "Gilroy", fontSize: "14px" }} />
       <Router>
         <Routes>
 

@@ -45,14 +45,11 @@ export async function EditVendor(bank) {
 
 
 export async function DeleteVendor(del) {
-  return await AxiosConfig.post('', del,{
-   data:del
-})
+  return await AxiosConfig.delete(`/usr/vendor/${del}`);
 }
 
 
 export async function ParticularVendor(vendorId) {
-  console.log("Vendor ID:", vendorId);
-  return await AxiosConfig.get(`/usr/vendor/${vendorId}`); 
+    return await AxiosConfig.get(`/usr/vendor/${vendorId}`); 
 }
 

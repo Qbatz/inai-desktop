@@ -10,9 +10,7 @@ function BankVendor(props) {
 
   const dispatch = useDispatch();
   const state = useSelector(state => state)
-  console.log("state", state)
-  console.log("basicDetails", props.basicDetails, "payload", props.payload)
-
+ 
 
 
 
@@ -162,7 +160,7 @@ function BankVendor(props) {
 
 
 
-console.log("props",props)
+
 
 
   const handleSubmit = () => {
@@ -266,7 +264,7 @@ console.log("props",props)
             routingAccountIndusand: iban || ""
         }]
     }
-    console.log("EditPayload",EditPayload)
+    
 
 if(props.vendorDetail){
   dispatch({

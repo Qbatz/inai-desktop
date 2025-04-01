@@ -60,7 +60,7 @@ function FormBuilder(props) {
             options: prev.options.filter((_, i) => i !== index)
         }));
     };
-    console.log("formData", formData)
+  
 
 
 

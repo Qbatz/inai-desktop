@@ -50,7 +50,7 @@ function VendorList() {
   const totalPages = Math.ceil(vendorList.length / itemsPerPage);
 
   const handleSelect = (ranges) => {
-    console.log("ranges", ranges)
+
     setDateRange([ranges.selection]);
     setShowPicker(false);
   };
@@ -91,8 +91,7 @@ function VendorList() {
   }
 
   const handleEditVendor = (vendorDetails) => {
-    console.log("vendorDetails", vendorDetails)
-    setShowAddVendor(true)
+       setShowAddVendor(true)
     setIsVisible(false)
     setVendorDetails(vendorDetails)
   }
@@ -111,6 +110,7 @@ function VendorList() {
 
 
   const handleViewVendor = (item) => {
+
     setShowParticularVendor(true)
     setIsVisible(false)
     setParticularVendorDetails(item)
@@ -157,7 +157,7 @@ function VendorList() {
     if (state.Common.successCode === 200) {
       setShowDeleteVendor(false)
       setShowAddVendor(false)
-      // setIsVisible(true)
+            setIsVisible(true)
       dispatch({ type: RESET_CODE })
     }
 
@@ -170,7 +170,7 @@ function VendorList() {
   }, [])
 
 
-  console.log("state", state)
+ 
 
   useEffect(() => {
     if (state.Common.successCode === 200) {
@@ -183,16 +183,6 @@ function VendorList() {
     }
 
   }, [state.Common.successCode])
-
-
-
-
-
-
-console.log("isVisible",isVisible)
-
-
-
 
 
   return (

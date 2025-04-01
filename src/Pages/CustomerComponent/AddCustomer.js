@@ -163,15 +163,15 @@ function AddCustomer() {
 
 
 
-    console.log("officeAddress", officeAddress, "shippingAddress", shippingAddress)
+    // console.log("officeAddress", officeAddress, "shippingAddress", shippingAddress)
 
-    console.log("formData", formData)
+    // console.log("formData", formData)
 
-    console.log("natureOfBusiness", natureOfBusiness)
+    // console.log("natureOfBusiness", natureOfBusiness)
 
-    console.log("contacts", contacts)
+    // console.log("contacts", contacts)
 
-    console.log("bankDetailsList", bankDetailsList)
+    // console.log("bankDetailsList", bankDetailsList)
 
 
     const handleOfficeChange = (field, value) => {
@@ -359,8 +359,7 @@ function AddCustomer() {
 
 
         if (isValid) {
-            console.log("Form submitted successfully:", formData);
-
+            
         }
 
     };
@@ -419,8 +418,7 @@ function AddCustomer() {
 
     }
 
-    console.log("error for all", errors)
-
+  
 
     const handleCustomerSubmit = () => {
         let isValid = true;
@@ -500,12 +498,11 @@ function AddCustomer() {
 
         finalErrors = { ...tempErrors, ...addressErrors, ...bankErrors };
 
-        console.log("finalErrors", finalErrors)
-
+        
         if (Object.keys(finalErrors).length > 0) {
             setErrors(finalErrors);
         } else {
-            console.log(formData, officeAddress, shippingAddress, bankDetailsList);
+            // console.log(formData, officeAddress, shippingAddress, bankDetailsList);
         }
 
         if (isValid) {

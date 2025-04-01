@@ -9,9 +9,6 @@ function AddressVendor(props) {
   const dispatch = useDispatch();
   const stateData = useSelector(state => state)
 
-
-  console.log("state", stateData)
-
   const [officeAddress1, setOfficeAddress1] = useState("");
   const [officeAddress2, setOfficeAddress2] = useState('');
   const [officeAddress3, setOfficeAddress3] = useState('');

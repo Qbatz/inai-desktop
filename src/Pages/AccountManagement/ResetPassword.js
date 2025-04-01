@@ -124,9 +124,7 @@ const ReSetPassword = () => {
 
         if (validateForm()) {
             if (password && confirmPassword) {
-                console.log("dispacth");
-
-                dispatch({ type: RESET_PASSWORD_API_CALL, payload: { password: password, password2: confirmPassword, verify_code: hash } })
+                            dispatch({ type: RESET_PASSWORD_API_CALL, payload: { password: password, password2: confirmPassword, verify_code: hash } })
 
             }
            

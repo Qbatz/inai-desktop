@@ -12,10 +12,6 @@ function VendorDetails({ handleCloseVendor, particularVendorDetails }) {
   const dispatch = useDispatch()
   const state = useSelector(state => state)
 
-  console.log("particularVendorDetails", particularVendorDetails)
-
-  console.log("state", state)
-
   useEffect(() => {
     if (particularVendorDetails) {
       dispatch({ type: VIEW_VENDOR_SAGA, payload: particularVendorDetails });

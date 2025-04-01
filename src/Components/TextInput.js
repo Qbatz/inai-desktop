@@ -9,7 +9,7 @@ const TextInput = ({placeholder, value, title, callback = ''}) => {
         callback(inputValue);
     
                if (inputValue === "") {
-          console.log("Input field cleared!");
+          
         }
       };
     

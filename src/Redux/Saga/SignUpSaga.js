@@ -75,8 +75,7 @@ function* handleOtpVerified(action) {
 function* handleAccountRegister(action) {
     try {
         const response = yield call(AccountRegister, action.payload);
-        console.log("response", response)
-        if (response?.success || response?.status === 200) {
+             if (response?.success || response?.status === 200) {
             yield put({ type: ACCOUNT_REGISTER_REDUCER, payload: { response: response.data } });
             yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status } });
         }

@@ -15,14 +15,14 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 
-function Login({ message, loginStatusCode}) {
+function Login({ message, loginStatusCode }) {
 
   const navigate = useNavigate()
 
   const dispatch = useDispatch();
-const state = useSelector(state => state)
+  const state = useSelector(state => state)
 
- 
+
 
   const [clientId, setClientId] = useState('');
   const [userId, setUserId] = useState('');
@@ -144,7 +144,7 @@ const state = useSelector(state => state)
     <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4'>
       <div className='bg-white  h-auto max-w-6xl rounded-3xl shadow-lg !mt-[8px] !mb-[10px]'>
 
-      {
+        {
           state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
         }
 
@@ -264,16 +264,16 @@ const state = useSelector(state => state)
                   </label>
                 </div>
               </div>
+              <div className='flex justify-center'>
+                <div className="p-0 w-fit font-Gilroy text-lg bg-white flex justify-center" style={{ transformOrigin: "0 0", border: "none", }}>
+                  <ReCAPTCHA
+                    sitekey="6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k"
+                    onChange={handleCaptchaChange}
+                    className='w-fit font-Gilroy bg-white'
 
-              <div className="p-0 w-fit font-Gilroy text-lg bg-white" style={{ transform: "scale(1.5,1)", transformOrigin: "0 0", border: "none", }}>
-                <ReCAPTCHA
-                  sitekey="6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k"
-                  onChange={handleCaptchaChange}
-                  className='w-fit font-Gilroy bg-white'
-
-                />
+                  />
+                </div>
               </div>
-
 
               {captchaError &&
                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>

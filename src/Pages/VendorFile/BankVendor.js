@@ -71,7 +71,7 @@ function BankVendor(props) {
 
   const handleSwiftChange = (e) => {
     setSwift(e.target.value)
-    clearError("siftCode");
+    clearError("swift");
   }
 
   const handleAdCodeChange = (e) => {
@@ -283,33 +283,33 @@ function BankVendor(props) {
   };
 
 
-  const handleSaveClick = () => {
-    if (!validateForm()) return;
-    dispatch({
-      type: VENDOR_BANK_INFO_SAGA,
-      payload: {
-        vendorId: props?.vendorDetail?.vendorId || "",
-        bankDetails: [
-          {
-            name: beneficiaryName,
-            accountNo: accountNumber,
-            bankName: bankName,
-            ifscCode: ifscCode,
-            address1: bankAddress,
-            address2: bankAddress2,
-            address3: bankAddress3,
-            country: bankCountry,
-            routingBank: intermediaryBank,
-            swiftCode: swift,
-            routingBankAddress: intermediaryDetails,
-            routingAccountIndusand: iban
-          }
-        ]
-      }
-    });
+  // const handleSaveClick = () => {
+  //   if (!validateForm()) return;
+  //   dispatch({
+  //     type: VENDOR_BANK_INFO_SAGA,
+  //     payload: {
+  //       vendorId: props?.vendorDetail?.vendorId || "",
+  //       bankDetails: [
+  //         {
+  //           name: beneficiaryName,
+  //           accountNo: accountNumber,
+  //           bankName: bankName,
+  //           ifscCode: ifscCode,
+  //           address1: bankAddress,
+  //           address2: bankAddress2,
+  //           address3: bankAddress3,
+  //           country: bankCountry,
+  //           routingBank: intermediaryBank,
+  //           swiftCode: swift,
+  //           routingBankAddress: intermediaryDetails,
+  //           routingAccountIndusand: iban
+  //         }
+  //       ]
+  //     }
+  //   });
 
 
-  }
+  // }
 
 
 

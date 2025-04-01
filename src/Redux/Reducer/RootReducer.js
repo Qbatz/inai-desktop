@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import CommonReducer from "./CommonReducer";
-import SignInReducer from "./SignInReducer";import SignInReducer from "./SignInReducer";
+import SignInReducer from "./SignInReducer";
 import SignUpReducer from './SignUpReducer'
 import VendorReducer from "./VendorReducer";
 

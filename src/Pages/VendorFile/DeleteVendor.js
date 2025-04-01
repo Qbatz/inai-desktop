@@ -1,5 +1,5 @@
 import React from 'react'
-import { DELETE_VENDOR_SAGA } from '../Utils/Constant'
+import { DELETE_VENDOR_SAGA } from '../../Utils/Constant'
 import { useDispatch } from 'react-redux'
 function DeleteCustomer({ handleClose, deleteVendorId }) {
 

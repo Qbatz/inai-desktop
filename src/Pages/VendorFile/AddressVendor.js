@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
-import { RESET_VENDOR_ID,VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA } from '../Utils/Constant';
+import { RESET_VENDOR_ID,VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA } from '../../Utils/Constant';
 import { useDispatch, useSelector } from 'react-redux';
 
 

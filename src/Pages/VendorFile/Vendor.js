@@ -8,10 +8,9 @@ import "react-date-range/dist/theme/default.css";
 import { enGB } from "date-fns/locale";
 import BasicVendor from "./BasicVendor";
 import DeleteVendor from './DeleteVendor';
-import Minus from '../../Asset/Icon/minus-square.svg';
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
-import { RESET_CODE, VENDOR_SAGA } from '../Utils/Constant'
+import { RESET_CODE, VENDOR_SAGA } from '../../Utils/Constant'
 import VendorDetails from './VendorDetails'
 
 

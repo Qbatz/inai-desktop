@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import Dot from '../Icon/Dot.svg'
+import Dot from '../../Asset/Icon/Dot.svg'
 import { X } from "lucide-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VIEW_VENDOR_SAGA } from '../Utils/Constant'
+import { VIEW_VENDOR_SAGA } from '../../Utils/Constant'
 
 
 

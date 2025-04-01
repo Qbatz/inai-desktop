@@ -1,7 +1,7 @@
-import Profile from "../Images/Profile_S.svg";
-import DownArrow from '../Icon/arrow-down.svg';
-import Notification from '../Icon/notification.svg';
-import Search from '../Icon/search-normal.svg';
+import Profile from "../Asset/Images/Profile_S.svg";
+import DownArrow from '../Asset/Icon/arrow-down.svg';
+import Notification from '../Asset/Icon/notification.svg';
+import Search from '../Asset/Icon/search-normal.svg';
 
 export default function Navbar() {
     return (

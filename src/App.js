@@ -3,11 +3,11 @@ import Login from './Pages/AccountManagement/Login'
 import FormDisplay from './FormBuilderComponent/FormDisplay';
 import './App.css'
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import AddCustomer from './CustomerComponent/AddCustomer';
+import AddCustomer from './Pages/CustomerComponent/AddCustomer';
 import CreateAccount from './Pages/AccountManagement/CreateAccount';
 import ForgotUserName from './Pages/AccountManagement/ForgotUserName';
 import Sidebar from './Components/Sidebar';
-import CustomerDetails from './CustomerComponent/CustomerDetails';
+import CustomerDetails from './Pages/CustomerComponent/CustomerDetails';
 import ForgotClientId from './Pages/AccountManagement/ForgotClientId'
 import ForgotPassword from './Pages/AccountManagement/ForgotPassword';
 import SignUp from './Pages/AccountManagement/SignUp'

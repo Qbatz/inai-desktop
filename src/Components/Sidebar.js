@@ -2,19 +2,19 @@ import React, { useState } from "react";
 import Dashboard from "../Pages/Dashboard";
 import Vendor from "../Pages/VendorFile/Vendor";
 import Product from "./Product";
-import InaiLogo from "../Images/Inai_Logo.svg";
-import ClientIcon from '../Icon/Client_S.svg';
-import ClientBlue from '../Icon/Client_blue.svg';
-import VendorIcon from '../Icon/Vendor_S.svg';
-import VendorBlue from '../Icon/Vendor_blue.svg'
-import ProductIcon from '../Icon/Product_S.svg';
-import ProductBlue from '../Icon/Product_blue.svg';
-import InvoiceIcon from '../Icon/Invoice_S.svg';
-import InvoiceBlue from '../Icon/Invoice_blue.svg';
-import Profile from "../Images/Profile_S.svg"
-import Dot from '../Icon/Dot_s.svg'
+import InaiLogo from "../Asset/Images/Inai_Logo.svg";
+import ClientIcon from '../Asset/Icon/Client_S.svg';
+import ClientBlue from '../Asset/Icon/Client_blue.svg';
+import VendorIcon from '../Asset/Icon/Vendor_S.svg';
+import VendorBlue from '../Asset/Icon/Vendor_blue.svg'
+import ProductIcon from '../Asset/Icon/Product_S.svg';
+import ProductBlue from '../Asset/Icon/Product_blue.svg';
+import InvoiceIcon from '../Asset/Icon/Invoice_S.svg';
+import InvoiceBlue from '../Asset/Icon/Invoice_blue.svg';
+import Profile from "../Asset/Images/Profile_S.svg"
+import Dot from '../Asset/Icon/Dot_s.svg'
 import Topbar from './Topbar'
-import CustomerList from "../CustomerComponent/CustomerList";
+import CustomerList from "../Pages/CustomerComponent/CustomerList";
 import { Chart2, LoginCurve, Setting2, I24Support, Receipt1, Receipt2 } from "iconsax-react";
 import { useDispatch} from 'react-redux';
 import { LOG_OUT } from "../Utils/Constant";

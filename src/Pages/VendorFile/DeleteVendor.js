@@ -1,20 +1,29 @@
-import React from 'react'
-import { DELETE_VENDOR_SAGA } from '../../Utils/Constant'
-import { useDispatch } from 'react-redux'
+import React, { useEffect } from 'react'
+import { DELETE_VENDOR_SAGA ,VENDOR_SAGA,RESET_CODE} from '../../Utils/Constant'
+import { useDispatch, useSelector } from 'react-redux'
+
+
 function DeleteCustomer({ handleClose, deleteVendorId }) {
 
     const dispatch = useDispatch()
+    const state = useSelector(state => state)
 
-    console.log("deleteVendorId", deleteVendorId)
 
 
     const handleDeleteVendor = () => {
         if (deleteVendorId) {
-            dispatchEvent({ type: DELETE_VENDOR_SAGA, payload: { VendorId: deleteVendorId } })
+            dispatch({ type: DELETE_VENDOR_SAGA, payload: deleteVendorId })
         }
     }
 
+    useEffect(() => {
+        if (state.Common.successCode === 200) {
+            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
 
+            dispatch({ type: RESET_CODE })
+        }
+
+    }, [state.Common.successCode])
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6">

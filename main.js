@@ -13,7 +13,7 @@ app.whenReady().then(() => {
   mainWindow.loadURL("https://inaidev.s3remotica.com/");
 
   mainWindow.webContents.on("did-fail-load", () => {
-    console.log("Failed to load URL, retrying in 1 second...");
+   
     setTimeout(() => mainWindow.loadURL("https://inaidev.s3remotica.com/"), 1000);
   });
 

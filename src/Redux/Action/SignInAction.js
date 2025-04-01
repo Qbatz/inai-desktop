@@ -28,8 +28,7 @@ export async function ReSetPageAction(reset) {
 }
 
 export async function ReSetPassword(resetpassword) {
-  console.log("/user/reset-password");
-  
+ 
   return await AxiosConfig.post('/user/reset-password', resetpassword, {
     data: resetpassword
   })

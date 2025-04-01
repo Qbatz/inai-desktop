@@ -22,8 +22,7 @@ function* handleVendorAction(action) {
 
 
     } catch (error) {
-        console.log("error", error)
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+               const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
         const statusCode = error?.response?.status || error?.status;
         yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
     }
@@ -33,8 +32,7 @@ function* handleVendorAction(action) {
 function* handleVendorBasicInfo(action) {
     try {
         const response = yield call(AddBasicInfoVendor, action.payload)
-        console.log("response basic", response)
-        if (response.status === 200 || response.data.statusCode === 200) {
+                if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: VENDOR_BASIC_INFO_REDUCER, payload: { vendorId: response.data.vendorId } })
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
        
@@ -137,10 +135,7 @@ function* handleVendorBankInfo(action) {
 function* handleAddVendor(action) {
     try {
         const response = yield call(AddVendor, action.payload)
-
-        console.log("all vendor create response", response)
-
-        if (response.status === 200 || response.data.statusCode === 200) {
+            if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: CREATE_VENDOR_REDUCER, payload: { vendorId: response.data.vendorId } })
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
             toast.success(response.data.message || 'Success!', {
@@ -173,8 +168,6 @@ function* handleAddVendor(action) {
 function* handleEditVendor(action) {
     try {
         const response = yield call(EditVendor, action.payload)
-
-        console.log("edit vendor create response", response)
 
         if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
@@ -209,8 +202,7 @@ function* handleEditVendor(action) {
 function* handleDeleteVendor(action) {
     try {
         const response = yield call(DeleteVendor, action.payload)
-
-        console.log("delete vendor create response", response)
+    
 
         if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
@@ -247,16 +239,9 @@ function* handleDeleteVendor(action) {
 function* handleViewVendor(action) {
     try {
         const response = yield call(ParticularVendor, action.payload)
-
-        console.log("view vendor create response", response)
-
         if (response.status === 200 || response.data.statusCode === 200) {
-         
-            yield put({ type:VIEW_VENDOR_REDUCER, payload: {  Vendor: response.data.vendors} });
-
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
-           
-        }
+                     yield put({ type:VIEW_VENDOR_REDUCER, payload: {  Vendor: response.data.vendors} });
+                 }
         else if (response.status === 201 || response.data.statusCode === 201) {
             yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message } })
         }

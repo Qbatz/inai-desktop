@@ -163,15 +163,15 @@ function AddCustomer() {
 
 
 
-    console.log("officeAddress", officeAddress, "shippingAddress", shippingAddress)
+    // console.log("officeAddress", officeAddress, "shippingAddress", shippingAddress)
 
-    console.log("formData", formData)
+    // console.log("formData", formData)
 
-    console.log("natureOfBusiness", natureOfBusiness)
+    // console.log("natureOfBusiness", natureOfBusiness)
 
-    console.log("contacts", contacts)
+    // console.log("contacts", contacts)
 
-    console.log("bankDetailsList", bankDetailsList)
+    // console.log("bankDetailsList", bankDetailsList)
 
 
     const handleOfficeChange = (field, value) => {
@@ -188,7 +188,7 @@ function AddCustomer() {
         setShippingAddress((prev) => ({ ...prev, [field]: value }));
         setErrors((prevErrors) => ({
             ...prevErrors,
-            [`ship${field}`]: value.trim() ? "" : prevErrors[`ship${field}`],  
+            [`ship${field}`]: value.trim() ? "" : prevErrors[`ship${field}`],
         }));
     };
 
@@ -359,7 +359,6 @@ function AddCustomer() {
 
 
         if (isValid) {
-            console.log("Form submitted successfully:", formData);
 
         }
 
@@ -419,7 +418,6 @@ function AddCustomer() {
 
     }
 
-    console.log("error for all", errors)
 
 
     const handleCustomerSubmit = () => {
@@ -500,12 +498,11 @@ function AddCustomer() {
 
         finalErrors = { ...tempErrors, ...addressErrors, ...bankErrors };
 
-        console.log("finalErrors", finalErrors)
 
         if (Object.keys(finalErrors).length > 0) {
             setErrors(finalErrors);
         } else {
-            console.log(formData, officeAddress, shippingAddress, bankDetailsList);
+            // console.log(formData, officeAddress, shippingAddress, bankDetailsList);
         }
 
         if (isValid) {
@@ -561,11 +558,11 @@ function AddCustomer() {
                                     className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.businessName && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.businessName}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.businessName}
+                                        </span>
                                     </div>
                                 )}
 
@@ -581,11 +578,11 @@ function AddCustomer() {
                                     className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.contactPerson && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.contactPerson}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.contactPerson}
+                                        </span>
                                     </div>
                                 )}
                             </div>
@@ -602,11 +599,11 @@ function AddCustomer() {
                                 />
 
                                 {errors.contactNumber && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.contactNumber}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.contactNumber}
+                                        </span>
                                     </div>
                                 )}
 
@@ -621,11 +618,11 @@ function AddCustomer() {
                                     className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.emailId && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.emailId}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.emailId}
+                                        </span>
                                     </div>
                                 )}
                             </div>
@@ -640,11 +637,11 @@ function AddCustomer() {
                                     className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.designation && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.designation}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.designation}
+                                        </span>
                                     </div>
                                 )}
                             </div>
@@ -659,11 +656,11 @@ function AddCustomer() {
                                     className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.gstVat && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.gstVat}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.gstVat}
+                                        </span>
                                     </div>
                                 )}
                             </div>
@@ -678,11 +675,11 @@ function AddCustomer() {
                                     className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.cin && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.cin}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.cin}
+                                        </span>
                                     </div>
                                 )}
                             </div>
@@ -697,11 +694,11 @@ function AddCustomer() {
                                     className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.pan && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.pan}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.pan}
+                                        </span>
                                     </div>
                                 )}
                             </div>
@@ -716,11 +713,11 @@ function AddCustomer() {
                                     className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.tan && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.tan}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.tan}
+                                        </span>
                                     </div>
                                 )}
                             </div>
@@ -737,11 +734,11 @@ function AddCustomer() {
                                 </select>
 
                                 {errors.legalStatus && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        {errors.legalStatus}
-                                    </span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                            {errors.legalStatus}
+                                        </span>
                                     </div>
                                 )}
                             </div>
@@ -806,10 +803,10 @@ function AddCustomer() {
                                                 className="px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                             />
                                             {errors.contactErrors?.[index]?.name && (
-                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                                <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].name}</p>
-                                            </div>
+                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                    <MdError size={16} />
+                                                    <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].name}</p>
+                                                </div>
                                             )}
                                         </div>
 
@@ -825,10 +822,10 @@ function AddCustomer() {
                                                 className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                             />
                                             {errors.contactErrors?.[index]?.number && (
-                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                                <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].number}</p>
-                                           </div>
+                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                    <MdError size={16} />
+                                                    <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].number}</p>
+                                                </div>
                                             )}
                                         </div>
 
@@ -844,11 +841,11 @@ function AddCustomer() {
                                                 className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                             />
                                             {errors.contactErrors?.[index]?.email && (
-                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                                <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].email}</p>
-                                            </div>
-                                            
+                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                    <MdError size={16} />
+                                                    <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].email}</p>
+                                                </div>
+
                                             )}
                                         </div>
 
@@ -866,10 +863,10 @@ function AddCustomer() {
                                                 className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                             />
                                             {errors.contactErrors?.[index]?.designation && (
-                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                                <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].designation}</p>
-                                           </div>
+                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                    <MdError size={16} />
+                                                    <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].designation}</p>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
@@ -922,9 +919,9 @@ function AddCustomer() {
                                     className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.address1 && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs font-Gilroy">{errors.address1}</span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs font-Gilroy">{errors.address1}</span>
                                     </div>
                                 )}
                             </div>
@@ -968,9 +965,9 @@ function AddCustomer() {
                                     className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.city && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs font-Gilroy">{errors.city}</span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs font-Gilroy">{errors.city}</span>
                                     </div>
                                 )}
                             </div>
@@ -986,9 +983,9 @@ function AddCustomer() {
 
                                 </select>
                                 {errors.state && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs font-Gilroy">{errors.state}</span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs font-Gilroy">{errors.state}</span>
                                     </div>
                                 )}
                             </div>
@@ -1006,9 +1003,9 @@ function AddCustomer() {
                                     className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.postalCode && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs font-Gilroy">{errors.postalCode}</span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs font-Gilroy">{errors.postalCode}</span>
                                     </div>
                                 )}
                             </div>
@@ -1054,9 +1051,9 @@ function AddCustomer() {
                                     className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.shipaddress1 && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs font-Gilroy">{errors.shipaddress1}</span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs font-Gilroy">{errors.shipaddress1}</span>
                                     </div>
                                 )}
                             </div>
@@ -1102,9 +1099,9 @@ function AddCustomer() {
                                     className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                                 {errors.shipcity && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs font-Gilroy">{errors.shipcity}</span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs font-Gilroy">{errors.shipcity}</span>
                                     </div>
                                 )}
                             </div>
@@ -1118,9 +1115,9 @@ function AddCustomer() {
 
                                 </select>
                                 {errors.shipstate && (
-                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
-                                    <span className="text-red-500 text-xs font-Gilroy">{errors.shipstate}</span>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <span className="text-red-500 text-xs font-Gilroy">{errors.shipstate}</span>
                                     </div>
                                 )}
                             </div>
@@ -1139,7 +1136,7 @@ function AddCustomer() {
                                 />
                                 {errors.shippostalCode && (
                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16}  />
+                                        <MdError size={16} />
                                         <span className="text-red-500 text-xs font-Gilroy"> {errors.shippostalCode}</span>
                                     </div>
                                 )}
@@ -1329,7 +1326,7 @@ function AddCustomer() {
                                     </div>
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Country </label>
-{/* 
+                                        {/* 
                                         <input
 
                                             type='text'
@@ -1338,7 +1335,7 @@ function AddCustomer() {
                                             onChange={(e) => handleBankingChange(index, 'bankCountry', e.target.value)}
                                             className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                         /> */}
-                                         <select
+                                        <select
                                             value={bankDetails.bankCountry}
                                             onChange={(e) => handleBankingChange(index, 'bankCountry', e.target.value)}
                                             className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >

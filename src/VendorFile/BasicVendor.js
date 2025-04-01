@@ -1,21 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AddressVendor from "./AddressVendor";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
-import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID } from "../../Utils/Constant";
-import { X } from "lucide-react";
 
-function BasicVendor({ handleClose, vendorDetails }) {
-
-
-
-    const dispatch = useDispatch();
-    const state = useSelector(state => state)
-
-
-    
-    const [payload, setPayload] = useState(null);
+function BasicVendor() {
     const [activeTab, setActiveTab] = useState(1);
     const [businessName, setBusinessName] = useState("");
     const [contactPerson, setContactPerson] = useState("");
@@ -28,34 +16,8 @@ function BasicVendor({ handleClose, vendorDetails }) {
     const [pan, setPan] = useState('');
     const [legal, setLegal] = useState('');
     const [nature, setNature] = useState('');
-    const [additionalContacts, setAdditionalContacts] = useState([
-        { name: "", contactNumber: "", email: "", designation: "" }
-    ]);
+    const [additionalContacts, setAdditionalContacts] = useState([]);
     const [formErrors, setFormErrors] = useState({});
-    const [basicDetails, setBasicDetails] = useState('')
-
-
-    const handleBackBasic = (value) => {
-        setActiveTab(value)
-    }
-
-
-    const handleNextToBank = (value, payload) => {
-        setActiveTab(value)
-                setPayload(payload);
-
-    }
-
-
-    const handleBackToAddress = (value) => {
-        setActiveTab(value)
-    }
-
-
-
-
-
-
 
     const handleBusinessNameChange = (e) => {
         const value = e.target.value;
@@ -151,11 +113,11 @@ function BasicVendor({ handleClose, vendorDetails }) {
         }
         if (!designation.trim()) errors.designation = "Designation is required";
         if (!gstVat.trim()) errors.gstVat = "GST/VAT is required";
-        // if (!cin.trim()) errors.cin = "CIN is required";
-        // if (!tan.trim()) errors.tan = "TAN is required";
-        // if (!pan.trim()) errors.pan = "PAN is required";
-        // if (!legal) errors.legal = "Select Legal Status";
-        // if (!nature) errors.nature = "Select Nature of Business";
+        if (!cin.trim()) errors.cin = "CIN is required";
+        if (!tan.trim()) errors.tan = "TAN is required";
+        if (!pan.trim()) errors.pan = "PAN is required";
+        if (!legal) errors.legal = "Select Legal Status";
+        if (!nature) errors.nature = "Select Nature of Business";
         // --
 
 
@@ -183,64 +145,30 @@ function BasicVendor({ handleClose, vendorDetails }) {
     };
 
 
-
-
     const handleSaveClick = () => {
         if (validateForm()) {
-            const formattedAdditionalContacts = additionalContacts.map(contact => ({
-                name: contact.name,
-                contactNumber: Number(contact.contactNumber),
-                contactEmail: contact.email,
-                designation: contact.designation
-            }));
-            dispatch({
-                type: VENDOR_BASIC_INFO_SAGA,
-                payload: {
-                    vendor_id: vendorDetails?.vendorId || "",
-                    businessName:businessName,
-                    contactPersonName: contactPerson,
-                    contactNumber:contactNumber,
-                    emailId: email,
-                    designation:designation,
-                    gstvat: gstVat,
-                    additionalContactInfo: formattedAdditionalContacts,
-                }
-            });
+            const payload = {
+                businessName,
+                contactPerson,
+                contactNumber,
+                email,
+                designation,
+                gstVat,
+                cin,
+                tan,
+                pan,
+                legal,
+                nature,
+                additionalContacts,
+            };
 
+                      setActiveTab(2);
         }
     };
-
-
-
     const handleNextClick = () => {
         if (validateForm()) {
-
             setActiveTab(2);
-            const formattedAdditionalContacts = additionalContacts.map(contact => ({
-                name: contact.name,
-                contactNumber: Number(contact.contactNumber),
-                contactEmail: contact.email,
-                designation: contact.designation
-            }));
-
-
-            const payload = {
-
-                vendor_id: '',
-                businessName: businessName,
-                contactPersonName: contactPerson,
-                contactNumber: contactNumber,
-                emailId: email,
-                designation: designation,
-                gstvat: gstVat,
-                additionalContactInfo: formattedAdditionalContacts,
-
-
-            }
-
-            setBasicDetails(payload)
         }
-
     };
 
     const addContact = () => {
@@ -284,70 +212,15 @@ function BasicVendor({ handleClose, vendorDetails }) {
         setActiveTab(id);
     };
 
-    useEffect(() => {
-        if (vendorDetails) {
-            setBusinessName(vendorDetails.businessName || '');
-            setContactPerson(vendorDetails.contactPersonName || '');
-            setContactNumber(vendorDetails.contactNumber || '');
-            setEmail(vendorDetails.emailId || '');
-            setDesignation(vendorDetails.designation || '');
-            setGstVat(vendorDetails.gstvat || '');
-
-            setAdditionalContacts(
-                (vendorDetails.additionalContactInfo || []).map((item) => ({
-                    name: item.name || "",
-                    contactNumber: item.contactNumber || "",
-                    email: item.contactEmail || "",
-                    designation: item.designation || ""
-                }))
-            );
-
-
-        }
-    }, [vendorDetails]);
-
-    useEffect(() => {
-        if (state.Common.successCode === 200) {
-            setBusinessName('');
-            setContactPerson('');
-            setContactNumber('');
-            setEmail('');
-            setDesignation('');
-            setGstVat('');
-            setAdditionalContacts([]);
-            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
-            setTimeout(() => {
-                // dispatch({ type: RESET_CODE })
-                dispatch({ type: RESET_VENDOR_ID })
-            }, 6000)
-        }
-
-    }, [state.Common.successCode])
-
-
-
-
-
-
-
-
-
-
     return (
         <div className="bg-blueGray-100  w-full">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4">
-                <div className="flex items-center justify-between pe-12 mb-4">
-                    <h3 className="font-semibold text-xl font-Gilroy">{vendorDetails ? 'Edit Vendor' : 'Add Vendor'}</h3>
-                    <div onClick={handleClose} className="cursor-pointer text-lg font-bold border border-slate-400 rounded-full p-1 text-slate-500 hover:bg-slate-100 transition">
-                        <X size={20} />
-                    </div>                </div>
-
-
+                <h3 className="font-semibold mb-4 text-2xl">Vendor</h3>
                 <div className="sticky top-0  z-10 overflow-x-auto">
                     <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">
                         {tabs.map((tab) => (
                             <button
-                                key={tab.id} disabled
+                                key={tab.id}
                                 className={`px-4 py-2 font-Gilroy  md:px-6 lg:px-8 text-base
           ${activeTab === tab.id
                                         ? "border-b-4 border-[#205DA8] text-[#205DA8] font-semibold text-base"
@@ -361,14 +234,6 @@ function BasicVendor({ handleClose, vendorDetails }) {
                     </div>
                 </div>
 
-
-                {
-                    state.Common.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
-                }
-                {
-                    state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage
-                    } </label>
-                }
 
                 <div className="p-2 sm:p-2 md:p-2 lg:p-4 bg-white mt-4 rounded-2xl">
 
@@ -416,7 +281,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact  Number<span className='text-red-500'>*</span> </label>
                                         <input
-
+                                            id='clientId'
                                             type='text'
                                             value={contactNumber}
                                             onChange={handleContactNumberChange}
@@ -430,7 +295,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID <span className='text-red-500'>*</span> </label>
                                         <input
-
+                                            id='clientId'
                                             type='text'
                                             value={email}
                                             onChange={handleEmailChange}
@@ -444,7 +309,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div>
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Designation <span className='text-red-500'>*</span> </label>
                                         <input
-
+                                            id='clientId'
                                             type='text'
                                             value={designation}
                                             onChange={handleDesignationChange}
@@ -458,6 +323,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>GST/VAT <span className='text-red-500'>*</span></label>
                                         <input
+                                            id='clientId'
                                             type='text'
                                             value={gstVat}
                                             onChange={handleGstVatChange}
@@ -469,8 +335,8 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.gstVat} </p>)}
                                     </div>
-                                    {/* <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN </label>
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN <span className='text-red-500'>*</span></label>
                                         <input
 
                                             type='text'
@@ -484,7 +350,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.cin} </p>)}
                                     </div>
                                     <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  </label>
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  <span className='text-red-500'>*</span></label>
                                         <input
 
                                             type='text'
@@ -498,7 +364,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.pan} </p>)}
                                     </div>
                                     <div>
-                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN  </label>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN  <span className='text-red-500'>*</span></label>
                                         <input
 
                                             type='text'
@@ -513,7 +379,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     </div>
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                            Legal Status Firm 
+                                            Legal Status Firm <span className='text-red-500'>*</span>
                                         </label>
                                         <select
                                             id='legalStatusFirm'
@@ -533,7 +399,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     </div>
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                            Nature of Business 
+                                            Nature of Business <span className='text-red-500'>*</span>
                                         </label>
                                         <select
                                             id='natureOfBusiness'
@@ -551,115 +417,111 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                         {formErrors.nature && (
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.nature} </p>)}
-                                    </div> */}
+                                    </div>
 
 
                                 </div>
+                           
 
+                            <div className="pt-4">
 
-                                <div className="pt-4">
+                                {additionalContacts.map((contact, index) => (
+                                    <div key={contact.id} className="mt-4 p-4 ">
+                                        <h2 className="text-xl font-semibold mb-2 text-black">
+                                            Additional Contact {index + 1}
+                                        </h2>
+                                        <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block mb-2 text-neutral-800 font-medium">
+                                                    Contact Person Name<span className="text-red-500">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={contact.name}
+                                                    onChange={(e) => handleAdditionalContactChange(index, "name", e.target.value)}
+                                                    placeholder="Enter Contact Person Name"
+                                                    className="px-3 py-3 w-full border rounded-xl focus:outline-none"
+                                                />
+                                                {formErrors[`additionalName${index}`] && (
+                                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalName${index}`]} </p>
+                                                )}
+                                            </div>
 
-                                    {additionalContacts.map((contact, index) => (
-                                        <div key={contact.id} className="mt-4 p-4 ">
-                                            <h2 className="text-xl font-semibold mb-2 text-black font-Gilroy">
-                                                Additional Contact {index + 1}
-                                            </h2>
-                                            <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-3">
-                                                <div>
-                                                    <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
-                                                        Contact Person Name<span className="text-red-500 ">*</span>
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        value={contact.name}
-                                                        onChange={(e) => handleAdditionalContactChange(index, "name", e.target.value)}
-                                                        placeholder="Enter Contact Person Name"
-                                                        className="px-3 py-3 w-full font-Gilroy border rounded-xl focus:outline-none"
-                                                    />
-                                                    {formErrors[`additionalName${index}`] && (
-                                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalName${index}`]} </p>
-                                                    )}
-                                                </div>
-
-                                                <div>
-                                                    <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
-                                                        Contact Number <span className="text-red-500">*</span>
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        value={contact.contactNumber}
-                                                        onChange={(e) => handleAdditionalContactChange(index, "contactNumber", e.target.value)}
-                                                        placeholder="Enter Contact Number"
-                                                        className="px-3 py-3 font-Gilroy w-full border rounded-xl focus:outline-none"
-                                                    />
-                                                    {formErrors[`additionalContactNumber${index}`] && (
-                                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalContactNumber${index}`]} </p>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
-                                                        Email ID <span className="text-red-500">*</span>
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        value={contact.email}
-                                                        onChange={(e) => handleAdditionalContactChange(index, "email", e.target.value)}
-                                                        placeholder="Enter Email ID"
-                                                        className="px-3 py-3  font-Gilroy w-full border rounded-xl focus:outline-none"
-                                                    />
-                                                    {formErrors[`additionalEmail${index}`] && (
-                                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalEmail${index}`]} </p>
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
-                                                        Designation<span className='text-red-500'>*</span>
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        value={contact.designation}
-                                                        onChange={(e) => handleAdditionalContactChange(index, "designation", e.target.value)}
-                                                        placeholder="Enter Designation"
-                                                        className="px-3 py-3 w-full font-Gilroy border rounded-xl focus:outline-none"
-                                                    />
-                                                    {formErrors[`additionalDesignation${index}`] && (
-                                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalDesignation${index}`]} </p>
-                                                    )}
-                                                </div>
+                                            <div>
+                                                <label className="block mb-2 text-neutral-800 font-medium">
+                                                    Contact Number <span className="text-red-500">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={contact.contactNumber}
+                                                    onChange={(e) => handleAdditionalContactChange(index, "contactNumber", e.target.value)}
+                                                    placeholder="Enter Contact Number"
+                                                    className="px-3 py-3 w-full border rounded-xl focus:outline-none"
+                                                />
+                                                {formErrors[`additionalContactNumber${index}`] && (
+                                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalContactNumber${index}`]} </p>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label className="block mb-2 text-neutral-800 font-medium">
+                                                    Email ID <span className="text-red-500">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={contact.email}
+                                                    onChange={(e) => handleAdditionalContactChange(index, "email", e.target.value)}
+                                                    placeholder="Enter Email ID"
+                                                    className="px-3 py-3 w-full border rounded-xl focus:outline-none"
+                                                />
+                                                {formErrors[`additionalEmail${index}`] && (
+                                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalEmail${index}`]} </p>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label className="block mb-2 text-neutral-800 font-medium">
+                                                    Designation<span className='text-red-500'>*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={contact.designation}
+                                                    onChange={(e) => handleAdditionalContactChange(index, "designation", e.target.value)}
+                                                    placeholder="Enter Designation"
+                                                    className="px-3 py-3 w-full border rounded-xl focus:outline-none"
+                                                />
+                                                {formErrors[`additionalDesignation${index}`] && (
+                                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalDesignation${index}`]} </p>
+                                                )}
                                             </div>
                                         </div>
-                                    ))}
+                                    </div>
+                                ))}
 
-                                    {
-                                        additionalContacts.length < 2 &&
 
-                                        <div className="mt-4">
-                                            <button
-                                                onClick={addContact}
-                                                className="rounded-lg text-blue-800 font-semibold text-md cursor-pointer font-Gilroy"
-                                            >
-                                                + Add Additional Contact {additionalContacts.length + 1}
-                                            </button>
-                                        </div>
-
-                                    }
+                                <div className="mt-4">
+                                    <button
+                                        onClick={addContact}
+                                        className="rounded-lg text-blue-800 font-semibold text-md cursor-pointer"
+                                    >
+                                        + Add Additional Contact
+                                    </button>
                                 </div>
+                            </div>
                             </div>
                             <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
                                 <button
                                     type="button"
-                                    className="w-full sm:w-auto font-medium font-Montserrat px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
+                                    className="w-full sm:w-auto px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
                                     onClick={handleSaveClick} >
                                     Save & Exit
                                 </button>
 
                                 <button
                                     type="button"
-                                    className="w-full sm:w-auto font-medium font-Montserrat px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
+                                    className="w-full sm:w-auto px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
                                     onClick={handleNextClick}
                                 >
                                     Next
@@ -668,8 +530,8 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
 
                         </div>}
-                    {activeTab === 2 && <div> <AddressVendor handleBack={handleBackBasic} handleNextToBank={handleNextToBank} vendorDetails={vendorDetails} /></div>}
-                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} payload={payload} vendorDetail={vendorDetails} /></div>}
+                    {activeTab === 2 && <div> <AddressVendor /></div>}
+                    {activeTab === 3 && <div><BankVendor /></div>}
                 </div>
             </div>
         </div>

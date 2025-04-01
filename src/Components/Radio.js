@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 function Radio({ id, name, value, checked, key, callback = '' }) {
 
-    console.log("checked", checked)
+
 
 
     return ( 

@@ -41,8 +41,7 @@ function CreateAccount() {
     };
 
     const handleCaptchaChange = (value) => {
-        console.log('value', value);
-        setCaptchaValue(value);
+              setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
     };
 
@@ -103,11 +102,20 @@ function CreateAccount() {
             dispatch({ type: STORE_VERIFY_CODE, payload: verifyCode })
         } else {
         }
-    }, [window.location.search]);
+    }, []);
 
 
 
-
+    useEffect(() => {
+        if (state.Common.successCode === 200) {
+                   navigate('/')
+              setTimeout(() => {
+            dispatch({ type: RESET_CODE })
+          }, 5000)
+            }
+    
+      }, [state.Common.successCode])
+    
 
 
     return (

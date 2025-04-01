@@ -32,7 +32,7 @@ function FormDisplay() {
 
 
     const textInputCallbackForName = (title, newValue) => {
-        console.log("title", title, " newValue", newValue)
+      
 
         setFormValues((prev) => ({
             ...prev,
@@ -45,19 +45,8 @@ function FormDisplay() {
     };
 
 
-   
-
-
-
-    useEffect(() => {
-        console.log("displayItems", displayItems)
-    }, [displayItems])
-
-
-
-
     const CallbackForTextArea = (title, newValue) => {
-        console.log("text Area", newValue)
+      
         setFormValues((prev) => ({
             ...prev,
             [title]: newValue,
@@ -70,7 +59,7 @@ function FormDisplay() {
 
 
     const RadioOptionsChange = (title, newValue) => {
-        console.log("Radio option", newValue, title)
+      
         const updatedItems = displayItems.map((item) =>
             item.title === title ? { ...item, value: newValue } : item
         );
@@ -79,7 +68,7 @@ function FormDisplay() {
 
 
     const CheckboxOptionsChange = (title, newValue) => {
-        console.log("Checkbox option", newValue)
+      
         const updatedItems = displayItems.map((item) =>
             item.title === title ? { ...item, value: newValue } : item
         );
@@ -89,7 +78,7 @@ function FormDisplay() {
 
 
     const SelectOptionsChange = (title, newValue) => {
-        console.log("Select option",newValue)
+     
         const updatedItems = displayItems.map((item) =>
             item.title === title ? { ...item, value: newValue } : item
         );
@@ -118,7 +107,7 @@ function FormDisplay() {
                             {field.type === "radio" && <div>
                                 <label className="ps-4 block text-black mb-2 font-semibold capitalize font-Gilroy">{field.title}</label>
                                 {field.options?.map((option, idx) => {
-                                    console.log("select*********", option)
+                                   
                                     return <Radio id={`radio-${index}`} name={field.name} value={option} checked={field.value === option} key={idx} callback={()=>RadioOptionsChange(field.title, option)} />
                                 })}
                             </div>

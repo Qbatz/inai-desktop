@@ -48,7 +48,6 @@ function App({ isLogged_In }) {
   const [tokenAccessDenied, setTokenAccessDenied] = useState(Number(cookies.get('access-denied-inai') || 0));
 
 
-  console.log("tokenAccessDenied", tokenAccessDenied, "successLogin", successLogin, "isLogged_In", isLogged_In, typeof successLogin)
 
   useEffect(() => {
     if (tokenAccessDenied === 206) {

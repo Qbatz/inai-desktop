@@ -9,8 +9,7 @@ import {
 function* handleSignIn(action) {
     try {
         const response = yield call(signIn, action.payload);
-        // console.log("response", response);
-        if (response.status === 200) {
+             if (response.status === 200) {
             yield put({ type: SIGN_IN_REDUCER, payload: { token: response.data.access } });
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status } });
 
@@ -68,27 +67,22 @@ function* handleResetPage(reset) {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
         }
     } catch (error) {
-        console.log('/user/reset-passwordResponse',error);
-        const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
+                const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
         yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }
 }
 
 function* handleResetPassword(verify) {
     try {
-      
-        
-        const response = yield call(ReSetPassword, verify.payload);
-        console.log('/user/reset-passwordResponse',response);
-        if (response?.success || response?.status === 200) {
+                     const response = yield call(ReSetPassword, verify.payload);
+               if (response?.success || response?.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { response } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
         }
     } catch (error) {
-        console.log('/user/reset-passwordResponse',error);
-        const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
+             const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
 
         yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }

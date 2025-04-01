@@ -22,9 +22,7 @@ function Login({ message, loginStatusCode}) {
   const dispatch = useDispatch();
 const state = useSelector(state => state)
 
-  console.log("loginStatusCode", loginStatusCode)
-
-console.log("state",state)
+ 
 
   const [clientId, setClientId] = useState('');
   const [userId, setUserId] = useState('');
@@ -142,10 +140,14 @@ console.log("state",state)
 
 
 
-
   return (
     <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4'>
       <div className='bg-white  h-auto max-w-6xl rounded-3xl shadow-lg !mt-[8px] !mb-[10px]'>
+
+      {
+          state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
+        }
+
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
           <div className='Right_Side flex flex-col items-center justify-center xs:order-2 sm:order-2 md:order-1 '>

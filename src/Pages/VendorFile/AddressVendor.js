@@ -9,9 +9,6 @@ function AddressVendor(props) {
   const dispatch = useDispatch();
   const stateData = useSelector(state => state)
 
-
-  console.log("state", stateData)
-
   const [officeAddress1, setOfficeAddress1] = useState("");
   const [officeAddress2, setOfficeAddress2] = useState('');
   const [officeAddress3, setOfficeAddress3] = useState('');
@@ -182,8 +179,12 @@ function AddressVendor(props) {
 
   const handleSaveClick = () => {
     if (validateForm()) {
+
+      if(props.vendorDetails){
+
+    
       const payload = {
-        vendorId: stateData.vendor.vendorId ||   props.vendorDetails?.vendorId || "",
+        vendorId: props.vendorDetails?.vendorId || "",
         address: [
           {
             doorNo: officeAddress1,
@@ -213,7 +214,9 @@ function AddressVendor(props) {
         type: VENDOR_ADDRESS_INFO_SAGA,
         payload: payload
       });
+    }else{
 
+    }
 
     }
   }
@@ -588,12 +591,16 @@ function AddressVendor(props) {
           </button>
 
           <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
-            <button
-              type="button"
-              className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
-              onClick={handleSaveClick} >
-              Save & Exit
-            </button>
+           
+           {
+            props.vendorDetails &&  <button
+            type="button"
+            className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
+            onClick={handleSaveClick} >
+            Save & Exit
+          </button>
+           }
+           
             <button
               className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat  text-base font-medium  font-Montserrat"
               onClick={handleNext}

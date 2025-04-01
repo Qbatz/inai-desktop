@@ -39,6 +39,9 @@ export const SIGN_UP_REDUCER = "Sign_up_Reducer";
 export const SIGN_UP_SAGA = "Sign_up_Saga";
 
 
+
+// Vendor
+
 export const VENDOR_REDUCER = "Vendor_Reducer";
 export const VENDOR_SAGA = "Vendor_Saga";
 
@@ -69,6 +72,32 @@ export const DELETE_VENDOR_SAGA = "Delete_Vendor_Saga";
 
 export const VIEW_VENDOR_REDUCER = "View_Vendor_Reducer";
 export const VIEW_VENDOR_SAGA = "View_Vendor_Saga";
+
+
+
+// Customer
+
+export const ADD_CUSTOMER_REDUCER = "Add_Customer_Reducer";
+export const ADD_CUSTOMER_SAGA = "Add_Customer_Saga";
+
+
+
+export const EDIT_CUSTOMER_REDUCER = "Edit_Customer_Reducer";
+export const EDIT_CUSTOMER_SAGA = "Edit_Customer_Saga";
+
+export const DELETE_CUSTOMER_REDUCER = "Delete_Customer_Reducer";
+export const DELETE_CUSTOMER_SAGA = "Delete_Customer_Saga";
+
+
+
+
+
+
+
+
+
+
+
 
 
 

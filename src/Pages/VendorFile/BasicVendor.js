@@ -197,11 +197,11 @@ function BasicVendor({ handleClose, vendorDetails }) {
                 type: VENDOR_BASIC_INFO_SAGA,
                 payload: {
                     vendor_id: vendorDetails?.vendorId || "",
-                    businessName,
+                    businessName:businessName,
                     contactPersonName: contactPerson,
-                    contactNumber,
+                    contactNumber:contactNumber,
                     emailId: email,
-                    designation,
+                    designation:designation,
                     gstvat: gstVat,
                     additionalContactInfo: formattedAdditionalContacts,
                 }

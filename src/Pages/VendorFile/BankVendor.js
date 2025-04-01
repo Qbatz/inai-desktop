@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { RESET_VENDOR_ID,VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA,EDIT_VENDOR_SAGA } from '../../Utils/Constant'
+import { RESET_VENDOR_ID, VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA, EDIT_VENDOR_SAGA } from '../../Utils/Constant'
 
 
 function BankVendor(props) {
@@ -10,7 +10,7 @@ function BankVendor(props) {
 
   const dispatch = useDispatch();
   const state = useSelector(state => state)
- 
+
 
 
 
@@ -228,57 +228,57 @@ function BankVendor(props) {
         gstvat: props?.basicDetails?.gstvat || "",
         additionalContactInfo: props?.basicDetails?.additionalContactInfo || [],
         address: [
-            {
-                doorNo: addresses[0]?.doorNo || "",
-                street: addresses[0]?.street || "",
-                locality: addresses[0]?.locality || "",
-                city: addresses[0]?.city || "",
-                postalCode: addresses[0]?.postalCode || "",
-                landMark: addresses[0]?.landMark || "",
-                mapLink: addresses[0]?.mapLink || "",
-                addressType: addresses[0]?.addressType || 1
-            },
-            {
-                doorNo: addresses[1]?.doorNo || "",
-                street: addresses[1]?.street || "",
-                locality: addresses[1]?.locality || "",
-                city: addresses[1]?.city || "",
-                postalCode: addresses[1]?.postalCode || "",
-                landMark: addresses[1]?.landMark || "",
-                mapLink: addresses[1]?.mapLink || "",
-                addressType: addresses[1]?.addressType || 2
-            }
+          {
+            doorNo: addresses[0]?.doorNo || "",
+            street: addresses[0]?.street || "",
+            locality: addresses[0]?.locality || "",
+            city: addresses[0]?.city || "",
+            postalCode: addresses[0]?.postalCode || "",
+            landMark: addresses[0]?.landMark || "",
+            mapLink: addresses[0]?.mapLink || "",
+            addressType: addresses[0]?.addressType || 1
+          },
+          {
+            doorNo: addresses[1]?.doorNo || "",
+            street: addresses[1]?.street || "",
+            locality: addresses[1]?.locality || "",
+            city: addresses[1]?.city || "",
+            postalCode: addresses[1]?.postalCode || "",
+            landMark: addresses[1]?.landMark || "",
+            mapLink: addresses[1]?.mapLink || "",
+            addressType: addresses[1]?.addressType || 2
+          }
         ],
         bankDetails: [{
-            name: beneficiaryName || "",
-            accountNo: accountNumber || "",
-            bankName: bankName || "",
-            ifscCode: ifscCode || "",
-            address1: bankAddress || "",
-            address2: bankAddress2 || "",
-            address3: bankAddress3 || "",
-            country: bankCountry || "",
-            routingBank: intermediaryBank || "",
-            swiftCode: swift || "",
-            routingBankAddress: intermediaryDetails || "",
-            routingAccountIndusand: iban || ""
+          name: beneficiaryName || "",
+          accountNo: accountNumber || "",
+          bankName: bankName || "",
+          ifscCode: ifscCode || "",
+          address1: bankAddress || "",
+          address2: bankAddress2 || "",
+          address3: bankAddress3 || "",
+          country: bankCountry || "",
+          routingBank: intermediaryBank || "",
+          swiftCode: swift || "",
+          routingBankAddress: intermediaryDetails || "",
+          routingAccountIndusand: iban || ""
         }]
-    }
-    
+      }
 
-if(props.vendorDetail){
-  dispatch({
-    type: EDIT_VENDOR_SAGA,
-    payload: EditPayload
-  });
-}else{
-  dispatch({
-    type: CREATE_VENDOR_SAGA,
-    payload: AddPayload
-  });
-}
 
-    
+      if (props.vendorDetail) {
+        dispatch({
+          type: EDIT_VENDOR_SAGA,
+          payload: EditPayload
+        });
+      } else {
+        dispatch({
+          type: CREATE_VENDOR_SAGA,
+          payload: AddPayload
+        });
+      }
+
+
     }
   };
 
@@ -288,7 +288,7 @@ if(props.vendorDetail){
     dispatch({
       type: VENDOR_BANK_INFO_SAGA,
       payload: {
-        vendorId: state.vendor.vendorId || props.payload?.vendorId || props?.vendorDetail?.vendorId || "",
+        vendorId: props?.vendorDetail?.vendorId || "",
         bankDetails: [
           {
             name: beneficiaryName,
@@ -329,30 +329,30 @@ if(props.vendorDetail){
       setIban("");
       dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
       dispatch({ type: RESET_CODE });
-      dispatch({ type: RESET_VENDOR_ID})
+      dispatch({ type: RESET_VENDOR_ID })
     }
   }, [state.Common.successCode]);
 
 
- useEffect(() => {
-  if (props.vendorDetail?.bankDetails?.length > 0) {
-    const bank = props.vendorDetail.bankDetails[0];
+  useEffect(() => {
+    if (props.vendorDetail?.bankDetails?.length > 0) {
+      const bank = props.vendorDetail.bankDetails[0];
 
-    setBeneficiaryName(bank.name || "");
-    setAccountNumber(bank.accountNo || "");
-    setBankName(bank.bankName || "");
-    setIfscCode(bank.ifscCode || "");
-    setBankAddress(bank.address1 || "");
-    setBankAddress2(bank.address2 || "");
-    setBankAddress3(bank.address3 || "");
-    setBankCountry(bank.country || "");
-    setIntermediaryBank(bank.routingBank || "");
-    setSwift(bank.swiftCode || "");
-    setIntermediaryDetails(bank.routingBankAddress || "");
-    setIban(bank.routingAccountIndusand || "");
-}
-  }, [props.vendorDetail]); 
-  
+      setBeneficiaryName(bank.name || "");
+      setAccountNumber(bank.accountNo || "");
+      setBankName(bank.bankName || "");
+      setIfscCode(bank.ifscCode || "");
+      setBankAddress(bank.address1 || "");
+      setBankAddress2(bank.address2 || "");
+      setBankAddress3(bank.address3 || "");
+      setBankCountry(bank.country || "");
+      setIntermediaryBank(bank.routingBank || "");
+      setSwift(bank.swiftCode || "");
+      setIntermediaryDetails(bank.routingBankAddress || "");
+      setIban(bank.routingAccountIndusand || "");
+    }
+  }, [props.vendorDetail]);
+
 
 
 
@@ -506,7 +506,7 @@ if(props.vendorDetail){
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress} </p>)}
 
             </div>
-          
+
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 2</label>
 
@@ -525,7 +525,7 @@ if(props.vendorDetail){
               )}
             </div>
 
-         
+
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 3</label>
 
@@ -581,7 +581,7 @@ if(props.vendorDetail){
 
           <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3'>
             <div className='mb-2 items-center col-span-4'>
-              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SIFT Code for intermediary Bank</label>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code for intermediary Bank</label>
 
               <input
                 id='clientId'
@@ -637,12 +637,12 @@ if(props.vendorDetail){
 
 
           <div className="flex flex-col xs:flex-row sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-            <button
+           {/* <button
               type="button"
               className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
               onClick={handleSaveClick} >
               Save & Exit
-            </button>
+            </button> */}
             <button className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
               onClick={handleSubmit}>
               Submit

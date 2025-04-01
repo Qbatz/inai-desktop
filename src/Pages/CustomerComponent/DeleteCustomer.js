@@ -1,13 +1,20 @@
-import React from 'react'
-
-function DeleteCustomer({handleClose}) {
-
-
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { DELETE_CUSTOMER_SAGA } from '../../Utils/Constant'
 
 
 
+function DeleteCustomer({ handleClose }) {
 
 
+
+    const dispatch = useDispatch()
+    const state = useSelector(state => state)
+
+
+    const handleDeleteCustomer = () => {
+        dispatch({ type: DELETE_CUSTOMER_SAGA, })
+    }
 
 
     return (
@@ -27,14 +34,15 @@ function DeleteCustomer({handleClose}) {
 
 
                 <div className="flex justify-center border-t-0 mt-[10px] space-x-4">
-                    <button  
-                    onClick={handleClose}
+                    <button
+                        onClick={handleClose}
                         className="w-[160px] h-[52px] rounded-lg border border-[#205DA8] text-[#205DA8] font-semibold text-[14px] bg-white font-Montserrat"
 
                     >
                         Cancel
                     </button>
                     <button
+                        onClick={handleDeleteCustomer}
                         className="w-[160px] h-[52px] rounded-lg bg-[#205DA8] text-white font-semibold text-[14px] font-Montserrat"
 
                     >

@@ -79,3 +79,25 @@ export const VIEW_VENDOR_SAGA = "View_Vendor_Saga";
 
 export const ADD_CUSTOMER_REDUCER = "Add_Customer_Reducer";
 export const ADD_CUSTOMER_SAGA = "Add_Customer_Saga";
+
+
+
+export const EDIT_CUSTOMER_REDUCER = "Edit_Customer_Reducer";
+export const EDIT_CUSTOMER_SAGA = "Edit_Customer_Saga";
+
+export const DELETE_CUSTOMER_REDUCER = "Delete_Customer_Reducer";
+export const DELETE_CUSTOMER_SAGA = "Delete_Customer_Saga";
+
+
+
+
+
+
+
+
+
+
+
+
+
+

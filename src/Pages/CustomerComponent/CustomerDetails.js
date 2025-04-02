@@ -38,14 +38,14 @@ function CustomerDetails({particularCustomerDetails}) {
 
             <h1 className="text-xl font-semibold mb-2 font-Gilroy text-black">Customer</h1>
 
-            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 p-2">
+            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2 p-2">
             {customerList.map((customer, index) => (
-                <div key={customer.id}>
+                <>
 
                 <div className=''>
 
 
-                    <div class=" bg-white p-4 rounded-xl shadow-sm border mb-5">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border mb-5">
                         <div className='flex items-center justify-between'>
 
                             <h2 class="text-base font-semibold mb-2 font-Gilroy text-black">Basic Information</h2>
@@ -218,38 +218,38 @@ function CustomerDetails({particularCustomerDetails}) {
                             <div class="grid grid-cols-3  gap-4">
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 1</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address1}</p>
-
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address?.[0]?.doorNo || 'N/A'}</p>
+                           
                                 </div>
 
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 2</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address1}</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address?.[0]?.landMark || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 3</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address3}</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address3 || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 4</p>
-                             <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">₹25,000</p>
+                             <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address3 || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Postal Code</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.postalCode}</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address?.[0]?.postalCode || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Landmark</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.landMark}</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address?.[0]?.landMark || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Google Map</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.mapLink}</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap"> {customer.address?.[0]?.mapLink || 'N/A'}</p>
 
                                 </div>
                             </div>
@@ -263,38 +263,38 @@ function CustomerDetails({particularCustomerDetails}) {
                             <div class="grid grid-cols-3  gap-4">
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 1</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">₹25,000</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address?.[1]?.doorNo || 'N/A'}</p>
 
                                 </div>
 
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 2</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">₹25,000</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address?.[1]?.landMark || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 3</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">₹25,000</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 4</p>
-                             <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">₹25,000</p>
+                             <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Postal Code</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">45879</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address?.[1]?.postalCode || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Landmark</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">wofgjsijpojspo</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.address?.[1]?.landMark || 'N/A'}</p>
 
                                 </div>
                                 <div>
                                 <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Google Map</p>
-                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">https://maps.app.goo.gl/D26</p>
+                            <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap"> {customer.address?.[1]?.mapLink || 'N/A'}</p>
 
                                 </div>
                             </div>
@@ -304,7 +304,7 @@ function CustomerDetails({particularCustomerDetails}) {
                     </div>
                 </div>
 
-                </div>
+                </>
 
                             ))}
 

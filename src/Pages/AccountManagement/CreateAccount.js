@@ -14,17 +14,16 @@ import SignUp from './SignUp';
 function CreateAccount() {
 
     const state = useSelector(state => state)
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
     const emailid = useSelector(state => state?.Common?.emailid)
-
-
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
 
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate()
+
 
     const handleEmailChange = (e) => {
         const value = e.target.value.toLowerCase();
@@ -41,7 +40,7 @@ function CreateAccount() {
     };
 
     const handleCaptchaChange = (value) => {
-              setCaptchaValue(value);
+        setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
     };
 
@@ -69,7 +68,7 @@ function CreateAccount() {
             return;
         }
     };
-  
+
 
 
     useEffect(() => {
@@ -106,16 +105,8 @@ function CreateAccount() {
 
 
 
-    useEffect(() => {
-        if (state.Common.successCode === 200) {
-                   navigate('/')
-              setTimeout(() => {
-            dispatch({ type: RESET_CODE })
-          }, 5000)
-            }
-    
-      }, [state.Common.successCode])
-    
+
+
 
 
     return (
@@ -214,7 +205,7 @@ function CreateAccount() {
                                     )}
                                     <button
                                         type="submit"
-                                        className="mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg"
+                                        className="mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl  transition duration-300 sm:text-lg"
                                         onClick={handleSubmit}>
                                         Submit
                                     </button>
@@ -226,36 +217,20 @@ function CreateAccount() {
                                     <div className="text-start mt-4">
                                         <p className="text-black font-Montserrat font-normal text-base">
                                             Already have an account?{' '}
-                                            <span onClick={() => navigate("/")} className="cursor-pointer text-blue-500 hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
+                                            <span onClick={() => navigate("/")} className="cursor-pointer  text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
                                                 Sign In
                                             </span>
                                         </p>
                                     </div>
                                 </div>
                             </>
-                                :  state.signUp.is_verified === 0 ?
-
-                                <>
-
-
-                                    <SignUp />
-
-                                </>
-                                :
-                                <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 && "Email is already Verified"}</label>
-
-
+                                : state.signUp.is_verified === 0 ?
+                                    <>
+                                        <SignUp />
+                                    </>
+                                    :
+                                    <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 && "Email is already Verified"}</label>
                         }
-
-
-
-
-
-
-
-
-
-
                     </div>
 
                 </div>

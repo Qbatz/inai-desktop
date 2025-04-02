@@ -4,12 +4,15 @@ import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
 import { OTP_SEND_SAGA, OTP_VERIFY_SAGA, ACCOUNT_REGISTER_SAGA, RESET_CODE } from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
-
+import { useNavigate } from "react-router-dom";
 
 export default function SignUp() {
 
   const dispatch = useDispatch();
   const state = useSelector(state => state)
+  const navigate = useNavigate()
+
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userId, setUserId] = useState("");
@@ -135,10 +138,10 @@ export default function SignUp() {
 
   useEffect(() => {
     if (state.Common.successCode === 200) {
-      dispatch({ type: RESET_CODE })
-      setShowOtp(false);
+           setShowOtp(false);
       setShowMobile(false);
       setShowSignUp(true)
+      dispatch({ type: RESET_CODE })
     }
 
   }, [state.Common.successCode])
@@ -191,6 +194,16 @@ export default function SignUp() {
     }
 
   }
+
+
+
+
+  useEffect(()=>{
+    if(state.signUp.isTrue){
+      navigate('/')
+    }
+
+  },[state.signUp.isTrue])
 
   return (
     <div className="flex items-center justify-center h-auto  w-full">

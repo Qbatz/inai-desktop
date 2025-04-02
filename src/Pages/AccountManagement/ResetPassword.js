@@ -32,7 +32,7 @@ const ReSetPassword = () => {
     const [loading, setLoading] = useState(false);
     const [hasherror, sethashError] = useState("");
 
- 
+
 
     useEffect(() => {
 
@@ -52,17 +52,17 @@ const ReSetPassword = () => {
     }, [state.Common.errorMessage, dispatch])
 
 
-    
+
 
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const hashValue = queryParams.get("hash");
-    
+
         if (hashValue) {
             setHash(hashValue);
-            setLoading(true); 
-            sethashError(""); 
-    
+            setLoading(true);
+            sethashError("");
+
             try {
                 dispatch({ type: RESET_PAGE_API_CALL, payload: { verify_code: hashValue } });
             } catch (error) {
@@ -72,9 +72,9 @@ const ReSetPassword = () => {
             }
         }
     }, [location.search]);
-    
-    
-    
+
+
+
 
 
 
@@ -120,14 +120,14 @@ const ReSetPassword = () => {
     };
 
     const handleSubmit = (e) => {
-        
+
 
         if (validateForm()) {
             if (password && confirmPassword) {
-                            dispatch({ type: RESET_PASSWORD_API_CALL, payload: { password: password, password2: confirmPassword, verify_code: hash } })
+                dispatch({ type: RESET_PASSWORD_API_CALL, payload: { password: password, password2: confirmPassword, verify_code: hash } })
 
             }
-           
+
             setTimeout(() => {
                 setSuccess(false);
                 setPassword("");
@@ -141,19 +141,19 @@ const ReSetPassword = () => {
 
 
 
-            {loading && <p className="text-blue-500 text-center">Verifying link...</p>}
+            {loading && <p className="text-blue-500 text-center font-Gilroy">Verifying link...</p>}
             {hasherror && <p className="text-red-600 text-center">{errorMessage}</p>}
 
             {!loading && !hasherror && hash && (
 
 
                 <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-2xl font-semibold text-center text-black mb-6">
+                    <h2 className="text-2xl font-semibold text-center text-black mb-6 font-Gilroy">
                         Reset Password
                     </h2>
 
                     {success && (
-                        <p className="text-green-600 font-medium text-sm text-center pb-4">
+                        <p className="text-green-600 font-medium text-sm text-center pb-4 font-Gilroy">
                             Password reset successfully!
                         </p>
                     )}
@@ -186,7 +186,7 @@ const ReSetPassword = () => {
                             placeholder="Confirm Password *"
                             value={confirmPassword}
                             onChange={handleConfirmPassword}
-                            className="w-full h-12 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-12 px-3 border font-Gilroy border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <button
                             type="button"

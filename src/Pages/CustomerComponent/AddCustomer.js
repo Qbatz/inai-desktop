@@ -607,8 +607,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 bankErrors[index] = bankError;
                 isValid = false;
             }
-        });
-
+        })
 
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
 

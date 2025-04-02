@@ -13,13 +13,6 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     const [value, setValue] = useState(1);
     const [errors, setErrors] = useState({});
 
-
-    console.log("editCustomerDetails", editCustomerDetails)
-
-
-
-
-
     const [formData, setFormData] = useState({
         businessName: '',
         contactPerson: '',
@@ -853,8 +846,6 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         <div className='bg-slate-100 flex flex-1 flex-col ps-5 pt-3 pe-5'>
 
             <div className='bg-white rounded-2xl ps-5 pt-3 pe-5'>
-
-
 
                 <div className='flex items-center justify-between pe-12 mb-4'>
                     <h2 className="text-xl font-semibold mb-4  font-Gilroy">{editCustomerDetails ? 'Edit Customer' : "Add Customer"} </h2>

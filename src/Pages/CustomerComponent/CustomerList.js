@@ -19,8 +19,6 @@ function CustomerList({ item } ) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const state = useSelector(state => state);
-  console.log("state",state);
-  
   
 
   const [showPicker, setShowPicker] = useState(false);
@@ -45,7 +43,6 @@ function CustomerList({ item } ) {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-  console.log("customerList",customerList);
   
   const totalPages = Math.ceil(customerList.length / itemsPerPage);
 

@@ -20,15 +20,15 @@ import { Chart2, LoginCurve, Setting2, I24Support, Receipt1, Receipt2 } from "ic
 import { useDispatch} from 'react-redux';
 import { LOG_OUT } from "../Utils/Constant";
 import { encryptData } from "../Crypto/crypto";
+import { Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
+import AddCustomer from "../Pages/CustomerComponent/AddCustomer";
 
 
 
 function Sidebar() {
 
-
-
-    
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [activeItem, setActiveItem] = useState("dashboard");
 
@@ -89,7 +89,9 @@ function Sidebar() {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 rounded-lg cursor-pointer 
   ${activeItem === "dashboard" ? "text-[#205DA8]" : "text-black"}`}
-                            onClick={() => setActiveItem("dashboard")}
+                            onClick={() => {
+                                setActiveItem('dashboard')
+                                navigate("/")}}
                         >
                             <Chart2 size="22" color={activeItem === "dashboard" ? "#205DA8" : "#0F172A"} />
                             <span className="hidden lg:inline">Dashboard</span>
@@ -97,7 +99,10 @@ function Sidebar() {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "client" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => setActiveItem("client")}
+                            onClick={() => {
+                                setActiveItem('client')
+                                navigate("/client")
+                            }}
                         >
                             <img src={activeItem === "client" ? ClientBlue : ClientIcon} alt="VendorIcon" />
                             <span className="hidden lg:inline">Client</span>
@@ -105,7 +110,10 @@ function Sidebar() {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "vendor" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => setActiveItem("vendor")}
+                            onClick={() => {
+                                setActiveItem("vendor")
+                                navigate("/vendor")
+                            }}
                         >
                             <img src={activeItem === "vendor" ? VendorBlue : VendorIcon} alt="VendorIcon" />
                             <span className="hidden lg:inline">Vendor</span>
@@ -113,7 +121,10 @@ function Sidebar() {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "product" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => setActiveItem("product")}
+                            onClick={() => {
+                                setActiveItem("product")
+                                navigate('/product')
+                            }}
                         >
                             <img src={activeItem === "product" ? ProductBlue : ProductIcon} alt="ProductIcon" />
                             <span className="hidden lg:inline">Product</span>
@@ -192,17 +203,25 @@ function Sidebar() {
 
 
 
-            <div className="flex-1 p-0 overflow-auto">
+            <div className="flex-1 p-0 overflow-auto flex flex-col">
                 <div className="sticky left-0 top-0 right-0 z-40 flex justify-end">
                     <Topbar />
                 </div>
 
-                <div className="">
-                    {activeItem === "dashboard" && <Dashboard />}
+                <div className="flex flex-1">
+                        <Routes>
+                             <Route path="/" element={<Dashboard />} />
+                             <Route path="/client" element={<CustomerList />}/>
+                             <Route path="/vendor" element={<Vendor />}/>
+                             <Route path="/product" element={<Product />} />
+                             <Route path="/add-customer" element={<AddCustomer />}/>
+                             <Route path="/customer-details/:customerId" element={<CustomerDetails />} />
+                        </Routes>
+                    {/* {activeItem === "dashboard" && <Dashboard />}
                     {activeItem === "vendor" && <Vendor />}
                     {activeItem === "product" && <Product />}
                     {activeItem === "client" && <CustomerList updateActiveItems={updateActiveItems} updateProps={updateProps}/>}
-                    {activeItem === "add_customer" && <CustomerDetails particularCustomerDetails={values}/>}
+                    {activeItem === "add_customer" && <CustomerDetails particularCustomerDetails={values}/>} */}
                 </div>
 
 

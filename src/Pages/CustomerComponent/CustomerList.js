@@ -12,10 +12,12 @@ import AddCustomer from './AddCustomer';
 import DeleteCustomer from './DeleteCustomer';
 import { RESET_CODE, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
 import CustomerDetails from './CustomerDetails'
+import { useNavigate } from 'react-router-dom';
 
-function CustomerList({ item, updateActiveItems, updateProps } ) {
+function CustomerList({ item } ) {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const state = useSelector(state => state);
   console.log("state",state);
   
@@ -61,9 +63,10 @@ function CustomerList({ item, updateActiveItems, updateProps } ) {
   };
 
   const handleAddCustomer = () => {
-    setShowAddCustomer(true)
-    setIsVisible(false)
-    setEditCustomerDetails('')
+    // setShowAddCustomer(true)
+    // setIsVisible(false)
+    // setEditCustomerDetails('')
+    navigate('/add-customer')
   }
 
 
@@ -167,9 +170,9 @@ function CustomerList({ item, updateActiveItems, updateProps } ) {
   }, [state.customer.successCode]);
 
   const handleCustomerDetails = (customerId) => {
-    updateProps(customerId)
-    updateActiveItems('add_customer')
-    // navigate('/customer-details')
+    // updateProps(customerId)
+    // updateActiveItems('add_customer')
+    navigate(`/customer-details/${customerId}`)
   }
 
 
@@ -177,7 +180,7 @@ function CustomerList({ item, updateActiveItems, updateProps } ) {
 
 
   return (
-    <div className='bg-slate-100 h-fit w-full p-4 rounded-tl-lg rounded-tr-lg m-0'>
+    <div className='bg-slate-100 flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0'>
 
       {/* {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
@@ -185,7 +188,7 @@ function CustomerList({ item, updateActiveItems, updateProps } ) {
         </div>
       )} */}
 
-      {isVisible && <div className='bg-white rounded-2xl h-fit  ps-5 pt-3 pe-5 relative'>
+      {isVisible && <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative'>
 
         <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
           <div>
@@ -256,9 +259,9 @@ function CustomerList({ item, updateActiveItems, updateProps } ) {
 
 
         <div
-          className="flex-1 overflow-x-auto rounded-xl border border-slate-200 max-h-[350px] overflow-y-auto p-0 mt-4 mb-extra "
-
+          className="flex-1 flex flex-col"
         >
+          <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[350px] overflow-y-auto p-0 mt-4 mb-extra'>
           <table
 
             className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]"
@@ -321,9 +324,8 @@ function CustomerList({ item, updateActiveItems, updateProps } ) {
             </tbody>
 
           </table>
+          </div>
         </div>
-
-
 
         <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
           <div className="flex items-center gap-2">

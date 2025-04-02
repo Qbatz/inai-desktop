@@ -5,8 +5,7 @@ import { GET_CUSTOMER_LIST_REDUCER, GET_CUSTOMER_DETAILS_REDUCER, CUSTOMER_ID_RE
 export const initialState = {
     customerId: '',
     customerList: [],
-    customerDetails: [],
-    ParticularCustomerList: []
+    customerDetails: {}
 }
 
 const CustomerReducer = (state = initialState, action) => {
@@ -23,8 +22,7 @@ const CustomerReducer = (state = initialState, action) => {
 
         case GET_CUSTOMER_DETAILS_REDUCER:
 
-            console.log("Updating ParticularCustomerList:", action.payload.customers);
-            return { ...state, ParticularCustomerList: action.payload.customers };
+            return { ...state, customerDetails: action.payload };
 
 
 

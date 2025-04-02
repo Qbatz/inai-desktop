@@ -11,11 +11,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import AddCustomer from './AddCustomer';
 import DeleteCustomer from './DeleteCustomer';
 import { RESET_CODE, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
+import CustomerDetails from './CustomerDetails'
 
-function CustomerList() {
+function CustomerList({ item, updateActiveItems, updateProps } ) {
 
   const dispatch = useDispatch();
   const state = useSelector(state => state);
+  console.log("state",state);
+  
+  
 
   const [showPicker, setShowPicker] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -26,19 +30,21 @@ function CustomerList() {
   const [showDeleteCustomer, setShowDeleteCustomer] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [showAddCustomer, setShowAddCustomer] = useState(false)
   const [editCustomerDetails, setEditCustomerDetails] = useState('')
   const [deleteCustomerId, setDeleteCustomerId] = useState('')
   const [customerList, setCustomerList] = useState([])
-
-
+  const [showCustomerDetails, setShowCustomerDetails] = useState(false)
+  const [particularCustomerDetails, setParticularCustomerDetails] = useState(false)
 
 
   const paginatedData = customerList.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+  console.log("customerList",customerList);
+  
   const totalPages = Math.ceil(customerList.length / itemsPerPage);
 
   const [dateRange, setDateRange] = useState([
@@ -126,7 +132,7 @@ function CustomerList() {
     if (state.Common.successCode === 200) {
 
       setCustomerList(state.customer.customerList)
-      setLoading(false)
+      // setLoading(false)
       setIsVisible(true)
       setShowAddCustomer(false)
       setShowDeleteCustomer(false)
@@ -160,7 +166,11 @@ function CustomerList() {
     }
   }, [state.customer.successCode]);
 
-
+  const handleCustomerDetails = (customerId) => {
+    updateProps(customerId)
+    updateActiveItems('add_customer')
+    // navigate('/customer-details')
+  }
 
 
 
@@ -276,7 +286,7 @@ function CustomerList() {
               ) : (
                 paginatedData.map((item, index) => (
                   <tr key={index} className="border-0">
-                    <td className="text-[#205DA8] px-4 py-2 text-center text-sm font-medium font-Gilroy overflow-hidden hover:underline hover:cursor-pointer" >{item.businessName}</td>
+                    <td className="text-[#205DA8] px-4 py-2 text-center text-sm font-medium font-Gilroy overflow-hidden hover:underline hover:cursor-pointer" onClick={() =>handleCustomerDetails (item.clientId)}>{item.businessName}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.contactPerson}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]" >{item.emailId}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.contactNumber}</td>
@@ -371,6 +381,13 @@ function CustomerList() {
 
 
       {showDeleteCustomer && <DeleteCustomer handleClose={handleCloseForDeleteCustomer} deleteCustomerId={deleteCustomerId} />}
+   
+   
+      {showCustomerDetails &&
+                <CustomerDetails particularCustomerDetails={particularCustomerDetails} />
+              }
+   
+   
     </div>
   );
 }

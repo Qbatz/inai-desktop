@@ -14,6 +14,7 @@ import InvoiceBlue from '../Asset/Icon/Invoice_blue.svg';
 import Profile from "../Asset/Images/Profile_S.svg"
 import Dot from '../Asset/Icon/Dot_s.svg'
 import Topbar from './Topbar'
+import CustomerDetails from "../Pages/CustomerComponent/CustomerDetails";
 import CustomerList from "../Pages/CustomerComponent/CustomerList";
 import { Chart2, LoginCurve, Setting2, I24Support, Receipt1, Receipt2 } from "iconsax-react";
 import { useDispatch} from 'react-redux';
@@ -32,6 +33,11 @@ function Sidebar() {
     const [activeItem, setActiveItem] = useState("dashboard");
 
     const [isLogout, setIsLogout] = useState(false)
+    const [values, setValues] = useState(null)
+
+    const updateProps =(p)=>{
+      setValues(p)
+    }
 
     const handleConfirmLogout = () => {
         dispatch({ type: LOG_OUT });
@@ -49,7 +55,11 @@ function Sidebar() {
         setIsLogout(false)
     }
 
+  const updateActiveItems = (item) => {
+   setActiveItem(item)
+}
 
+  
 
 
     return (
@@ -191,7 +201,8 @@ function Sidebar() {
                     {activeItem === "dashboard" && <Dashboard />}
                     {activeItem === "vendor" && <Vendor />}
                     {activeItem === "product" && <Product />}
-                    {activeItem === "client" && <CustomerList />}
+                    {activeItem === "client" && <CustomerList updateActiveItems={updateActiveItems} updateProps={updateProps}/>}
+                    {activeItem === "add_customer" && <CustomerDetails particularCustomerDetails={values}/>}
                 </div>
 
 

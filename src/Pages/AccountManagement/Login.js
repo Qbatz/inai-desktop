@@ -31,6 +31,9 @@ function Login({ message, loginStatusCode }) {
   const [userIdError, setUserIdError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [captchaError, setCaptchaError] = useState('')
+  const [showPassword, setShowPassword] = useState(false);
+  const [captchaValue, setCaptchaValue] = useState(null);
+  const [loading, setLoading] = useState(false)
 
   const handleClientIdChange = (e) => {
     dispatch({ type: RESET_CODE })
@@ -49,8 +52,7 @@ function Login({ message, loginStatusCode }) {
   };
 
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [captchaValue, setCaptchaValue] = useState(null);
+
 
 
 
@@ -103,6 +105,7 @@ function Login({ message, loginStatusCode }) {
 
     if (valid) {
       dispatch({ type: SIGN_IN_SAGA, payload: { company_code: clientId, username: userId, password: password } })
+      setLoading(true)
     }
   };
 
@@ -124,6 +127,7 @@ function Login({ message, loginStatusCode }) {
 
   useEffect(() => {
     if (loginStatusCode) {
+      setLoading(false)
       dispatch({ type: LOG_IN })
       const encryptData_Login = encryptData(JSON.stringify(true));
       localStorage.setItem("inai_login", encryptData_Login.toString());
@@ -138,15 +142,20 @@ function Login({ message, loginStatusCode }) {
   }, [loginStatusCode])
 
 
-
+ useEffect(() => {
+        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+            setLoading(false)
+        }
+    }, [state.Common.successCode, state.Common.code]);
 
   return (
-    <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4'>
+    <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4 '>
       <div className='bg-white  h-auto max-w-6xl rounded-3xl shadow-lg !mt-[8px] !mb-[10px]'>
 
         {
           state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
         }
+
 
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-4'>
@@ -159,7 +168,12 @@ function Login({ message, loginStatusCode }) {
           </div>
 
 
-          <div className='Right_Side m-3 flex flex-col justify-center xs:order-1 sm:order-1 md:order-2'>
+          <div className='Right_Side m-3 flex flex-col justify-center xs:order-1 sm:order-1 md:order-2 relative'>
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+              </div>
+            )}
             <div className='flex md:justify-start sm:justify-center xs:justify-center mb-2'>
               <img src={InaiLogo} alt='INAI Logo' className='h-12' />
             </div>
@@ -267,8 +281,8 @@ function Login({ message, loginStatusCode }) {
               <div className='flex justify-center'>
                 <div className="p-0 w-fit font-Gilroy text-lg bg-white flex justify-center" style={{ transformOrigin: "0 0", border: "none", }}>
                   <ReCAPTCHA
-                    sitekey="6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k"
-                    onChange={handleCaptchaChange}
+                  sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                                      onChange={handleCaptchaChange}
                     className='w-fit font-Gilroy bg-white'
 
                   />

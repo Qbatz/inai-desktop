@@ -21,7 +21,7 @@ function CreateAccount() {
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
-
+    const [loading, setLoading] = useState(false)
 
 
 
@@ -49,7 +49,7 @@ function CreateAccount() {
         let errors = { email: "", captcha: "" };
         if (email && captchaValue) {
             dispatch({ type: CREATE_ACCOUNT_API_CALL, payload: { email: email, recaptcha: captchaValue } })
-
+            setLoading(true)
         }
 
         if (!email) {
@@ -73,6 +73,7 @@ function CreateAccount() {
 
     useEffect(() => {
         if (emailid) {
+            setLoading(false)
             setEmail("");
             setCaptchaValue(null);
             const timer = setTimeout(() => {
@@ -81,11 +82,15 @@ function CreateAccount() {
 
             return () => clearTimeout(timer);
         }
-    }, [emailid, dispatch]);
+    }, [emailid]);
 
 
 
-
+    useEffect(() => {
+        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+            setLoading(false)
+        }
+    }, [state.Common.successCode, state.Common.code]);
 
     useEffect(() => {
         setErrorMessage(state?.Common?.errorMessage)
@@ -112,15 +117,20 @@ function CreateAccount() {
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4'>
 
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                    <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                </div>
+            )}
             <div className='bg-white  h-auto max-w-6xl rounded-3xl shadow-lg !mt-[8px] !mb-[10px]'>
 
                 {emailid && (
-                    <div className="p-6 text-center">
-                        <h2 className="text-[#0AEB7A]"> <span className="text-[#77DAA9] text-lg font-semibold">Success!</span>
+                    <div className="p-6 text-center font-Gilroy">
+                        <h2 className="text-[#0AEB7A] font-Gilroy"> <span className="text-[#77DAA9] text-lg font-semibold font-Gilroy">Success!</span>
 
-                            Check your email <span className="font-bold">{emailid}</span> to complete the registration.
+                            Check your email <span className="font-bold font-Gilroy">{emailid}</span> to complete the registration.
                             Check your Junk/Spam folder.
-                            Add <span className="font-semibold">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
+                            Add <span className="font-semibold font-Gilroy">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
                         </h2>
 
                     </div>)}
@@ -183,7 +193,7 @@ function CreateAccount() {
                                     <div className="mt-6 flex flex-col items-center justify-center">
 
                                         <ReCAPTCHA
-                                            sitekey='6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k'
+                                            sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                                             onChange={handleCaptchaChange}
                                         />
 

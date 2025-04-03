@@ -4,13 +4,13 @@ import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
 import { OTP_SEND_SAGA, OTP_VERIFY_SAGA, ACCOUNT_REGISTER_SAGA, RESET_CODE } from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from "react-router-dom";
+
 
 export default function SignUp() {
 
   const dispatch = useDispatch();
   const state = useSelector(state => state)
-  const navigate = useNavigate()
+
 
 
   const [firstName, setFirstName] = useState('');
@@ -29,7 +29,7 @@ export default function SignUp() {
   const [showOtp, setShowOtp] = useState(false)
   const [mobileError, setMobileError] = useState('')
   const [showSignUp, setShowSignUp] = useState(false)
-
+  const [loading, setLoading] = useState(false)
 
   const handleFirstName = (e) => {
     const value = e.target.value;
@@ -101,6 +101,7 @@ export default function SignUp() {
     }
     if (mobile) {
       dispatch({ type: OTP_SEND_SAGA, payload: { mobile: mobile } })
+      setLoading(true)
     }
 
 
@@ -124,12 +125,14 @@ export default function SignUp() {
     } else {
       setOtpError("");
       dispatch({ type: OTP_VERIFY_SAGA, payload: { mobile: mobile, otp: otp } })
+      setLoading(true)
     }
   };
 
   useEffect(() => {
 
     if (state.signUp?.otpValue && state.signUp?.otpValue !== '') {
+      setLoading(false)
       setShowOtp(true);
       setShowMobile(false);
     }
@@ -138,7 +141,8 @@ export default function SignUp() {
 
   useEffect(() => {
     if (state.Common.successCode === 200) {
-           setShowOtp(false);
+      setLoading(false)
+      setShowOtp(false);
       setShowMobile(false);
       setShowSignUp(true)
       dispatch({ type: RESET_CODE })
@@ -173,7 +177,7 @@ export default function SignUp() {
 
   const handleRegister = () => {
     if (validateForm()) {
-
+      setLoading(true)
       dispatch({
         type: ACCOUNT_REGISTER_SAGA,
         payload: {
@@ -191,6 +195,7 @@ export default function SignUp() {
           username: userId
         }
       })
+      
     }
 
   }
@@ -198,18 +203,33 @@ export default function SignUp() {
 
 
 
-  useEffect(()=>{
-    if(state.signUp.isTrue){
-      navigate('/')
+  useEffect(() => {
+    if (state.signUp.isTrue) {
+      setLoading(false)
+        }else{
+      setLoading(false)
     }
 
-  },[state.signUp.isTrue])
+  }, [state.signUp.isTrue])
+
+
+  useEffect(() => {
+    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+      setLoading(false)
+    }
+  }, [state.Common.successCode, state.Common.code]);
+
+
 
   return (
     <div className="flex items-center justify-center h-auto  w-full">
       <div className="w-full max-w-md bg-white p-6 rounded-lg ">
 
-
+      {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+              </div>
+            )}
 
         {state.Common.successMessage && <label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3" >{state.Common.successMessage}</label>}
 

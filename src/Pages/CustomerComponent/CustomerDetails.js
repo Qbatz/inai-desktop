@@ -1,9 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React,{ useEffect }  from 'react';
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { X } from "lucide-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { GET_CUSTOMER_DETAILS_SAGA } from '../../Utils/Constant'
-import CustomerList from './CustomerList';
 import { useParams } from 'react-router-dom';
 
 function CustomerDetails() {
@@ -14,9 +13,6 @@ function CustomerDetails() {
 
         const customer = state.customer?.customerDetails || {};
         
-
-        console.log("particularCustomerDetails state:", customer);
-    
         useEffect(() => {
             dispatch({ type: GET_CUSTOMER_DETAILS_SAGA, payload: customerId });
         }, []);
@@ -25,12 +21,14 @@ function CustomerDetails() {
     
 
     return (
-
+<div className="bg-blueGray-100 min-h-screen w-full">
+      <div className="p-3">
+      
         <div class="p-6 bg-white  min-h-screen rounded-2xl  ps-5 pt-3 pe-5">
 
             <h1 className="text-xl font-semibold mb-2 font-Gilroy text-black">Customer</h1>
 
-            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2 p-2">
+            <div class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-12 p-2">
             
             <>
 
@@ -269,7 +267,8 @@ function CustomerDetails() {
 
 
         </div>
-
+</div>
+</div>
     )
 
 }

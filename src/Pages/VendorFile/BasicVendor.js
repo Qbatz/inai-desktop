@@ -1,20 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import AddressVendor from "./AddressVendor";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID } from "../../Utils/Constant";
-import { X } from "lucide-react";
+import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_VENDOR_ID } from "../../Utils/Constant";
+import { useNavigate } from "react-router-dom";
+
 
 function BasicVendor({ handleClose, vendorDetails }) {
+
 
 
 
     const dispatch = useDispatch();
     const state = useSelector(state => state)
 
+    const navigate = useNavigate()
 
-    
     const [payload, setPayload] = useState(null);
     const [activeTab, setActiveTab] = useState(1);
     const [businessName, setBusinessName] = useState("");
@@ -23,11 +26,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
     const [email, setEmail] = useState("");
     const [designation, setDesignation] = useState("");
     const [gstVat, setGstVat] = useState("");
-    const [cin, setCin] = useState('');
-    const [tan, setTan] = useState('');
-    const [pan, setPan] = useState('');
-    const [legal, setLegal] = useState('');
-    const [nature, setNature] = useState('');
+    const [loading, setLoading] = useState(false)
     const [additionalContacts, setAdditionalContacts] = useState([
         { name: "", contactNumber: "", email: "", designation: "" }
     ]);
@@ -42,7 +41,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
     const handleNextToBank = (value, payload) => {
         setActiveTab(value)
-                setPayload(payload);
+        setPayload(payload);
 
     }
 
@@ -109,33 +108,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
         setGstVat(e.target.value);
     };
 
-    const handleCinChange = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, cin: "" }));
-        setCin(e.target.value);
-    };
-
-    const handleTanChange = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, tan: "" }));
-        setTan(e.target.value);
-    };
-
-    const handlePanChange = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, pan: "" }));
-        setPan(e.target.value);
-    };
-
-    const handleLegalChange = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, legal: "" }));
-        setLegal(e.target.value);
-    };
-
-    const handleNatureChange = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, nature: "" }));
-        setNature(e.target.value);
-    };
-
-
-
+  
     const validateForm = () => {
         let errors = {};
 
@@ -151,14 +124,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
         }
         if (!designation.trim()) errors.designation = "Designation is required";
         if (!gstVat.trim()) errors.gstVat = "GST/VAT is required";
-        // if (!cin.trim()) errors.cin = "CIN is required";
-        // if (!tan.trim()) errors.tan = "TAN is required";
-        // if (!pan.trim()) errors.pan = "PAN is required";
-        // if (!legal) errors.legal = "Select Legal Status";
-        // if (!nature) errors.nature = "Select Nature of Business";
-        // --
-
-
+      
         additionalContacts.forEach((contact, index) => {
             if (!contact.name.trim()) errors[`additionalName${index}`] = `Name is required`;
 
@@ -182,11 +148,27 @@ function BasicVendor({ handleClose, vendorDetails }) {
         return Object.keys(errors).length === 0;
     };
 
+    useEffect(() => {
+        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+            setLoading(false)
+
+        }
+    }, [state.Common.successCode, state.Common.code]);
+
+
+    useEffect(() => {
+        if (state.Common.IsVisible === 1) {
+            navigate('/vendor')
+        }
+
+    }, [state.Common.IsVisible])
 
 
 
     const handleSaveClick = () => {
+
         if (validateForm()) {
+
             const formattedAdditionalContacts = additionalContacts.map(contact => ({
                 name: contact.name,
                 contactNumber: Number(contact.contactNumber),
@@ -197,15 +179,17 @@ function BasicVendor({ handleClose, vendorDetails }) {
                 type: VENDOR_BASIC_INFO_SAGA,
                 payload: {
                     vendor_id: vendorDetails?.vendorId || "",
-                    businessName:businessName,
+                    businessName: businessName,
                     contactPersonName: contactPerson,
-                    contactNumber:contactNumber,
+                    contactNumber: contactNumber,
                     emailId: email,
-                    designation:designation,
+                    designation: designation,
                     gstvat: gstVat,
                     additionalContactInfo: formattedAdditionalContacts,
                 }
             });
+            setLoading(true)
+
 
         }
     };
@@ -317,7 +301,6 @@ function BasicVendor({ handleClose, vendorDetails }) {
             setAdditionalContacts([]);
             dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
             setTimeout(() => {
-                // dispatch({ type: RESET_CODE })
                 dispatch({ type: RESET_VENDOR_ID })
             }, 6000)
         }
@@ -326,11 +309,15 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
     return (
         <div className="bg-blueGray-100  w-full">
-            <div className="p-2 sm:p-2 md:p-2 lg:p-4">
+            <div className="p-2 sm:p-2 md:p-2 lg:p-4 relative">
                 <div className="flex items-center justify-between pe-12 mb-4">
                     <h3 className="font-semibold text-xl font-Gilroy">{vendorDetails ? 'Edit Vendor' : 'Add Vendor'}</h3>
                 </div>
-
+                {loading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                        <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                    </div>
+                )}
 
                 <div className="sticky top-0  z-10 overflow-x-auto">
                     <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">

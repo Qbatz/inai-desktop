@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { RESET_VENDOR_ID, VENDOR_BANK_INFO_SAGA, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA, EDIT_VENDOR_SAGA } from '../../Utils/Constant'
-
+import { RESET_VENDOR_ID,RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA, EDIT_VENDOR_SAGA } from '../../Utils/Constant'
+import { useNavigate } from 'react-router-dom';
 
 function BankVendor(props) {
 
@@ -10,18 +11,16 @@ function BankVendor(props) {
 
   const dispatch = useDispatch();
   const state = useSelector(state => state)
+  const navigate = useNavigate()
 
 
-
-
+  const [loading, setLoading] = useState(false)
   const [beneficiaryName, setBeneficiaryName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
-  const [bankBarnch, setBankBarnch] = useState('');
-  const [ifscCode, setIfscCode] = useState("");
+    const [ifscCode, setIfscCode] = useState("");
   const [swift, setSwift] = useState("");
-  const [adCode, setAdCode] = useState("");
-  const [bankAddress, setBankAddress] = useState("");
+    const [bankAddress, setBankAddress] = useState("");
   const [bankCountry, setBankCountry] = useState("");
   const [intermediaryBank, setIntermediaryBank] = useState("");
   const [siftCode, setSiftCode] = useState("");
@@ -56,13 +55,13 @@ function BankVendor(props) {
     }
   };
 
-  const handleBankBranchChange = (e) => {
-    const value = e.target.value;
-    if (/^[A-Za-z\s]*$/.test(value)) {
-      setBankBarnch(value);
-      clearError("bankBranch");
-    }
-  };
+  // const handleBankBranchChange = (e) => {
+  //   const value = e.target.value;
+  //   if (/^[A-Za-z\s]*$/.test(value)) {
+  //     setBankBarnch(value);
+  //     clearError("bankBranch");
+  //   }
+  // };
 
   const handleIfscCodeChange = (e) => {
     clearError("ifscCode");
@@ -74,10 +73,7 @@ function BankVendor(props) {
     clearError("swift");
   }
 
-  const handleAdCodeChange = (e) => {
-    setAdCode(e.target.value)
-    clearError("adCode");
-  };
+ 
 
   const handleBankAddressChange = (e) => {
     setBankAddress(e.target.value)
@@ -271,11 +267,13 @@ function BankVendor(props) {
           type: EDIT_VENDOR_SAGA,
           payload: EditPayload
         });
+        setLoading(true)
       } else {
         dispatch({
           type: CREATE_VENDOR_SAGA,
           payload: AddPayload
         });
+        setLoading(true)
       }
 
 
@@ -335,6 +333,21 @@ function BankVendor(props) {
 
 
   useEffect(() => {
+    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+      setLoading(false)
+
+    }
+  }, [state.Common.successCode, state.Common.code]);
+
+
+  useEffect(() => {
+    if (state.Common.IsVisible === 1) {
+      navigate('/vendor')
+    }
+
+  }, [state.Common.IsVisible])
+
+  useEffect(() => {
     if (props.vendorDetail?.bankDetails?.length > 0) {
       const bank = props.vendorDetail.bankDetails[0];
 
@@ -358,11 +371,15 @@ function BankVendor(props) {
 
   return (
     <div>
-      <div className='bg-white rounded-2xl h-auto'>
+      <div className='bg-white rounded-2xl h-auto relative'>
 
         <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Bank Detail</h2>
 
-
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+            <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+          </div>
+        )}
 
 
         <div className='max-h-[250px] overflow-y-auto  
@@ -372,9 +389,18 @@ function BankVendor(props) {
 
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                Beneficiary Currency Name<span className='text-red-500'>*</span>
+                Beneficiary  Name<span className='text-red-500'>*</span>
               </label>
-              <select
+
+              <input
+                id='clientId'
+                type='text'
+                value={beneficiaryName}
+                onChange={handleBeneficiaryNameChange}
+                placeholder='Enter Beneficiary Name '
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+              {/* <select
                 id='beneficiaryName'
                 value={beneficiaryName}
                 onChange={handleBeneficiaryNameChange}
@@ -386,7 +412,7 @@ function BankVendor(props) {
                 <option value="EUR">EUR</option>
                 <option value="GBP">GBP</option>
                 <option value="JPY">JPY</option>
-              </select>
+              </select> */}
               {formErrors.beneficiaryName && (
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryName} </p>)}
@@ -637,7 +663,7 @@ function BankVendor(props) {
 
 
           <div className="flex flex-col xs:flex-row sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-           {/* <button
+            {/* <button
               type="button"
               className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
               onClick={handleSaveClick} >

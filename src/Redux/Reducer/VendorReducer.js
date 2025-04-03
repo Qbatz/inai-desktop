@@ -13,7 +13,8 @@ import {
 export const initialState = {
    vendorId: '',
    vendorList: [],
-   ParticularVendorList: []
+   ParticularVendorList: [],
+ 
 }
 
 const VendorReducer = (state = initialState, action) => {

@@ -4,13 +4,10 @@ import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
 
-
-
 const AxiosConfig = axios.create({
-    baseURL: 'https://inaidevapi.s3remotica.com',
+    baseURL: process.env.REACT_APP_BASE_URL,
 headers: {
   'Content-Type': 'application/json',
-
 }
 })
 

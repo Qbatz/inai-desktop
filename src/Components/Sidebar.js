@@ -20,7 +20,7 @@ import { Chart2, LoginCurve, Setting2, I24Support, Receipt1, Receipt2 } from "ic
 import { useDispatch} from 'react-redux';
 import { LOG_OUT } from "../Utils/Constant";
 import { encryptData } from "../Crypto/crypto";
-import { Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
+import { Route,  Routes, useNavigate } from "react-router-dom";
 import AddCustomer from "../Pages/CustomerComponent/AddCustomer";
 import BasicVendor from "../Pages/VendorFile/BasicVendor";
 import VendorDetails from "../Pages/VendorFile/VendorDetails";
@@ -35,11 +35,9 @@ function Sidebar() {
     const [activeItem, setActiveItem] = useState("dashboard");
 
     const [isLogout, setIsLogout] = useState(false)
-    const [values, setValues] = useState(null)
+   
 
-    const updateProps =(p)=>{
-      setValues(p)
-    }
+    
 
     const handleConfirmLogout = () => {
         dispatch({ type: LOG_OUT });
@@ -57,9 +55,7 @@ function Sidebar() {
         setIsLogout(false)
     }
 
-  const updateActiveItems = (item) => {
-   setActiveItem(item)
-}
+  
 
   
 

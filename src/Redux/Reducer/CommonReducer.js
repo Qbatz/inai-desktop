@@ -11,8 +11,8 @@ export const initialState = {
     successCode: 0,
     successMessage: "",
     emailid: "",
-    resetPassword: ""
-
+    resetPassword: "",
+    IsVisible: 0,
 
 }
 
@@ -27,6 +27,7 @@ const CommonReducer = (state = initialState, action) => {
                 ...state,
                 successCode: action.payload.statusCode || 0,
                 successMessage: action.payload.message || '',
+                IsVisible: action.payload.IsVisible || 0,
                 emailid: data.email || '',
                 resetPassword: data.resetPassword || '',
                 resetUser: data.resetUser || '',
@@ -35,7 +36,7 @@ const CommonReducer = (state = initialState, action) => {
             }
 
         case RESET_CODE:
-            return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "", emailid: "" }
+            return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "", emailid: "", IsVisible: 0 }
 
         default:
             return state;

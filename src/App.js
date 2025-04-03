@@ -84,22 +84,23 @@ function App({ isLogged_In }) {
         draggable={true}
         progress={undefined}
         style={{ fontFamily: "Gilroy", fontSize: "14px" }} />
-      <Router>
-        <Routes>
-
+      
+          <Router>
           {
             isLogged_In || successLogin ? (
               <>
-                <Route path="/" element={<Sidebar />} />
+                  <Sidebar />
+                
+                {/* <Route path="/" element={<Sidebar />} />
                 <Route path="/form-display" element={<FormDisplay />} />
                 <Route path="/add-customer" element={<AddCustomer />} />
                 <Route path="/customer-details" element={<CustomerDetails />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} /> */}
               </>
             )
               :
               (
-                <>
+                <Routes>
                   <Route path="/" element={<Login />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/sign-up" element={<SignUp />} />
@@ -108,15 +109,12 @@ function App({ isLogged_In }) {
                   <Route path="/forgot-client-id" element={<ForgotClientId />} />
                   <Route path="/password" element={<ForgotPassword />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
-
-                </>
+                  </Routes>
               )
           }
-
-
-
-        </Routes>
-      </Router>
+          </Router>
+         
+        
     </div>
   );
 }

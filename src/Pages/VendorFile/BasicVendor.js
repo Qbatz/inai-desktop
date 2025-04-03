@@ -324,23 +324,12 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
     }, [state.Common.successCode])
 
-
-
-
-
-
-
-
-
-
     return (
         <div className="bg-blueGray-100  w-full">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4">
                 <div className="flex items-center justify-between pe-12 mb-4">
                     <h3 className="font-semibold text-xl font-Gilroy">{vendorDetails ? 'Edit Vendor' : 'Add Vendor'}</h3>
-                    <div onClick={handleClose} className="cursor-pointer text-lg font-bold border border-slate-400 rounded-full p-1 text-slate-500 hover:bg-slate-100 transition">
-                        <X size={20} />
-                    </div>                </div>
+                </div>
 
 
                 <div className="sticky top-0  z-10 overflow-x-auto">

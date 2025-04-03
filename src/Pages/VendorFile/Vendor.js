@@ -105,11 +105,6 @@ function VendorList() {
 
 
   const handleViewVendor = (item) => {
-
-    console.log(item)
-    // setShowParticularVendor(true)
-    // setIsVisible(false)
-    // setParticularVendorDetails(item)
     navigate(`/vendor-details/${item}`)
   }
 

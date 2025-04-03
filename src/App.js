@@ -85,13 +85,11 @@ function App({ isLogged_In }) {
         progress={undefined}
         style={{ fontFamily: "Gilroy", fontSize: "14px" }} />
       
-
+          <Router>
           {
             isLogged_In || successLogin ? (
               <>
-                <Router>
                   <Sidebar />
-                </Router>
                 
                 {/* <Route path="/" element={<Sidebar />} />
                 <Route path="/form-display" element={<FormDisplay />} />
@@ -102,7 +100,6 @@ function App({ isLogged_In }) {
             )
               :
               (
-                <Router>
                 <Routes>
                   <Route path="/" element={<Login />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
@@ -113,12 +110,10 @@ function App({ isLogged_In }) {
                   <Route path="/password" element={<ForgotPassword />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
-                  </Router>
               )
           }
-
-
-
+          </Router>
+         
         
     </div>
   );

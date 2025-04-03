@@ -32,7 +32,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
     ]);
     const [formErrors, setFormErrors] = useState({});
     const [basicDetails, setBasicDetails] = useState('')
-
+    const [addressDetails, setAddressDetails] = useState({ address: null, bank: null })
 
     const handleBackBasic = (value) => {
         setActiveTab(value)
@@ -46,8 +46,11 @@ function BasicVendor({ handleClose, vendorDetails }) {
     }
 
 
-    const handleBackToAddress = (value) => {
+    const handleBackToAddress = (value, Address, bankDetails) => {
         setActiveTab(value)
+               setAddressDetails({ address: Address, bank: bankDetails })
+
+
     }
 
 
@@ -108,7 +111,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
         setGstVat(e.target.value);
     };
 
-  
+
     const validateForm = () => {
         let errors = {};
 
@@ -124,7 +127,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
         }
         if (!designation.trim()) errors.designation = "Designation is required";
         if (!gstVat.trim()) errors.gstVat = "GST/VAT is required";
-      
+
         additionalContacts.forEach((contact, index) => {
             if (!contact.name.trim()) errors[`additionalName${index}`] = `Name is required`;
 
@@ -209,7 +212,6 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
 
             const payload = {
-
                 vendor_id: '',
                 businessName: businessName,
                 contactPersonName: contactPerson,
@@ -644,8 +646,8 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
 
                         </div>}
-                    {activeTab === 2 && <div> <AddressVendor handleBack={handleBackBasic} handleNextToBank={handleNextToBank} vendorDetails={vendorDetails} /></div>}
-                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} payload={payload} vendorDetail={vendorDetails} /></div>}
+                    {activeTab === 2 && <div> <AddressVendor handleBack={handleBackBasic} handleNextToBank={handleNextToBank} vendorDetails={vendorDetails} addressDetails={addressDetails} /></div>}
+                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} payload={payload} vendorDetail={vendorDetails} addressDetails={addressDetails} /></div>}
                 </div>
             </div>
         </div>

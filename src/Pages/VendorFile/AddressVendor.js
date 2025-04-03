@@ -305,6 +305,39 @@ function AddressVendor(props) {
 
 
 
+console.log("props",props)
+
+  useEffect(() => {
+    if (props.addressDetails && props.addressDetails.address) {
+      const officeAddress = props.addressDetails.address.find(addr => addr.addressType === 1) || {};
+      const shippingAddress = props.addressDetails.address.find(addr => addr.addressType === 2) || {};
+
+      setOfficeAddress1(officeAddress.doorNo || "");
+      setOfficeAddress2(officeAddress.street || "");
+      setOfficeAddress3(officeAddress.locality || "");
+      setCity(officeAddress.city || "");
+      setState(officeAddress.state || "");
+      setCountry(officeAddress.country || "");
+      setPostalCode(officeAddress.postalCode || "");
+      setLandmark(officeAddress.landMark || "");
+      setGoogleMap(officeAddress.mapLink || "");
+
+
+      setShippingAddress1(shippingAddress.doorNo || "");
+      setShippingAddress2(shippingAddress.street || "");
+      setShippingAddress3(shippingAddress.locality || "");
+      setShippingCity(shippingAddress.city || "");
+      setShippingState(shippingAddress.state || "");
+      setShippingCountry(shippingAddress.country || "");
+      setShippingPostalCode(shippingAddress.postalCode || "");
+      setShippingLandmark(shippingAddress.landMark || "");
+      setShippingGoogleMap(shippingAddress.mapLink || "");
+    }
+  }, [props.addressDetails]);
+
+
+
+  
   return (
     <div>
       <div className='bg-white rounded-2xl h-auto  relative'>

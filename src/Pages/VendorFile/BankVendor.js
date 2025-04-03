@@ -149,7 +149,25 @@ function BankVendor(props) {
 
 
   const hanldeBackToAddress = () => {
-    props.hanldeBackToAddress(2)
+    const addresses = props?.payload?.address || [];
+
+
+    const bankDetails = {
+      name: beneficiaryName || "",
+      accountNo: accountNumber || "",
+      bankName: bankName || "",
+      ifscCode: ifscCode || "",
+      address1: bankAddress || "",
+      address2: bankAddress2 || "",
+      address3: bankAddress3 || "",
+      country: bankCountry || "",
+      routingBank: intermediaryBank || "",
+      swiftCode: swift || "",
+      routingBankAddress: intermediaryDetails || "",
+      routingAccountIndusand: iban || ""
+    }
+
+    props.hanldeBackToAddress(2,addresses, bankDetails )
   }
 
 
@@ -367,8 +385,27 @@ function BankVendor(props) {
   }, [props.vendorDetail]);
 
 
+  useEffect(() => {
+    if (props.addressDetails?.bank) {
+      const bank = props.addressDetails?.bank;
+
+      setBeneficiaryName(bank.name || "");
+      setAccountNumber(bank.accountNo || "");
+      setBankName(bank.bankName || "");
+      setIfscCode(bank.ifscCode || "");
+      setBankAddress(bank.address1 || "");
+      setBankAddress2(bank.address2 || "");
+      setBankAddress3(bank.address3 || "");
+      setBankCountry(bank.country || "");
+      setIntermediaryBank(bank.routingBank || "");
+      setSwift(bank.swiftCode || "");
+      setIntermediaryDetails(bank.routingBankAddress || "");
+      setIban(bank.routingAccountIndusand || "");
+    }
+  }, [props.addressDetails]);
 
 
+  
   return (
     <div>
       <div className='bg-white rounded-2xl h-auto relative'>

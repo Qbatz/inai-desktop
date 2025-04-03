@@ -22,6 +22,8 @@ import { LOG_OUT } from "../Utils/Constant";
 import { encryptData } from "../Crypto/crypto";
 import { Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
 import AddCustomer from "../Pages/CustomerComponent/AddCustomer";
+import BasicVendor from "../Pages/VendorFile/BasicVendor";
+import VendorDetails from "../Pages/VendorFile/VendorDetails";
 
 
 
@@ -216,6 +218,8 @@ function Sidebar() {
                              <Route path="/product" element={<Product />} />
                              <Route path="/add-customer" element={<AddCustomer />}/>
                              <Route path="/customer-details/:customerId" element={<CustomerDetails />} />
+                             <Route path="/add-vendor" element={<BasicVendor />}/>
+                             <Route path="/vendor-details/:vendorId" element={<VendorDetails />}/>
                         </Routes>
                     {/* {activeItem === "dashboard" && <Dashboard />}
                     {activeItem === "vendor" && <Vendor />}

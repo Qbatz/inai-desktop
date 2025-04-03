@@ -3,20 +3,20 @@ import Dot from '../../Asset/Icon/Dot.svg'
 import { X } from "lucide-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { VIEW_VENDOR_SAGA } from '../../Utils/Constant'
+import { useParams } from 'react-router-dom';
 
 
 
-function VendorDetails({ handleCloseVendor, particularVendorDetails }) {
+function VendorDetails() {
 
 
   const dispatch = useDispatch()
   const state = useSelector(state => state)
+  const {vendorId} = useParams()
 
   useEffect(() => {
-    if (particularVendorDetails) {
-      dispatch({ type: VIEW_VENDOR_SAGA, payload: particularVendorDetails });
-    }
-  }, [particularVendorDetails]);
+      dispatch({ type: VIEW_VENDOR_SAGA, payload: vendorId });
+  }, []);
 
 
 
@@ -32,9 +32,6 @@ function VendorDetails({ handleCloseVendor, particularVendorDetails }) {
         <div className="p-6 bg-white rounded-2xl">
           <div className="flex p-2 justify-between">
             <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl font-semibold font-Gilroy text-black">Vendor</h1>
-            <div onClick={handleCloseVendor} className="cursor-pointer text-lg font-bold border border-slate-400 rounded-full p-1 text-slate-500 hover:bg-slate-100 transition">
-              <X size={20} />
-            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 p-2">

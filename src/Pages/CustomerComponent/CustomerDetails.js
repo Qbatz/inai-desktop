@@ -212,7 +212,7 @@ function CustomerDetails() {
                     <div class="grid gap-4">
                             {
                                 customer?.address?.map(item => {
-                                    return <div>
+                                    return <div key={item.id}>
                                     <h3 class="text-base font-semibold mb-2 font-Gilroy text-black">{item.addressType === 1 ? 'Office Address' : 'Shipping Address'}</h3>
                                     <div class="grid grid-cols-3  gap-4">
                                         <div>

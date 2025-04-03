@@ -153,7 +153,7 @@ function ClientIDChange() {
                             <div className="mt-6 flex flex-col items-center justify-center">
 
                                 <ReCAPTCHA
-                                    sitekey='6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k'
+                                    sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                                     onChange={handleCaptchaChange}
                                 />
 

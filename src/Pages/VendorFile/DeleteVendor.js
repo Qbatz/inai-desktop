@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect , useState} from 'react'
 import { DELETE_VENDOR_SAGA ,VENDOR_SAGA,RESET_CODE} from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -8,16 +9,18 @@ function DeleteCustomer({ handleClose, deleteVendorId }) {
     const dispatch = useDispatch()
     const state = useSelector(state => state)
 
-
+  const [loading, setLoading] = useState(false)
 
     const handleDeleteVendor = () => {
         if (deleteVendorId) {
+            setLoading(true)
             dispatch({ type: DELETE_VENDOR_SAGA, payload: deleteVendorId })
         }
     }
 
     useEffect(() => {
         if (state.Common.successCode === 200) {
+            setLoading(false)
             dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
 
             dispatch({ type: RESET_CODE })
@@ -26,7 +29,12 @@ function DeleteCustomer({ handleClose, deleteVendorId }) {
     }, [state.Common.successCode])
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6">
+            <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6 relative">
+            {loading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                        <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                    </div>
+                )}
 
                 <div className="flex justify-center border-b-0">
                     <h2 className="text-[18px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">

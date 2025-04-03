@@ -9,7 +9,7 @@ export const initialState = {
 }
 
 const CustomerReducer = (state = initialState, action) => {
-    console.log("Dispatched Action:", action);
+
 
     switch (action.type) {
         case GET_CUSTOMER_LIST_REDUCER:

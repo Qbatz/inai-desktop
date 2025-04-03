@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect } from 'react'
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg'
 import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2 } from "iconsax-react";
@@ -10,8 +11,7 @@ import BasicVendor from "./BasicVendor";
 import DeleteVendor from './DeleteVendor';
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
-import { RESET_CODE, VENDOR_SAGA } from '../../Utils/Constant'
-import VendorDetails from './VendorDetails'
+import { RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID } from '../../Utils/Constant'
 import { useNavigate } from 'react-router-dom';
 
 
@@ -26,6 +26,7 @@ function VendorList() {
 
   const [showPicker, setShowPicker] = useState(false);
   const [isVisible, setIsVisible] = useState(true)
+  const [showAddVendor, setShowAddVendor] = useState(false)
   const [showPopup, setShowPopUp] = useState(null);
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const popupRef = useRef(null);
@@ -36,9 +37,7 @@ function VendorList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [vendorDetails, setVendorDetails] = useState('')
   const [deleteVendorId, setDeleteVendorId] = useState('')
-  const [showParticularVendor, setShowParticularVendor] = useState(false)
-  const [particularVendorDetails, setParticularVendorDetails] = useState('')
-  const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true)
 
   const [dateRange, setDateRange] = useState([
     {
@@ -88,6 +87,7 @@ function VendorList() {
 
   const handleEditVendor = (vendorDetails) => {
     setIsVisible(false)
+    setShowAddVendor(true)
     setVendorDetails(vendorDetails)
   }
 
@@ -108,11 +108,7 @@ function VendorList() {
     navigate(`/vendor-details/${item}`)
   }
 
-  const handleCloseViewVendor = () => {
-    setShowParticularVendor(false)
-    setIsVisible(true)
-  }
-
+  
 
   // useEffect/////////////////////////////////////////////
 
@@ -147,7 +143,7 @@ function VendorList() {
 
   useEffect(() => {
     if (state.Common.successCode === 200) {
-
+      setShowAddVendor(false)
       setShowDeleteVendor(false)
       setIsVisible(true)
       dispatch({ type: RESET_CODE })
@@ -170,10 +166,10 @@ function VendorList() {
       setLoading(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE })
+        dispatch({ type: RESET_VENDOR_ID })
       }, 5000)
 
     }
-
   }, [state.Common.successCode])
 
 
@@ -203,7 +199,7 @@ function VendorList() {
                 </h2>
 
                 <button
-                  onClick={() => {navigate('/add-vendor')}}
+                  onClick={() => { navigate('/add-vendor') }}
                   className="px-6 md:px-8 lg:px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-xs md:text-base font-medium flex items-center gap-2"
                 >
                   <img src={PlusCircle} alt="plus" className="w-4 md:w-5 lg:w-4" />
@@ -270,65 +266,65 @@ function VendorList() {
 
               <div className="flex-1">
                 <div className='overflow-x-auto rounded-xl border border-slate-200 overflow-y-auto p-0 mt-4 mb-extra'>
-                <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
-                  <thead className="bg-slate-100 sticky top-0 z-10">
-                    <tr>
-                      {/* <th className="px-4 py-2">
+                  <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
+                    <thead className="bg-slate-100 sticky top-0 z-10">
+                      <tr>
+                        {/* <th className="px-4 py-2">
                     <img src={Minus} alt='Minus' />
                   </th> */}
-                      <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
-                      <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
-                      <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
-                      <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Mobile no.</th>
-                      <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Receivable Amount</th>
-                      <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy"></th>
+                        <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
+                        <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
+                        <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
+                        <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Mobile no.</th>
+                        <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Receivable Amount</th>
+                        <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy"></th>
 
-
-                    </tr>
-                  </thead>
-                  <tbody className=" ">
-                    {paginatedData.map((item, index) => (
-                      <tr key={index} className="border-0">
-                        {/* <td className=" px-4 py-2"> <img src={Minus} alt='Minus' /></td> */}
-                        <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
-                        <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contactPersonName}</td>
-                        <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.emailId}</td>
-                        <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contactNumber}</td>
-                        <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.Amount || '-'}</td>
-                        <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
-                          <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
-                            <HiOutlineDotsVertical className="text-black p-0" />
-
-
-
-                            {showPopup === index && (
-                              <div
-                                ref={popupRef}
-
-                                style={{
-                                  position: "fixed",
-                                  top: popupPosition.top,
-                                  left: popupPosition.left,
-                                  zIndex: 50,
-                                }}
-                                className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
-
-                              >
-                                <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy" onClick={() => handleEditVendor(item)}>
-                                  <Edit size="16" color="#205DA8" /> Edit
-                                </div>
-                                <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy text-red-700" onClick={() => handleDeleteVendorPopup(item)}>
-                                  <Trash size="16" color="#B91C1C" /> Delete
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </td>
 
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody className=" ">
+                      {paginatedData.map((item, index) => (
+                        <tr key={index} className="border-0">
+                          {/* <td className=" px-4 py-2"> <img src={Minus} alt='Minus' /></td> */}
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contactPersonName}</td>
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.emailId}</td>
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contactNumber}</td>
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.Amount || '-'}</td>
+                          <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
+                            <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
+                              <HiOutlineDotsVertical className="text-black p-0" />
+
+
+
+                              {showPopup === index && (
+                                <div
+                                  ref={popupRef}
+
+                                  style={{
+                                    position: "fixed",
+                                    top: popupPosition.top,
+                                    left: popupPosition.left,
+                                    zIndex: 50,
+                                  }}
+                                  className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
+
+                                >
+                                  <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy" onClick={() => handleEditVendor(item)}>
+                                    <Edit size="16" color="#205DA8" /> Edit
+                                  </div>
+                                  <div className="px-4 py-2 cursor-pointer  flex items-center gap-2 font-Gilroy text-red-700" onClick={() => handleDeleteVendorPopup(item)}>
+                                    <Trash size="16" color="#B91C1C" /> Delete
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </td>
+
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -373,16 +369,17 @@ function VendorList() {
         }
 
         {
+          showAddVendor &&
+          <BasicVendor handleClose={handleClose} vendorDetails={vendorDetails} />}
+
+
+
+        {
           showDeleteVendor &&
           <DeleteVendor handleClose={handleCloseForDeleteVedor} deleteVendorId={deleteVendorId} />
         }
 
-        {
-          showParticularVendor &&
-          <VendorDetails handleCloseVendor={handleCloseViewVendor} particularVendorDetails={particularVendorDetails} />
-        }
-
-
+       
 
 
 

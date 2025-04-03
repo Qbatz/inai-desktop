@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DELETE_CUSTOMER_SAGA, GET_CUSTOMER_LIST_SAGA, RESET_CODE } from '../../Utils/Constant'
 
@@ -11,16 +12,19 @@ function DeleteCustomer({ handleClose, deleteCustomerId }) {
     const dispatch = useDispatch()
     const state = useSelector(state => state)
 
+    const [loading, setLoading] = useState(false)
+
 
     const handleDeleteCustomer = () => {
         if (deleteCustomerId) {
+            setLoading(true)
             dispatch({ type: DELETE_CUSTOMER_SAGA, payload: deleteCustomerId })
         }
     }
 
     useEffect(() => {
         if (state.Common.successCode === 200) {
-
+            setLoading(false)
             dispatch({ type: GET_CUSTOMER_LIST_SAGA });
             dispatch({ type: RESET_CODE })
         }
@@ -32,6 +36,13 @@ function DeleteCustomer({ handleClose, deleteCustomerId }) {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6">
+
+                {loading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                        <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                    </div>
+                )}
+
 
                 <div className="flex justify-center border-b-0">
                     <h2 className="text-[18px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">

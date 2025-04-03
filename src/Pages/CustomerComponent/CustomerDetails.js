@@ -1,9 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React,{ useEffect }  from 'react';
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import { X } from "lucide-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { GET_CUSTOMER_DETAILS_SAGA } from '../../Utils/Constant'
-import CustomerList from './CustomerList';
 import { useParams } from 'react-router-dom';
 
 function CustomerDetails() {
@@ -15,7 +14,6 @@ function CustomerDetails() {
         const customer = state.customer?.customerDetails || {};
         
 
-        console.log("particularCustomerDetails state:", customer);
     
         useEffect(() => {
             dispatch({ type: GET_CUSTOMER_DETAILS_SAGA, payload: customerId });

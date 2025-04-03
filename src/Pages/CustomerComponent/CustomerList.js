@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
 import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2 } from "iconsax-react";
@@ -11,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import AddCustomer from './AddCustomer';
 import DeleteCustomer from './DeleteCustomer';
 import { RESET_CODE, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
-import CustomerDetails from './CustomerDetails'
 import { useNavigate } from 'react-router-dom';
 
 function CustomerList({ item } ) {
@@ -30,15 +30,12 @@ function CustomerList({ item } ) {
   const [showDeleteCustomer, setShowDeleteCustomer] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [showAddCustomer, setShowAddCustomer] = useState(false)
   const [editCustomerDetails, setEditCustomerDetails] = useState('')
   const [deleteCustomerId, setDeleteCustomerId] = useState('')
   const [customerList, setCustomerList] = useState([])
-  const [showCustomerDetails, setShowCustomerDetails] = useState(false)
-  const [particularCustomerDetails, setParticularCustomerDetails] = useState(false)
-
-
+ 
   const paginatedData = customerList.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -132,7 +129,7 @@ function CustomerList({ item } ) {
     if (state.Common.successCode === 200) {
 
       setCustomerList(state.customer.customerList)
-      // setLoading(false)
+      setLoading(false)
       setIsVisible(true)
       setShowAddCustomer(false)
       setShowDeleteCustomer(false)
@@ -142,6 +139,17 @@ function CustomerList({ item } ) {
     }
 
   }, [state.Common.successCode])
+
+
+  useEffect(()=>{
+if(state.customer.customerList){
+  setCustomerList(state.customer.customerList)
+}
+  },[state.customer.customerList])
+
+
+
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -159,6 +167,7 @@ function CustomerList({ item } ) {
 
   useEffect(() => {
     if (state.customer.successCode === 200) {
+      dispatch({ type: GET_CUSTOMER_LIST_SAGA });
       setShowDeleteCustomer(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE });
@@ -179,11 +188,11 @@ function CustomerList({ item } ) {
   return (
     <div className='bg-slate-100 flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0'>
 
-      {/* {loading && (
+      {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
           <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
         </div>
-      )} */}
+      )}
 
       {isVisible && <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative'>
 
@@ -382,10 +391,7 @@ function CustomerList({ item } ) {
       {showDeleteCustomer && <DeleteCustomer handleClose={handleCloseForDeleteCustomer} deleteCustomerId={deleteCustomerId} />}
    
    
-      {showCustomerDetails &&
-                <CustomerDetails particularCustomerDetails={particularCustomerDetails} />
-              }
-   
+        
    
     </div>
   );

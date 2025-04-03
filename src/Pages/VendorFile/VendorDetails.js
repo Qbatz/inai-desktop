@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect} from 'react';
 import Dot from '../../Asset/Icon/Dot.svg'
-import { X } from "lucide-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { VIEW_VENDOR_SAGA } from '../../Utils/Constant'
 import { useParams } from 'react-router-dom';
@@ -133,7 +133,7 @@ function VendorDetails() {
                   <h2 className="text-base font-semibold font-Gilroy">Address Information</h2>
                   <hr className="my-2" />
 
-                  {/* Office Address Section */}
+                
                   <div className="p-2 rounded-lg bg-white">
                     <h2 className="text-lg font-semibold mb-4">Office Address</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-2">
@@ -175,7 +175,7 @@ function VendorDetails() {
                     </div>
                   </div>
 
-                  {/* Shipping Address Section */}
+               
                   <div className="p-2 rounded-lg bg-white">
                     <h2 className="text-lg font-semibold mb-4">Shipping Address</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-2">

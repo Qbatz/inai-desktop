@@ -33,8 +33,8 @@ function* handleVendorBasicInfo(action) {
     try {
         const response = yield call(AddBasicInfoVendor, action.payload)
                 if (response.status === 200 || response.data.statusCode === 200) {
-            yield put({ type: VENDOR_BASIC_INFO_REDUCER, payload: { vendorId: response.data.vendorId } })
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
+            yield put({ type: VENDOR_BASIC_INFO_REDUCER, payload: { vendorId: response.data.vendorId  } })
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message,IsVisible: 1  } });
        
             toast.success(response.data.message || 'Success!', {
                 style: {
@@ -68,7 +68,7 @@ function* handleVendorAddressInfo(action) {
         const response = yield call(AddAddressInfoVendor, action.payload)
         if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: VENDOR_ADDRESS_INFO_REDUCER, payload: { vendorId: response.data.vendorId } })
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message} });
             toast.success(response.data.message || 'Success!', {
                 style: {
                     background: '#4CAF50',  

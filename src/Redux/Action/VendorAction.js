@@ -1,4 +1,3 @@
-import axios from "axios";
 import AxiosConfig from "../../WebService/AxiosConfig";
 
 
@@ -38,7 +37,7 @@ export async function AddVendor(bank) {
 
 
 export async function EditVendor(bank) {
-  return await AxiosConfig.patch('/usr/vendor/vendorUniqueId',bank,{
+   return await AxiosConfig.patch(`/usr/vendor/${bank.vendor_id}`,bank,{
    data: bank
   })
 }

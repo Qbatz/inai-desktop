@@ -1,14 +1,21 @@
+
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { MdError } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_CUSTOMER_SAGA, GET_CUSTOMER_LIST_SAGA, RESET_CODE, EDIT_CUSTOMER_SAGA } from '../../Utils/Constant';
-import { X } from "lucide-react";
+import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA } from '../../Utils/Constant';
+import { useNavigate } from 'react-router-dom';
+
+
 
 function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
     const dispatch = useDispatch();
     const state = useSelector(state => state)
+    const [loading, setLoading] = useState(false)
+
+    const navigate = useNavigate()
 
     const [value, setValue] = useState(1);
     const [errors, setErrors] = useState({});
@@ -262,8 +269,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
         const updatedErrors = { ...errors };
 
-        const errorKey = `bankDetails_${index}_${field}`;
-
+     
         if (updatedErrors.bankErrors && updatedErrors.bankErrors[index] && updatedErrors.bankErrors[index][field]) {
             delete updatedErrors.bankErrors[index][field];
 
@@ -276,26 +282,26 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
 
-    const addBankDetail = () => {
-        setBankDetailsList([
-            ...bankDetailsList,
-            {
-                beneficiaryCurrency: "",
-                accountNumber: "",
-                bankName: "",
-                ifscCode: "",
-                swiftCode: "",
-                bankAddress1: "",
-                bankAddress2: "",
-                bankCountry: "",
-                intermediaryRoutingBank: "",
-                intermediarySiftCode: "",
-                bankAddress: "",
-                intermediaryAccountNumber: "",
-                iban: ""
-            }
-        ]);
-    };
+    // const addBankDetail = () => {
+    //     setBankDetailsList([
+    //         ...bankDetailsList,
+    //         {
+    //             beneficiaryCurrency: "",
+    //             accountNumber: "",
+    //             bankName: "",
+    //             ifscCode: "",
+    //             swiftCode: "",
+    //             bankAddress1: "",
+    //             bankAddress2: "",
+    //             bankCountry: "",
+    //             intermediaryRoutingBank: "",
+    //             intermediarySiftCode: "",
+    //             bankAddress: "",
+    //             intermediaryAccountNumber: "",
+    //             iban: ""
+    //         }
+    //     ]);
+    // };
 
 
 
@@ -391,7 +397,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     };
 
 
+
+
     const handleSaveAndExit = () => {
+
         const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts);
 
 
@@ -423,7 +432,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
             dispatch({ type: ADD_CUSTOMER_SAGA, payload: AddPayload })
-
+            setLoading(true)
 
             // const EditPayload = {
             //     clientId: editCustomerDetails.clientId || "",
@@ -459,60 +468,6 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
         }
     };
-
-
-    const handleSaveAddress = () => {
-
-        let isValid = true;
-        let errors = {};
-
-        if (!officeAddress.address1.trim()) {
-            errors.address1 = "Address Line 1 is required";
-            isValid = false
-        }
-
-
-        if (!officeAddress.city.trim()) {
-            errors.city = "City is required";
-            isValid = false
-        }
-
-        if (!officeAddress.state.trim()) {
-            errors.state = "State is required";
-            isValid = false
-        }
-        if (!officeAddress.postalCode.trim()) {
-            errors.postalCode = "Postal Code is required";
-            isValid = false
-        }
-
-        if (!shippingAddress.address1.trim()) {
-            errors.shipaddress1 = "Address Line 1 is required";
-            isValid = false
-        }
-
-        if (!shippingAddress.city.trim()) {
-            errors.shipcity = "City is required";
-            isValid = false
-        }
-
-        if (!shippingAddress.state.trim()) {
-            errors.shipstate = "State is required";
-            isValid = false
-        }
-        if (!shippingAddress.postalCode.trim()) {
-            errors.shippostalCode = "Postal Code is required";
-            isValid = false
-        }
-
-
-        setErrors(errors)
-        if (isValid) {
-
-        }
-
-    }
-
 
 
 
@@ -603,9 +558,6 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         })
 
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
-
-        console.log("finalErrors", finalErrors);
-
 
         if (
             Object.keys(finalErrors).length > 0 &&
@@ -739,9 +691,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
             if (editCustomerDetails) {
                 dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload })
+                setLoading(true)
 
             } else {
                 dispatch({ type: ADD_CUSTOMER_SAGA, payload: AddPayload });
+                setLoading(true)
             }
 
 
@@ -749,15 +703,20 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     };
 
 
+    useEffect(() => {
+        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+            setLoading(false)
+        }
+    }, [state.Common.successCode, state.Common.code]);
+
 
 
     useEffect(() => {
-        if (state.Common.successCode === 200) {
-            dispatch({ type: GET_CUSTOMER_LIST_SAGA });
-            dispatch({ type: RESET_CODE })
+        if (state.Common.IsVisible === 1) {
+            navigate('/client')
         }
 
-    }, [state.Common.successCode])
+    }, [state.Common.IsVisible])
 
     useEffect(() => {
         if (editCustomerDetails) {
@@ -807,10 +766,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             }
 
             if (editCustomerDetails.address && editCustomerDetails.address.length > 0) {
-
                 const officeAddressData = editCustomerDetails.address.find(addr => addr.addressType === 1);
-
-                console.log("officeAddressData", officeAddressData)
                 if (officeAddressData) {
                     setOfficeAddress({
                         address1: officeAddressData.doorNo || '',
@@ -845,8 +801,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     return (
         <div className='bg-slate-100 flex flex-1 flex-col ps-5 pt-3 pe-5'>
 
-            <div className='bg-white rounded-2xl ps-5 pt-3 pe-5'>
-
+            <div className='bg-white rounded-2xl ps-5 pt-3 pe-5 relative'>
+                {loading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                        <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                    </div>
+                )}
                 <div className='flex items-center justify-between pe-12 mb-4'>
                     <h2 className="text-xl font-semibold mb-4  font-Gilroy">{editCustomerDetails ? 'Edit Customer' : "Add Customer"} </h2>
                 </div>
@@ -1141,6 +1101,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                     type="text"
                                                     placeholder="Enter Contact Number"
                                                     value={contact.number}
+                                                    maxLength={10}
                                                     onChange={(e) => handleChange(index, "number", e.target.value)}
                                                     className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                                 />

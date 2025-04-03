@@ -149,15 +149,13 @@ function* handleGetCustomerList(action) {
 
 
 function* handleGetCustomerDetails(action) {
-
-
     try {
         const response = yield call(GetCustomerDetails, action.payload)
-        if (response.status === 200 || response.data.statusCode === 200) {
-            // yield put({ type: GET_CUSTOMER_DETAILS_REDUCER, payload: { customers: response } })
-            if (response.data.customers.length > 0) {
-                yield put({ type: GET_CUSTOMER_DETAILS_REDUCER, payload: response.data.customers[0] })
-            }
+         if (response.status === 200 || response.data.statusCode === 200) {
+            yield put({ type: GET_CUSTOMER_DETAILS_REDUCER, payload: { customers: response.data} })
+            // if (response.data.customers.length > 0) {
+            //     yield put({ type: GET_CUSTOMER_DETAILS_REDUCER, payload: response.data.customers[0] })
+            // }
 
 
             // yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });

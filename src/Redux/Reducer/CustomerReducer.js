@@ -22,7 +22,7 @@ const CustomerReducer = (state = initialState, action) => {
 
         case GET_CUSTOMER_DETAILS_REDUCER:
 
-            return { ...state, customerDetails: action.payload };
+            return { ...state, customerDetails: action.payload.customers};
 
 
 

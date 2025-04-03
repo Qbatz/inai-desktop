@@ -57,7 +57,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             iban: ""
         }
     ]);
-
+    const businessTypes = [
+        { id: 1, label: "Manufacturing" },
+        { id: 2, label: "Supply of Service" },
+        { id: 3, label: "Supply of Goods" }
+    ];
 
     const [officeAddress, setOfficeAddress] = useState({
         address1: "",
@@ -153,7 +157,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false
         }
 
-      
+
         if (!officeAddress.postalCode?.trim()) {
             errors.postalCode = "Postal Code is required";
             isValid = false
@@ -169,7 +173,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false
         }
 
-        
+
         if (!shippingAddress.postalCode?.trim()) {
             errors.shippostalCode = "Postal Code is required";
             isValid = false
@@ -425,8 +429,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             }
 
 
-           
-     
+
+
 
             const EditPayload = {
                 clientId: editCustomerDetails.clientId || "",
@@ -452,13 +456,13 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             }
 
 
-            if(editCustomerDetails){
+            if (editCustomerDetails) {
                 setLoading(true)
-                dispatch({ type: EDIT_CUSTOMER_SAGA, payload:EditPayload })
+                dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload })
 
-            }else{
+            } else {
                 setLoading(true)
-                dispatch({ type: ADD_CUSTOMER_SAGA, payload:AddPayload })
+                dispatch({ type: ADD_CUSTOMER_SAGA, payload: AddPayload })
 
             }
 
@@ -745,7 +749,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
             if (editCustomerDetails.bankDetails && editCustomerDetails.bankDetails.length > 0) {
                 setBankDetailsList(editCustomerDetails.bankDetails.map(item => ({
-                    beneficiaryCurrency: "",
+                    beneficiaryCurrency: item.name || "",
                     accountNumber: item.accountNo || "",
                     bankName: item.bankName || "",
                     ifscCode: item.ifscCode || "",
@@ -762,7 +766,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             }
 
             if (editCustomerDetails.address && editCustomerDetails.address.length > 0) {
-                const officeAddressData = editCustomerDetails.address.find(addr => addr.addressType === 1);
+                const officeAddressData = editCustomerDetails.address.find(addr => addr.addressType === "Office Address");
                 if (officeAddressData) {
                     setOfficeAddress({
                         address1: officeAddressData.doorNo || '',
@@ -777,7 +781,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 }
 
 
-                const shippingAddressData = editCustomerDetails.address.find(addr => addr.addressType === 2);
+                const shippingAddressData = editCustomerDetails.address.find(addr => addr.addressType === "Shipping Address");
                 if (shippingAddressData) {
                     setShippingAddress({
                         address1: shippingAddressData.doorNo || '',
@@ -1044,16 +1048,16 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     Nature of Business
                                 </label>
                                 <div className='flex gap-6'>
-                                    {[1, 2, 3].map((value) => (
-                                        <div key={value} className='flex gap-3 items-center'>
+                                    {businessTypes.map((business) => (
+                                        <div key={business.id} className='flex gap-3 items-center'>
                                             <input
                                                 type="checkbox"
                                                 className="ml-2 accent-[#205DA8]"
-                                                checked={natureOfBusiness === value}
-                                                onChange={(e) => handleNatureOfBusinessChange(value, e.target.checked)}
+                                                checked={natureOfBusiness === business.id}
+                                                onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
                                             />
                                             <label className='block text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                                {`Business ${value}`}
+                                                {business.label}
                                             </label>
                                         </div>
                                     ))}
@@ -1484,8 +1488,18 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
                                         <div className='mb-2 items-center col-span-3'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
-                                            <select
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Name<span className='text-red-500'>*</span></label>
+                                            <input
+
+                                                type='text'
+                                                value={bankDetails.beneficiaryCurrency}
+                                                onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
+                                                placeholder='Enter Beneficiary Name '
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+
+
+                                            {/* <select
                                                 value={bankDetails.beneficiaryCurrency}
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
                                                 className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
@@ -1496,7 +1510,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 <option value="GBP">GBP</option>
                                                 <option value="JPY">JPY</option>
 
-                                            </select>
+                                            </select> */}
 
                                             {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryCurrency && (
                                                 <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>

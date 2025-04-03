@@ -134,7 +134,7 @@ function CustomerDetails() {
                         <hr className='mt-2 mb-[8px] border-1 border-[#E7E7E7] ' />
                         {
                             customer?.bankDetails?.map((bank, index) => {
-                                return index === 0 &&  <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                                return index === 0 &&  <div key={index} class="grid grid-cols-2 gap-4 text-sm text-gray-600">
                                 <div>
                                     <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Beneficiary Customer Name</p>
                                     <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{bank.name}</p>

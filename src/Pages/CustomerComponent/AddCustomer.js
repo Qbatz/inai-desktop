@@ -153,10 +153,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false
         }
 
-        // if (!officeAddress.state?.trim()) {
-        //     errors.state = "State is required";
-        //     isValid = false
-        // }
+      
         if (!officeAddress.postalCode?.trim()) {
             errors.postalCode = "Postal Code is required";
             isValid = false
@@ -172,10 +169,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false
         }
 
-        // if (!shippingAddress.state?.trim()) {
-        //     errors.shipstate = "State is required";
-        //     isValid = false
-        // }
+        
         if (!shippingAddress.postalCode?.trim()) {
             errors.shippostalCode = "Postal Code is required";
             isValid = false
@@ -269,7 +263,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
         const updatedErrors = { ...errors };
 
-     
+
         if (updatedErrors.bankErrors && updatedErrors.bankErrors[index] && updatedErrors.bankErrors[index][field]) {
             delete updatedErrors.bankErrors[index][field];
 
@@ -431,40 +425,42 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             }
 
 
-            dispatch({ type: ADD_CUSTOMER_SAGA, payload: AddPayload })
-            setLoading(true)
+           
+     
 
-            // const EditPayload = {
-            //     clientId: editCustomerDetails.clientId || "",
-            //     businessName: formData.businessName,
-            //     contactPerson: formData.contactPerson,
-            //     contactNumber: formData.contactNumber,
-            //     emailId: formData.emailId,
-            //     designation: formData.designation,
-            //     gstVat: formData.gstVat,
-            //     CIN: formData.cin,
-            //     PAN: formData.pan,
-            //     TAN: formData.tan,
-            //     statusOfFirm: formData.legalStatus,
-            //     natureOfBusiness: natureOfBusiness,
-            //     additionalContactInfo: contacts.map(contact => ({
-            //         name: contact.name,
-            //         contactNumber: contact.number,
-            //         contactEmail: contact.email,
-            //         designation: contact.designation
-            //     })),
-
-
-            // }
+            const EditPayload = {
+                clientId: editCustomerDetails.clientId || "",
+                businessName: formData.businessName,
+                contactPerson: formData.contactPerson,
+                contactNumber: formData.contactNumber,
+                emailId: formData.emailId,
+                designation: formData.designation,
+                gstVat: formData.gstVat,
+                CIN: formData.cin,
+                PAN: formData.pan,
+                TAN: formData.tan,
+                statusOfFirm: formData.legalStatus,
+                natureOfBusiness: natureOfBusiness,
+                additionalContactInfo: contacts.map(contact => ({
+                    name: contact.name,
+                    contactNumber: contact.number,
+                    contactEmail: contact.email,
+                    designation: contact.designation
+                })),
 
 
-            // if(editCustomerDetails){
-            //     dispatch({ type: EDIT_CUSTOMER_SAGA, payload:EditPayload })
+            }
 
-            // }else{
-            //     dispatch({ type: ADD_CUSTOMER_SAGA, payload:AddPayload })
 
-            // }
+            if(editCustomerDetails){
+                setLoading(true)
+                dispatch({ type: EDIT_CUSTOMER_SAGA, payload:EditPayload })
+
+            }else{
+                setLoading(true)
+                dispatch({ type: ADD_CUSTOMER_SAGA, payload:AddPayload })
+
+            }
 
         }
     };
@@ -1169,10 +1165,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         </div>
                         <div className="flex justify-end mb-4 mt-2">
                             <div className='gap-3 flex '>
-                                {
-                                    !editCustomerDetails && <button onClick={handleSaveAndExit} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
 
-                                }
+                                <button onClick={handleSaveAndExit} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
+
+
 
 
                                 <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
@@ -1459,8 +1455,6 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         <div className="flex justify-between mb-4 mt-4">
                             <button className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleBackToBasicInformation} >Back</button>
                             <div className='gap-3 flex '>
-                                {/* <button onClick={handleSaveAddress} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button> */}
-
                                 <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForBank} >Next</button>
                             </div>
                         </div>

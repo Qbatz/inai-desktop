@@ -185,9 +185,8 @@ function AddressVendor(props) {
   };
 
   useEffect(() => {
-    if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401) {
+    if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
       setLoading(false)
-
     }
   }, [state.Common?.successCode, state.Common?.code]);
 
@@ -302,6 +301,38 @@ function AddressVendor(props) {
       setShippingGoogleMap(shippingAddress.mapLink || "");
     }
   }, [props.vendorDetails]);
+
+
+
+
+  useEffect(() => {
+    if (props.addressDetails && props.addressDetails.address) {
+      const officeAddress = props.addressDetails.address.find(addr => addr.addressType === 1) || {};
+      const shippingAddress = props.addressDetails.address.find(addr => addr.addressType === 2) || {};
+
+      setOfficeAddress1(officeAddress.doorNo || "");
+      setOfficeAddress2(officeAddress.street || "");
+      setOfficeAddress3(officeAddress.locality || "");
+      setCity(officeAddress.city || "");
+      setState(officeAddress.state || "");
+      setCountry(officeAddress.country || "");
+      setPostalCode(officeAddress.postalCode || "");
+      setLandmark(officeAddress.landMark || "");
+      setGoogleMap(officeAddress.mapLink || "");
+
+
+      setShippingAddress1(shippingAddress.doorNo || "");
+      setShippingAddress2(shippingAddress.street || "");
+      setShippingAddress3(shippingAddress.locality || "");
+      setShippingCity(shippingAddress.city || "");
+      setShippingState(shippingAddress.state || "");
+      setShippingCountry(shippingAddress.country || "");
+      setShippingPostalCode(shippingAddress.postalCode || "");
+      setShippingLandmark(shippingAddress.landMark || "");
+      setShippingGoogleMap(shippingAddress.mapLink || "");
+    }
+  }, [props.addressDetails]);
+
 
 
 

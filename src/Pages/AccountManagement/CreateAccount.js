@@ -22,10 +22,11 @@ function CreateAccount() {
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
     const [loading, setLoading] = useState(false)
-
+    const [siteKey, setSiteKey] = useState('')
 
 
     const handleEmailChange = (e) => {
+        setErrorMessage('')
         const value = e.target.value.toLowerCase();
         setEmail(value);
         setFormError((prevErrors) => ({ ...prevErrors, email: "" }));
@@ -40,11 +41,13 @@ function CreateAccount() {
     };
 
     const handleCaptchaChange = (value) => {
+        setErrorMessage('')
         setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
     };
 
     const handleSubmit = (e) => {
+        setErrorMessage('')
         e.preventDefault();
         let errors = { email: "", captcha: "" };
         if (email && captchaValue) {
@@ -74,11 +77,11 @@ function CreateAccount() {
     useEffect(() => {
         if (emailid) {
             setLoading(false)
-            setEmail("");
+            setErrorMessage('')
             setCaptchaValue(null);
             const timer = setTimeout(() => {
                 dispatch({ type: RESET_CODE });
-            }, 3000);
+            }, 5000);
 
             return () => clearTimeout(timer);
         }
@@ -87,14 +90,16 @@ function CreateAccount() {
 
 
     useEffect(() => {
-        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
             setLoading(false)
         }
     }, [state.Common.successCode, state.Common.code]);
 
+
     useEffect(() => {
         setErrorMessage(state?.Common?.errorMessage)
     }, [state.Common.errorMessage])
+
 
 
 
@@ -109,7 +114,16 @@ function CreateAccount() {
     }, []);
 
 
+    useEffect(() => {
+        const hostname = window.location.hostname;
+        const selectedKey =
+            hostname === "localhost"
+                ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
+                : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
+        setSiteKey(selectedKey)
+        console.log("key", selectedKey)
 
+    }, [])
 
 
 
@@ -177,6 +191,7 @@ function CreateAccount() {
                                             id="userId"
                                             type="text"
                                             name="username"
+                                            value={email}
                                             onChange={handleEmailChange}
                                             autoComplete="username"
                                             autoCorrect="off"
@@ -192,10 +207,12 @@ function CreateAccount() {
 
                                     <div className="mt-6 flex flex-col items-center justify-center">
 
-                                        <ReCAPTCHA
-                                            sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-                                            onChange={handleCaptchaChange}
-                                        />
+                                        {siteKey && (
+                                            <ReCAPTCHA
+                                                sitekey={siteKey}
+                                                onChange={handleCaptchaChange}
+                                            />
+                                        )}
 
 
                                         {formError.captcha && (

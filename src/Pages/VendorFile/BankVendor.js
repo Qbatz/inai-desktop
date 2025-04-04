@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { RESET_VENDOR_ID,RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA, EDIT_VENDOR_SAGA } from '../../Utils/Constant'
+import { RESET_VENDOR_ID, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA, EDIT_VENDOR_SAGA } from '../../Utils/Constant'
 import { useNavigate } from 'react-router-dom';
 
 function BankVendor(props) {
@@ -18,9 +18,9 @@ function BankVendor(props) {
   const [beneficiaryName, setBeneficiaryName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
-    const [ifscCode, setIfscCode] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
   const [swift, setSwift] = useState("");
-    const [bankAddress, setBankAddress] = useState("");
+  const [bankAddress, setBankAddress] = useState("");
   const [bankCountry, setBankCountry] = useState("");
   const [intermediaryBank, setIntermediaryBank] = useState("");
   const [siftCode, setSiftCode] = useState("");
@@ -73,7 +73,7 @@ function BankVendor(props) {
     clearError("swift");
   }
 
- 
+
 
   const handleBankAddressChange = (e) => {
     setBankAddress(e.target.value)
@@ -149,7 +149,25 @@ function BankVendor(props) {
 
 
   const hanldeBackToAddress = () => {
-    props.hanldeBackToAddress(2)
+    const addresses = props?.payload?.address || [];
+
+
+    const bankDetails = {
+      name: beneficiaryName || "",
+      accountNo: accountNumber || "",
+      bankName: bankName || "",
+      ifscCode: ifscCode || "",
+      address1: bankAddress || "",
+      address2: bankAddress2 || "",
+      address3: bankAddress3 || "",
+      country: bankCountry || "",
+      routingBank: intermediaryBank || "",
+      swiftCode: swift || "",
+      routingBankAddress: intermediaryDetails || "",
+      routingAccountIndusand: iban || ""
+    }
+
+    props.hanldeBackToAddress(2, addresses, bankDetails)
   }
 
 
@@ -333,12 +351,10 @@ function BankVendor(props) {
 
 
   useEffect(() => {
-    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
-      setLoading(false)
-
-    }
-  }, [state.Common.successCode, state.Common.code]);
-
+                if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+                    setLoading(false)
+                }
+            }, [state.Common?.successCode, state.Common?.code]);
 
   useEffect(() => {
     if (state.Common.IsVisible === 1) {
@@ -366,6 +382,25 @@ function BankVendor(props) {
     }
   }, [props.vendorDetail]);
 
+
+  useEffect(() => {
+    if (props.addressDetails?.bank) {
+      const bank = props.addressDetails?.bank;
+
+      setBeneficiaryName(bank.name || "");
+      setAccountNumber(bank.accountNo || "");
+      setBankName(bank.bankName || "");
+      setIfscCode(bank.ifscCode || "");
+      setBankAddress(bank.address1 || "");
+      setBankAddress2(bank.address2 || "");
+      setBankAddress3(bank.address3 || "");
+      setBankCountry(bank.country || "");
+      setIntermediaryBank(bank.routingBank || "");
+      setSwift(bank.swiftCode || "");
+      setIntermediaryDetails(bank.routingBankAddress || "");
+      setIban(bank.routingAccountIndusand || "");
+    }
+  }, [props.addressDetails]);
 
 
 

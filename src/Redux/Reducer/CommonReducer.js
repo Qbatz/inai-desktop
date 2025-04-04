@@ -36,7 +36,7 @@ const CommonReducer = (state = initialState, action) => {
             }
 
         case RESET_CODE:
-            return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "", emailid: "", IsVisible: 0 }
+            return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "",  IsVisible: 0 }
 
         default:
             return state;

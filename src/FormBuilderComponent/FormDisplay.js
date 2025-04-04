@@ -83,8 +83,7 @@ function FormDisplay() {
             item.title === title ? { ...item, value: newValue } : item
         );
         setDisplayItems(updatedItems);
-        // setSelectedRadioValue((prev) => (prev === value ? "" : value));
-
+       
 
     }
 

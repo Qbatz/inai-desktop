@@ -57,10 +57,7 @@ function CustomerList({ item } ) {
   };
 
   const handleAddCustomer = () => {
-    // setShowAddCustomer(true)
-    // setIsVisible(false)
-    // setEditCustomerDetails('')
-    navigate('/add-customer')
+       navigate('/add-customer')
   }
 
 
@@ -176,9 +173,7 @@ if(state.customer.customerList){
   }, [state.customer.successCode]);
 
   const handleCustomerDetails = (customerId) => {
-    // updateProps(customerId)
-    // updateActiveItems('add_customer')
-    navigate(`/customer-details/${customerId}`)
+       navigate(`/customer-details/${customerId}`)
   }
 
 

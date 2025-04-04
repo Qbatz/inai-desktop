@@ -56,11 +56,7 @@ export default function SignUp() {
     setUserId(e.target.value);
   };
 
-  // const handleEmail = (e) => {
-  //   setError((prevErrors) => ({ ...prevErrors, emailId: "" }));
-  //   setEmailId(e.target.value);
-  // };
-
+ 
   const handleMobile = (e) => {
     const value = e.target.value;
     if (/^\d{0,10}$/.test(value) || value === "") {

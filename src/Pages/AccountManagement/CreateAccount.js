@@ -78,7 +78,6 @@ function CreateAccount() {
         if (emailid) {
             setLoading(false)
             setErrorMessage('')
-            // setEmail("");
             setCaptchaValue(null);
             const timer = setTimeout(() => {
                 dispatch({ type: RESET_CODE });
@@ -117,7 +116,7 @@ function CreateAccount() {
 
     useEffect(() => {
         const hostname = window.location.hostname;
-                const selectedKey =
+        const selectedKey =
             hostname === "localhost"
                 ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
                 : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;

@@ -169,13 +169,7 @@ function* handleGetCustomerDetails(action) {
         const response = yield call(GetCustomerDetails, action.payload)
         if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: GET_CUSTOMER_DETAILS_REDUCER, payload: { customers: response.data } })
-            // if (response.data.customers.length > 0) {
-            //     yield put({ type: GET_CUSTOMER_DETAILS_REDUCER, payload: response.data.customers[0] })
-            // }
-
-
-            // yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
-        }
+                   }
         else if (response.status === 201 || response.data.statusCode === 201) {
             yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
         }

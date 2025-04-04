@@ -185,9 +185,8 @@ function AddressVendor(props) {
   };
 
   useEffect(() => {
-    if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401) {
+    if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
       setLoading(false)
-
     }
   }, [state.Common?.successCode, state.Common?.code]);
 
@@ -305,7 +304,6 @@ function AddressVendor(props) {
 
 
 
-console.log("props",props)
 
   useEffect(() => {
     if (props.addressDetails && props.addressDetails.address) {
@@ -337,7 +335,7 @@ console.log("props",props)
 
 
 
-  
+
   return (
     <div>
       <div className='bg-white rounded-2xl h-auto  relative'>

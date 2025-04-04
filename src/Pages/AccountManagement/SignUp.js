@@ -4,6 +4,7 @@ import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
 import { OTP_SEND_SAGA, OTP_VERIFY_SAGA, ACCOUNT_REGISTER_SAGA, RESET_CODE } from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 
 export default function SignUp() {
@@ -11,12 +12,14 @@ export default function SignUp() {
   const dispatch = useDispatch();
   const state = useSelector(state => state)
 
+  const navigate = useNavigate()
+
 
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userId, setUserId] = useState("");
-  const [emailId, setEmailId] = useState("");
+
   const [error, setError] = useState('');
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -53,10 +56,10 @@ export default function SignUp() {
     setUserId(e.target.value);
   };
 
-  const handleEmail = (e) => {
-    setError((prevErrors) => ({ ...prevErrors, emailId: "" }));
-    setEmailId(e.target.value);
-  };
+  // const handleEmail = (e) => {
+  //   setError((prevErrors) => ({ ...prevErrors, emailId: "" }));
+  //   setEmailId(e.target.value);
+  // };
 
   const handleMobile = (e) => {
     const value = e.target.value;
@@ -76,22 +79,13 @@ export default function SignUp() {
     setConfirmPassword(e.target.value);
   };
 
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|org|net|in)$/;
+  
   const passwordRegex = {
     length: /^.{8,20}$/,
     upperCase: /[A-Z]/,
     number: /[0-9]/,
     specialChar: /[!@#$%^&*(),.?":{}|<>]/,
   };
-
-
-
-
-
-
-
-
-
 
 
 
@@ -132,6 +126,7 @@ export default function SignUp() {
   useEffect(() => {
 
     if (state.signUp?.otpValue && state.signUp?.otpValue !== '') {
+
       setLoading(false)
       setShowOtp(true);
       setShowMobile(false);
@@ -156,7 +151,6 @@ export default function SignUp() {
     if (!firstName.trim()) newErrors.firstName = "First name is required.";
     if (!lastName.trim()) newErrors.lastName = "Last name is required.";
     if (!userId.trim()) newErrors.userId = "User ID is required.";
-    if (!emailId.match(emailRegex)) newErrors.emailId = "Invalid email format.";
     if (!mobile.match(/^[0-9]{10}$/)) newErrors.mobile = "Mobile number must be 10 digits.";
 
     if (!password.match(passwordRegex.length))
@@ -181,7 +175,7 @@ export default function SignUp() {
       dispatch({
         type: ACCOUNT_REGISTER_SAGA,
         payload: {
-          email: emailId,
+          email: state?.signUp?.emailId,
           email_verify_token: state.signUp?.verifyCode || '',
           first_name: firstName,
           last_name: lastName,
@@ -195,18 +189,24 @@ export default function SignUp() {
           username: userId
         }
       })
-      
+
     }
 
   }
 
 
-
+  const [message, setMessage] = useState(false);
 
   useEffect(() => {
     if (state.signUp.isTrue) {
       setLoading(false)
-        }else{
+      setMessage(true);
+      setShowOtp(false);
+      setShowMobile(false);
+      setShowSignUp(false)
+      navigate('/register')
+
+    } else {
       setLoading(false)
     }
 
@@ -214,7 +214,7 @@ export default function SignUp() {
 
 
   useEffect(() => {
-    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
       setLoading(false)
     }
   }, [state.Common.successCode, state.Common.code]);
@@ -225,14 +225,18 @@ export default function SignUp() {
     <div className="flex items-center justify-center h-auto  w-full">
       <div className="w-full max-w-md bg-white p-6 rounded-lg ">
 
-      {loading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
-                <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
-              </div>
-            )}
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+            <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+          </div>
+        )}
 
-        {state.Common.successMessage && <label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3" >{state.Common.successMessage}</label>}
+        {message && <><label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3" ><b>Mail Verified</b>
+        </label> 
+        <label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3">Successfully, We have created a unique Client ID.<br/>Please check your registered email and log in to proceed with registration</label> 
+        </>}
 
+{state?.Common?.errorMessage && <label className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3">{state?.Common?.errorMessage}</label>}
 
         {
           showMobile &&
@@ -346,18 +350,14 @@ export default function SignUp() {
             <div className="mb-4">
               <input
                 type="text"
+                disabled
                 autoComplete="new-email"
                 autoCorrect="off"
-                value={emailId}
-                onChange={handleEmail}
+                value={state?.signUp?.emailId}
                 placeholder="Email ID*"
                 className="w-full h-12 px-3 font-Gilroy  border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {error.emailId && (
-                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                  <span><InfoCircle size="14" color="#DC2626" /></span> {error.emailId}
-                </p>
-              )}
+
             </div>
 
 

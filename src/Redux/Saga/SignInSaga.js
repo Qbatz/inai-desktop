@@ -1,15 +1,15 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { signIn, ForgotAction, ForgotPasswordAction,ReSetPageAction, ReSetPassword } from "../Action/SignInAction";
+import { signIn, ForgotAction, ForgotPasswordAction, ReSetPageAction, ReSetPassword } from "../Action/SignInAction";
 import {
     SIGN_IN_REDUCER, SIGN_IN_SAGA, ERROR_CODE, FORGOT_PASSWORD_API_CALL,
-    SUCCESS_CODE, FORGOT_USER_API_CALL,RESET_PAGE_API_CALL,RESET_PASSWORD_API_CALL
+    SUCCESS_CODE, FORGOT_USER_API_CALL, RESET_PAGE_API_CALL, RESET_PASSWORD_API_CALL
 } from "../../Utils/Constant";
 
 
 function* handleSignIn(action) {
     try {
         const response = yield call(signIn, action.payload);
-             if (response.status === 200) {
+        if (response.status === 200) {
             yield put({ type: SIGN_IN_REDUCER, payload: { token: response.data.access } });
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status } });
 
@@ -32,7 +32,7 @@ function* handleForgotPassword(forgot) {
             yield put({ type: SUCCESS_CODE, payload: { response } });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong",statusCode: response.status  } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
@@ -48,7 +48,7 @@ function* handleForgotUser(user) {
             yield put({ type: SUCCESS_CODE, payload: { response } });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" ,statusCode: response.status } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
@@ -58,31 +58,31 @@ function* handleForgotUser(user) {
 
 function* handleResetPage(reset) {
     try {
-        
+
         const response = yield call(ReSetPageAction, reset.payload);
         if (response?.success || response?.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { response } });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" ,statusCode: response.status } });
         }
     } catch (error) {
-                const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
+        const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
         yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }
 }
 
 function* handleResetPassword(verify) {
     try {
-                     const response = yield call(ReSetPassword, verify.payload);
-               if (response?.success || response?.status === 200) {
+        const response = yield call(ReSetPassword, verify.payload);
+        if (response?.success || response?.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { response } });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status  } });
         }
     } catch (error) {
-             const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
+        const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
 
         yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
     }

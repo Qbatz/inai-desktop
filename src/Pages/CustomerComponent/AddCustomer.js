@@ -102,6 +102,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const handleInputChange = (field, value) => {
 
+        if (field === "contactNumber" && !/^\d*$/.test(value)) return;
         setFormData((prevData) => ({
             ...prevData,
             [field]: value
@@ -114,6 +115,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
     };
+
+
+
 
 
     const tabs = [
@@ -139,7 +143,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const handleNextForAddress = () => {
         setIsChanged('')
-        const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts,natureOfBusiness);
+        const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
         setErrors({ ...tempErrors, contactErrors });
 
         if (isValid) {
@@ -209,6 +213,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     };
 
     const handleChange = (index, field, value) => {
+
+        if (field === "number" && !/^\d*$/.test(value)) return;
+
         setContacts((prev) => {
             const updatedContacts = [...prev];
             updatedContacts[index][field] = value;
@@ -233,6 +240,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
     const handleOfficeChange = (field, value) => {
+
+        if (field === "postalCode" && !/^\d*$/.test(value)) return;
+
         setOfficeAddress((prev) => ({ ...prev, [field]: value }));
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -243,6 +253,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
     const handleShippingChange = (field, value) => {
+
+        if (field === "postalCode" && !/^\d*$/.test(value)) return;
+
+
         setShippingAddress((prev) => ({ ...prev, [field]: value }));
         setErrors((prevErrors) => ({
             ...prevErrors,
@@ -253,6 +267,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     const handleSameAsOffice = (e) => {
         if (e.target.checked) {
             setShippingAddress(officeAddress);
+            setErrors({})
         } else {
             setShippingAddress({
                 address1: "",
@@ -414,7 +429,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const handleSaveAndExit = () => {
 
-        const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts,natureOfBusiness,);
+        const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness,);
         setIsChanged('')
 
         setErrors({ ...tempErrors, contactErrors });
@@ -556,10 +571,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
         if (!officeAddress.address1?.trim()) addressErrors.address1 = "Address Line 1 is required";
         if (!officeAddress.city?.trim()) addressErrors.city = "City is required";
-             if (!officeAddress.postalCode?.trim()) addressErrors.postalCode = "Postal Code is required";
+        if (!officeAddress.postalCode?.trim()) addressErrors.postalCode = "Postal Code is required";
         if (!shippingAddress.address1?.trim()) addressErrors.shipaddress1 = "Shipping Address Line 1 is required";
         if (!shippingAddress.city?.trim()) addressErrors.shipcity = "Shipping City is required";
-              if (!shippingAddress.postalCode?.trim()) addressErrors.shippostalCode = "Shipping Postal Code is required";
+        if (!shippingAddress.postalCode?.trim()) addressErrors.shippostalCode = "Shipping Postal Code is required";
 
 
         bankDetailsList.forEach((bank, index) => {
@@ -649,7 +664,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             };
 
             const EditPayload = {
-                clientId: editCustomerDetails.clientId || "",
+                clientId: editCustomerDetails?.clientId || "",
                 businessName: formData.businessName,
                 contactPerson: formData.contactPerson,
                 contactNumber: formData.contactNumber,
@@ -709,10 +724,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             };
 
             if (editCustomerDetails) {
-                // if (!isChangedCheck()) {
-                //     setIsChanged('No changes detected')
-                //     return;
-                // }
+                if (!isChangedCheck()) {
+
+                    setIsChanged('No changes detected')
+                    return;
+                }
 
                 dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload })
                 setLoading(true)
@@ -825,7 +841,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         if (isValid) {
 
             const EditPayload = {
-                clientId: editCustomerDetails.clientId || "",
+                clientId: editCustomerDetails?.clientId || "",
                 businessName: formData.businessName,
                 contactPerson: formData.contactPerson,
                 contactNumber: formData.contactNumber,
@@ -901,10 +917,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
     useEffect(() => {
-        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
             setLoading(false)
         }
-    }, [state.Common.successCode, state.Common.code]);
+    }, [state.Common?.successCode, state.Common?.code]);
 
 
 
@@ -1016,12 +1032,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 pan: editCustomerDetails.PAN || '',
                 tan: editCustomerDetails.TAN || '',
                 legalStatus: editCustomerDetails.statusOfFirm || '',
-                
+
             };
 
-            const natureOfBusinessValue = editCustomerDetails.natureOfBusiness 
-            ? Number(editCustomerDetails.natureOfBusiness) 
-            : null;
+            const natureOfBusinessValue = editCustomerDetails.natureOfBusiness
+                ? Number(editCustomerDetails.natureOfBusiness)
+                : null;
 
 
 
@@ -1098,6 +1114,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             JSON.stringify(officeAddress) !== JSON.stringify(initialOfficeAddress) ||
             JSON.stringify(shippingAddress) !== JSON.stringify(initialShippingAddress)
         );
+
     };
 
 
@@ -1211,6 +1228,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                         onChange={(e) => handleInputChange('contactNumber', e.target.value)}
                                         placeholder='Enter Contact  Number'
                                         maxLength={10}
+                                        inputMode="numeric"
+                                        pattern="[0-9]*"
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                     />
 
@@ -1364,7 +1383,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                             </div>
                             <div className='mb-2'>
                                 <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                    Nature of Business
+                                    Nature of Business <span className='text-red-500'>*</span>
                                 </label>
                                 <div className='flex gap-6'>
                                     {businessTypes.map((business) => (
@@ -1372,7 +1391,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             <input
                                                 type="checkbox"
                                                 className="ml-2 accent-[#205DA8]"
-                                                checked={natureOfBusiness == business.id}
+                                                checked={Number(natureOfBusiness) === Number(business.id)}
                                                 onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
                                             />
                                             <label className='block text-start font-Gilroy font-normal text-md text-neutral-800'>
@@ -1382,12 +1401,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     ))}
                                 </div>
                                 {errors.natureOfBusiness && (
-                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <MdError size={16} />
-                                                        <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.natureOfBusiness}</p>
-                                                    </div>
+                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                        <MdError size={16} />
+                                        <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.natureOfBusiness}</p>
+                                    </div>
                                 )}
-                               
+
                             </div>
 
 
@@ -1541,7 +1560,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
                                 <div className='mb-2  items-center'>
                                     <input
-
+                                        z
                                         type='text'
                                         placeholder='Enter Address Line 2'
                                         value={officeAddress.address2}
@@ -1569,6 +1588,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                 </div>
                                 <div className='mb-2 items-center'>
+
                                     <input
 
                                         type='text'
@@ -1587,7 +1607,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
 
-                                <div className='mb-2 items-center'>
+                                {/* <div className='mb-2 items-center'>
                                     <select
                                         value={officeAddress.state}
                                         onChange={(e) => handleOfficeChange('state', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
@@ -1601,12 +1621,13 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             <span className="text-red-500 text-xs font-Gilroy">{errors.state}</span>
                                         </div>
                                     )}
-                                </div>
+                                </div> */}
 
-
+                            </div>
+                            <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3 mt-1'>
 
                                 <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>
+                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500 h-fit'>*</span></label>
                                     <input
 
                                         type='text'
@@ -1718,8 +1739,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                         </div>
                                     )}
                                 </div>
+                            </div>
 
-                                <div className='mb-2 items-center'>
+                            {/* <div className='mb-2 items-ce   nter'>
                                     <select
                                         value={shippingAddress.state}
                                         onChange={(e) => handleShippingChange('state', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
@@ -1733,9 +1755,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             <span className="text-red-500 text-xs font-Gilroy">{errors.shipstate}</span>
                                         </div>
                                     )}
-                                </div>
+                                </div> */}
 
-
+                            <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>

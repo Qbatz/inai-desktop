@@ -48,7 +48,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
     const handleBackToAddress = (value, Address, bankDetails) => {
         setActiveTab(value)
-               setAddressDetails({ address: Address, bank: bankDetails })
+        setAddressDetails({ address: Address, bank: bankDetails })
 
 
     }
@@ -152,11 +152,10 @@ function BasicVendor({ handleClose, vendorDetails }) {
     };
 
     useEffect(() => {
-        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
             setLoading(false)
-
         }
-    }, [state.Common.successCode, state.Common.code]);
+    }, [state.Common?.successCode, state.Common?.code]);
 
 
     useEffect(() => {

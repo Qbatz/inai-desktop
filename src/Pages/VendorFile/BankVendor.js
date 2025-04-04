@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { RESET_VENDOR_ID,RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA, EDIT_VENDOR_SAGA } from '../../Utils/Constant'
+import { RESET_VENDOR_ID, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA, EDIT_VENDOR_SAGA } from '../../Utils/Constant'
 import { useNavigate } from 'react-router-dom';
 
 function BankVendor(props) {
@@ -18,9 +18,9 @@ function BankVendor(props) {
   const [beneficiaryName, setBeneficiaryName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
-    const [ifscCode, setIfscCode] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
   const [swift, setSwift] = useState("");
-    const [bankAddress, setBankAddress] = useState("");
+  const [bankAddress, setBankAddress] = useState("");
   const [bankCountry, setBankCountry] = useState("");
   const [intermediaryBank, setIntermediaryBank] = useState("");
   const [siftCode, setSiftCode] = useState("");
@@ -73,7 +73,7 @@ function BankVendor(props) {
     clearError("swift");
   }
 
- 
+
 
   const handleBankAddressChange = (e) => {
     setBankAddress(e.target.value)
@@ -167,7 +167,7 @@ function BankVendor(props) {
       routingAccountIndusand: iban || ""
     }
 
-    props.hanldeBackToAddress(2,addresses, bankDetails )
+    props.hanldeBackToAddress(2, addresses, bankDetails)
   }
 
 
@@ -351,12 +351,10 @@ function BankVendor(props) {
 
 
   useEffect(() => {
-    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
-      setLoading(false)
-
-    }
-  }, [state.Common.successCode, state.Common.code]);
-
+                if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+                    setLoading(false)
+                }
+            }, [state.Common?.successCode, state.Common?.code]);
 
   useEffect(() => {
     if (state.Common.IsVisible === 1) {
@@ -405,7 +403,7 @@ function BankVendor(props) {
   }, [props.addressDetails]);
 
 
-  
+
   return (
     <div>
       <div className='bg-white rounded-2xl h-auto relative'>

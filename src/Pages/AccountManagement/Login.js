@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 function Login({ message, loginStatusCode }) {
 
   const navigate = useNavigate()
-
+    const [siteKey, setSiteKey] = useState('')
   const dispatch = useDispatch();
   const state = useSelector(state => state)
 
@@ -53,25 +53,13 @@ function Login({ message, loginStatusCode }) {
 
 
 
-
-
-
-
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
 
-
-
   const handleSubmit = (e) => {
-
     e.preventDefault();
-
-
-
-
     let valid = true;
 
     if (!clientId.trim()) {
@@ -142,11 +130,27 @@ function Login({ message, loginStatusCode }) {
   }, [loginStatusCode])
 
 
- useEffect(() => {
-        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401) {
-            setLoading(false)
-        }
-    }, [state.Common.successCode, state.Common.code]);
+  useEffect(() => {
+    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
+      setLoading(false)
+    }
+  }, [state.Common.successCode, state.Common.code]);
+
+
+
+useEffect(() => {
+        const hostname = window.location.hostname;
+        const selectedKey =
+            hostname === "localhost"
+                ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
+                : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
+        setSiteKey(selectedKey)
+        console.log("key", selectedKey)
+
+    }, [])
+
+
+
 
   return (
     <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4 '>
@@ -280,12 +284,12 @@ function Login({ message, loginStatusCode }) {
               </div>
               <div className='flex justify-center'>
                 <div className="p-0 w-fit font-Gilroy text-lg bg-white flex justify-center" style={{ transformOrigin: "0 0", border: "none", }}>
-                  <ReCAPTCHA
-                  sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-                                      onChange={handleCaptchaChange}
-                    className='w-fit font-Gilroy bg-white'
-
-                  />
+                  {siteKey && (
+                    <ReCAPTCHA
+                      sitekey={siteKey}
+                      onChange={handleCaptchaChange}
+                    />
+                  )}
                 </div>
               </div>
 

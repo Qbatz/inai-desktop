@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 function Login({ message, loginStatusCode }) {
 
   const navigate = useNavigate()
-    const [siteKey, setSiteKey] = useState('')
+  const [siteKey, setSiteKey] = useState('')
   const dispatch = useDispatch();
   const state = useSelector(state => state)
 
@@ -101,6 +101,8 @@ function Login({ message, loginStatusCode }) {
 
   const handleNavigateCreateAccount = () => {
     navigate('./register')
+    dispatch({ type: RESET_CODE })
+
   }
 
 
@@ -138,16 +140,16 @@ function Login({ message, loginStatusCode }) {
 
 
 
-useEffect(() => {
-        const hostname = window.location.hostname;
-        const selectedKey =
-            hostname === "localhost"
-                ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
-                : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
-        setSiteKey(selectedKey)
-        console.log("key", selectedKey)
+  useEffect(() => {
+    const hostname = window.location.hostname;
+    const selectedKey =
+      hostname === "localhost"
+        ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
+        : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
+    setSiteKey(selectedKey)
+    console.log("key", selectedKey)
 
-    }, [])
+  }, [])
 
 
 
@@ -271,12 +273,19 @@ useEffect(() => {
                 <div>
                   <label className="text-[#205DA8] font-Gilroy text-sm font-medium">
                     <span
-                      onClick={() => navigate("/forgot-user-name")}
+                      onClick={() => {
+                        dispatch({ type: RESET_CODE });
+                        navigate("/forgot-user-name")
+                      }}
                       className="cursor-pointer hover:underline"
                     >
                       Username / Client ID
                     </span> / {""}
-                    <span onClick={() => navigate("/password")} className="cursor-pointer hover:underline">
+                    <span onClick={() => {
+                      dispatch({ type: RESET_CODE });
+                      navigate("/password")
+                    }
+                    } className="cursor-pointer hover:underline">
                       Password?
                     </span>
                   </label>

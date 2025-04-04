@@ -129,7 +129,7 @@ function BankVendor(props) {
     }
     if (!bankName) errors.bankName = 'Bank Name is required';
     if (!ifscCode) errors.ifscCode = 'IFSC Code is required';
-    if (!swift) errors.swift = 'SWIFT Code is required';
+    // if (!swift) errors.swift = 'SWIFT Code is required';
     if (!bankAddress) errors.bankAddress = 'BankAddress is required';
 
     setFormErrors(errors);
@@ -435,19 +435,7 @@ function BankVendor(props) {
                 placeholder='Enter Beneficiary Name '
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
-              {/* <select
-                id='beneficiaryName'
-                value={beneficiaryName}
-                onChange={handleBeneficiaryNameChange}
-                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-              >
-                <option value="">Select Beneficiary</option>
-                <option value="USD">USD</option>
-                <option value="INR">INR</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="JPY">JPY</option>
-              </select> */}
+              
               {formErrors.beneficiaryName && (
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryName} </p>)}
@@ -522,9 +510,9 @@ function BankVendor(props) {
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.ifscCode} </p>)}
             </div>
             <div className='mb-2  items-center'>
-              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code
-                <span className='text-red-500'>*</span>
-              </label>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code  </label>
+                
+             
 
               <input
                 id='clientId'

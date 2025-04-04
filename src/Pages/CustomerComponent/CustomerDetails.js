@@ -141,10 +141,10 @@ function CustomerDetails() {
                                     <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Beneficiary Account Number</p>
                                     <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{bank.accountNo}</p>
                                 </div>
-                                <div>
+                                {/* <div>
                                     <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Email</p>
                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.emailId}</p>
-                                </div>
+                                </div> */}
                                 <div>
                                     <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">IFSC Code</p>
                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.ifscCode}</p>
@@ -221,17 +221,17 @@ function CustomerDetails() {
         
                                         <div>
                                         <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 2</p>
-                                    <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.landMark || 'N/A'}</p>
+                                    <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.street || 'N/A'}</p>
         
                                         </div>
                                         <div>
                                         <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 3</p>
-                                    <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.address3 || 'N/A'}</p>
+                                    <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.locality || 'N/A'}</p>
         
                                         </div>
                                         <div>
                                         <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 4</p>
-                                     <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.address3 || 'N/A'}</p>
+                                     <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.address4 || 'N/A'}</p>
         
                                         </div>
                                         <div>

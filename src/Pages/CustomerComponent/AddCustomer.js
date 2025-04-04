@@ -47,6 +47,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     const [bankDetailsList, setBankDetailsList] = useState([
         {
             beneficiaryCurrency: "",
+            beneficiaryName: "",
             accountNumber: "",
             bankName: "",
             ifscCode: "",
@@ -370,18 +371,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             tempErrors.gstVat = "GST/VAT is required";
             isValid = false;
         }
-        if (!formData.cin.trim()) {
-            tempErrors.cin = "CIN is required";
-            isValid = false;
-        }
+
         if (!formData.pan.trim()) {
             tempErrors.pan = "PAN is required";
             isValid = false;
         }
-        if (!formData.tan.trim()) {
-            tempErrors.tan = "TAN is required";
-            isValid = false;
-        }
+
         if (!formData.legalStatus.trim()) {
             tempErrors.legalStatus = "Legal Status is required";
             isValid = false;
@@ -457,10 +452,6 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
             }
-
-
-
-
 
             const EditPayload = {
                 clientId: editCustomerDetails?.clientId || "",
@@ -541,9 +532,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         }
         if (!formData.designation?.trim()) tempErrors.designation = "Designation is required";
         if (!formData.gstVat?.trim()) tempErrors.gstVat = "GST/VAT is required";
-        if (!formData.cin?.trim()) tempErrors.cin = "CIN is required";
         if (!formData.pan?.trim()) tempErrors.pan = "PAN is required";
-        if (!formData.tan?.trim()) tempErrors.tan = "TAN is required";
         if (!formData.legalStatus?.trim()) tempErrors.legalStatus = "Legal Status is required";
 
 
@@ -580,10 +569,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         bankDetailsList.forEach((bank, index) => {
             let bankError = {};
             if (!bank.beneficiaryCurrency?.trim()) bankError.beneficiaryCurrency = "Currency is required";
+            if (!bank.beneficiaryName?.trim()) bankError.beneficiaryName = "Name is required";
             if (!bank.accountNumber?.trim()) bankError.accountNumber = "Account Number is required";
             if (!bank.bankName?.trim()) bankError.bankName = "Bank Name is required";
             if (!bank.ifscCode?.trim()) bankError.ifscCode = "IFSC Code is required";
-            if (!bank.swiftCode?.trim()) bankError.swiftCode = "SWIFT Code is required";
+            // if (!bank.swiftCode?.trim()) bankError.swiftCode = "SWIFT Code is required";
             if (!bank.bankAddress1?.trim()) bankError.bankAddress1 = "Bank Address1 is required"
             if (Object.keys(bankError).length > 0) {
                 bankErrors[index] = bankError;
@@ -645,14 +635,14 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     },
                 ],
                 bankDetails: bankDetailsList.map(bank => ({
-                    name: bank.bankName,
+                    name: bank.beneficiaryName,
+                    currency: bank.beneficiaryCurrency,
                     accountNo: bank.accountNumber,
                     bankName: bank.bankName,
                     ifscCode: bank.ifscCode,
                     address1: bank.bankAddress1,
                     address2: bank.bankAddress2 || "",
                     address3: bank.bankAddress || "",
-                    currency: bank.beneficiaryCurrency,
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
@@ -705,14 +695,14 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     },
                 ],
                 bankDetails: bankDetailsList.map(bank => ({
-                    name: bank.bankName,
+                    name: bank.beneficiaryName,
+                    currency: bank.beneficiaryCurrency,
                     accountNo: bank.accountNumber,
                     bankName: bank.bankName,
                     ifscCode: bank.ifscCode,
                     address1: bank.bankAddress1,
                     address2: bank.bankAddress2 || "",
                     address3: bank.bankAddress || "",
-                    currency: bank.beneficiaryCurrency,
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
@@ -724,11 +714,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             };
 
             if (editCustomerDetails) {
-                if (!isChangedCheck()) {
+                // if (!isChangedCheck()) {
 
-                    setIsChanged('No changes detected')
-                    return;
-                }
+                //     setIsChanged('No changes detected')
+                //     return;
+                // }
 
                 dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload })
                 setLoading(true)
@@ -777,9 +767,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         }
         if (!formData.designation?.trim()) tempErrors.designation = "Designation is required";
         if (!formData.gstVat?.trim()) tempErrors.gstVat = "GST/VAT is required";
-        if (!formData.cin?.trim()) tempErrors.cin = "CIN is required";
         if (!formData.pan?.trim()) tempErrors.pan = "PAN is required";
-        if (!formData.tan?.trim()) tempErrors.tan = "TAN is required";
         if (!formData.legalStatus?.trim()) tempErrors.legalStatus = "Legal Status is required";
 
 
@@ -816,10 +804,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         bankDetailsList.forEach((bank, index) => {
             let bankError = {};
             if (!bank.beneficiaryCurrency?.trim()) bankError.beneficiaryCurrency = "Currency is required";
+            if (!bank.beneficiaryName?.trim()) bankError.beneficiaryName = "Name is required";
             if (!bank.accountNumber?.trim()) bankError.accountNumber = "Account Number is required";
             if (!bank.bankName?.trim()) bankError.bankName = "Bank Name is required";
             if (!bank.ifscCode?.trim()) bankError.ifscCode = "IFSC Code is required";
-            if (!bank.swiftCode?.trim()) bankError.swiftCode = "SWIFT Code is required";
+            // if (!bank.swiftCode?.trim()) bankError.swiftCode = "SWIFT Code is required";
             if (!bank.bankAddress1?.trim()) bankError.bankAddress1 = "Bank Address1 is required"
             if (Object.keys(bankError).length > 0) {
                 bankErrors[index] = bankError;
@@ -876,20 +865,20 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         locality: shippingAddress.address3 || "",
                         city: shippingAddress.city,
                         postalCode: shippingAddress.postalCode,
-                        landMark: shippingAddress.landMark || "",
+                        landMark: shippingAddress.landmark || "",
                         mapLink: shippingAddress.googleMap || "",
                         addressType: 2,
                     },
                 ],
                 bankDetails: bankDetailsList.map(bank => ({
-                    name: bank.bankName,
+                    name: bank.beneficiaryName,
+                    currency: bank.beneficiaryCurrency,
                     accountNo: bank.accountNumber,
                     bankName: bank.bankName,
                     ifscCode: bank.ifscCode,
                     address1: bank.bankAddress1,
                     address2: bank.bankAddress2 || "",
                     address3: bank.bankAddress || "",
-                    currency: bank.beneficiaryCurrency,
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
@@ -931,7 +920,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     }, [state.Common.IsVisible])
 
-    
+
 
     useEffect(() => {
         if (editCustomerDetails) {
@@ -965,7 +954,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             }));
 
             const newBankDetailsList = editCustomerDetails.bankDetails?.map(item => ({
-                beneficiaryCurrency: item.name || "",
+                beneficiaryCurrency: item.currency || "",
+                beneficiaryName: item.name,
                 accountNumber: item.accountNo || "",
                 bankName: item.bankName || "",
                 ifscCode: item.ifscCode || "",
@@ -985,7 +975,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 address1: officeAddressData.doorNo || '',
                 address2: officeAddressData.street || '',
                 address3: officeAddressData.locality || '',
-                address4: officeAddressData.landMark || '',
+                // address4: officeAddressData.landMark || '',
                 city: officeAddressData.city || '',
                 postalCode: officeAddressData.postalCode || '',
                 landmark: officeAddressData.landMark || '',
@@ -997,7 +987,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 address1: shippingAddressData.doorNo || '',
                 address2: shippingAddressData.street || '',
                 address3: shippingAddressData.locality || '',
-                address4: shippingAddressData.landMark || '',
+                // address4: shippingAddressData.landMark || '',
                 city: shippingAddressData.city || '',
                 postalCode: shippingAddressData.postalCode || '',
                 landmark: shippingAddressData.landMark || '',
@@ -1214,7 +1204,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     )}
                                 </div>
                                 <div >
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN <span className='text-red-500'>*</span></label>
+                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN </label>
                                     <input
 
                                         type='text'
@@ -1252,7 +1242,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     )}
                                 </div>
                                 <div>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN  <span className='text-red-500'>*</span></label>
+                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN </label>
                                     <input
 
                                         type='text'
@@ -1751,22 +1741,35 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     }
 
 
-                                    <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3'>
+                                    <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
 
-                                        <div className='mb-2 items-center col-span-3'>
+                                        <div className='mb-2 items-center '>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Name<span className='text-red-500'>*</span></label>
                                             <input
 
                                                 type='text'
-                                                value={bankDetails.beneficiaryCurrency}
-                                                onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
+                                                value={bankDetails.beneficiaryName}
+                                                onChange={(e) => handleBankingChange(index, 'beneficiaryName', e.target.value)}
                                                 placeholder='Enter Beneficiary Name '
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
 
 
-                                            {/* <select
+                                            {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryName && (
+                                                <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
+                                                    <MdError size={16} /> {errors.bankErrors[index].beneficiaryName}
+                                                </div>
+                                            )}
+
+                                        </div>
+
+
+                                        <div className='mb-2 items-center '>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
+
+
+                                            <select
                                                 value={bankDetails.beneficiaryCurrency}
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
                                                 className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
@@ -1777,7 +1780,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 <option value="GBP">GBP</option>
                                                 <option value="JPY">JPY</option>
 
-                                            </select> */}
+                                            </select>
 
                                             {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryCurrency && (
                                                 <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
@@ -1787,7 +1790,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
                                         </div>
 
-                                        <div className='mb-2  items-center col-span-3'>
+
+
+
+                                        <div className='mb-2  items-center '>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Number <span className='text-red-500'>*</span></label>
 
                                             <input
@@ -1805,7 +1811,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             )}
 
                                         </div>
-                                        <div className='mb-2 items-center col-span-4'>
+                                        <div className='mb-2 items-center '>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Bank Name<span className='text-red-500'>*</span></label>
 
                                             <input
@@ -1823,7 +1829,14 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             )}
 
                                         </div>
-                                        <div className='mb-2 items-center col-span-2'>
+
+
+
+
+
+
+
+                                        <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IFSC Code<span className='text-red-500'>*</span></label>
 
                                             <input
@@ -1839,15 +1852,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 </div>
                                             )}
                                         </div>
-
-                                    </div>
-
-
-                                    <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
-
-
                                         <div className='mb-2 items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code <span className='text-red-500'>*</span></label>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code </label>
                                             <input
 
                                                 type='text'
@@ -1894,7 +1900,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                         </div>
-                                        <div className='mb-2 items-center  col-span-4'>
+                                        <div className='mb-2 items-center '>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 3</label>
                                             <input
 

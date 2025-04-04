@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
-import { RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA } from '../../Utils/Constant';
+import { RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA, compareData } from '../../Utils/Constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
@@ -197,6 +197,15 @@ function AddressVendor(props) {
     }
 
   }, [state.Common?.IsVisible])
+
+  useEffect(() => {
+      if (compareData(officeAddress1, shippingAddress1 ) && compareData(officeAddress2, shippingAddress2) && compareData(officeAddress3, shippingAddress3) && compareData(city, city)) {
+        setSameAsOffice(true)
+      }
+      else {
+        setSameAsOffice(false)
+      }
+  }, [officeAddress1, officeAddress2, officeAddress3, city, shippingAddress1, shippingAddress2, shippingAddress3, city])
 
 
 

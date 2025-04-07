@@ -4,6 +4,7 @@ import { InfoCircle } from "iconsax-react";
 import { RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA, compareData } from '../../Utils/Constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 
 function AddressVendor(props) {
@@ -250,9 +251,7 @@ function AddressVendor(props) {
 
 
         setLoading(true)
-      } else {
-
-      }
+      } 
 
     }
   }
@@ -689,6 +688,13 @@ function AddressVendor(props) {
       </div>
     </div>
   )
+}
+
+AddressVendor.propTypes = {
+  handleBack: PropTypes.func.isRequired,
+  handleNextToBank: PropTypes.func.isRequired,
+  vendorDetails: PropTypes.object,
+  addressDetails: PropTypes.object
 }
 
 export default AddressVendor

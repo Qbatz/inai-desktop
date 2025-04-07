@@ -4,6 +4,7 @@ import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RESET_VENDOR_ID, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA, EDIT_VENDOR_SAGA } from '../../Utils/Constant'
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 function BankVendor(props) {
 
@@ -717,6 +718,14 @@ function BankVendor(props) {
       </div>
     </div>
   )
+}
+
+BankVendor.propTypes = {
+  payload: PropTypes.object.isRequired,
+  hanldeBackToAddress: PropTypes.func,
+  basicDetails: PropTypes.object,
+  vendorDetail: PropTypes.object,
+  addressDetails: PropTypes.object
 }
 
 export default BankVendor

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 
 
@@ -359,23 +360,9 @@ function FormBuilder(props) {
     );
 }
 
+FormBuilder.propTypes = {
+    update: PropTypes.func,
+    handleClose: PropTypes.func
+}
+
 export default FormBuilder;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

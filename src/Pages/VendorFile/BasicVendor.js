@@ -6,12 +6,10 @@ import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_VENDOR_ID } from "../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 
-function BasicVendor({ handleClose, vendorDetails }) {
-
-
-
+function BasicVendor({ vendorDetails }) {
 
     const dispatch = useDispatch();
     const state = useSelector(state => state)
@@ -653,4 +651,8 @@ function BasicVendor({ handleClose, vendorDetails }) {
     );
 }
 
+
+BasicVendor.propTypes = {
+    vendorDetails: PropTypes.object
+}
 export default BasicVendor;

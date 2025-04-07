@@ -21,7 +21,7 @@ const CommonReducer = (state = initialState, action) => {
     switch (action.type) {
         case ERROR_CODE:
             return { ...state, code: action.payload.statusCode, errorMessage: action.payload.message }
-        case SUCCESS_CODE:
+        case SUCCESS_CODE: {
             const data = action.payload.response?.data || {};
             return {
                 ...state,
@@ -34,6 +34,8 @@ const CommonReducer = (state = initialState, action) => {
                 resetpage: data.message || '',
                 resetverify: data.message || '',
             }
+        }
+            
 
         case RESET_CODE:
             return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "",  IsVisible: 0 }

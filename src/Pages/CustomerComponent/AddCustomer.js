@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { MdError } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA } from '../../Utils/Constant';
+import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, compareData } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -15,6 +15,7 @@ function AddCustomer({ editCustomerDetails }) {
     const dispatch = useDispatch();
     const state = useSelector(state => state)
     const [loading, setLoading] = useState(false)
+    const [contactAddressSameAsOfficeAddress, setContactAddressSameAsOfficeAddress] = useState(false)
 
     const navigate = useNavigate()
 
@@ -39,10 +40,6 @@ function AddCustomer({ editCustomerDetails }) {
 
     const [contacts, setContacts] = useState([
         { name: "", number: "", email: "", designation: "" }]);
-
-
-
-
 
 
     const [bankDetailsList, setBankDetailsList] = useState([
@@ -266,6 +263,7 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
     const handleSameAsOffice = (e) => {
+        setContactAddressSameAsOfficeAddress(!contactAddressSameAsOfficeAddress)
         if (e.target.checked) {
             setShippingAddress(officeAddress);
             setErrors({})
@@ -1032,14 +1030,16 @@ function AddCustomer({ editCustomerDetails }) {
 
     };
 
-
-
-
-
-
-
-
-
+    useEffect(() => {
+        // add a state comparision later
+        // && compareData(officeAddress.state, shippingAddress.state)
+        if (compareData(officeAddress.address1, shippingAddress.address1) && compareData(officeAddress.address2, shippingAddress.address2) && compareData(officeAddress.address3, shippingAddress.address3) && compareData(officeAddress.city, shippingAddress.city)  && compareData(officeAddress.postalCode, shippingAddress.postalCode)) {
+            setContactAddressSameAsOfficeAddress(true)
+        }
+        else {
+            setContactAddressSameAsOfficeAddress(false)
+        }
+    }, [officeAddress, shippingAddress])
 
 
 
@@ -1432,9 +1432,6 @@ function AddCustomer({ editCustomerDetails }) {
 
                                 <button onClick={handleSaveAndExit} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
 
-
-
-
                                 <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
                             </div>
                         </div>
@@ -1586,7 +1583,7 @@ function AddCustomer({ editCustomerDetails }) {
                             </div>
 
 
-                            <h4 className="text-base font-medium mb-4 font-Gilroy text-black" >Shipping Address  <span className='text-red-500'>*</span> <span className='text-md accent-[#205DA8]'><input type="checkbox" onChange={handleSameAsOffice} /></span><span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
+                            <h4 className="text-base font-medium mb-4 font-Gilroy text-black" >Shipping Address  <span className='text-red-500'>*</span> <span className='text-md accent-[#205DA8]'><input type="checkbox" checked={contactAddressSameAsOfficeAddress} onChange={handleSameAsOffice} /></span><span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
                             <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-4'>
 
 

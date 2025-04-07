@@ -97,8 +97,10 @@ export const GET_CUSTOMER_DETAILS_SAGA = "Get_Customer_Details_Saga";
 
 
 
+// Settings
 
-
+export const GET_MASTER_REDUCER = "Get_Master_Reducer";
+export const GET_MASTER_SAGA = "Get_Master_Saga";
 
 
 

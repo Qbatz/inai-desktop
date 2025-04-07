@@ -212,6 +212,9 @@ export default function SignUp() {
   useEffect(() => {
     if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
       setLoading(false)
+       setTimeout(()=>{
+               dispatch({ type: RESET_CODE })
+             },5000)
     }
   }, [state.Common.successCode, state.Common.code]);
 

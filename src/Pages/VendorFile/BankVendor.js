@@ -15,7 +15,8 @@ function BankVendor(props) {
 
 
   const [loading, setLoading] = useState(false)
-  const [beneficiaryName, setBeneficiaryName] = useState("");
+  const [beneficiaryName, setBeneficiaryName] = useState(props?.basicDetails?.contactPersonName);
+  const [beneficiaryCurrency, setBeneficiaryCurrency] = useState('');
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
   const [ifscCode, setIfscCode] = useState("");
@@ -31,13 +32,21 @@ function BankVendor(props) {
   const [formErrors, setFormErrors] = useState({});
 
 
-
+console.log("props",props)
 
   const handleBeneficiaryNameChange = (e) => {
     clearError("beneficiaryName");
     setBeneficiaryName(e.target.value)
   }
-    ;
+    
+
+   
+
+    const  handleBeneficiaryCurrency = (e) => {
+      clearError("beneficiaryCurrency");
+      setBeneficiaryCurrency(e.target.value)  
+    }
+      
 
   const handleAccountNumberChange = (e) => {
     const value = e.target.value;
@@ -123,13 +132,14 @@ function BankVendor(props) {
     let errors = {};
 
     if (!beneficiaryName) errors.beneficiaryName = 'Beneficiary Name is required';
+    if (!beneficiaryCurrency) errors.beneficiaryCurrency = 'Beneficiary Currency is required';
     if (!accountNumber) errors.accountNumber = 'Account Number is required';
     if (accountNumber && !/^\d{9,18}$/.test(accountNumber)) {
       errors.accountNumber = 'Account Number must be 9-18 digits';
     }
+
     if (!bankName) errors.bankName = 'Bank Name is required';
     if (!ifscCode) errors.ifscCode = 'IFSC Code is required';
-    // if (!swift) errors.swift = 'SWIFT Code is required';
     if (!bankAddress) errors.bankAddress = 'BankAddress is required';
 
     setFormErrors(errors);
@@ -218,6 +228,7 @@ function BankVendor(props) {
           bankDetails: {
             name: beneficiaryName,
             accountNo: accountNumber,
+            currency: beneficiaryCurrency,
             bankName: bankName,
             ifscCode: ifscCode,
             address1: bankAddress,
@@ -266,6 +277,7 @@ function BankVendor(props) {
         bankDetails: [{
           name: beneficiaryName || "",
           accountNo: accountNumber || "",
+          currency: beneficiaryCurrency  || "",
           bankName: bankName || "",
           ifscCode: ifscCode || "",
           address1: bankAddress || "",
@@ -351,10 +363,13 @@ function BankVendor(props) {
 
 
   useEffect(() => {
-                if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-                    setLoading(false)
-                }
-            }, [state.Common?.successCode, state.Common?.code]);
+    if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+      setLoading(false)
+      setTimeout(() => {
+        dispatch({ type: RESET_CODE })
+      }, 5000)
+    }
+  }, [state.Common?.successCode, state.Common?.code]);
 
   useEffect(() => {
     if (state.Common.IsVisible === 1) {
@@ -419,7 +434,7 @@ function BankVendor(props) {
 
         <div className='max-h-[250px] overflow-y-auto  
                           lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3'>
-          <div className='grid md:grid-cols-4 sm:grid-cols-2 gap-2'>
+          <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-2'>
 
 
             <div className='mb-2 items-center'>
@@ -430,18 +445,39 @@ function BankVendor(props) {
               <input
                 id='clientId'
                 type='text'
-                value={beneficiaryName}
+                value={beneficiaryName || props?.basicDetails?.contactPersonName}
                 onChange={handleBeneficiaryNameChange}
                 placeholder='Enter Beneficiary Name '
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
-              
+
               {formErrors.beneficiaryName && (
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryName} </p>)}
             </div>
 
+            <div className='mb-2 items-center '>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
 
+
+              <select
+                value={beneficiaryCurrency}
+                onChange={handleBeneficiaryCurrency}
+                className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                <option value="">Select beneficiary currency</option>
+                <option value="USD">USD</option>
+                <option value="INR">INR</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="JPY">JPY</option>
+
+              </select>
+
+              {formErrors.beneficiaryCurrency && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryCurrency} </p>)}
+
+            </div>
             <div className='mb-2  items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Number
                 <span className='text-red-500'>*</span> </label>
@@ -458,23 +494,7 @@ function BankVendor(props) {
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.accountNumber} </p>)}
             </div>
-            <div className='mb-2 items-center'>
-              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Bank Name
-                <span className='text-red-500'>*</span>
-              </label>
-
-              <input
-                id='clientId'
-                type='text'
-                value={bankName}
-                onChange={handleBankNameChange}
-                placeholder='Enter Account Name'
-                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-              />
-              {formErrors.bankName && (
-                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankName} </p>)}
-            </div>
+         
             {/* <div className='mb-2 items-center  '>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Branch </label>
               <input
@@ -492,6 +512,27 @@ function BankVendor(props) {
 
 
           <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+
+
+
+          <div className='mb-2 items-center'>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Bank Name
+                <span className='text-red-500'>*</span>
+              </label>
+
+              <input
+                id='clientId'
+                type='text'
+                value={bankName}
+                onChange={handleBankNameChange}
+                placeholder='Enter Account Name'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+              {formErrors.bankName && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankName} </p>)}
+            </div>
+
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IFSC Code
                 <span className='text-red-500'>*</span>
@@ -511,8 +552,8 @@ function BankVendor(props) {
             </div>
             <div className='mb-2  items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code  </label>
-                
-             
+
+
 
               <input
                 id='clientId'
@@ -625,11 +666,8 @@ function BankVendor(props) {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
             </div>
-          </div>
 
-
-          <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3'>
-            <div className='mb-2 items-center col-span-4'>
+            <div className='mb-2 items-center '>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code for intermediary Bank</label>
 
               <input
@@ -641,8 +679,13 @@ function BankVendor(props) {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
             </div>
+          </div>
 
-            <div className='mb-2  items-center col-span-8'>
+
+          <div className='grid md:grid-cols-2 sm:grid-cols-2 gap-3 mt-1'>
+       
+
+            <div className='mb-2  items-center '>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Bank Account Number with Intermediary Bank </label>
 
               <input
@@ -655,12 +698,8 @@ function BankVendor(props) {
               />
             </div>
 
-
-
-          </div>
-
-          <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3'>
-            <div className='mb-2  items-center col-span-8'>
+        
+            <div className='mb-2  items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IBAN (International Bank Account Number)</label>
 
               <input

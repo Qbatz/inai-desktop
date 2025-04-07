@@ -36,9 +36,13 @@ function Login({ message, loginStatusCode }) {
   const [loading, setLoading] = useState(false)
 
   const handleClientIdChange = (e) => {
-    dispatch({ type: RESET_CODE })
-    setClientIdError('');
-    setClientId(e.target.value)
+    const value = e.target.value;
+
+    if (/^\d*$/.test(value)) {
+      dispatch({ type: RESET_CODE });
+      setClientIdError('');
+      setClientId(value);
+    }
   };
   const handleUserIdChange = (e) => {
     dispatch({ type: RESET_CODE })
@@ -73,7 +77,7 @@ function Login({ message, loginStatusCode }) {
     }
 
     if (!userId.trim()) {
-      setUserIdError('User ID is required');
+      setUserIdError('User Name is required');
       valid = false;
     } else {
       setUserIdError('');
@@ -135,6 +139,10 @@ function Login({ message, loginStatusCode }) {
   useEffect(() => {
     if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
       setLoading(false)
+      setTimeout(()=>{
+        dispatch({ type: RESET_CODE })
+      },5000)
+      
     }
   }, [state.Common.successCode, state.Common.code]);
 
@@ -147,8 +155,7 @@ function Login({ message, loginStatusCode }) {
         ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
         : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
     setSiteKey(selectedKey)
-    console.log("key", selectedKey)
-
+    
   }, [])
 
 

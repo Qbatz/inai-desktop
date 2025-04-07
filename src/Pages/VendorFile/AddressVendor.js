@@ -18,6 +18,7 @@ function AddressVendor(props) {
   const [officeAddress1, setOfficeAddress1] = useState("");
   const [officeAddress2, setOfficeAddress2] = useState('');
   const [officeAddress3, setOfficeAddress3] = useState('');
+  const [officeAddress4, setOfficeAddress4] = useState('');
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
@@ -29,6 +30,7 @@ function AddressVendor(props) {
   const [shippingAddress1, setShippingAddress1] = useState("");
   const [shippingAddress2, setShippingAddress2] = useState('');
   const [shippingAddress3, setShippingAddress3] = useState('');
+  const [shippingAddress4, setShippingAddress4] = useState('');
   const [shippingCity, setShippingCity] = useState("");
   const [shippingState, setShippingState] = useState("");
   const [shippingCountry, setShippingCountry] = useState("");
@@ -55,6 +57,11 @@ function AddressVendor(props) {
   const handleOfficeAddress3Change = (e) => {
     setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress3: "" }));
     setOfficeAddress3(e.target.value);
+  };
+
+  const handleOfficeAddress4Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress4: "" }));
+    setOfficeAddress4(e.target.value);
   };
 
 
@@ -94,6 +101,13 @@ function AddressVendor(props) {
     setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress3: "" }));
     setShippingAddress3(e.target.value);
   };
+
+  const handleShippingAddress4Change = (e) => {
+    setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress4: "" }));
+    setShippingAddress4(e.target.value);
+  };
+
+
   const handleShippingCity = (e) => {
     setFormErrors((prevErrors) => ({ ...prevErrors, shippingCity: "" }));
     setShippingCity(e.target.value);
@@ -187,6 +201,9 @@ function AddressVendor(props) {
   useEffect(() => {
     if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
       setLoading(false)
+      setTimeout(() => {
+        dispatch({ type: RESET_CODE })
+      }, 5000)
     }
   }, [state.Common?.successCode, state.Common?.code]);
 
@@ -353,7 +370,6 @@ function AddressVendor(props) {
 
             <div className='mb-2 items-center '>
               <input
-                id='clientId'
                 type='text'
                 value={officeAddress1}
                 onChange={handleOfficeAddress1Change}
@@ -395,7 +411,20 @@ function AddressVendor(props) {
               )}
             </div>
 
-
+            <div className='mb-2 items-center'>
+              <input
+                type='text'
+                value={officeAddress4}
+                onChange={handleOfficeAddress4Change}
+                placeholder='Enter Address Line 4'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+              {formErrors.officeAddress4 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress4}
+                </p>
+              )}
+            </div>
 
 
 
@@ -422,16 +451,47 @@ function AddressVendor(props) {
               >
                 <option value="">Select State</option>
                 <option value="Tamil Nadu">Tamil Nadu</option>
-                <option value="California">California</option>
-                <option value="Texas">Texas</option>
-                <option value="New York">New York</option>
-                <option value="Florida">Florida</option>
-                <option value="Illinois">Illinois</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Goa">Goa</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Manipur">Manipur</option>
+                <option value="Meghalaya">Meghalaya</option>
+                <option value="Mizoram">Mizoram</option>
+                <option value="Nagaland">Nagaland</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Sikkim">Sikkim</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tripura">Tripura</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                <option value="Ladakh">Ladakh</option>
+                <option value="Lakshadweep">Lakshadweep</option>
+                <option value="Puducherry">Puducherry</option>
               </select>
 
             </div>
 
             <div className='mb-2 items-center'>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country <span className='text-red-500'>*</span></label>
 
               <select
                 id='country'
@@ -450,8 +510,8 @@ function AddressVendor(props) {
             </div>
 
 
-          </div>
-          <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+            {/* </div>
+          <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'> */}
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>
               <input
@@ -549,6 +609,20 @@ function AddressVendor(props) {
                 </p>
               )}
             </div>
+            <div className='mb-2 items-center'>
+              <input
+                type='text'
+                value={shippingAddress4}
+                onChange={handleShippingAddress4Change}
+                placeholder='Enter Shipping Address Line 4'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+              {formErrors.shippingAddress4 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingAddress4}
+                </p>
+              )}
+            </div>
             <div className='mb-2  items-center'>
               <input
                 id='clientId'
@@ -580,6 +654,8 @@ function AddressVendor(props) {
             </div>
 
             <div className='mb-2 items-center'>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country </label>
+
               <select
                 id='shippingCountry'
                 value={shippingCountry}
@@ -597,9 +673,9 @@ function AddressVendor(props) {
             </div>
 
 
-          </div>
+            {/* </div>
 
-          <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+          <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'> */}
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>
               <input

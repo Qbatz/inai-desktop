@@ -1,11 +1,10 @@
 
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
-import { MdError } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA } from '../../Utils/Constant';
+import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
-
+import { InfoCircle } from "iconsax-react";
 
 
 function AddCustomer({ handleClose, editCustomerDetails }) {
@@ -22,7 +21,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const [formData, setFormData] = useState({
         businessName: '',
+        surName: '',
         contactPerson: '',
+        countryCode: '',
         contactNumber: '',
         emailId: '',
         designation: '',
@@ -34,20 +35,26 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     });
 
 
-    const [natureOfBusiness, setNatureOfBusiness] = useState(null);
+    const [natureOfBusiness, setNatureOfBusiness] = useState([]);
+
 
     const [contacts, setContacts] = useState([
-        { name: "", number: "", email: "", designation: "" }]);
+        // { name: "", number: "", email: "", designation: "" }
+    ]
+    );
 
 
 
+    console.log("natureOfBusiness", natureOfBusiness)
+
+    console.log("state", state)
 
 
 
     const [bankDetailsList, setBankDetailsList] = useState([
         {
             beneficiaryCurrency: "",
-            beneficiaryName: "",
+            beneficiaryName: formData?.contactPerson,
             accountNumber: "",
             bankName: "",
             ifscCode: "",
@@ -62,6 +69,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             iban: ""
         }
     ]);
+
+
+
+
     const businessTypes = [
         { id: 1, label: "Manufacturing" },
         { id: 2, label: "Supply of Service" },
@@ -75,6 +86,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         address4: "",
         city: "",
         state: "",
+        country: "",
         postalCode: "",
         landmark: "",
         googleMap: ""
@@ -87,11 +99,14 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         address4: "",
         city: "",
         state: "",
+        country: "",
         postalCode: "",
         landmark: "",
         googleMap: ""
     });
 
+
+    console.log("[officeAddress", officeAddress, "shippingAddress", shippingAddress)
 
     const [initialFormData, setInitialFormData] = useState(null);
     const [initialContacts, setInitialContacts] = useState(null);
@@ -99,6 +114,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     const [initialOfficeAddress, setInitialOfficeAddress] = useState(null);
     const [initialShippingAddress, setInitialShippingAddress] = useState(null);
     const [isChanged, setIsChanged] = useState('')
+
+
+
+
+
+
 
 
     const handleInputChange = (field, value) => {
@@ -131,16 +152,85 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
 
+
     const handleNatureOfBusinessChange = (value, isChecked) => {
-        setNatureOfBusiness(isChecked ? value : null);
+        if (isChecked) {
+            setNatureOfBusiness((prev) => [...prev, value]);
+        } else {
+            setNatureOfBusiness((prev) => prev.filter((item) => item !== value));
+        }
+
         setErrors(prevErrors => ({ ...prevErrors, natureOfBusiness: "" }));
     };
 
-
     const handleTabClick = (id) => {
-        setValue(id)
+        if (id === 2 || id === 3) {
+            const { tempErrors, contactErrors, isValid: isFormValid } = validateForm(formData, contacts, natureOfBusiness);
 
+
+
+            const finalErrors = {
+                ...tempErrors,
+                ...contactErrors,
+            };
+
+            setErrors(finalErrors);
+
+            if (isFormValid) {
+                setValue(id);
+            } else {
+                console.log("Validation failed. Fix the errors to proceed.");
+            }
+        } else {
+            setValue(id);
+        }
     };
+
+
+
+
+    // const validateAddress = () => {
+    //     let isValid = true;
+    //     let errors = {};
+
+    //     if (!officeAddress.address1?.trim()) {
+    //         errors.address1 = "Address Line 1 is required";
+    //         isValid = false;
+    //     }
+
+    //     if (!officeAddress.city?.trim()) {
+    //         errors.city = "City is required";
+    //         isValid = false;
+    //     }
+
+    //     if (!officeAddress.postalCode?.trim()) {
+    //         errors.postalCode = "Postal Code is required";
+    //         isValid = false;
+    //     }
+
+    //     if (!shippingAddress.address1?.trim()) {
+    //         errors.shipaddress1 = "Address Line 1 is required";
+    //         isValid = false;
+    //     }
+
+    //     if (!shippingAddress.city?.trim()) {
+    //         errors.shipcity = "City is required";
+    //         isValid = false;
+    //     }
+
+    //     if (!shippingAddress.postalCode?.trim()) {
+    //         errors.shippostalCode = "Postal Code is required";
+    //         isValid = false;
+    //     }
+
+    //     return { addressErrors: errors, isValid };
+    // };
+
+
+
+
+
+
 
     const handleNextForAddress = () => {
         setIsChanged('')
@@ -209,7 +299,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     const handleAddAdditionalContact = () => {
         setContacts([
             ...contacts,
-            { name: "", number: "", email: "", designation: "" },
+            { surName: "", name: "", countryCode: "", number: "", email: "", designation: "" },
         ]);
     };
 
@@ -232,7 +322,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             }
 
 
-            updatedErrors[index][field] = value.trim() === "" ? "This field is required" : "";
+            updatedErrors[index][field] = value?.trim() === "" ? "This field is required" : "";
 
             return { ...prevErrors, contactErrors: updatedErrors };
         });
@@ -267,7 +357,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const handleSameAsOffice = (e) => {
         if (e.target.checked) {
-            setShippingAddress(officeAddress);
+            setShippingAddress(prev => ({
+                ...prev,
+                ...officeAddress,
+            }));
             setErrors({})
         } else {
             setShippingAddress({
@@ -277,12 +370,19 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 address4: "",
                 city: "",
                 state: "",
+                country: "",
                 postalCode: "",
                 landmark: "",
                 googleMap: ""
             });
         }
     };
+
+
+
+
+
+
 
 
     const handleBankingChange = (index, field, value) => {
@@ -334,26 +434,39 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const validateForm = (formData, contacts, natureOfBusiness) => {
         let tempErrors = {};
-        let contactErrors = contacts.map(() => ({ name: "", number: "", email: "", designation: "" }));
+        // let contactErrors = contacts.map(() => ({ name: "", number: "", email: "", designation: "" }));
         let isValid = true;
 
 
-        if (!formData.businessName.trim()) {
+        if (!formData.businessName?.trim()) {
             tempErrors.businessName = "Business Name is required";
             isValid = false;
         }
-        if (!formData.contactPerson.trim()) {
+        if (!formData.surName?.trim()) {
+            tempErrors.surName = "Sur Name is required";
+            isValid = false;
+        }
+
+        if (!formData.contactPerson?.trim()) {
             tempErrors.contactPerson = "Contact Person is required";
             isValid = false;
         }
-        if (!formData.emailId.trim()) {
+        if (!formData.emailId?.trim()) {
             tempErrors.emailId = "Email ID is required";
             isValid = false;
         } else if (!/^\S+@\S+\.\S+$/.test(formData.emailId)) {
             tempErrors.emailId = "Invalid Email format";
             isValid = false;
         }
-        if (!formData.contactNumber.trim()) {
+
+        if (!formData.countryCode?.trim()) {
+            tempErrors.countryCode = "CountryCode is required";
+            isValid = false;
+        }
+
+
+
+        if (!formData.contactNumber?.trim()) {
             tempErrors.contactNumber = "Contact Number is required";
             isValid = false;
         } else if (formData.contactNumber.length !== 10) {
@@ -363,77 +476,79 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             tempErrors.contactNumber = "Contact Number must be Numbers";
             isValid = false;
         }
-        if (!formData.designation.trim()) {
+        if (!formData.designation?.trim()) {
             tempErrors.designation = "Designation is required";
             isValid = false;
         }
-        if (!formData.gstVat.trim()) {
+        if (!formData.gstVat?.trim()) {
             tempErrors.gstVat = "GST/VAT is required";
             isValid = false;
         }
 
-        if (!formData.pan.trim()) {
+        if (!formData.pan?.trim()) {
             tempErrors.pan = "PAN is required";
             isValid = false;
         }
 
-        if (!formData.legalStatus.trim()) {
+        if (!formData.legalStatus?.trim()) {
             tempErrors.legalStatus = "Legal Status is required";
             isValid = false;
         }
 
-        if (!natureOfBusiness) {
+        if (!natureOfBusiness || natureOfBusiness.length === 0) {
             tempErrors.natureOfBusiness = "Nature of Business is required";
             isValid = false;
         }
 
 
-        contacts.forEach((contact, index) => {
-            if (!contact.name.trim()) {
-                contactErrors[index].name = "Contact Name is required";
-                isValid = false;
-            }
-            if (!contact.number.trim()) {
-                contactErrors[index].number = "Contact Number is required";
-                isValid = false;
-            } else if (contact.number.length !== 10) {
-                contactErrors[index].number = "Contact Number must be 10 digits";
-                isValid = false;
-            } else if (!/^[0-9]*$/.test(contact.number)) {
-                contactErrors[index].number = "Contact Number must be Numbers";
-                isValid = false;
-            }
-            if (!contact.email) {
-                contactErrors[index].email = "Contact Email is required";
-                isValid = false;
-            } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
-                contactErrors[index].email = "Invalid Email format";
-                isValid = false;
-            }
-            if (!contact.designation.trim()) {
-                contactErrors[index].designation = "Contact Designation is required";
-                isValid = false;
-            }
-        });
+        // contacts.forEach((contact, index) => {
+        //     if (!contact.name.trim()) {
+        //         contactErrors[index].name = "Contact Name is required";
+        //         isValid = false;
+        //     }
+        //     if (!contact.number.trim()) {
+        //         contactErrors[index].number = "Contact Number is required";
+        //         isValid = false;
+        //     } else if (contact.number.length !== 10) {
+        //         contactErrors[index].number = "Contact Number must be 10 digits";
+        //         isValid = false;
+        //     } else if (!/^[0-9]*$/.test(contact.number)) {
+        //         contactErrors[index].number = "Contact Number must be Numbers";
+        //         isValid = false;
+        //     }
+        //     if (!contact.email) {
+        //         contactErrors[index].email = "Contact Email is required";
+        //         isValid = false;
+        //     } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
+        //         contactErrors[index].email = "Invalid Email format";
+        //         isValid = false;
+        //     }
+        //     if (!contact.designation.trim()) {
+        //         contactErrors[index].designation = "Contact Designation is required";
+        //         isValid = false;
+        //     }
+        // });
 
-        return { tempErrors, contactErrors, isValid };
+        return { tempErrors, isValid };
     };
 
 
-
+    // basic Save & exit
 
     const handleSaveAndExit = () => {
 
-        const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness,);
+        const { tempErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
         setIsChanged('')
 
-        setErrors({ ...tempErrors, contactErrors });
+        setErrors({ ...tempErrors, });
 
         if (isValid) {
 
             const AddPayload = {
                 businessName: formData.businessName,
+                surName: formData.surName,
                 contactPerson: formData.contactPerson,
+                countryCode: formData.countryCode,
                 contactNumber: formData.contactNumber,
                 emailId: formData.emailId,
                 designation: formData.designation,
@@ -456,8 +571,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             const EditPayload = {
                 clientId: editCustomerDetails?.clientId || "",
                 businessName: formData.businessName,
-                contactPerson: formData.contactPerson,
-                contactNumber: formData.contactNumber,
+                contactPerson: `${formData.surName}${formData.contactPerson}`.trim(),
+                contactNumber: `${formData.countryCode}${formData.contactNumber}`,
                 emailId: formData.emailId,
                 designation: formData.designation,
                 gstVat: formData.gstVat,
@@ -496,7 +611,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     };
 
 
-
+    //  3 taps payload send here (next button)
     const handleCustomerSubmit = () => {
         let isValid = true;
         let finalErrors = {};
@@ -512,6 +627,13 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             tempErrors.businessName = "Business Name is required";
             isValid = false;
         }
+
+        if (!formData.surName.trim()) {
+            tempErrors.surName = "Sur Name is required";
+            isValid = false;
+        }
+
+
         if (!formData.contactPerson?.trim()) {
             tempErrors.contactPerson = "Contact Person is required";
             isValid = false;
@@ -523,6 +645,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             tempErrors.emailId = "Invalid Email format";
             isValid = false;
         }
+
+        if (!formData.countryCode.trim()) {
+            tempErrors.countryCode = "CountryCode is required";
+            isValid = false;
+        }
+
         if (!formData.contactNumber?.trim()) {
             tempErrors.contactNumber = "Contact Number is required";
             isValid = false;
@@ -596,8 +724,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             const AddPayload = {
 
                 businessName: formData.businessName,
-                contactPerson: formData.contactPerson,
-                contactNumber: formData.contactNumber,
+                contactPerson: `${formData.surName}${formData.contactPerson}`.trim(),
+                contactNumber: `${formData.countryCode}${formData.contactNumber}`,
                 emailId: formData.emailId,
                 designation: formData.designation,
                 gstVat: formData.gstVat,
@@ -617,6 +745,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         doorNo: officeAddress.address1 || "",
                         street: officeAddress.address2 || "",
                         locality: officeAddress.address3 || "",
+                        address4: officeAddress.address4 || "",
+                        state: officeAddress.state,
+                        country: officeAddress.country,
                         city: officeAddress.city,
                         postalCode: officeAddress.postalCode,
                         landMark: officeAddress.landmark || "",
@@ -628,12 +759,18 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         street: shippingAddress.address2 || "",
                         locality: shippingAddress.address3 || "",
                         city: shippingAddress.city,
+                        address4: shippingAddress.address4 || "",
+                        state: shippingAddress.state,
+                        country: shippingAddress.country,
                         postalCode: shippingAddress.postalCode,
-                        landMark: shippingAddress.landMark || "",
+                        landMark: shippingAddress.landmark || "",
                         mapLink: shippingAddress.googleMap || "",
                         addressType: 2,
                     },
                 ],
+
+
+
                 bankDetails: bankDetailsList.map(bank => ({
                     name: bank.beneficiaryName,
                     currency: bank.beneficiaryCurrency,
@@ -646,9 +783,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
-                    routingBankAddress: bank.bankAddress || "",
                     routingAccountIndusand: bank.intermediaryAccountNumber || "",
-                    iban: bank.iban || ""
+                    iban: bank.iban || "",
+                    intermediary_swift_code: bank.intermediarySiftCode
                 }))
 
             };
@@ -656,8 +793,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             const EditPayload = {
                 clientId: editCustomerDetails?.clientId || "",
                 businessName: formData.businessName,
-                contactPerson: formData.contactPerson,
-                contactNumber: formData.contactNumber,
+                contactPerson: `${formData.surName}${formData.contactPerson}`.trim(),
+                contactNumber: `${formData.countryCode}${formData.contactNumber}`,
                 emailId: formData.emailId,
                 designation: formData.designation,
                 gstVat: formData.gstVat,
@@ -677,6 +814,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         doorNo: officeAddress.address1 || "",
                         street: officeAddress.address2 || "",
                         locality: officeAddress.address3 || "",
+                        address4: officeAddress.address4 || "",
+                        state: officeAddress.state,
+                        country: officeAddress.country,
                         city: officeAddress.city,
                         postalCode: officeAddress.postalCode,
                         landMark: officeAddress.landmark || "",
@@ -688,8 +828,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         street: shippingAddress.address2 || "",
                         locality: shippingAddress.address3 || "",
                         city: shippingAddress.city,
+                        address4: shippingAddress.address4 || "",
+                        state: shippingAddress.state,
+                        country: shippingAddress.country,
                         postalCode: shippingAddress.postalCode,
-                        landMark: shippingAddress.landMark || "",
+                        landMark: shippingAddress.landmark || "",
                         mapLink: shippingAddress.googleMap || "",
                         addressType: 2,
                     },
@@ -706,9 +849,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
-                    routingBankAddress: bank.bankAddress || "",
                     routingAccountIndusand: bank.intermediaryAccountNumber || "",
-                    iban: bank.iban || ""
+                    iban: bank.iban || "",
+                    intermediary_swift_code: bank.intermediarySiftCode
                 }))
 
             };
@@ -733,6 +876,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     };
 
 
+    //  edit scenario enable address tab button for save & exit payload
     const handleCustomerEditAddress = () => {
         let isValid = true;
         let finalErrors = {};
@@ -747,6 +891,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             tempErrors.businessName = "Business Name is required";
             isValid = false;
         }
+
+        if (!formData.surName?.trim()) {
+            tempErrors.surName = "Sur Name is required";
+            isValid = false;
+        }
+
         if (!formData.contactPerson?.trim()) {
             tempErrors.contactPerson = "Contact Person is required";
             isValid = false;
@@ -756,6 +906,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false;
         } else if (!/^\S+@\S+\.\S+$/.test(formData.emailId)) {
             tempErrors.emailId = "Invalid Email format";
+            isValid = false;
+        }
+        if (!formData.countryCode?.trim()) {
+            tempErrors.countryCode = "CountryCode is required";
             isValid = false;
         }
         if (!formData.contactNumber?.trim()) {
@@ -832,8 +986,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             const EditPayload = {
                 clientId: editCustomerDetails?.clientId || "",
                 businessName: formData.businessName,
-                contactPerson: formData.contactPerson,
-                contactNumber: formData.contactNumber,
+                contactPerson: `${formData.surName}${formData.contactPerson}`.trim(),
+                contactNumber: `${formData.countryCode}${formData.contactNumber}`,
                 emailId: formData.emailId,
                 designation: formData.designation,
                 gstVat: formData.gstVat,
@@ -854,6 +1008,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         street: officeAddress.address2 || "",
                         locality: officeAddress.address3 || "",
                         city: officeAddress.city,
+                        address4: officeAddress.address4 || "",
+                        state: officeAddress.state,
+                        country: officeAddress.country,
                         postalCode: officeAddress.postalCode,
                         landMark: officeAddress.landmark || "",
                         mapLink: officeAddress.googleMap || "",
@@ -864,6 +1021,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         street: shippingAddress.address2 || "",
                         locality: shippingAddress.address3 || "",
                         city: shippingAddress.city,
+                        address4: shippingAddress.address4 || "",
+                        state: shippingAddress.state,
+                        country: shippingAddress.country,
                         postalCode: shippingAddress.postalCode,
                         landMark: shippingAddress.landmark || "",
                         mapLink: shippingAddress.googleMap || "",
@@ -882,9 +1042,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
-                    routingBankAddress: bank.bankAddress || "",
                     routingAccountIndusand: bank.intermediaryAccountNumber || "",
-                    iban: bank.iban || ""
+                    iban: bank.iban || "",
+                    intermediary_swift_code: bank.intermediarySiftCode
                 }))
 
             };
@@ -908,6 +1068,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     useEffect(() => {
         if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
             setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 5000)
         }
     }, [state.Common?.successCode, state.Common?.code]);
 
@@ -920,7 +1083,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     }, [state.Common.IsVisible])
 
-
+    useEffect(() => {
+        dispatch({ type: GET_MASTER_SAGA })
+    }, [])
 
     useEffect(() => {
         if (editCustomerDetails) {
@@ -965,9 +1130,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 bankCountry: item.country || "",
                 intermediaryRoutingBank: item.routingAccountIndusand || "",
                 intermediarySiftCode: item.routingSiftCode || "",
-                bankAddress: item.routingBankAddress || "",
                 intermediaryAccountNumber: item.routingBank || "",
-                iban: ""
+                iban: item.iban || "",
             })) || [];
 
             const officeAddressData = editCustomerDetails.address?.find(addr => addr.addressType === "Office Address") || {};
@@ -1021,6 +1185,15 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     };
 
+    useEffect(() => {
+        if (formData?.contactPerson && !editCustomerDetails) {
+            setBankDetailsList((prev) => {
+                const updated = [...prev];
+                updated[0].beneficiaryName = formData.contactPerson;
+                return updated;
+            });
+        }
+    }, [formData?.contactPerson]);
 
 
 
@@ -1053,7 +1226,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 }
                 <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">
                     {tabs.map((tab) => (
-                        <button disabled
+                        <button
                             key={tab.id}
                             className={`px-4 py-2 font-Gilroy ${value === tab.id
                                 ? "border-b-4 border-[#205DA8] text-[#205DA8] font-semibold text-base"
@@ -1096,7 +1269,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.businessName && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                 {errors.businessName}
                                             </span>
@@ -1106,45 +1279,121 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                 </div>
                                 <div >
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact Person   <span className='text-red-500'>*</span></label>
-                                    <input
 
-                                        type='text'
-                                        value={formData.contactPerson}
-                                        onChange={(e) => handleInputChange('contactPerson', e.target.value)}
-                                        placeholder='Enter Contact Person'
-                                        className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.contactPerson && (
+
+                                    <div className="flex">
+                                        <select
+                                            value={formData.surName}
+                                            onChange={(e) => handleInputChange('surName', e.target.value)}
+                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                        >
+                                            <option value="" >Select</option>
+                                            {state?.settings?.titles.map((title) => (
+                                                <option key={title.id} value={title.name}>
+                                                    {title.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <input
+
+                                            type='text'
+                                            value={formData.contactPerson}
+                                            onChange={(e) => handleInputChange('contactPerson', e.target.value)}
+                                            placeholder='Enter Contact Person'
+                                            className='px-3 py-3 border w-full border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+
+                                    {errors.surName && errors.contactPerson ? (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.contactPerson}
+                                                Sur Name & Contact Name is required
                                             </span>
                                         </div>
+                                    ) : (
+                                        <>
+                                            {errors.surName && (
+                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                    <InfoCircle size={16} color="#DC2626" />
+                                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                        {errors.surName}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {errors.contactPerson && (
+                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                    <InfoCircle size={16} color="#DC2626" />
+                                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                        {errors.contactPerson}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </>
                                     )}
+
+
                                 </div>
                                 <div >
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact  Number <span className='text-red-500'>*</span></label>
-                                    <input
 
-                                        type='text'
-                                        value={formData.contactNumber}
-                                        onChange={(e) => handleInputChange('contactNumber', e.target.value)}
-                                        placeholder='Enter Contact  Number'
-                                        maxLength={10}
-                                        inputMode="numeric"
-                                        pattern="[0-9]*"
-                                        className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
 
-                                    {errors.contactNumber && (
+                                    <div className="flex">
+                                        <select
+                                            value={formData.countryCode}
+                                            onChange={(e) => handleInputChange('countryCode', e.target.value)}
+                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                        >
+                                            <option value="">Select</option>
+                                            {state.settings?.countryCode?.map((item) => (
+                                                <option key={item.id} value={item.phone}>
+                                                    {item.phone || 91}
+                                                </option>
+                                            ))}
+
+                                        </select>
+
+                                        <input
+
+                                            type='text'
+                                            value={formData.contactNumber}
+                                            onChange={(e) => handleInputChange('contactNumber', e.target.value)}
+                                            placeholder='Enter Contact  Number'
+                                            maxLength={10}
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            className='w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+
+                                    </div>
+                                    {errors.countryCode && errors.contactNumber ? (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.contactNumber}
+                                                Country Code & Contact Number is required
                                             </span>
                                         </div>
+                                    ) : (
+                                        <>
+                                            {errors.countryCode && (
+                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                    <InfoCircle size={16} color="#DC2626" />
+                                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                        {errors.countryCode}
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {errors.contactNumber && (
+                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                    <InfoCircle size={16} color="#DC2626" />
+                                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                        {errors.contactNumber}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </>
                                     )}
+
 
                                 </div>
                                 <div >
@@ -1158,7 +1407,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.emailId && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                 {errors.emailId}
                                             </span>
@@ -1177,7 +1426,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.designation && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                 {errors.designation}
                                             </span>
@@ -1196,7 +1445,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.gstVat && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                 {errors.gstVat}
                                             </span>
@@ -1215,7 +1464,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.cin && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                 {errors.cin}
                                             </span>
@@ -1234,7 +1483,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.pan && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                 {errors.pan}
                                             </span>
@@ -1253,7 +1502,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.tan && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                 {errors.tan}
                                             </span>
@@ -1274,7 +1523,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
                                     {errors.legalStatus && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                 {errors.legalStatus}
                                             </span>
@@ -1295,7 +1544,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             <input
                                                 type="checkbox"
                                                 className="ml-2 accent-[#205DA8]"
-                                                checked={Number(natureOfBusiness) === Number(business.id)}
+                                                checked={natureOfBusiness.includes(business.id)}
                                                 onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
                                             />
                                             <label className='block text-start font-Gilroy font-normal text-md text-neutral-800'>
@@ -1306,7 +1555,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                 </div>
                                 {errors.natureOfBusiness && (
                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <MdError size={16} />
+                                        <InfoCircle size={16} color="#DC2626" />
                                         <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.natureOfBusiness}</p>
                                     </div>
                                 )}
@@ -1327,16 +1576,31 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
                                                     Contact Person Name <span className="text-red-500">*</span>
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Enter Contact Person Name"
-                                                    value={contact.name}
-                                                    onChange={(e) => handleChange(index, "name", e.target.value)}
-                                                    className="px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
-                                                />
+                                                <div className="flex">
+                                                    <select
+                                                        value={contact.surName}
+                                                        onChange={(e) => handleChange(index, 'surName', e.target.value)}
+                                                        className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                    >
+                                                        <option value="">Select</option>
+                                                        {state?.settings?.titles?.map((title) => (
+                                                            <option key={title.id} value={title.name}>
+                                                                {title.name}
+                                                            </option>
+                                                        ))}
+
+                                                    </select>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter Contact Person Name"
+                                                        value={contact.name}
+                                                        onChange={(e) => handleChange(index, "name", e.target.value)}
+                                                        className="px-3 py-3 w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+                                                    />
+                                                </div>
                                                 {errors.contactErrors?.[index]?.name && (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <MdError size={16} />
+                                                        <InfoCircle size={16} color="#DC2626" />
                                                         <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].name}</p>
                                                     </div>
                                                 )}
@@ -1346,17 +1610,33 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
                                                     Contact Number <span className="text-red-500">*</span>
                                                 </label>
-                                                <input
-                                                    type="text"
-                                                    placeholder="Enter Contact Number"
-                                                    value={contact.number}
-                                                    maxLength={10}
-                                                    onChange={(e) => handleChange(index, "number", e.target.value)}
-                                                    className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
-                                                />
+
+                                                <div className="flex">
+                                                    <select
+                                                        value={contact.countryCode}
+                                                        onChange={(e) => handleChange(index, 'countryCode', e.target.value)}
+                                                        className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                    >
+                                                        <option value="">Select</option>
+                                                        {state.settings?.countryCode?.map((item) => (
+                                                            <option key={item.id} value={item.phone}>
+                                                                {item.phone || 91}
+                                                            </option>
+                                                        ))}
+
+                                                    </select>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter Contact Number"
+                                                        value={contact.number}
+                                                        maxLength={10}
+                                                        onChange={(e) => handleChange(index, "number", e.target.value)}
+                                                        className="w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+                                                    />
+                                                </div>
                                                 {errors.contactErrors?.[index]?.number && (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <MdError size={16} />
+                                                        <InfoCircle size={16} color="#DC2626" />
                                                         <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].number}</p>
                                                     </div>
                                                 )}
@@ -1375,7 +1655,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 />
                                                 {errors.contactErrors?.[index]?.email && (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <MdError size={16} />
+                                                        <InfoCircle size={16} color="#DC2626" />
                                                         <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].email}</p>
                                                     </div>
 
@@ -1397,7 +1677,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 />
                                                 {errors.contactErrors?.[index]?.designation && (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <MdError size={16} />
+                                                        <InfoCircle size={16} color="#DC2626" />
                                                         <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].designation}</p>
                                                     </div>
                                                 )}
@@ -1406,7 +1686,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     </div>
                                 ))}
 
-                                {contacts.length < 2 && (
+                                {contacts.length < 10 && (
                                     <label
                                         className="rounded-lg text-[#205DA8] font-semibold font-Gilroy text-md cursor-pointer pt-3 pb-3"
                                         onClick={handleAddAdditionalContact}
@@ -1447,7 +1727,6 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
                                 <div className='mb-2 items-center '>
                                     <input
-
                                         type='text'
                                         placeholder='Enter Address Line 1'
                                         value={officeAddress.address1}
@@ -1456,7 +1735,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.address1 && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs font-Gilroy">{errors.address1}</span>
                                         </div>
                                     )}
@@ -1503,7 +1782,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.city && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs font-Gilroy">{errors.city}</span>
                                         </div>
                                     )}
@@ -1511,25 +1790,63 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
 
-                                {/* <div className='mb-2 items-center'>
+                                <div className='mb-2 items-center'>
                                     <select
                                         value={officeAddress.state}
                                         onChange={(e) => handleOfficeChange('state', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                        <option value="">Select state</option>
-                                        <option value="TamilNadu">Tamil Nadu</option>
+                                        <option value="">Select State</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                        <option value="Assam">Assam</option>
+                                        <option value="Bihar">Bihar</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
+
 
                                     </select>
                                     {errors.state && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs font-Gilroy">{errors.state}</span>
                                         </div>
                                     )}
-                                </div> */}
+                                </div>
+
+
+
+
+
 
                             </div>
                             <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3 mt-1'>
 
+                                <div className='mb-2 items-center'>
+                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
+
+                                    <select
+                                        value={officeAddress.country}
+                                        onChange={(e) => handleOfficeChange('country', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        <option value="">Select Country</option>
+                                        <option value="India">India</option>
+                                        <option value="United States">United States</option>
+                                        <option value="United Kingdom">United Kingdom</option>
+                                        <option value="Australia">Australia</option>
+                                        <option value="Canada">Canada</option>
+                                        <option value="Germany">Germany</option>
+                                        <option value="France">France</option>
+                                        <option value="Italy">Italy</option>
+
+                                    </select>
+                                    {errors.country && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <span className="text-red-500 text-xs font-Gilroy">{errors.country}</span>
+                                        </div>
+                                    )}
+                                </div>
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500 h-fit'>*</span></label>
                                     <input
@@ -1542,7 +1859,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.postalCode && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs font-Gilroy">{errors.postalCode}</span>
                                         </div>
                                     )}
@@ -1590,7 +1907,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.shipaddress1 && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs font-Gilroy">{errors.shipaddress1}</span>
                                         </div>
                                     )}
@@ -1638,30 +1955,88 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.shipcity && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs font-Gilroy">{errors.shipcity}</span>
                                         </div>
                                     )}
                                 </div>
-                            </div>
-
-                            {/* <div className='mb-2 items-ce   nter'>
+                                <div className='mb-2 items-center'>
                                     <select
                                         value={shippingAddress.state}
                                         onChange={(e) => handleShippingChange('state', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                         <option value="" >Select state</option>
-                                        <option value="TamilNadu">Tamil Nadu</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                        <option value="Assam">Assam</option>
+                                        <option value="Bihar">Bihar</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
+                                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                        <option value="Jharkhand">Jharkhand</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Manipur">Manipur</option>
+                                        <option value="Meghalaya">Meghalaya</option>
+                                        <option value="Mizoram">Mizoram</option>
+                                        <option value="Nagaland">Nagaland</option>
+                                        <option value="Odisha">Odisha</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                        <option value="Sikkim">Sikkim</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Tripura">Tripura</option>
+                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                        <option value="Uttarakhand">Uttarakhand</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                        <option value="Chandigarh">Chandigarh</option>
+                                        <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                        <option value="Ladakh">Ladakh</option>
+                                        <option value="Lakshadweep">Lakshadweep</option>
+                                        <option value="Puducherry">Puducherry</option>
 
                                     </select>
                                     {errors.shipstate && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs font-Gilroy">{errors.shipstate}</span>
                                         </div>
                                     )}
-                                </div> */}
+                                </div>
 
-                            <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+                                <div className='mb-2 items-center'>
+                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
+
+                                    <select
+                                        value={shippingAddress.country}
+                                        onChange={(e) => handleOfficeChange('country', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        <option value="">Select Country</option>
+                                        <option value="India">India</option>
+                                        <option value="United States">United States</option>
+                                        <option value="United Kingdom">United Kingdom</option>
+                                        <option value="Australia">Australia</option>
+                                        <option value="Canada">Canada</option>
+                                        <option value="Germany">Germany</option>
+                                        <option value="France">France</option>
+                                        <option value="Italy">Italy</option>
+
+                                    </select>
+                                    {errors.shipcountry && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <span className="text-red-500 text-xs font-Gilroy">{errors.shipcountry}</span>
+                                        </div>
+                                    )}
+                                </div>
+
+
 
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>
@@ -1675,7 +2050,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     />
                                     {errors.shippostalCode && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <MdError size={16} />
+                                            <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs font-Gilroy"> {errors.shippostalCode}</span>
                                         </div>
                                     )}
@@ -1749,7 +2124,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             <input
 
                                                 type='text'
-                                                value={bankDetails.beneficiaryName}
+                                                value={bankDetails.beneficiaryName || formData?.contactPerson}
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryName', e.target.value)}
                                                 placeholder='Enter Beneficiary Name '
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
@@ -1758,7 +2133,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
                                             {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryName && (
                                                 <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <MdError size={16} /> {errors.bankErrors[index].beneficiaryName}
+                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].beneficiaryName}
                                                 </div>
                                             )}
 
@@ -1784,7 +2159,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
                                             {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryCurrency && (
                                                 <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <MdError size={16} /> {errors.bankErrors[index].beneficiaryCurrency}
+                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].beneficiaryCurrency}
                                                 </div>
                                             )}
 
@@ -1806,7 +2181,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             />
                                             {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].accountNumber && (
                                                 <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <MdError size={16} /> {errors.bankErrors[index].accountNumber}
+                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].accountNumber}
                                                 </div>
                                             )}
 
@@ -1824,7 +2199,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             />
                                             {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].bankName && (
                                                 <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <MdError size={16} /> {errors.bankErrors[index].bankName}
+                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].bankName}
                                                 </div>
                                             )}
 
@@ -1848,7 +2223,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             />
                                             {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].ifscCode && (
                                                 <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <MdError size={16} /> {errors.bankErrors[index].ifscCode}
+                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].ifscCode}
                                                 </div>
                                             )}
                                         </div>
@@ -1864,7 +2239,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             />
                                             {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].swiftCode && (
                                                 <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <MdError size={16} /> {errors.bankErrors[index].swiftCode}
+                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].swiftCode}
                                                 </div>
                                             )}
 
@@ -1884,7 +2259,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
                                             {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].bankAddress1 && (
                                                 <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <MdError size={16} /> {errors.bankErrors[index].bankAddress1}
+                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].bankAddress1}
                                                 </div>
                                             )}
                                         </div>
@@ -1919,11 +2294,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 onChange={(e) => handleBankingChange(index, 'bankCountry', e.target.value)}
                                                 className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                                 <option value="">Select Bank Country</option>
+                                                <option value="India">India</option>
                                                 <option value="United States">United States</option>
                                                 <option value="Canada">Canada</option>
                                                 <option value="United Kingdom">United Kingdom</option>
                                                 <option value="Australia">Australia</option>
-                                                <option value="India">India</option>
+
 
                                             </select>
                                         </div>
@@ -1959,10 +2335,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     </div>
 
 
-                                    <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3'>
+                                    <div className='grid md:grid-cols-2 sm:grid-cols-2 gap-3 mt-1'>
 
 
-                                        <div className='mb-2  items-center col-span-8'>
+                                        <div className='mb-2  items-center '>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Bank Account Number with Intermediary </label>
 
                                             <input
@@ -1975,9 +2351,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             />
                                         </div>
 
-                                    </div>
-                                    <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3'>
-                                        <div className='mb-2 items-center col-span-7 '>
+
+                                        <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IBAN (International Bank Account Number) </label>
                                             <input
 

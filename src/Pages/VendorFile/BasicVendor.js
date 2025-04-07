@@ -4,7 +4,7 @@ import AddressVendor from "./AddressVendor";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_VENDOR_ID } from "../../Utils/Constant";
+import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_VENDOR_ID, RESET_CODE, GET_MASTER_SAGA } from "../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
 
 
@@ -27,8 +27,10 @@ function BasicVendor({ handleClose, vendorDetails }) {
     const [designation, setDesignation] = useState("");
     const [gstVat, setGstVat] = useState("");
     const [loading, setLoading] = useState(false)
+    const [surName, setSurName] = useState("")
+    const [countryCode, setCountryCode] = useState("")
     const [additionalContacts, setAdditionalContacts] = useState([
-        { name: "", contactNumber: "", email: "", designation: "" }
+        // { name: "", contactNumber: "", email: "", designation: "" }
     ]);
     const [formErrors, setFormErrors] = useState({});
     const [basicDetails, setBasicDetails] = useState('')
@@ -67,6 +69,22 @@ function BasicVendor({ handleClose, vendorDetails }) {
         }
 
     };
+
+
+    const handleSurNameChange = (e) => {
+        const value = e.target.value;
+        setSurName(value);
+        setFormErrors((prevErrors) => ({ ...prevErrors, surName: "" }));
+    }
+
+
+    const handleCountryCodeChange = (e) => {
+        const value = e.target.value;
+        setCountryCode(value);
+        setFormErrors((prevErrors) => ({ ...prevErrors, countryCode: "" }));
+    }
+
+
 
     const handleContactPersonChange = (e) => {
         const value = e.target.value;
@@ -151,19 +169,6 @@ function BasicVendor({ handleClose, vendorDetails }) {
         return Object.keys(errors).length === 0;
     };
 
-    useEffect(() => {
-        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-            setLoading(false)
-        }
-    }, [state.Common?.successCode, state.Common?.code]);
-
-
-    useEffect(() => {
-        if (state.Common.IsVisible === 1) {
-            navigate('/vendor')
-        }
-
-    }, [state.Common.IsVisible])
 
 
 
@@ -231,7 +236,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
     const addContact = () => {
         setAdditionalContacts([
             ...additionalContacts,
-            { id: additionalContacts.length + 1, name: "", contactNumber: "", email: "", designation: "" }
+            { id: additionalContacts.length + 1, surName: "", name: "", countryCode: "", contactNumber: "", email: "", designation: "" }
         ]);
 
     };
@@ -254,6 +259,9 @@ function BasicVendor({ handleClose, vendorDetails }) {
             }
         } else if (field === "email") {
             updatedContacts[index][field] = value.toLowerCase();
+        } else {
+
+            updatedContacts[index][field] = value;
         }
 
         setAdditionalContacts(updatedContacts);
@@ -266,7 +274,40 @@ function BasicVendor({ handleClose, vendorDetails }) {
     ];
 
     const handleTabClick = (id) => {
-        setActiveTab(id);
+
+        if (id === 2 || id === 3) {
+            if (validateForm()) {
+
+                const formattedAdditionalContacts = additionalContacts.map(contact => ({
+                    name: contact.name,
+                    contactNumber: Number(contact.contactNumber),
+                    contactEmail: contact.email,
+                    designation: contact.designation
+                }));
+
+
+                const payload = {
+                    vendor_id: '',
+                    businessName: businessName,
+                    contactPersonName: contactPerson,
+                    contactNumber: contactNumber,
+                    emailId: email,
+                    designation: designation,
+                    gstvat: gstVat,
+                    additionalContactInfo: formattedAdditionalContacts,
+
+
+                }
+
+                setBasicDetails(payload)
+
+
+                setActiveTab(id);
+            }
+
+        } else {
+            setActiveTab(id);
+        }
     };
 
     useEffect(() => {
@@ -308,6 +349,40 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
     }, [state.Common.successCode])
 
+
+    useEffect(() => {
+        dispatch({ type: GET_MASTER_SAGA })
+    }, [])
+
+
+
+
+
+    useEffect(() => {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 5000)
+        }
+    }, [state.Common?.successCode, state.Common?.code]);
+
+
+    useEffect(() => {
+        if (state.Common.IsVisible === 1) {
+            navigate('/vendor')
+        }
+
+    }, [state.Common.IsVisible])
+
+
+
+
+
+
+
+
+
     return (
         <div className="bg-blueGray-100  w-full">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4 relative">
@@ -324,9 +399,9 @@ function BasicVendor({ handleClose, vendorDetails }) {
                     <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">
                         {tabs.map((tab) => (
                             <button
-                                key={tab.id} disabled
+                                key={tab.id}
                                 className={`px-4 py-2 font-Gilroy  md:px-6 lg:px-8 text-base
-          ${activeTab === tab.id
+                                 ${activeTab === tab.id
                                         ? "border-b-4 border-[#205DA8] text-[#205DA8] font-semibold text-base"
                                         : "text-gray-500 border-neutral-100 border-b-4 text-base"
                                     } transition-all duration-300 text-left sm:text-center`}
@@ -376,14 +451,28 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                         <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
                                             Contact Person<span className='text-red-500'>*</span>
                                         </label>
-                                        <input
-                                            id="contactPerson"
-                                            value={contactPerson}
-                                            onChange={handleContactPersonChange}
-                                            type="text"
-                                            placeholder="Enter Contact Person Name"
-                                            className="px-3 py-3 border w-full rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
-                                        />
+                                        <div className="flex">
+                                            <select
+                                                value={surName}
+                                                onChange={handleSurNameChange}
+                                                className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                            >
+                                                <option value="" >Select</option>
+                                                {state.settings?.titles?.map((title) => (
+                                                    <option key={title.id} value={title.name}>
+                                                        {title.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <input
+                                                id="contactPerson"
+                                                value={contactPerson}
+                                                onChange={handleContactPersonChange}
+                                                type="text"
+                                                placeholder="Enter Contact Person Name"
+                                                className="px-3 py-3 border w-full border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+                                            />
+                                        </div>
                                         {formErrors.contactPerson && (
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.contactPerson} </p>)}
@@ -392,14 +481,30 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact  Number<span className='text-red-500'>*</span> </label>
-                                        <input
 
-                                            type='text'
-                                            value={contactNumber}
-                                            onChange={handleContactNumberChange}
-                                            placeholder='Enter Contact  Number'
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
+                                        <div className="flex">
+                                            <select
+                                                value={countryCode}
+                                                onChange={handleCountryCodeChange}
+                                                className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                            >
+                                                <option value="">Select</option>
+                                                {state.settings?.countryCode?.map((item) => (
+                                                    <option key={item.id} value={item.phone}>
+                                                        {item.phone}
+                                                    </option>
+                                                ))}
+
+                                            </select>
+
+                                            <input
+                                                type='text'
+                                                value={contactNumber}
+                                                onChange={handleContactNumberChange}
+                                                placeholder='Enter Contact  Number'
+                                                className='w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl  focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                        </div>
                                         {formErrors.contactNumber && (
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.contactNumber} </p>)}
@@ -446,89 +551,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.gstVat} </p>)}
                                     </div>
-                                    {/* <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN </label>
-                                        <input
 
-                                            type='text'
-                                            value={cin}
-                                            onChange={handleCinChange}
-                                            placeholder='Enter CIN'
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                        {formErrors.cin && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.cin} </p>)}
-                                    </div>
-                                    <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  </label>
-                                        <input
-
-                                            type='text'
-                                            value={pan}
-                                            onChange={handlePanChange}
-                                            placeholder='Enter PAN'
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                        {formErrors.pan && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.pan} </p>)}
-                                    </div>
-                                    <div>
-                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN  </label>
-                                        <input
-
-                                            type='text'
-                                            value={tan}
-                                            onChange={handleTanChange}
-                                            placeholder='Enter TAN'
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                        {formErrors.tan && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.tan} </p>)}
-                                    </div>
-                                    <div className='mb-2 items-center'>
-                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                            Legal Status Firm 
-                                        </label>
-                                        <select
-                                            id='legalStatusFirm'
-                                            value={legal}
-                                            onChange={handleLegalChange}
-                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                        >
-                                            <option value="">Select Legal Status</option>
-                                            <option value="Sole Proprietorship">PRIVATE LIMITED</option>
-                                            <option value="Partnership">LLT _LOW LATENCY TRANSSPORT</option>
-                                            <option value="LLC">PARTNERSHIP</option>
-                                            <option value="Corporation">PROPRIETORSHIP</option>
-                                        </select>
-                                        {formErrors.legal && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.legal} </p>)}
-                                    </div>
-                                    <div className='mb-2 items-center'>
-                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                            Nature of Business 
-                                        </label>
-                                        <select
-                                            id='natureOfBusiness'
-                                            value={nature}
-                                            onChange={handleNatureChange}
-                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                        >
-                                            <option value="">Select Business Type</option>
-                                            <option value="Retail">Retail</option>
-                                            <option value="Manufacturing">Manufacturing</option>
-                                            <option value="Service">Service</option>
-                                            <option value="IT & Software">IT & Software</option>
-                                            <option value="Healthcare">Healthcare</option>
-                                        </select>
-                                        {formErrors.nature && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.nature} </p>)}
-                                    </div> */}
 
 
                                 </div>
@@ -546,13 +569,27 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                     <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
                                                         Contact Person Name<span className="text-red-500 ">*</span>
                                                     </label>
-                                                    <input
-                                                        type="text"
-                                                        value={contact.name}
-                                                        onChange={(e) => handleAdditionalContactChange(index, "name", e.target.value)}
-                                                        placeholder="Enter Contact Person Name"
-                                                        className="px-3 py-3 w-full font-Gilroy border rounded-xl focus:outline-none"
-                                                    />
+                                                    <div className="flex">
+                                                        <select
+                                                            value={contact.surName}
+                                                            onChange={(e) => handleAdditionalContactChange(index, "surName", e.target.value)}
+                                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                        >
+                                                            <option value="" className="font-Gilroy text-neutral-800 " >Select</option>
+                                                            {state.settings?.titles?.map((title) => (
+                                                                <option key={title.id} value={title.name}>
+                                                                    {title.name}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                        <input
+                                                            type="text"
+                                                            value={contact.name}
+                                                            onChange={(e) => handleAdditionalContactChange(index, "name", e.target.value)}
+                                                            placeholder="Enter Contact Person Name"
+                                                            className="px-3 py-3 w-full  border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl  font-Gilroy border  focus:outline-none"
+                                                        />
+                                                    </div>
                                                     {formErrors[`additionalName${index}`] && (
                                                         <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                             <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalName${index}`]} </p>
@@ -563,13 +600,29 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                     <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
                                                         Contact Number <span className="text-red-500">*</span>
                                                     </label>
-                                                    <input
-                                                        type="text"
-                                                        value={contact.contactNumber}
-                                                        onChange={(e) => handleAdditionalContactChange(index, "contactNumber", e.target.value)}
-                                                        placeholder="Enter Contact Number"
-                                                        className="px-3 py-3 font-Gilroy w-full border rounded-xl focus:outline-none"
-                                                    />
+                                                    <div className="flex">
+                                                        <select
+                                                            value={contact.countryCode}
+                                                            onChange={(e) => handleAdditionalContactChange(index, "countryCode", e.target.value)}
+                                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                        >
+                                                            <option value="">Select</option>
+                                                            {state.settings?.countryCode?.map((item) => (
+                                                                <option key={item.id} value={item.phone}>
+                                                                    {item.phone}
+                                                                </option>
+                                                            ))}
+
+                                                        </select>
+
+                                                        <input
+                                                            type="text"
+                                                            value={contact.contactNumber}
+                                                            onChange={(e) => handleAdditionalContactChange(index, "contactNumber", e.target.value)}
+                                                            placeholder="Enter Contact Number"
+                                                            className="px-3 py-3 font-Gilroy w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl rounded-xl focus:outline-none"
+                                                        />
+                                                    </div>
                                                     {formErrors[`additionalContactNumber${index}`] && (
                                                         <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                             <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalContactNumber${index}`]} </p>
@@ -612,7 +665,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                     ))}
 
                                     {
-                                        additionalContacts.length < 2 &&
+                                        additionalContacts.length < 10 &&
 
                                         <div className="mt-4">
                                             <button
@@ -646,7 +699,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
 
                         </div>}
                     {activeTab === 2 && <div> <AddressVendor handleBack={handleBackBasic} handleNextToBank={handleNextToBank} vendorDetails={vendorDetails} addressDetails={addressDetails} /></div>}
-                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} payload={payload} vendorDetail={vendorDetails} addressDetails={addressDetails} /></div>}
+                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} payload={payload} vendorDetail={vendorDetails} addressDetails={addressDetails} contactPerson={contactPerson} /></div>}
                 </div>
             </div>
         </div>

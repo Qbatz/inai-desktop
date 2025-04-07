@@ -150,7 +150,7 @@ function CustomerDetails() {
                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.ifscCode}</p>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Bank Address</p>
+                                    <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Bank Address</p>
                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{`${bank.address1}, ${bank.address2}, ${bank.address3}`}</p>
                                 </div>
                                 <div>
@@ -211,8 +211,8 @@ function CustomerDetails() {
                             {
                                 customer?.address?.map(item => {
                                     return <div key={item.id}>
-                                    <h3 class="text-base font-semibold mb-2 font-Gilroy text-black">{item.addressType}</h3>
-                                    <div class="grid grid-cols-3  gap-4">
+                                    <h3 className="text-base font-semibold mb-2 font-Gilroy text-black">{item.addressType}</h3>
+                                    <div className="grid grid-cols-3  gap-4">
                                         <div>
                                         <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 1</p>
                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.doorNo || 'N/A'}</p>
@@ -220,18 +220,18 @@ function CustomerDetails() {
                                         </div>
         
                                         <div>
-                                        <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 2</p>
-                                    <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.street || 'N/A'}</p>
+                                        <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 2</p>
+                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.street || 'N/A'}</p>
         
                                         </div>
                                         <div>
-                                        <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 3</p>
-                                    <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.locality || 'N/A'}</p>
+                                        <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 3</p>
+                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.locality || 'N/A'}</p>
         
                                         </div>
                                         <div>
-                                        <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 4</p>
-                                     <p class="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.city || 'N/A'}</p>
+                                        <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 4</p>
+                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.city || 'N/A'}</p>
         
                                         </div>
                                         <div>

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { DELETE_CUSTOMER_SAGA, GET_CUSTOMER_LIST_SAGA, RESET_CODE } from '../../Utils/Constant'
+import PropTypes from 'prop-types'
 
 
 
@@ -75,6 +76,11 @@ function DeleteCustomer({ handleClose, deleteCustomerId }) {
             </div>
         </div>
     )
+}
+
+DeleteCustomer.propTypes = {
+    handleClose: PropTypes.func,
+    deleteCustomerId: PropTypes.any
 }
 
 export default DeleteCustomer

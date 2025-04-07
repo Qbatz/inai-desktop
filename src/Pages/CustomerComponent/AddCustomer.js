@@ -5,10 +5,11 @@ import { MdError } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 
 
-function AddCustomer({ handleClose, editCustomerDetails }) {
+function AddCustomer({ editCustomerDetails }) {
 
 
     const dispatch = useDispatch();
@@ -2016,4 +2017,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     )
 }
 
+AddCustomer.propTypes = {
+    editCustomerDetails: PropTypes.object
+}
 export default AddCustomer

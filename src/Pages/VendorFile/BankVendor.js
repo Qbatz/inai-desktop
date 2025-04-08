@@ -30,7 +30,7 @@ function BankVendor(props) {
   const [bankAddress2, setBankAddress2] = useState('');
   const [bankAddress3, setBankAddress3] = useState('');
   const [formErrors, setFormErrors] = useState({});
-
+const [rountingBankAddress, setRountingBankAddress]  = useState('')
 
 console.log("props",props)
 
@@ -40,7 +40,10 @@ console.log("props",props)
   }
     
 
-   
+   const handleRoutingBankAddressChange =(e)=>{
+    clearError("rountingBankAddress");
+    setRountingBankAddress(e.target.value)
+   }
 
     const  handleBeneficiaryCurrency = (e) => {
       clearError("beneficiaryCurrency");
@@ -645,11 +648,12 @@ console.log("props",props)
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               >
                 <option value="">Select Bank Country</option>
+                <option value="India">India</option>
                 <option value="United States">United States</option>
                 <option value="Canada">Canada</option>
                 <option value="United Kingdom">United Kingdom</option>
                 <option value="Australia">Australia</option>
-                <option value="India">India</option>
+                
               </select>
             </div>
 
@@ -679,12 +683,32 @@ console.log("props",props)
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
             </div>
+
+           
+
+
           </div>
 
 
           <div className='grid md:grid-cols-2 sm:grid-cols-2 gap-3 mt-1'>
        
+          <div className='mb-2 items-center'>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address</label>
 
+              <input
+                type='text'
+                value={rountingBankAddress}
+                onChange={handleRoutingBankAddressChange}
+                placeholder='Enter Bank Address 3'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+
+              {/* {formErrors.bankAddress3 && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress3}
+                </p>
+              )} */}
+            </div>
             <div className='mb-2  items-center '>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Bank Account Number with Intermediary Bank </label>
 

@@ -37,6 +37,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const [natureOfBusiness, setNatureOfBusiness] = useState([]);
 
+    console.log("errors", errors)
+
 
     const [contacts, setContacts] = useState([
         // { name: "", number: "", email: "", designation: "" }
@@ -165,18 +167,16 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const handleTabClick = (id) => {
         if (id === 2 || id === 3) {
-            const { tempErrors, contactErrors, isValid: isFormValid } = validateForm(formData, contacts, natureOfBusiness);
-
-
+            const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
 
             const finalErrors = {
                 ...tempErrors,
-                ...contactErrors,
+                contactErrors,
             };
 
             setErrors(finalErrors);
 
-            if (isFormValid) {
+            if (isValid) {
                 setValue(id);
             } else {
                 console.log("Validation failed. Fix the errors to proceed.");
@@ -434,7 +434,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const validateForm = (formData, contacts, natureOfBusiness) => {
         let tempErrors = {};
-        // let contactErrors = contacts.map(() => ({ name: "", number: "", email: "", designation: "" }));
+        let contactErrors = contacts.map(() => ({surName: "", name: "", countryCode:"",number: "", email: "", designation: "" }));
         let isValid = true;
 
 
@@ -443,7 +443,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false;
         }
         if (!formData.surName?.trim()) {
-            tempErrors.surName = "Sur Name is required";
+            tempErrors.surName = "Title is required";
             isValid = false;
         }
 
@@ -501,35 +501,47 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         }
 
 
-        // contacts.forEach((contact, index) => {
-        //     if (!contact.name.trim()) {
-        //         contactErrors[index].name = "Contact Name is required";
-        //         isValid = false;
-        //     }
-        //     if (!contact.number.trim()) {
-        //         contactErrors[index].number = "Contact Number is required";
-        //         isValid = false;
-        //     } else if (contact.number.length !== 10) {
-        //         contactErrors[index].number = "Contact Number must be 10 digits";
-        //         isValid = false;
-        //     } else if (!/^[0-9]*$/.test(contact.number)) {
-        //         contactErrors[index].number = "Contact Number must be Numbers";
-        //         isValid = false;
-        //     }
-        //     if (!contact.email) {
-        //         contactErrors[index].email = "Contact Email is required";
-        //         isValid = false;
-        //     } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
-        //         contactErrors[index].email = "Invalid Email format";
-        //         isValid = false;
-        //     }
-        //     if (!contact.designation.trim()) {
-        //         contactErrors[index].designation = "Contact Designation is required";
-        //         isValid = false;
-        //     }
-        // });
+        contacts.forEach((contact, index) => {
+            if (contact.name.trim()) {
 
-        return { tempErrors, isValid };
+                if (!contact?.surName?.trim()) {
+                    contactErrors[index].surName = "Title is required";
+                    isValid = false;
+                }
+
+                if (!contact.countryCode?.trim()) {
+                    contactErrors[index].countryCode = "Country Code is required";
+                    isValid = false;
+                }
+                if (!contact.number?.trim()) {
+                    contactErrors[index].number = "Contact Number is required";
+                    isValid = false;
+                } else if (contact.number.length !== 10) {
+                    contactErrors[index].number = "Contact Number must be 10 digits";
+                    isValid = false;
+                } else if (!/^[0-9]*$/.test(contact.number)) {
+                    contactErrors[index].number = "Contact Number must be Numbers";
+                    isValid = false;
+                }
+                if (!contact.email) {
+                    contactErrors[index].email = "Contact Email is required";
+                    isValid = false;
+                } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
+                    contactErrors[index].email = "Invalid Email format";
+                    isValid = false;
+                }
+
+
+
+
+                if (!contact.designation?.trim()) {
+                    contactErrors[index].designation = "Contact Designation is required";
+                    isValid = false;
+                }
+            }
+        });
+
+        return { tempErrors, contactErrors, isValid };
     };
 
 
@@ -537,10 +549,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const handleSaveAndExit = () => {
 
-        const { tempErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
+        const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
         setIsChanged('')
 
-        setErrors({ ...tempErrors, });
+        setErrors({ ...tempErrors, contactErrors });
 
         if (isValid) {
 
@@ -629,7 +641,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         }
 
         if (!formData.surName.trim()) {
-            tempErrors.surName = "Sur Name is required";
+            tempErrors.surName = "Title is required";
             isValid = false;
         }
 
@@ -666,6 +678,17 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
         contacts?.forEach((contact, index) => {
             let contactError = {};
+            if (contact.name.trim()) {
+
+                if (!contact?.surName?.trim()) {
+                    contactError.surName = "Title is required";
+                    isValid = false;
+                }
+
+                if (!contact.countryCode?.trim()) {
+                    contactError.countryCode = "Country Code is required";
+                    isValid = false;
+                }
             if (!contact.name?.trim()) contactError.name = "Contact Name is required";
             if (!contact.number?.trim()) {
                 contactError.number = "Contact Number is required";
@@ -683,6 +706,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 contactErrors[index] = contactError;
                 isValid = false;
             }
+        }
         });
 
 
@@ -845,7 +869,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     ifscCode: bank.ifscCode,
                     address1: bank.bankAddress1,
                     address2: bank.bankAddress2 || "",
-                    address3: bank.bankAddress || "",
+                    routing_bank_address: bank.bankAddress || "",
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
@@ -893,7 +917,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         }
 
         if (!formData.surName?.trim()) {
-            tempErrors.surName = "Sur Name is required";
+            tempErrors.surName = "Title is required";
             isValid = false;
         }
 
@@ -927,8 +951,18 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
         contacts?.forEach((contact, index) => {
             let contactError = {};
-            if (!contact.name?.trim()) contactError.name = "Contact Name is required";
-            if (!contact.number?.trim()) {
+            if (contact.name.trim()) {
+
+                if (!contact?.surName?.trim()) {
+                    contactError.surName = "Title is required";
+                    isValid = false;
+                }
+
+                if (!contact.countryCode?.trim()) {
+                    contactError.countryCode = "Country Code is required";
+                    isValid = false;
+                }
+                        if (!contact.number?.trim()) {
                 contactError.number = "Contact Number is required";
             } else if (contact.number.length !== 10 || !/^[0-9]*$/.test(contact.number)) {
                 contactError.number = "Contact Number must be 10 digits and contain only numbers";
@@ -944,6 +978,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 contactErrors[index] = contactError;
                 isValid = false;
             }
+        }
         });
 
 
@@ -1038,7 +1073,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     ifscCode: bank.ifscCode,
                     address1: bank.bankAddress1,
                     address2: bank.bankAddress2 || "",
-                    address3: bank.bankAddress || "",
+                    routing_bank_address: bank.bankAddress || "",
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
@@ -1308,7 +1343,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                             <InfoCircle size={16} color="#DC2626" />
                                             <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                Sur Name & Contact Name is required
+                                                Title & Contact Name is required
                                             </span>
                                         </div>
                                     ) : (
@@ -1598,12 +1633,29 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                         className="px-3 py-3 w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                                     />
                                                 </div>
-                                                {errors.contactErrors?.[index]?.name && (
+                                                {errors.contactErrors?.[index]?.surName && errors.contactErrors?.[index]?.name ? (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                         <InfoCircle size={16} color="#DC2626" />
-                                                        <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].name}</p>
+                                                        <p>Title & Name is required</p>
                                                     </div>
+                                                ) : (
+                                                    <>
+                                                        {errors.contactErrors?.[index]?.surName && (
+                                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                <InfoCircle size={16} color="#DC2626" />
+                                                                <p>{errors.contactErrors[index].surName}</p>
+                                                            </div>
+                                                        )}
+
+                                                        {errors.contactErrors?.[index]?.name && (
+                                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                <InfoCircle size={16} color="#DC2626" />
+                                                                <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].name}</p>
+                                                            </div>
+                                                        )}
+                                                    </>
                                                 )}
+
                                             </div>
 
                                             <div>
@@ -1634,12 +1686,30 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                         className="w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                                     />
                                                 </div>
-                                                {errors.contactErrors?.[index]?.number && (
+
+                                                {errors.contactErrors?.[index]?.countryCode && errors.contactErrors?.[index]?.number ? (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                         <InfoCircle size={16} color="#DC2626" />
-                                                        <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].number}</p>
+                                                        <p>Country code & Number is required</p>
                                                     </div>
+                                                ) : (
+                                                    <>
+                                                        {errors.contactErrors?.[index]?.countryCode && (
+                                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                <InfoCircle size={16} color="#DC2626" />
+                                                                <p>{errors.contactErrors[index].countryCode}</p>
+                                                            </div>
+                                                        )}
+
+                                                        {errors.contactErrors?.[index]?.number && (
+                                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                <InfoCircle size={16} color="#DC2626" />
+                                                                <p>{errors.contactErrors[index].number}</p>
+                                                            </div>
+                                                        )}
+                                                    </>
                                                 )}
+
                                             </div>
 
                                             <div>
@@ -1970,37 +2040,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                         <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                         <option value="Assam">Assam</option>
                                         <option value="Bihar">Bihar</option>
-                                        <option value="Chhattisgarh">Chhattisgarh</option>
-                                        <option value="Goa">Goa</option>
-                                        <option value="Gujarat">Gujarat</option>
-                                        <option value="Haryana">Haryana</option>
-                                        <option value="Himachal Pradesh">Himachal Pradesh</option>
-                                        <option value="Jharkhand">Jharkhand</option>
-                                        <option value="Karnataka">Karnataka</option>
-                                        <option value="Kerala">Kerala</option>
-                                        <option value="Madhya Pradesh">Madhya Pradesh</option>
-                                        <option value="Maharashtra">Maharashtra</option>
-                                        <option value="Manipur">Manipur</option>
-                                        <option value="Meghalaya">Meghalaya</option>
-                                        <option value="Mizoram">Mizoram</option>
-                                        <option value="Nagaland">Nagaland</option>
-                                        <option value="Odisha">Odisha</option>
-                                        <option value="Punjab">Punjab</option>
-                                        <option value="Rajasthan">Rajasthan</option>
-                                        <option value="Sikkim">Sikkim</option>
-                                        <option value="Telangana">Telangana</option>
-                                        <option value="Tripura">Tripura</option>
-                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
-                                        <option value="Uttarakhand">Uttarakhand</option>
-                                        <option value="West Bengal">West Bengal</option>
-                                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                                        <option value="Chandigarh">Chandigarh</option>
-                                        <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
-                                        <option value="Delhi">Delhi</option>
-                                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                                        <option value="Ladakh">Ladakh</option>
-                                        <option value="Lakshadweep">Lakshadweep</option>
-                                        <option value="Puducherry">Puducherry</option>
+                                        
 
                                     </select>
                                     {errors.shipstate && (
@@ -2275,18 +2315,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                         </div>
-                                        <div className='mb-2 items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 3</label>
-                                            <input
-
-                                                type='text'
-                                                placeholder='Enter Bank Address 3'
-                                                value={bankDetails.bankAddress}
-                                                onChange={(e) => handleBankingChange(index, 'bankAddress', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-
-                                        </div>
+                                      
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Country </label>
                                             <select
@@ -2329,7 +2358,18 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                             />
                                         </div>
 
+                                        <div className='mb-2 items-center '>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address </label>
+                                            <input
 
+                                                type='text'
+                                                placeholder='Enter Bank Address'
+                                                value={bankDetails.bankAddress}
+                                                onChange={(e) => handleBankingChange(index, 'bankAddress', e.target.value)}
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+
+                                        </div>
 
 
                                     </div>

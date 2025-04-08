@@ -17,7 +17,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
     const state = useSelector(state => state)
 
     const navigate = useNavigate()
-
+    const [initialValues, setInitialValues] = useState(null);
     const [payload, setPayload] = useState(null);
     const [activeTab, setActiveTab] = useState(1);
     const [businessName, setBusinessName] = useState("");
@@ -133,47 +133,86 @@ function BasicVendor({ handleClose, vendorDetails }) {
     const validateForm = () => {
         let errors = {};
 
-        if (!businessName.trim()) errors.businessName = "Business Name is required";
-        if (!contactPerson.trim()) errors.contactPerson = "Contact Person is required";
-        if (!contactNumber.trim() || !/^\d{10}$/.test(contactNumber))
+        if (!businessName?.trim()) errors.businessName = "Business Name is required";
+        if (!surName?.trim()) errors.surName = "Title is required";
+        if (!contactPerson?.trim()) errors.contactPerson = "Contact Person is required";
+        if (!countryCode?.trim()) errors.countryCode = "countryCode is required";
+        if (!contactNumber?.trim() || !/^\d{10}$/.test(contactNumber))
             errors.contactNumber = "Enter a valid 10-digit Contact Number";
-        if (!email.trim()) {
+        if (!email?.trim()) {
             errors.email = "Email is required";
         } else {
             const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
             if (!emailRegex.test(email)) errors.email = "Invalid Email format";
         }
-        if (!designation.trim()) errors.designation = "Designation is required";
-        if (!gstVat.trim()) errors.gstVat = "GST/VAT is required";
+        if (!designation?.trim()) errors.designation = "Designation is required";
+        if (!gstVat?.trim()) errors.gstVat = "GST/VAT is required";
 
-        additionalContacts.forEach((contact, index) => {
-            if (!contact.name.trim()) errors[`additionalName${index}`] = `Name is required`;
+        additionalContacts?.forEach((contact, index) => {
+            const hasName = contact.name?.trim();
 
-            if (!contact.contactNumber.trim() || !/^\d{10}$/.test(contact.contactNumber)) {
-                errors[`additionalContactNumber${index}`] = `Enter a valid 10-digit Contact Number`;
-            }
+            if (hasName) {
 
-            if (!contact.email.trim()) {
-                errors[`additionalEmail${index}`] = `Email is required`;
-            } else {
-                const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
-                if (!emailRegex.test(contact.email)) {
-                    errors[`additionalEmail${index}`] = `Invalid Email format`;
+                if (!contact.surName?.trim()) {
+                    errors[`additionalSurName${index}`] = `Title is required`;
                 }
-            }
 
-            if (!contact.designation.trim()) errors[`additionalDesignation${index}`] = `Designation is required`;
+                if (!contact.contactNumber?.trim() || !/^\d{10}$/.test(contact.contactNumber)) {
+                    errors[`additionalContactNumber${index}`] = `Enter a valid 10-digit Contact Number`;
+                }
+
+
+                if (!contact.countryCode?.trim()) {
+                    errors[`additionalCountryCode${index}`] = `Country code is required`;
+                }
+
+                if (!contact.email?.trim()) {
+                    errors[`additionalEmail${index}`] = `Email is required`;
+                } else {
+                    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
+                    if (!emailRegex.test(contact.email)) {
+                        errors[`additionalEmail${index}`] = `Invalid Email format`;
+                    }
+                }
+
+
+                if (!contact.designation?.trim()) {
+                    errors[`additionalDesignation${index}`] = `Designation is required`;
+                }
+            } else {
+
+            }
         });
+
 
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
     };
 
 
+    console.log("formError", formErrors)
 
+
+
+    // basic info save & click button
 
     const handleSaveClick = () => {
+        const current = {
+            businessName,
+            contactPerson,
+            contactNumber,
+            email,
+            designation,
+            gstVat,
+            additionalContacts
+        };
 
+        const isChanged = JSON.stringify(current) !== JSON.stringify(initialValues);
+
+        if (!isChanged) {
+            setFormErrors({ general: "No changes detected" });
+            return;
+        }
         if (validateForm()) {
 
             const formattedAdditionalContacts = additionalContacts.map(contact => ({
@@ -202,7 +241,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
     };
 
 
-
+    //  next button
     const handleNextClick = () => {
         if (validateForm()) {
 
@@ -310,27 +349,36 @@ function BasicVendor({ handleClose, vendorDetails }) {
         }
     };
 
+
+
     useEffect(() => {
         if (vendorDetails) {
-            setBusinessName(vendorDetails.businessName || '');
-            setContactPerson(vendorDetails.contactPersonName || '');
-            setContactNumber(vendorDetails.contactNumber || '');
-            setEmail(vendorDetails.emailId || '');
-            setDesignation(vendorDetails.designation || '');
-            setGstVat(vendorDetails.gstvat || '');
-
-            setAdditionalContacts(
-                (vendorDetails.additionalContactInfo || []).map((item) => ({
+            const initial = {
+                businessName: vendorDetails.businessName || '',
+                contactPerson: vendorDetails.contactPersonName || '',
+                contactNumber: vendorDetails.contactNumber || '',
+                email: vendorDetails.emailId || '',
+                designation: vendorDetails.designation || '',
+                gstVat: vendorDetails.gstvat || '',
+                additionalContacts: (vendorDetails.additionalContactInfo || []).map((item) => ({
                     name: item.name || "",
                     contactNumber: item.contactNumber || "",
                     email: item.contactEmail || "",
                     designation: item.designation || ""
                 }))
-            );
+            };
 
-
+            setBusinessName(initial.businessName);
+            setContactPerson(initial.contactPerson);
+            setContactNumber(initial.contactNumber);
+            setEmail(initial.email);
+            setDesignation(initial.designation);
+            setGstVat(initial.gstVat);
+            setAdditionalContacts(initial.additionalContacts);
+            setInitialValues(initial);
         }
     }, [vendorDetails]);
+
 
     useEffect(() => {
         if (state.Common.successCode === 200) {
@@ -413,6 +461,11 @@ function BasicVendor({ handleClose, vendorDetails }) {
                     </div>
                 </div>
 
+                {formErrors.general && (
+                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.general}
+                    </p>
+                )}
 
                 {
                     state.Common.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
@@ -473,6 +526,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                 className="px-3 py-3 border w-full border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                             />
                                         </div>
+
                                         {formErrors.contactPerson && (
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.contactPerson} </p>)}
@@ -491,7 +545,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                 <option value="">Select</option>
                                                 {state.settings?.countryCode?.map((item) => (
                                                     <option key={item.id} value={item.phone}>
-                                                        {item.phone}
+                                                        {item.phone || 91}
                                                     </option>
                                                 ))}
 
@@ -505,9 +559,22 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                 className='w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl  focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                         </div>
-                                        {formErrors.contactNumber && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.contactNumber} </p>)}
+                                        {
+                                            formErrors.countryCode && formErrors.contactNumber ? (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> Country Code and Contact Number are required
+                                                </p>
+                                            ) : formErrors.countryCode ? (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.countryCode}
+                                                </p>
+                                            ) : formErrors.contactNumber ? (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.contactNumber}
+                                                </p>
+                                            ) : null
+                                        }
+
                                     </div>
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID <span className='text-red-500'>*</span> </label>
@@ -590,10 +657,23 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                             className="px-3 py-3 w-full  border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl  font-Gilroy border  focus:outline-none"
                                                         />
                                                     </div>
-                                                    {formErrors[`additionalName${index}`] && (
-                                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalName${index}`]} </p>
-                                                    )}
+
+                                                    {
+                                                        formErrors[`additionalName${index}`] && formErrors[`additionalSurName${index}`] ? (
+                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                                <span><InfoCircle size="14" color="#DC2626" /></span> Title and Name are required
+                                                            </p>
+                                                        ) : formErrors[`additionalName${index}`] ? (
+                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalName${index}`]}
+                                                            </p>
+                                                        ) : formErrors[`additionalSurName${index}`] ? (
+                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalSurName${index}`]}
+                                                            </p>
+                                                        ) : null
+                                                    }
+
                                                 </div>
 
                                                 <div>
@@ -609,7 +689,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                             <option value="">Select</option>
                                                             {state.settings?.countryCode?.map((item) => (
                                                                 <option key={item.id} value={item.phone}>
-                                                                    {item.phone}
+                                                                    {item.phone || 91}
                                                                 </option>
                                                             ))}
 
@@ -623,10 +703,22 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                             className="px-3 py-3 font-Gilroy w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl rounded-xl focus:outline-none"
                                                         />
                                                     </div>
-                                                    {formErrors[`additionalContactNumber${index}`] && (
-                                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalContactNumber${index}`]} </p>
-                                                    )}
+                                                    {
+                                                        formErrors[`additionalContactNumber${index}`] && formErrors[`additionalCountryCode${index}`] ? (
+                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                                <span><InfoCircle size="14" color="#DC2626" /></span> Country Code and Contact Number are required
+                                                            </p>
+                                                        ) : formErrors[`additionalContactNumber${index}`] ? (
+                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalContactNumber${index}`]}
+                                                            </p>
+                                                        ) : formErrors[`additionalCountryCode${index}`] ? (
+                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalCountryCode${index}`]}
+                                                            </p>
+                                                        ) : null
+                                                    }
+
                                                 </div>
                                                 <div>
                                                     <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">

@@ -434,7 +434,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
     const validateForm = (formData, contacts, natureOfBusiness) => {
         let tempErrors = {};
-        let contactErrors = contacts.map(() => ({surName: "", name: "", countryCode:"",number: "", email: "", designation: "" }));
+        let contactErrors = contacts.map(() => ({ surName: "", name: "", countryCode: "", number: "", email: "", designation: "" }));
         let isValid = true;
 
 
@@ -442,7 +442,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             tempErrors.businessName = "Business Name is required";
             isValid = false;
         }
-        if (!formData.surName?.trim()) {
+        if (!formData.surName) {
             tempErrors.surName = "Title is required";
             isValid = false;
         }
@@ -459,7 +459,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false;
         }
 
-        if (!formData.countryCode?.trim()) {
+        if (!formData.countryCode) {
             tempErrors.countryCode = "CountryCode is required";
             isValid = false;
         }
@@ -504,12 +504,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         contacts.forEach((contact, index) => {
             if (contact.name.trim()) {
 
-                if (!contact?.surName?.trim()) {
+                if (!contact?.surName) {
                     contactErrors[index].surName = "Title is required";
                     isValid = false;
                 }
 
-                if (!contact.countryCode?.trim()) {
+                if (!contact.countryCode) {
                     contactErrors[index].countryCode = "Country Code is required";
                     isValid = false;
                 }
@@ -558,9 +558,9 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
             const AddPayload = {
                 businessName: formData.businessName,
-                surName: formData.surName,
+                title: formData.surName,
+                country_code: formData.countryCode,
                 contactPerson: formData.contactPerson,
-                countryCode: formData.countryCode,
                 contactNumber: formData.contactNumber,
                 emailId: formData.emailId,
                 designation: formData.designation,
@@ -569,9 +569,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: natureOfBusiness,
+                natureOfBusiness: 1,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
+                    title: contact.surName,
+                    country_code: contact.countryCode,
                     contactNumber: contact.number,
                     contactEmail: contact.email,
                     designation: contact.designation
@@ -583,8 +585,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             const EditPayload = {
                 clientId: editCustomerDetails?.clientId || "",
                 businessName: formData.businessName,
-                contactPerson: `${formData.surName}${formData.contactPerson}`.trim(),
-                contactNumber: `${formData.countryCode}${formData.contactNumber}`,
+                title: formData.surName,
+                country_code: formData.countryCode,
+                contactPerson: formData.contactPerson,
+                contactNumber: formData.contactNumber,
                 emailId: formData.emailId,
                 designation: formData.designation,
                 gstVat: formData.gstVat,
@@ -592,9 +596,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: natureOfBusiness,
+                natureOfBusiness: 1,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
+                    title: contact.surName,
+                    country_code: contact.countryCode,
                     contactNumber: contact.number,
                     contactEmail: contact.email,
                     designation: contact.designation
@@ -640,7 +646,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false;
         }
 
-        if (!formData.surName.trim()) {
+        if (!formData.surName) {
             tempErrors.surName = "Title is required";
             isValid = false;
         }
@@ -658,7 +664,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false;
         }
 
-        if (!formData.countryCode.trim()) {
+        if (!formData.countryCode) {
             tempErrors.countryCode = "CountryCode is required";
             isValid = false;
         }
@@ -680,33 +686,33 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             let contactError = {};
             if (contact.name.trim()) {
 
-                if (!contact?.surName?.trim()) {
+                if (!contact?.surName) {
                     contactError.surName = "Title is required";
                     isValid = false;
                 }
 
-                if (!contact.countryCode?.trim()) {
+                if (!contact.countryCode) {
                     contactError.countryCode = "Country Code is required";
                     isValid = false;
                 }
-            if (!contact.name?.trim()) contactError.name = "Contact Name is required";
-            if (!contact.number?.trim()) {
-                contactError.number = "Contact Number is required";
-            } else if (contact.number.length !== 10 || !/^[0-9]*$/.test(contact.number)) {
-                contactError.number = "Contact Number must be 10 digits and contain only numbers";
-            }
-            if (!contact.email?.trim()) {
-                contactError.email = "Contact Email is required";
-            } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
-                contactError.email = "Invalid Email format";
-            }
-            if (!contact.designation?.trim()) contactError.designation = "Contact Designation is required";
+                if (!contact.name?.trim()) contactError.name = "Contact Name is required";
+                if (!contact.number?.trim()) {
+                    contactError.number = "Contact Number is required";
+                } else if (contact.number.length !== 10 || !/^[0-9]*$/.test(contact.number)) {
+                    contactError.number = "Contact Number must be 10 digits and contain only numbers";
+                }
+                if (!contact.email?.trim()) {
+                    contactError.email = "Contact Email is required";
+                } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
+                    contactError.email = "Invalid Email format";
+                }
+                if (!contact.designation?.trim()) contactError.designation = "Contact Designation is required";
 
-            if (Object.keys(contactError).length > 0) {
-                contactErrors[index] = contactError;
-                isValid = false;
+                if (Object.keys(contactError).length > 0) {
+                    contactErrors[index] = contactError;
+                    isValid = false;
+                }
             }
-        }
         });
 
 
@@ -748,8 +754,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             const AddPayload = {
 
                 businessName: formData.businessName,
-                contactPerson: `${formData.surName}${formData.contactPerson}`.trim(),
-                contactNumber: `${formData.countryCode}${formData.contactNumber}`,
+                title: formData.surName,
+                country_code: formData.countryCode,
+                contactPerson: formData.contactPerson,
+                contactNumber: formData.contactNumber,
                 emailId: formData.emailId,
                 designation: formData.designation,
                 gstVat: formData.gstVat,
@@ -757,9 +765,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: natureOfBusiness,
+                natureOfBusiness: 1,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
+                    title: contact.surName,
+                    country_code: contact.countryCode,
                     contactNumber: contact.number,
                     contactEmail: contact.email,
                     designation: contact.designation,
@@ -803,7 +813,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     ifscCode: bank.ifscCode,
                     address1: bank.bankAddress1,
                     address2: bank.bankAddress2 || "",
-                    address3: bank.bankAddress || "",
+                    routingBankAddress: bank.bankAddress || "",
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
@@ -817,8 +827,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             const EditPayload = {
                 clientId: editCustomerDetails?.clientId || "",
                 businessName: formData.businessName,
-                contactPerson: `${formData.surName}${formData.contactPerson}`.trim(),
-                contactNumber: `${formData.countryCode}${formData.contactNumber}`,
+                title: formData.surName,
+                country_code: formData.countryCode,
+                contactPerson: formData.contactPerson,
+                contactNumber: formData.contactNumber,
                 emailId: formData.emailId,
                 designation: formData.designation,
                 gstVat: formData.gstVat,
@@ -826,9 +838,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: natureOfBusiness,
+                natureOfBusiness: 1,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
+                    title: contact.surName,
+                    country_code: contact.countryCode,
                     contactNumber: contact.number,
                     contactEmail: contact.email,
                     designation: contact.designation,
@@ -869,7 +883,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     ifscCode: bank.ifscCode,
                     address1: bank.bankAddress1,
                     address2: bank.bankAddress2 || "",
-                    routing_bank_address: bank.bankAddress || "",
+                    routingBankAddress: bank.bankAddress || "",
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
@@ -916,7 +930,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             isValid = false;
         }
 
-        if (!formData.surName?.trim()) {
+        if (!formData.surName) {
             tempErrors.surName = "Title is required";
             isValid = false;
         }
@@ -932,7 +946,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             tempErrors.emailId = "Invalid Email format";
             isValid = false;
         }
-        if (!formData.countryCode?.trim()) {
+        if (!formData.countryCode) {
             tempErrors.countryCode = "CountryCode is required";
             isValid = false;
         }
@@ -953,32 +967,32 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             let contactError = {};
             if (contact.name.trim()) {
 
-                if (!contact?.surName?.trim()) {
+                if (!contact?.surName) {
                     contactError.surName = "Title is required";
                     isValid = false;
                 }
 
-                if (!contact.countryCode?.trim()) {
+                if (!contact.countryCode) {
                     contactError.countryCode = "Country Code is required";
                     isValid = false;
                 }
-                        if (!contact.number?.trim()) {
-                contactError.number = "Contact Number is required";
-            } else if (contact.number.length !== 10 || !/^[0-9]*$/.test(contact.number)) {
-                contactError.number = "Contact Number must be 10 digits and contain only numbers";
-            }
-            if (!contact.email?.trim()) {
-                contactError.email = "Contact Email is required";
-            } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
-                contactError.email = "Invalid Email format";
-            }
-            if (!contact.designation?.trim()) contactError.designation = "Contact Designation is required";
+                if (!contact.number?.trim()) {
+                    contactError.number = "Contact Number is required";
+                } else if (contact.number.length !== 10 || !/^[0-9]*$/.test(contact.number)) {
+                    contactError.number = "Contact Number must be 10 digits and contain only numbers";
+                }
+                if (!contact.email?.trim()) {
+                    contactError.email = "Contact Email is required";
+                } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
+                    contactError.email = "Invalid Email format";
+                }
+                if (!contact.designation?.trim()) contactError.designation = "Contact Designation is required";
 
-            if (Object.keys(contactError).length > 0) {
-                contactErrors[index] = contactError;
-                isValid = false;
+                if (Object.keys(contactError).length > 0) {
+                    contactErrors[index] = contactError;
+                    isValid = false;
+                }
             }
-        }
         });
 
 
@@ -1021,8 +1035,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             const EditPayload = {
                 clientId: editCustomerDetails?.clientId || "",
                 businessName: formData.businessName,
-                contactPerson: `${formData.surName}${formData.contactPerson}`.trim(),
-                contactNumber: `${formData.countryCode}${formData.contactNumber}`,
+                title: formData.surName,
+                country_code: formData.countryCode,
+                contactPerson: formData.contactPerson,
+                contactNumber: formData.contactNumber,
                 emailId: formData.emailId,
                 designation: formData.designation,
                 gstVat: formData.gstVat,
@@ -1030,9 +1046,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: natureOfBusiness,
+                natureOfBusiness: 1,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
+                    title: contact.surName,
+                    country_code: contact.countryCode,
                     contactNumber: contact.number,
                     contactEmail: contact.email,
                     designation: contact.designation,
@@ -1073,7 +1091,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                     ifscCode: bank.ifscCode,
                     address1: bank.bankAddress1,
                     address2: bank.bankAddress2 || "",
-                    routing_bank_address: bank.bankAddress || "",
+                    routingBankAddress: bank.bankAddress || "",
                     country: bank.bankCountry || "",
                     routingBank: bank.intermediaryRoutingBank || "",
                     swiftCode: bank.swiftCode || "",
@@ -1122,11 +1140,17 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         dispatch({ type: GET_MASTER_SAGA })
     }, [])
 
+
+console.log("editCustomerDetails",editCustomerDetails)
+
+
     useEffect(() => {
         if (editCustomerDetails) {
             const newFormData = {
                 businessName: editCustomerDetails.businessName || '',
+                surName:editCustomerDetails.title_id,                
                 contactPerson: editCustomerDetails.contactPerson || '',
+                countryCode:editCustomerDetails.country_code_id,
                 contactNumber: editCustomerDetails.contactNumber || '',
                 emailId: editCustomerDetails.emailId || '',
                 designation: editCustomerDetails.designation || '',
@@ -1147,11 +1171,16 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             setNatureOfBusiness(natureOfBusinessValue);
 
             const newContacts = (editCustomerDetails.additionalContactInfo || []).map((item) => ({
+                surName:item.title_id || '',
                 name: item.name || '',
+                countryCode: item.country_codeid || '',
                 number: item.contactNumber || '',
                 email: item.contactEmail || '',
                 designation: item.designation || '',
             }));
+
+
+            
 
             const newBankDetailsList = editCustomerDetails.bankDetails?.map(item => ({
                 beneficiaryCurrency: item.currency || "",
@@ -1162,20 +1191,24 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 swiftCode: item.swiftCode || "",
                 bankAddress1: item.address1 || "",
                 bankAddress2: item.address2 || "",
+                bankAddress: item.routingBankAddress || "",
                 bankCountry: item.country || "",
-                intermediaryRoutingBank: item.routingAccountIndusand || "",
-                intermediarySiftCode: item.routingSiftCode || "",
-                intermediaryAccountNumber: item.routingBank || "",
+                intermediaryRoutingBank: item.routingBank || "",
+                intermediarySiftCode: item.intermediary_swift_code || "",
+                intermediaryAccountNumber: item.routingAccountIndusand || "",
                 iban: item.iban || "",
             })) || [];
+
 
             const officeAddressData = editCustomerDetails.address?.find(addr => addr.addressType === "Office Address") || {};
             const newOfficeAddress = {
                 address1: officeAddressData.doorNo || '',
                 address2: officeAddressData.street || '',
                 address3: officeAddressData.locality || '',
-                // address4: officeAddressData.landMark || '',
+                address4: officeAddressData.address4 || '',
                 city: officeAddressData.city || '',
+                state: officeAddressData.state || '',
+                country: officeAddressData.country || '',
                 postalCode: officeAddressData.postalCode || '',
                 landmark: officeAddressData.landMark || '',
                 googleMap: officeAddressData.mapLink || ''
@@ -1186,8 +1219,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 address1: shippingAddressData.doorNo || '',
                 address2: shippingAddressData.street || '',
                 address3: shippingAddressData.locality || '',
-                // address4: shippingAddressData.landMark || '',
+                address4: shippingAddressData.address4 || '',
                 city: shippingAddressData.city || '',
+                state: shippingAddressData.state || '',
+                country: shippingAddressData.country || '',
                 postalCode: shippingAddressData.postalCode || '',
                 landmark: shippingAddressData.landMark || '',
                 googleMap: shippingAddressData.mapLink || ''
@@ -1320,11 +1355,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                         <select
                                             value={formData.surName}
                                             onChange={(e) => handleInputChange('surName', e.target.value)}
-                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px] "
                                         >
                                             <option value="" >Select</option>
                                             {state?.settings?.titles.map((title) => (
-                                                <option key={title.id} value={title.name}>
+                                                <option key={title.id} value={title.id} >
                                                     {title.name}
                                                 </option>
                                             ))}
@@ -1377,12 +1412,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                         <select
                                             value={formData.countryCode}
                                             onChange={(e) => handleInputChange('countryCode', e.target.value)}
-                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                         >
                                             <option value="">Select</option>
                                             {state.settings?.countryCode?.map((item) => (
-                                                <option key={item.id} value={item.phone}>
-                                                    {item.phone || 91}
+                                                <option key={item.id} value={item.id} className='text-neutral-500'>
+                                                    {item.phone}
                                                 </option>
                                             ))}
 
@@ -1548,7 +1583,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Legal Status of firm <span className='text-red-500'>*</span></label>
                                     <select
                                         value={formData.legalStatus}
-                                        onChange={(e) => handleInputChange('legalStatus', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        onChange={(e) => handleInputChange('legalStatus', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-500" >
                                         <option value="" selected>Select Legal Status of firm</option>
                                         <option value="PRIVATE LIMITED">PRIVATE LIMITED</option>
                                         <option value="LLT_LOW LATENCY TRANSSPORT">LLT_LOW LATENCY TRANSSPORT</option>
@@ -1615,11 +1650,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                     <select
                                                         value={contact.surName}
                                                         onChange={(e) => handleChange(index, 'surName', e.target.value)}
-                                                        className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                        className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                     >
                                                         <option value="">Select</option>
                                                         {state?.settings?.titles?.map((title) => (
-                                                            <option key={title.id} value={title.name}>
+                                                            <option key={title.id} value={title.id} className='text-neutral-500'>
                                                                 {title.name}
                                                             </option>
                                                         ))}
@@ -1667,12 +1702,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                     <select
                                                         value={contact.countryCode}
                                                         onChange={(e) => handleChange(index, 'countryCode', e.target.value)}
-                                                        className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                        className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                     >
                                                         <option value="">Select</option>
                                                         {state.settings?.countryCode?.map((item) => (
-                                                            <option key={item.id} value={item.phone}>
-                                                                {item.phone || 91}
+                                                            <option key={item.id} value={item.id} className='text-neutral-500'>
+                                                                {item.phone}
                                                             </option>
                                                         ))}
 
@@ -2040,7 +2075,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                         <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                         <option value="Assam">Assam</option>
                                         <option value="Bihar">Bihar</option>
-                                        
+
 
                                     </select>
                                     {errors.shipstate && (
@@ -2315,7 +2350,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                         </div>
-                                      
+
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Country </label>
                                             <select

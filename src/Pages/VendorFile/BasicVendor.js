@@ -508,7 +508,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                             <select
                                                 value={surName}
                                                 onChange={handleSurNameChange}
-                                                className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                             >
                                                 <option value="" >Select</option>
                                                 {state.settings?.titles?.map((title) => (
@@ -540,12 +540,12 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                             <select
                                                 value={countryCode}
                                                 onChange={handleCountryCodeChange}
-                                                className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                             >
                                                 <option value="">Select</option>
                                                 {state.settings?.countryCode?.map((item) => (
                                                     <option key={item.id} value={item.phone}>
-                                                        {item.phone || 91}
+                                                        {item.phone}
                                                     </option>
                                                 ))}
 
@@ -640,7 +640,7 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                         <select
                                                             value={contact.surName}
                                                             onChange={(e) => handleAdditionalContactChange(index, "surName", e.target.value)}
-                                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                         >
                                                             <option value="" className="font-Gilroy text-neutral-800 " >Select</option>
                                                             {state.settings?.titles?.map((title) => (
@@ -684,12 +684,12 @@ function BasicVendor({ handleClose, vendorDetails }) {
                                                         <select
                                                             value={contact.countryCode}
                                                             onChange={(e) => handleAdditionalContactChange(index, "countryCode", e.target.value)}
-                                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 w-[100px]"
+                                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                         >
                                                             <option value="">Select</option>
                                                             {state.settings?.countryCode?.map((item) => (
                                                                 <option key={item.id} value={item.phone}>
-                                                                    {item.phone || 91}
+                                                                    {item.phone}
                                                                 </option>
                                                             ))}
 

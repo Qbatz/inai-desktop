@@ -211,7 +211,7 @@ function CustomerDetails() {
                             {
                                 customer?.address?.map(item => {
                                     return <div key={item.id}>
-                                    <h3 class="text-base font-semibold mb-2 font-Gilroy text-black">{item.addressType === 1 ? 'Office Address' : 'Shipping Address'}</h3>
+                                    <h3 class="text-base font-semibold mb-2 font-Gilroy text-black">{item.addressType === "Office Address" ? 'Office Address' : 'Shipping Address'}</h3>
                                     <div class="grid grid-cols-3  gap-4">
                                         <div>
                                         <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 1</p>
@@ -256,7 +256,7 @@ function CustomerDetails() {
 
                         
 
-                        <hr className='mt-1 mb-[8px] border-1 border-[#E7E7E7] ' />
+                        {/* <hr className='mt-1 mb-[8px] border-1 border-[#E7E7E7] ' /> */}
 
                     </div>
                 </div>

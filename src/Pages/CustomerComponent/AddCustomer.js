@@ -116,6 +116,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     const [initialOfficeAddress, setInitialOfficeAddress] = useState(null);
     const [initialShippingAddress, setInitialShippingAddress] = useState(null);
     const [isChanged, setIsChanged] = useState('')
+    const [initialNatureOfBusiness, setInitialNatureOfBusiness] = useState([]);
 
 
 
@@ -156,14 +157,27 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
     const handleNatureOfBusinessChange = (value, isChecked) => {
-        if (isChecked) {
-            setNatureOfBusiness((prev) => [...prev, value]);
-        } else {
-            setNatureOfBusiness((prev) => prev.filter((item) => item !== value));
-        }
+        const stringValue = String(value);
 
-        setErrors(prevErrors => ({ ...prevErrors, natureOfBusiness: "" }));
+        setNatureOfBusiness((prev) => {
+            const prevArray = Array.isArray(prev) ? prev : [];
+            console.log("Prev array:", prevArray);
+            console.log("Checkbox changed:", stringValue, isChecked);
+
+            if (isChecked) {
+                const updated = [...prevArray, stringValue];
+                console.log("Updated array:", updated);
+                return updated;
+            } else {
+                const updated = prevArray.filter((item) => item !== stringValue);
+                console.log("Updated array:", updated);
+                return updated;
+            }
+        });
+
     };
+
+
 
     const handleTabClick = (id) => {
         if (id === 2 || id === 3) {
@@ -304,9 +318,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     };
 
     const handleChange = (index, field, value) => {
-
         if (field === "number" && !/^\d*$/.test(value)) return;
-
         setContacts((prev) => {
             const updatedContacts = [...prev];
             updatedContacts[index][field] = value;
@@ -314,16 +326,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         });
 
         setErrors((prevErrors) => {
-
             const updatedErrors = Array.isArray(prevErrors.contactErrors) ? [...prevErrors.contactErrors] : [];
-
             if (!updatedErrors[index]) {
                 updatedErrors[index] = {};
             }
-
-
             updatedErrors[index][field] = value?.trim() === "" ? "This field is required" : "";
-
             return { ...prevErrors, contactErrors: updatedErrors };
         });
     };
@@ -569,7 +576,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: 1,
+                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -596,7 +603,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: 1,
+                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -727,11 +734,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         bankDetailsList.forEach((bank, index) => {
             let bankError = {};
             if (!bank.beneficiaryCurrency?.trim()) bankError.beneficiaryCurrency = "Currency is required";
-            if (!bank.beneficiaryName?.trim()) bankError.beneficiaryName = "Name is required";
+            if (!bank.beneficiaryName?.trim() || !formData.contactPerson.trim()) bankError.beneficiaryName = "Name is required";
             if (!bank.accountNumber?.trim()) bankError.accountNumber = "Account Number is required";
             if (!bank.bankName?.trim()) bankError.bankName = "Bank Name is required";
             if (!bank.ifscCode?.trim()) bankError.ifscCode = "IFSC Code is required";
-            // if (!bank.swiftCode?.trim()) bankError.swiftCode = "SWIFT Code is required";
             if (!bank.bankAddress1?.trim()) bankError.bankAddress1 = "Bank Address1 is required"
             if (Object.keys(bankError).length > 0) {
                 bankErrors[index] = bankError;
@@ -749,7 +755,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             return;
         }
 
+        if (editCustomerDetails && !isChangedCheck()) {
 
+            setIsChanged('No changes detected')
+            isValid = false;
+        }
         if (isValid) {
             const AddPayload = {
 
@@ -765,7 +775,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: 1,
+                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -838,7 +848,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: 1,
+                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -895,11 +905,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             };
 
             if (editCustomerDetails) {
-                // if (!isChangedCheck()) {
-
-                //     setIsChanged('No changes detected')
-                //     return;
-                // }
+                
 
                 dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload })
                 setLoading(true)
@@ -1004,20 +1010,20 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         if (!shippingAddress.postalCode?.trim()) addressErrors.shippostalCode = "Shipping Postal Code is required";
 
 
-        bankDetailsList.forEach((bank, index) => {
-            let bankError = {};
-            if (!bank.beneficiaryCurrency?.trim()) bankError.beneficiaryCurrency = "Currency is required";
-            if (!bank.beneficiaryName?.trim()) bankError.beneficiaryName = "Name is required";
-            if (!bank.accountNumber?.trim()) bankError.accountNumber = "Account Number is required";
-            if (!bank.bankName?.trim()) bankError.bankName = "Bank Name is required";
-            if (!bank.ifscCode?.trim()) bankError.ifscCode = "IFSC Code is required";
-            // if (!bank.swiftCode?.trim()) bankError.swiftCode = "SWIFT Code is required";
-            if (!bank.bankAddress1?.trim()) bankError.bankAddress1 = "Bank Address1 is required"
-            if (Object.keys(bankError).length > 0) {
-                bankErrors[index] = bankError;
-                isValid = false;
-            }
-        })
+        // bankDetailsList.forEach((bank, index) => {
+        //     let bankError = {};
+        //     if (!bank.beneficiaryCurrency?.trim()) bankError.beneficiaryCurrency = "Currency is required";
+        //     if (!bank.beneficiaryName?.trim()) bankError.beneficiaryName = "Name is required";
+        //     if (!bank.accountNumber?.trim()) bankError.accountNumber = "Account Number is required";
+        //     if (!bank.bankName?.trim()) bankError.bankName = "Bank Name is required";
+        //     if (!bank.ifscCode?.trim()) bankError.ifscCode = "IFSC Code is required";
+        //     // if (!bank.swiftCode?.trim()) bankError.swiftCode = "SWIFT Code is required";
+        //     if (!bank.bankAddress1?.trim()) bankError.bankAddress1 = "Bank Address1 is required"
+        //     if (Object.keys(bankError).length > 0) {
+        //         bankErrors[index] = bankError;
+        //         isValid = false;
+        //     }
+        // })
 
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
 
@@ -1046,7 +1052,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: 1,
+                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -1083,22 +1089,22 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                         addressType: 2,
                     },
                 ],
-                bankDetails: bankDetailsList.map(bank => ({
-                    name: bank.beneficiaryName,
-                    currency: bank.beneficiaryCurrency,
-                    accountNo: bank.accountNumber,
-                    bankName: bank.bankName,
-                    ifscCode: bank.ifscCode,
-                    address1: bank.bankAddress1,
-                    address2: bank.bankAddress2 || "",
-                    routingBankAddress: bank.bankAddress || "",
-                    country: bank.bankCountry || "",
-                    routingBank: bank.intermediaryRoutingBank || "",
-                    swiftCode: bank.swiftCode || "",
-                    routingAccountIndusand: bank.intermediaryAccountNumber || "",
-                    iban: bank.iban || "",
-                    intermediary_swift_code: bank.intermediarySiftCode
-                }))
+                // bankDetails: bankDetailsList.map(bank => ({
+                //     name: bank.beneficiaryName,
+                //     currency: bank.beneficiaryCurrency,
+                //     accountNo: bank.accountNumber,
+                //     bankName: bank.bankName,
+                //     ifscCode: bank.ifscCode,
+                //     address1: bank.bankAddress1,
+                //     address2: bank.bankAddress2 || "",
+                //     routingBankAddress: bank.bankAddress || "",
+                //     country: bank.bankCountry || "",
+                //     routingBank: bank.intermediaryRoutingBank || "",
+                //     swiftCode: bank.swiftCode || "",
+                //     routingAccountIndusand: bank.intermediaryAccountNumber || "",
+                //     iban: bank.iban || "",
+                //     intermediary_swift_code: bank.intermediarySiftCode
+                // }))
 
             };
 
@@ -1141,16 +1147,16 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     }, [])
 
 
-console.log("editCustomerDetails",editCustomerDetails)
+    console.log("editCustomerDetails", editCustomerDetails)
 
 
     useEffect(() => {
         if (editCustomerDetails) {
             const newFormData = {
                 businessName: editCustomerDetails.businessName || '',
-                surName:editCustomerDetails.title_id,                
+                surName: editCustomerDetails.title_id,
                 contactPerson: editCustomerDetails.contactPerson || '',
-                countryCode:editCustomerDetails.country_code_id,
+                countryCode: editCustomerDetails.country_code_id,
                 contactNumber: editCustomerDetails.contactNumber || '',
                 emailId: editCustomerDetails.emailId || '',
                 designation: editCustomerDetails.designation || '',
@@ -1163,15 +1169,14 @@ console.log("editCustomerDetails",editCustomerDetails)
             };
 
             const natureOfBusinessValue = editCustomerDetails.natureOfBusiness
-                ? Number(editCustomerDetails.natureOfBusiness)
-                : null;
-
-
+                ? editCustomerDetails.natureOfBusiness.split(",").map(String)
+                : [];
 
             setNatureOfBusiness(natureOfBusinessValue);
 
+
             const newContacts = (editCustomerDetails.additionalContactInfo || []).map((item) => ({
-                surName:item.title_id || '',
+                surName: item.title_id || '',
                 name: item.name || '',
                 countryCode: item.country_codeid || '',
                 number: item.contactNumber || '',
@@ -1180,7 +1185,7 @@ console.log("editCustomerDetails",editCustomerDetails)
             }));
 
 
-            
+
 
             const newBankDetailsList = editCustomerDetails.bankDetails?.map(item => ({
                 beneficiaryCurrency: item.currency || "",
@@ -1198,7 +1203,6 @@ console.log("editCustomerDetails",editCustomerDetails)
                 intermediaryAccountNumber: item.routingAccountIndusand || "",
                 iban: item.iban || "",
             })) || [];
-
 
             const officeAddressData = editCustomerDetails.address?.find(addr => addr.addressType === "Office Address") || {};
             const newOfficeAddress = {
@@ -1229,14 +1233,29 @@ console.log("editCustomerDetails",editCustomerDetails)
             };
 
             setFormData(newFormData);
-            setNatureOfBusiness(editCustomerDetails.natureOfBusiness || '');
             setContacts(newContacts);
-            setBankDetailsList(newBankDetailsList);
+            setBankDetailsList(newBankDetailsList.length > 0 ? newBankDetailsList : [{
+                beneficiaryCurrency: "",
+                beneficiaryName: formData?.contactPerson,
+                accountNumber: "",
+                bankName: "",
+                ifscCode: "",
+                swiftCode: "",
+                bankAddress1: "",
+                bankAddress2: "",
+                bankCountry: "",
+                intermediaryRoutingBank: "",
+                intermediarySiftCode: "",
+                bankAddress: "",
+                intermediaryAccountNumber: "",
+                iban: ""
+            }]);
             setOfficeAddress(newOfficeAddress);
             setShippingAddress(newShippingAddress);
 
 
             setInitialFormData(newFormData);
+            setInitialNatureOfBusiness(natureOfBusinessValue);  
             setInitialContacts(newContacts);
             setInitialBankDetailsList(newBankDetailsList);
             setInitialOfficeAddress(newOfficeAddress);
@@ -1250,10 +1269,14 @@ console.log("editCustomerDetails",editCustomerDetails)
             JSON.stringify(contacts) !== JSON.stringify(initialContacts) ||
             JSON.stringify(bankDetailsList) !== JSON.stringify(initialBankDetailsList) ||
             JSON.stringify(officeAddress) !== JSON.stringify(initialOfficeAddress) ||
-            JSON.stringify(shippingAddress) !== JSON.stringify(initialShippingAddress)
+            JSON.stringify(shippingAddress) !== JSON.stringify(initialShippingAddress) ||
+            JSON.stringify(natureOfBusiness) !== JSON.stringify(initialNatureOfBusiness)
         );
-
     };
+    
+console.log("bankDetailsList", bankDetailsList, "initialBankDetailsList",initialBankDetailsList)
+
+
 
     useEffect(() => {
         if (formData?.contactPerson && !editCustomerDetails) {
@@ -1278,6 +1301,7 @@ console.log("editCustomerDetails",editCustomerDetails)
 
     return (
         <div className='bg-slate-100 flex flex-1 flex-col ps-5 pt-3 pe-5'>
+
 
             <div className='bg-white rounded-2xl ps-5 pt-3 pe-5 relative'>
                 {loading && (
@@ -1614,7 +1638,7 @@ console.log("editCustomerDetails",editCustomerDetails)
                                             <input
                                                 type="checkbox"
                                                 className="ml-2 accent-[#205DA8]"
-                                                checked={natureOfBusiness.includes(business.id)}
+                                                checked={natureOfBusiness.includes(String(business.id))}
                                                 onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
                                             />
                                             <label className='block text-start font-Gilroy font-normal text-md text-neutral-800'>
@@ -2182,14 +2206,17 @@ console.log("editCustomerDetails",editCustomerDetails)
                         <h2 className="text-2xl font-semibold mb-4 font-Gilroy">Bank Detail</h2>
                         <div className='max-h-[300px] overflow-y-auto  
     lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
-                            {bankDetailsList.map((bankDetails, index) => (
-                                <div key={index} className='mb-4  p-4 rounded-lg'>
-                                    {
+                            {bankDetailsList?.map((bankDetails, index) => (
+                                <div className='mb-4  p-4 rounded-lg'>
+                                    {/* {
                                         bankDetailsList.length > 1 && <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
                                             {`Bank Details ${index + 1}`}
                                         </h2>
-                                    }
+                                    } */}
 
+                                    <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
+                                        Bank Details
+                                    </h2>
 
                                     <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
@@ -2199,7 +2226,7 @@ console.log("editCustomerDetails",editCustomerDetails)
                                             <input
 
                                                 type='text'
-                                                value={bankDetails.beneficiaryName || formData?.contactPerson}
+                                                value={bankDetails.beneficiaryName || formData?.contactPerson || ''}
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryName', e.target.value)}
                                                 placeholder='Enter Beneficiary Name '
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
@@ -2220,7 +2247,7 @@ console.log("editCustomerDetails",editCustomerDetails)
 
 
                                             <select
-                                                value={bankDetails.beneficiaryCurrency}
+                                                value={bankDetails.beneficiaryCurrency || ""}
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
                                                 className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                                 <option value="">Select beneficiary currency</option>

@@ -137,7 +137,7 @@ function FormDisplay() {
                 }
             </div>
 
-            <button className='bg-[#205DA8] px-4 py-3 rounded-lg text-base font-bold text-white flex items-center m-5 ' onClick={handleAdditionalField} >+ Additional Field</button>
+            <button className='bg-blue-900 px-4 py-3 rounded-lg text-base font-bold text-white flex items-center m-5 ' onClick={handleAdditionalField} >+ Additional Field</button>
 
             {
                 display && <AdditionalFormField update={updateDisplayItems} handleClose={handleCloseForm} />

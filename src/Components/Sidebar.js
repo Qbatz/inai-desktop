@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import Dashboard from "../Pages/Dashboard";
 import Vendor from "../Pages/VendorFile/Vendor";
-import Product from "./Product";
+import ProductList from "../Pages/Product/ProductList";
+import AddProduct from "../Pages/Product/AddProduct";
 import InaiLogo from "../Asset/Images/Inai_Logo.svg";
 import ClientIcon from '../Asset/Icon/Client_S.svg';
 import ClientBlue from '../Asset/Icon/Client_blue.svg';
@@ -215,7 +216,8 @@ function Sidebar() {
                              <Route path="/" element={<Dashboard />} />
                              <Route path="/client" element={<CustomerList />}/>
                              <Route path="/vendor" element={<Vendor />}/>
-                             <Route path="/product" element={<Product />} />
+                             <Route path="/product" element={<ProductList />} />
+                             <Route path="/add-Products" element={<AddProduct/>}/>
                              <Route path="/add-customer" element={<AddCustomer />}/>
                              <Route path="/customer-details/:customerId" element={<CustomerDetails />} />
                              <Route path="/add-vendor" element={<BasicVendor />}/>

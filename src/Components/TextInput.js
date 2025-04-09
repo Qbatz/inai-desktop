@@ -13,7 +13,7 @@ const TextInput = ({placeholder, value, title, callback = ''}) => {
         }
       };
     
-    return <div className='w-[400px] ps-4 '>
+    return <div className='w-full ps-4 '>
         <label className="block text-black mb-2  font-semibold capitalize  font-Gilroy text-base">{title}</label>
         <input type='text' className="w-full px-3 py-2 border rounded-md focus:outline-none  font-Gilroy text-md" placeholder={placeholder} value={value}
          onChange={handleChange}

@@ -12,6 +12,9 @@ import { format } from "date-fns";
 import Arrow from "../../Asset/Icon/Arrow.svg";
 import FormDisplay from '../../FormBuilderComponent/FormDisplay';
 import { FaFilePdf } from "react-icons/fa";
+import FormBuilder from '../../FormBuilderComponent/AdditionalFormField';
+import TextInput from '../../Components/TextInput';
+import Radio from '../../Components/Radio';
 
 
 export default function AddProduct() {
@@ -19,6 +22,8 @@ export default function AddProduct() {
     const [selectedDate, setSelectedDate] = useState(null);
     const [images, setImages] = useState([]);
     const [techImages, setTechImages] = useState([]);
+    const [showAdditionalFields, setShowAdditionalFields] = useState(false)
+    const [displayItems, setDisplayItems] = useState([])
 
 
 
@@ -46,6 +51,23 @@ export default function AddProduct() {
 
     const handleImageDelete = (index) => {
         setImages((prev) => prev.filter((_, i) => i !== index));
+    };
+
+    const updateShowAdditionalFields = () => {
+        setShowAdditionalFields(true)
+    }
+
+    const updateDisplayItems = (item) => {
+        setDisplayItems([...displayItems, item])
+        setShowAdditionalFields(false)
+    }
+
+    const handleCloseForm = () => {
+        setShowAdditionalFields(false)
+    }
+
+    const textInputCallbackForName = (title, newValue) => {
+      
     };
 
     const handleTechDocAdd = (e) => {
@@ -129,8 +151,8 @@ export default function AddProduct() {
         slidesToScroll: 1,
         prevArrow: <PrevArrow />,
         nextArrow: <NextArrow />,
-      };
-      
+    };
+
 
 
     return (
@@ -290,7 +312,7 @@ export default function AddProduct() {
 
                             <div className="flex gap-">
                                 {images?.length > 0 && (
-                                    <div className="w-[480px] mt-2">
+                                    <div className=" mt-2">
                                         <Slider {...settings}>
                                             {images.map((img, index) => (
                                                 <div key={index} className="px-2 mt-2">
@@ -342,59 +364,59 @@ export default function AddProduct() {
                             <label className="block font-normal text-sm font-Outfit mt-2">Technical</label>
 
                             <div className="mt-2 flex gap-4 items-start">
-                            {techImages?.length > 0 && (
-                                <div className="max-w-[480px] w-full">
-                                    <Slider {...techSettings}>
-                                        {techImages.map((file, index) => (
-                                            <div key={index} className="px-1"> 
-                                                <div className="relative w-36 h-[140px] border rounded-md flex items-center justify-center text-center">
-                                                    {file.type && file.type.startsWith("image/") ? (
-                                                        <img
-                                                            src={file.preview}
-                                                            alt={`tech-${index}`}
-                                                            className="w-full h-full object-cover rounded-md"
-                                                        />
-                                                    ) : (
-                                                        <div className="flex flex-col items-center justify-center w-full h-full px-1 text-center relative">
-                                                            <a
-                                                                href={file.preview}
-                                                                download={file.name}
-                                                                className="text-xs truncate w-full break-words max-h-[55px] overflow-hidden text-blue-600 hover:underline"
-                                                            >
-                                                                {file.name}
-                                                            </a>
-
-                                                            <div className="absolute bottom-2 left-2">
+                                {techImages?.length > 0 && (
+                                    <div className="max-w-[480px] w-full">
+                                        <Slider {...techSettings}>
+                                            {techImages.map((file, index) => (
+                                                <div key={index} className="px-1">
+                                                    <div className="relative w-36 h-[140px] border rounded-md flex items-center justify-center text-center">
+                                                        {file.type && file.type.startsWith("image/") ? (
+                                                            <img
+                                                                src={file.preview}
+                                                                alt={`tech-${index}`}
+                                                                className="w-full h-full object-cover rounded-md"
+                                                            />
+                                                        ) : (
+                                                            <div className="flex flex-col items-center justify-center w-full h-full px-1 text-center relative">
                                                                 <a
                                                                     href={file.preview}
                                                                     download={file.name}
-                                                                    title="Download PDF"
-                                                                    className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 hover:bg-gray-200 text-red-600"
+                                                                    className="text-xs truncate w-full break-words max-h-[55px] overflow-hidden text-blue-600 hover:underline"
                                                                 >
-                                                                    <FaFilePdf size={18} />
+                                                                    {file.name}
                                                                 </a>
-                                                            </div>
 
-                                                            <div className="absolute bottom-2 right-2">
-                                                                <div
-                                                                    onClick={() => handleTechDocDelete(index, setTechImages)}
-                                                                    className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 bg-opacity-50 cursor-pointer hover:bg-opacity-75"
-                                                                >
-                                                                    <img
-                                                                        src={Trash}
-                                                                        className="w-4 h-4 filter brightness-0 contrast-100"
-                                                                        alt="Delete"
-                                                                    />
+                                                                <div className="absolute bottom-2 left-2">
+                                                                    <a
+                                                                        href={file.preview}
+                                                                        download={file.name}
+                                                                        title="Download PDF"
+                                                                        className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 hover:bg-gray-200 text-red-600"
+                                                                    >
+                                                                        <FaFilePdf size={18} />
+                                                                    </a>
+                                                                </div>
+
+                                                                <div className="absolute bottom-2 right-2">
+                                                                    <div
+                                                                        onClick={() => handleTechDocDelete(index, setTechImages)}
+                                                                        className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 bg-opacity-50 cursor-pointer hover:bg-opacity-75"
+                                                                    >
+                                                                        <img
+                                                                            src={Trash}
+                                                                            className="w-4 h-4 filter brightness-0 contrast-100"
+                                                                            alt="Delete"
+                                                                        />
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    )}
+                                                        )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
-                                    </Slider>
-                                </div>
-                               )}
+                                            ))}
+                                        </Slider>
+                                    </div>
+                                )}
                                 <label className="w-36 h-[142px] border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
                                     <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
                                     <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center">
@@ -564,7 +586,24 @@ export default function AddProduct() {
 
                     </div>
                 </div>
-                <div className='-ml-5'> <FormDisplay /></div>
+                <div className='flex flex-row flex-wrap'>
+                    {displayItems.length > 0 && displayItems.map((field, index) => {
+                        return <div key={index} className='flex-33%' >
+                            <div >
+                            {field.type === "text" && (
+                                <TextInput value={field.title || ""} title={field.title} placeholder={field.placeholder} callback={(newValue) => textInputCallbackForName(field.title, newValue)} />
+                            )}
+                          </div>
+                        </div>
+                    })}
+                </div>
+                <div className='-ml-5'> {
+                    showAdditionalFields && <FormBuilder update={updateDisplayItems} handleClose={handleCloseForm} />}
+
+                </div>
+
+                <button className='bg-blue-900 px-4 py-3 rounded-lg text-base font-bold text-white flex items-center m-5 ' onClick={updateShowAdditionalFields} >+ Additional Field</button>
+
                 <div className="flex flex-col md:flex-row items-center gap-4 mt-6">
                     <button className="bg-white border border-rose-600 text-rose-600 font-medium py-2 px-6 rounded-lg">
                         Cancel

@@ -36,6 +36,9 @@ module.exports = {
         'blueGray-100': '#F1F4F9',
         'trueGray-400':'#939393',
         'blueGray-50':'#F9FAFC'
+      },
+      flex: {
+        'flex-33%': '0 0 33.33%'
       }
 
     },

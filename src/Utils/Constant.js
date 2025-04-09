@@ -104,4 +104,5 @@ export const GET_MASTER_SAGA = "Get_Master_Saga";
 
 
 
-
+export const STORE_ADDRESS_DATA = "Store_Address_Data";
+export const REMOVE_ADDRESS_DATA = "Remove_Address_Data";

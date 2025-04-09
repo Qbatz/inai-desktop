@@ -150,8 +150,8 @@ function CustomerDetails() {
                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.ifscCode}</p>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Bank Address 1</p>
-                                    <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.address1}</p>
+                                    <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Bank Address </p>
+                                    <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize'>{bank.address1}{" , "}{bank.address2}</p>
                                 </div>
                                 <div>
                                     <p class="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Bank Country</p>
@@ -174,7 +174,7 @@ function CustomerDetails() {
 
 
 
-                <div class=" bg-white p-4 rounded-xl shadow-sm border">
+                <div class=" bg-white p-4 rounded-xl shadow-sm border ">
                     <div className='flex items-center justify-between'>
 
                         <h2 class="text-base font-semibold mb-2 font-Gilroy text-black">Address Information</h2>

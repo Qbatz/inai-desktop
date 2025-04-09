@@ -7,15 +7,15 @@ import { useNavigate } from 'react-router-dom';
 import { InfoCircle } from "iconsax-react";
 
 
-function AddCustomer({ handleClose, editCustomerDetails }) {
+function AddCustomer({ editCustomerDetails }) {
 
 
     const dispatch = useDispatch();
     const state = useSelector(state => state)
     const [loading, setLoading] = useState(false)
-
+    const [isInitialSet, setIsInitialSet] = useState(false);
     const navigate = useNavigate()
-
+    const [isSameAsOffice, setIsSameAsOffice] = useState(false);
     const [value, setValue] = useState(1);
     const [errors, setErrors] = useState({});
 
@@ -161,20 +161,13 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
         setNatureOfBusiness((prev) => {
             const prevArray = Array.isArray(prev) ? prev : [];
-            console.log("Prev array:", prevArray);
-            console.log("Checkbox changed:", stringValue, isChecked);
 
             if (isChecked) {
-                const updated = [...prevArray, stringValue];
-                console.log("Updated array:", updated);
-                return updated;
+                return [...prevArray, stringValue];
             } else {
-                const updated = prevArray.filter((item) => item !== stringValue);
-                console.log("Updated array:", updated);
-                return updated;
+                return prevArray.filter((item) => item !== stringValue);
             }
         });
-
     };
 
 
@@ -317,6 +310,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
         ]);
     };
 
+
+
+
+
     const handleChange = (index, field, value) => {
         if (field === "number" && !/^\d*$/.test(value)) return;
         setContacts((prev) => {
@@ -363,12 +360,15 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     };
 
     const handleSameAsOffice = (e) => {
-        if (e.target.checked) {
+        const checked = e.target.checked;
+        setIsSameAsOffice(checked);
+
+        if (checked) {
             setShippingAddress(prev => ({
                 ...prev,
                 ...officeAddress,
             }));
-            setErrors({})
+            setErrors({});
         } else {
             setShippingAddress({
                 address1: "",
@@ -386,6 +386,29 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     };
 
 
+ useEffect(()=>{
+    if(isSameAsOffice){
+        setShippingAddress(prev => ({
+            ...prev,
+            ...officeAddress,
+        }));
+        setErrors({});
+    }else{
+        setShippingAddress({
+            address1: "",
+            address2: "",
+            address3: "",
+            address4: "",
+            city: "",
+            state: "",
+            country: "",
+            postalCode: "",
+            landmark: "",
+            googleMap: ""
+        });
+    }
+
+  },[officeAddress])
 
 
 
@@ -509,7 +532,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
 
         contacts.forEach((contact, index) => {
-            if (contact.name.trim()) {
+            if (contact.name?.trim()) {
 
                 if (!contact?.surName) {
                     contactErrors[index].surName = "Title is required";
@@ -576,7 +599,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
+                natureOfBusiness: natureOfBusiness,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -603,7 +626,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
+                natureOfBusiness: natureOfBusiness,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -691,7 +714,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
         contacts?.forEach((contact, index) => {
             let contactError = {};
-            if (contact.name.trim()) {
+            if (contact.name?.trim()) {
 
                 if (!contact?.surName) {
                     contactError.surName = "Title is required";
@@ -775,7 +798,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
+                natureOfBusiness: natureOfBusiness,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -848,7 +871,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
+                natureOfBusiness: natureOfBusiness,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -905,7 +928,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             };
 
             if (editCustomerDetails) {
-                
+
 
                 dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload })
                 setLoading(true)
@@ -971,7 +994,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
         contacts?.forEach((contact, index) => {
             let contactError = {};
-            if (contact.name.trim()) {
+            if (contact.name?.trim()) {
 
                 if (!contact?.surName) {
                     contactError.surName = "Title is required";
@@ -1052,7 +1075,7 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 PAN: formData.pan,
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
-                natureOfBusiness: Array.isArray(natureOfBusiness) ? natureOfBusiness.join(",") : "",
+                natureOfBusiness: natureOfBusiness,
                 additionalContactInfo: contacts.map(contact => ({
                     name: contact.name,
                     title: contact.surName,
@@ -1147,11 +1170,10 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
     }, [])
 
 
-    console.log("editCustomerDetails", editCustomerDetails)
 
 
     useEffect(() => {
-        if (editCustomerDetails) {
+        if (editCustomerDetails && !isInitialSet) {
             const newFormData = {
                 businessName: editCustomerDetails.businessName || '',
                 surName: editCustomerDetails.title_id,
@@ -1168,11 +1190,12 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
 
             };
 
-            const natureOfBusinessValue = editCustomerDetails.natureOfBusiness
-                ? editCustomerDetails.natureOfBusiness.split(",").map(String)
+            const natureOfBusinessValue = Array.isArray(editCustomerDetails.natureOfBusiness)
+                ? editCustomerDetails.natureOfBusiness.map(item => String(item))
                 : [];
 
             setNatureOfBusiness(natureOfBusinessValue);
+
 
 
             const newContacts = (editCustomerDetails.additionalContactInfo || []).map((item) => ({
@@ -1203,6 +1226,11 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
                 intermediaryAccountNumber: item.routingAccountIndusand || "",
                 iban: item.iban || "",
             })) || [];
+
+
+
+            setInitialBankDetailsList(JSON.parse(JSON.stringify(newBankDetailsList)));
+
 
             const officeAddressData = editCustomerDetails.address?.find(addr => addr.addressType === "Office Address") || {};
             const newOfficeAddress = {
@@ -1252,16 +1280,18 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             }]);
             setOfficeAddress(newOfficeAddress);
             setShippingAddress(newShippingAddress);
-
-
             setInitialFormData(newFormData);
-            setInitialNatureOfBusiness(natureOfBusinessValue);  
+            setInitialNatureOfBusiness(natureOfBusinessValue);
             setInitialContacts(newContacts);
-            setInitialBankDetailsList(newBankDetailsList);
+
             setInitialOfficeAddress(newOfficeAddress);
             setInitialShippingAddress(newShippingAddress);
+            setIsInitialSet(true);
         }
     }, [editCustomerDetails]);
+
+
+
 
     const isChangedCheck = () => {
         return (
@@ -1273,8 +1303,8 @@ function AddCustomer({ handleClose, editCustomerDetails }) {
             JSON.stringify(natureOfBusiness) !== JSON.stringify(initialNatureOfBusiness)
         );
     };
-    
-console.log("bankDetailsList", bankDetailsList, "initialBankDetailsList",initialBankDetailsList)
+
+
 
 
 
@@ -2021,7 +2051,7 @@ console.log("bankDetailsList", bankDetailsList, "initialBankDetailsList",initial
                             </div>
 
 
-                            <h4 className="text-base font-medium mb-4 font-Gilroy text-black" >Shipping Address  <span className='text-red-500'>*</span> <span className='text-md accent-[#205DA8]'><input type="checkbox" onChange={handleSameAsOffice} /></span><span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
+                            <h4 className="text-base font-medium mb-4 font-Gilroy text-black" >Shipping Address  <span className='text-red-500'>*</span> <span className='text-md accent-[#205DA8]'><input type="checkbox" checked={isSameAsOffice} onChange={handleSameAsOffice} /></span><span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
                             <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-4'>
 
 
@@ -2099,6 +2129,10 @@ console.log("bankDetailsList", bankDetailsList, "initialBankDetailsList",initial
                                         <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                         <option value="Assam">Assam</option>
                                         <option value="Bihar">Bihar</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
 
 
                                     </select>
@@ -2226,7 +2260,8 @@ console.log("bankDetailsList", bankDetailsList, "initialBankDetailsList",initial
                                             <input
 
                                                 type='text'
-                                                value={bankDetails.beneficiaryName || formData?.contactPerson || ''}
+                                                value={!editCustomerDetails ? (formData?.contactPerson || '') : (bankDetails.beneficiaryName || '')}
+
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryName', e.target.value)}
                                                 placeholder='Enter Beneficiary Name '
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'

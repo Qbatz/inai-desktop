@@ -19,10 +19,10 @@ function VendorDetails() {
   }, []);
 
 
+console.log("state",state)
+  const VendorList = [state.vendor?.ParticularVendorList] || [];
 
-  const VendorList = state.vendor?.ParticularVendorList || [];
-
-
+console.log("VendorList",VendorList)
 
 
 
@@ -35,7 +35,7 @@ function VendorDetails() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 p-2">
-            {VendorList.map((vendor, index) => (
+            {VendorList?.map((vendor, index) => (
               <>
                 <div className="flex flex-col space-y-6">
 
@@ -80,13 +80,13 @@ function VendorDetails() {
                     </div>
                     <h2 className="text-base font-semibold font-Gilroy">Bank Details</h2>
                     <hr className="my-2" />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 p-2">
+                    <div >
 
                       {vendor.bankDetails.map((bankDetail, idx) => (
-                        <div key={idx}>
+                        <div key={idx} class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 p-2" >
                           <div>
                             <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Beneficiary Customer Name</p>
-                            <p className="font-semibold font-Gilroy text-sm pt-2"></p>
+                            <p className="font-semibold font-Gilroy text-sm pt-2">{bankDetail.name || 'N/A'}</p>
                           </div>
                           <div>
                             <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Beneficiary Account Number</p>
@@ -118,6 +118,8 @@ function VendorDetails() {
                             <p className="font-semibold font-Gilroy text-sm pt-2">{bankDetail.swiftCode}</p>
                           </div>
                         </div>
+
+
                       ))}
                     </div>
                   </div>
@@ -135,7 +137,7 @@ function VendorDetails() {
 
                 
                   <div className="p-2 rounded-lg bg-white">
-                    <h2 className="text-lg font-semibold mb-4">Office Address</h2>
+                    <h2 className="text-lg font-semibold mb-4 font-Gilroy">Office Address</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-2">
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 1</p>
@@ -143,7 +145,7 @@ function VendorDetails() {
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 2</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.landMark || 'N/A'}</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.street || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Postal Code</p>
@@ -151,7 +153,7 @@ function VendorDetails() {
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Street</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.street || 'N/A'}</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.locality || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">City</p>
@@ -177,7 +179,7 @@ function VendorDetails() {
 
                
                   <div className="p-2 rounded-lg bg-white">
-                    <h2 className="text-lg font-semibold mb-4">Shipping Address</h2>
+                    <h2 className="text-lg font-semibold mb-4 font-Gilroy">Shipping Address</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-2">
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 1</p>
@@ -185,7 +187,7 @@ function VendorDetails() {
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 2</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.landMark || 'N/A'}</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.street || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Postal Code</p>
@@ -193,7 +195,7 @@ function VendorDetails() {
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Street</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.street || 'N/A'}</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.locality || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">City</p>

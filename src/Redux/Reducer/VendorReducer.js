@@ -5,7 +5,8 @@ import {
    VENDOR_BANK_INFO_REDUCER,
    CREATE_VENDOR_REDUCER,
    VENDOR_REDUCER,
-   VIEW_VENDOR_REDUCER
+   VIEW_VENDOR_REDUCER,
+  
 } from "../../Utils/Constant";
 
 
@@ -14,7 +15,7 @@ export const initialState = {
    vendorId: '',
    vendorList: [],
    ParticularVendorList: [],
- 
+   
 }
 
 const VendorReducer = (state = initialState, action) => {
@@ -41,6 +42,7 @@ const VendorReducer = (state = initialState, action) => {
       case VIEW_VENDOR_REDUCER:
          return { ...state, ParticularVendorList: action.payload.Vendor }
 
+      
 
       default:
          return state;

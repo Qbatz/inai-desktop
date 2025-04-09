@@ -15,6 +15,8 @@ function AddressVendor(props) {
 
 
 
+
+
   const [officeAddress1, setOfficeAddress1] = useState("");
   const [officeAddress2, setOfficeAddress2] = useState('');
   const [officeAddress3, setOfficeAddress3] = useState('');
@@ -133,6 +135,7 @@ function AddressVendor(props) {
       setShippingAddress1(officeAddress1);
       setShippingAddress2(officeAddress2);
       setShippingAddress3(officeAddress3);
+      setShippingAddress4(officeAddress4);
       setShippingCity(city);
       setShippingState(state);
       setShippingCountry(country);
@@ -141,6 +144,9 @@ function AddressVendor(props) {
       setShippingGoogleMap(googleMap);
     } else {
       setShippingAddress1('');
+      setShippingAddress2('');
+      setShippingAddress3('');
+      setShippingAddress4('');
       setShippingCity('');
       setShippingState('');
       setShippingCountry('');
@@ -149,6 +155,13 @@ function AddressVendor(props) {
       setShippingGoogleMap('');
     }
   };
+
+
+
+
+
+
+
 
   const validateForm = () => {
     let errors = {};
@@ -173,7 +186,10 @@ function AddressVendor(props) {
             doorNo: officeAddress1,
             street: officeAddress2,
             locality: officeAddress3,
+            address4: officeAddress4,
             city: city,
+            state: state,
+            country: country,
             postalCode: postalCode,
             landMark: landmark,
             mapLink: googleMap,
@@ -183,7 +199,10 @@ function AddressVendor(props) {
             doorNo: shippingAddress1,
             street: shippingAddress2,
             locality: shippingAddress3,
+            address4: shippingAddress4,
             city: shippingCity,
+            state: shippingState,
+            country: shippingCountry,
             postalCode: shippingPostalCode,
             landMark: shippingLandmark,
             mapLink: shippingGoogleMap,
@@ -197,6 +216,128 @@ function AddressVendor(props) {
     }
 
   };
+
+
+  
+
+
+
+  useEffect(()=>{
+    if(sameAsOffice){
+      setShippingAddress1(officeAddress1);
+      setShippingAddress2(officeAddress2);
+      setShippingAddress3(officeAddress3);
+      setShippingAddress4(officeAddress4);
+      setShippingCity(city);
+      setShippingState(state);
+      setShippingCountry(country);
+      setShippingPostalCode(postalCode);
+      setShippingLandmark(landmark);
+      setShippingGoogleMap(googleMap);
+    }else{
+      setShippingAddress1('');
+      setShippingAddress2('');
+      setShippingAddress3('');
+      setShippingAddress4('');
+      setShippingCity('');
+      setShippingState('');
+      setShippingCountry('');
+      setShippingPostalCode('');
+      setShippingLandmark('');
+      setShippingGoogleMap('');
+    }
+
+  },[officeAddress1,
+    officeAddress2,
+    officeAddress3,
+    officeAddress4,
+    city,
+    state,
+    country,
+    postalCode,
+    landmark,
+    googleMap,])
+
+
+
+
+
+    // useEffect(() => {
+    //                const handler = setTimeout(() => {
+    //       const payloadData = {
+    //         vendorId: stateData.vendor.vendorId,
+    //         address: [
+    //           {
+    //             doorNo: officeAddress1,
+    //             street: officeAddress2,
+    //             locality: officeAddress3,
+    //             address4: officeAddress4,
+    //             city: city,
+    //             state: state,
+    //             country: country,
+    //             postalCode: postalCode,
+    //             landMark: landmark,
+    //             mapLink: googleMap,
+    //             addressType: 1
+    //           },
+    //           {
+    //             doorNo: shippingAddress1,
+    //             street: shippingAddress2,
+    //             locality: shippingAddress3,
+    //             address4: shippingAddress4,
+    //             city: shippingCity,
+    //             state: shippingState,
+    //             country: shippingCountry,
+    //             postalCode: shippingPostalCode,
+    //             landMark: shippingLandmark,
+    //             mapLink: shippingGoogleMap,
+    //             addressType: 2
+    //           }
+    //         ]
+    //       };
+    
+    //       if (payloadData.address.length > 0) {
+    //         dispatch(StoreAddressData(payloadData));
+    //       }
+    //     }, 500);
+    
+    //     return () => {
+    //       clearTimeout(handler);
+    //     };
+     
+    // }, [
+    //   officeAddress1,
+    //   officeAddress2,
+    //   officeAddress3,
+    //   officeAddress4,
+    //   city,
+    //   state,
+    //   country,
+    //   postalCode,
+    //   landmark,
+    //   googleMap,
+    //   shippingAddress1,
+    //   shippingAddress2,
+    //   shippingAddress3,
+    //   shippingAddress4,
+    //   shippingCity,
+    //   shippingState,
+    //   shippingCountry,
+    //   shippingPostalCode,
+    //   shippingLandmark,
+    //   shippingGoogleMap,
+    // ]);
+    
+  
+
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
@@ -231,7 +372,10 @@ function AddressVendor(props) {
               doorNo: officeAddress1,
               street: officeAddress2,
               locality: officeAddress3,
+              address4: officeAddress4,
               city: city,
+              state: state,
+              country: country,
               postalCode: postalCode,
               landMark: landmark,
               mapLink: googleMap,
@@ -241,7 +385,10 @@ function AddressVendor(props) {
               doorNo: shippingAddress1,
               street: shippingAddress2,
               locality: shippingAddress3,
+              address4: shippingAddress4,
               city: shippingCity,
+              state: shippingState,
+              country: shippingCountry,
               postalCode: shippingPostalCode,
               landMark: shippingLandmark,
               mapLink: shippingGoogleMap,
@@ -293,12 +440,13 @@ function AddressVendor(props) {
 
   useEffect(() => {
     if (props.vendorDetails && props.vendorDetails.address) {
-      const officeAddress = props.vendorDetails.address.find(addr => addr.addressType === 1) || {};
-      const shippingAddress = props.vendorDetails.address.find(addr => addr.addressType === 2) || {};
+      const officeAddress = props.vendorDetails.address.find(addr => addr.addressType ===  "Office Address") || {};
+      const shippingAddress = props.vendorDetails.address.find(addr => addr.addressType === "Shipping Address") || {};
 
       setOfficeAddress1(officeAddress.doorNo || "");
       setOfficeAddress2(officeAddress.street || "");
       setOfficeAddress3(officeAddress.locality || "");
+      setOfficeAddress4(officeAddress.address4 || "");
       setCity(officeAddress.city || "");
       setState(officeAddress.state || "");
       setCountry(officeAddress.country || "");
@@ -310,6 +458,7 @@ function AddressVendor(props) {
       setShippingAddress1(shippingAddress.doorNo || "");
       setShippingAddress2(shippingAddress.street || "");
       setShippingAddress3(shippingAddress.locality || "");
+      setShippingAddress4(shippingAddress.address4 || "");
       setShippingCity(shippingAddress.city || "");
       setShippingState(shippingAddress.state || "");
       setShippingCountry(shippingAddress.country || "");
@@ -324,12 +473,13 @@ function AddressVendor(props) {
 
   useEffect(() => {
     if (props.addressDetails && props.addressDetails.address) {
-      const officeAddress = props.addressDetails.address.find(addr => addr.addressType === 1) || {};
-      const shippingAddress = props.addressDetails.address.find(addr => addr.addressType === 2) || {};
+      const officeAddress = props.addressDetails.address.find(addr => addr.addressType === "Office Address") || {};
+      const shippingAddress = props.addressDetails.address.find(addr => addr.addressType === "Shipping Address") || {};
 
       setOfficeAddress1(officeAddress.doorNo || "");
       setOfficeAddress2(officeAddress.street || "");
       setOfficeAddress3(officeAddress.locality || "");
+      setOfficeAddress4(officeAddress.address4 || "");
       setCity(officeAddress.city || "");
       setState(officeAddress.state || "");
       setCountry(officeAddress.country || "");
@@ -341,6 +491,7 @@ function AddressVendor(props) {
       setShippingAddress1(shippingAddress.doorNo || "");
       setShippingAddress2(shippingAddress.street || "");
       setShippingAddress3(shippingAddress.locality || "");
+      setShippingAddress4(shippingAddress.address4 || "");
       setShippingCity(shippingAddress.city || "");
       setShippingState(shippingAddress.state || "");
       setShippingCountry(shippingAddress.country || "");
@@ -456,7 +607,7 @@ function AddressVendor(props) {
                 <option value="Assam">Assam</option>
                 <option value="Bihar">Bihar</option>
                 <option value="Chhattisgarh">Chhattisgarh</option>
-               
+
               </select>
 
             </div>
@@ -615,11 +766,12 @@ function AddressVendor(props) {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               >
                 <option value="">Select State</option>
-                <option value="California">California</option>
-                <option value="Texas">Texas</option>
-                <option value="New York">New York</option>
-                <option value="Florida">Florida</option>
-                <option value="Illinois">Illinois</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
               </select>
 
             </div>

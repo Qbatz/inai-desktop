@@ -268,8 +268,9 @@ function* handleDeleteVendor(action) {
 function* handleViewVendor(action) {
     try {
         const response = yield call(ParticularVendor, action.payload)
+        console.log("response",response)
         if (response.status === 200 || response.data.statusCode === 200) {
-            yield put({ type: VIEW_VENDOR_REDUCER, payload: { Vendor: response.data.vendors } });
+            yield put({ type: VIEW_VENDOR_REDUCER, payload: { Vendor: response.data } });
         }
         else if (response.status === 201 || response.data.statusCode === 201) {
             yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })

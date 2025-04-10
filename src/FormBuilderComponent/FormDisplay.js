@@ -83,10 +83,7 @@ function FormDisplay() {
             item.title === title ? { ...item, value: newValue } : item
         );
         setDisplayItems(updatedItems);
-        // setSelectedRadioValue((prev) => (prev === value ? "" : value));
-
-
-    }
+  }
 
 
     return (
@@ -126,6 +123,7 @@ function FormDisplay() {
                             {field.type === "select" && (
                                 <SelectComponent title={field.title} field={field.options} callback={(newValue)=>SelectOptionsChange(field.title,newValue)} />
                             )}
+                            
 
                             {field.type === "textarea" && (
                                 <TextAreaComponent placeholder={field.placeholder} value={field.value} title={field.title} callback={(newValue) =>CallbackForTextArea(field.title, newValue)} />

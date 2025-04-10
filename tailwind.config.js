@@ -19,7 +19,8 @@ module.exports = {
       },
       fontFamily: {
         Gilroy: ['Gilroy', 'sans-serif'],
-        Montserrat: ['Montserrat', 'sans-serif']
+        Montserrat: ['Montserrat', 'sans-serif'],
+        Outfit: ['Outfit', 'sans-serif'],
       },
       fontSize: {
         "28px": "28px",

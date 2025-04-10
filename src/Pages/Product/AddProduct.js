@@ -8,13 +8,12 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import "react-datepicker/dist/react-datepicker.css";
 import { CalendarDays } from "lucide-react";
-import { format } from "date-fns";
 import Arrow from "../../Asset/Icon/Arrow.svg";
-import FormDisplay from '../../FormBuilderComponent/FormDisplay';
 import { FaFilePdf } from "react-icons/fa";
 import FormBuilder from '../../FormBuilderComponent/AdditionalFormField';
-import TextInput from '../../Components/TextInput';
-import Radio from '../../Components/Radio';
+import { MdError } from "react-icons/md";
+
+
 
 
 export default function AddProduct() {
@@ -24,7 +23,18 @@ export default function AddProduct() {
     const [techImages, setTechImages] = useState([]);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
     const [displayItems, setDisplayItems] = useState([])
+    const [formValues, setFormValues] = useState({});
 
+    const [serialNo, setSerialNo] = useState(1);
+    const [formData, setFormData] = useState({
+        serialNo: "1",
+        productCode: "",
+        productName: "",
+        description: "",
+        currency: ""
+    });
+
+    const [errors, setErrors] = useState({});
 
 
     useEffect(() => {
@@ -38,6 +48,37 @@ export default function AddProduct() {
         localStorage.setItem("uploadedImages", JSON.stringify(images));
     }, [images]);
 
+    useEffect(() => {
+        if (!formData.serialNo) {
+            setFormData((prev) => ({ ...prev, serialNo: serialNo.toString() }));
+        }
+    }, [serialNo]);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+    
+        setFormData((prev) => ({
+          ...prev,
+          [name]: value
+        }));
+
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: ""
+        }));
+      };
+
+    const validate = () => {
+        let newErrors = {};
+
+        if (!formData.productCode.trim()) newErrors.productCode = "Product Code is required";
+        if (!formData.productName.trim()) newErrors.productName = "Product Name is required";
+        if (!formData.description.trim()) newErrors.description = "Description is required";
+        if (!formData.currency.trim()) newErrors.currency = "Currency is required";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleImageAdd = (e) => {
         const files = Array.from(e.target.files);
@@ -51,23 +92,6 @@ export default function AddProduct() {
 
     const handleImageDelete = (index) => {
         setImages((prev) => prev.filter((_, i) => i !== index));
-    };
-
-    const updateShowAdditionalFields = () => {
-        setShowAdditionalFields(true)
-    }
-
-    const updateDisplayItems = (item) => {
-        setDisplayItems([...displayItems, item])
-        setShowAdditionalFields(false)
-    }
-
-    const handleCloseForm = () => {
-        setShowAdditionalFields(false)
-    }
-
-    const textInputCallbackForName = (title, newValue) => {
-      
     };
 
     const handleTechDocAdd = (e) => {
@@ -87,26 +111,23 @@ export default function AddProduct() {
         setTechImages((prev) => prev.filter((_, i) => i !== index));
     };
 
-
     const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
         <div
-            className="flex items-center border rounded-md px-3 py-2.5 text-sm text-gray-700 cursor-pointer"
+            className="flex items-center border border-gray-300 rounded-md px-3 py-2.5 text-sm text-gray-700 cursor-pointer"
             onClick={onClick}
             ref={ref}
-            style={{ width: "310px" }}
+            style={{ width: "285px" }}
         >
             <input
                 type="text"
+                className="flex-1 w-full bg-transparent outline-none  py-0.5 font-medium text-xs text-slate-500 placeholder-gray-400"
                 value={value}
-                onChange={() => { }}
                 placeholder={placeholder}
-                className="flex-1 outline-none placeholder-gray-400"
                 readOnly
             />
             <CalendarDays className="text-gray-400 ml-2" size={18} />
         </div>
     ));
-
 
     const PrevArrow = (props) => {
         const { onClick } = props;
@@ -123,15 +144,13 @@ export default function AddProduct() {
         const { onClick } = props;
         return (
             <div
-                className="absolute -right-1 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer"
                 onClick={onClick}
             >
                 <img src={Arrow} className="w-7 h-7" alt="next" />
             </div>
         );
     };
-
-
 
     const settings = {
         dots: false,
@@ -153,170 +172,163 @@ export default function AddProduct() {
         nextArrow: <NextArrow />,
     };
 
+    const updateShowAdditionalFields = () => {
+        setShowAdditionalFields(true)
+    }
 
+    const updateDisplayItems = (item) => {
+        setDisplayItems([...displayItems, item])
+        setShowAdditionalFields(false)
+    }
+
+    const handleCloseForm = () => {
+        setShowAdditionalFields(false)
+    }
+    const RadioOptionsChange = (title, newValue) => {
+
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
+    }
+    const CheckboxOptionsChange = (title, newValue) => {
+
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
+    }
+
+    const SelectOptionsChange = (title, newValue) => {
+
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
+    }
+
+    const textInputCallbackForName = (title, newValue) => {
+
+    };
+
+    const CallbackForTextArea = (title, newValue) => {
+
+        setFormValues((prev) => ({
+            ...prev,
+            [title]: newValue,
+        }));
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validate()) {
+            const nextSerial = serialNo + 1;
+            setSerialNo(nextSerial);
+            setFormData({
+                serialNo: nextSerial.toString(),
+                productCode: "",
+                productName: "",
+                description: "",
+                currency: ""
+            });
+            setErrors({});
+            alert("Form submitted successfully!");
+        }
+    };
+    
 
     return (
         <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full">
-                <h2 className="text-xl font-semibold mb-4">Add Product</h2>
+                <h2 className="text-xl font-semibold mb-4 font-Gilroy">Add Product</h2>
 
-                <div className="flex justify-between">
-                    {/* Left Section (Fixed Width) */}
-                    <div className="w-[350px] space-y-4">
-                        <div className="w-[330px] space-y-4">
+                <div className="flex-1 mx-auto w-full max-w-7xl rounded-xl max-h-[500px] overflow-y-auto">
+
+                    <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] mb-2 items-start ">
+                        <div className="w-full flex flex-col h-full">
                             <div>
-                                <label className="block font-normal text-sm font-Outfit">
+                                <label className="block font-normal text-xs font-Outfit mb-1">
                                     Product Code (Unique) <span className="text-red-500 text-lg">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    placeholder="Enter Product Code"
-                                    className="mt-1 w-[330px] p-3 border rounded-lg font-medium text-xs text-slate-500"
+                                    className="mb-1 w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter Product Name"
+                                    name="productCode"
+                                    value={formData.productCode}
+                                    onChange={handleChange}
                                 />
+                                {errors.productCode && (
+                                    <p className="text-red-500 text-xs flex items-center gap-1">
+                                        <MdError className="text-red-500 text-xs mt-0.5" />
+                                        {errors.productCode}
+                                    </p>
+                                )}
+
                             </div>
+
+
                             <div>
-                                <label className="block font-normal text-sm font-Outfit">
+                                <label className="block font-normal text-xs font-Outfit mb-1">
                                     Product Name <span className="text-red-500 text-lg">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    placeholder="Select Product Name"
-                                    className="mt-1 w-[330px] p-3 border rounded-lg font-medium text-xs text-slate-500"
+                                    className="mb-1 w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter Product Name"
+                                    name="productName"
+                                    value={formData.productName}
+                                    onChange={handleChange}
                                 />
+                                {errors.productName && (
+                                    <p className="text-red-500 text-xs flex items-center gap-1">
+                                        <MdError className="text-red-500 text-xs mt-0.5" />
+                                        {errors.productName}
+                                    </p>
+                                )}
+
+
+
+
                             </div>
+
                             <div>
-                                <label className="block font-normal text-sm font-Outfit">
+                                <label className="block font-normal text-xs font-Outfit mb-1">
                                     Description<span className="text-red-500 text-lg">*</span>
                                 </label>
+
                                 <textarea
                                     placeholder="Enter Description"
-                                    className="mt-1 w-[330px] p-4 border rounded-lg h-36 font-medium text-xs text-slate-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block font-normal text-sm font-Outfit mb-1">
-                                    Available Quantity
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter Available Quantity"
-                                    className="mt-1 w-[330px] p-3 border rounded-lg font-medium text-xs text-gray-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block font-normal text-sm font-Outfit mb-px">
-                                    Currency <span className="text-red-500 text-lg inline leading-none">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter Available Quantity"
-                                    className="mt-1 w-[330px] p-3 border rounded-lg font-medium text-xs text-gray-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block font-normal text-sm font-Outfit mb-1">
-                                    MSN
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter Currrency"
-                                    className="mt-1 w-[330px] p-3 border rounded-lg font-medium text-xs text-gray-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block font-normal text-sm font-Outfit mb-px">
-                                    Category
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter Category"
-                                    className="mt-1 w-[330px] p-3 border rounded-lg font-medium text-xs text-gray-500"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-[13px] font-medium text-[#1F2937] mb-2">
-                                    Country of Origin
-                                </label>
-                                <div className="relative">
-                                    <select
-                                        className="w-[330px] appearance-none border border-[#E5E7EB] rounded-lg p-3 font-medium text-xs text-gray-400"
-                                    >
-                                        <option value="" disabled>
-                                            Enter Country of Origin
-                                        </option>
-                                        <option value="india">India</option>
-                                        <option value="usa">United States</option>
-                                        <option value="china">China</option>
-                                        <option value="germany">Germany</option>
-                                        <option value="japan">Japan</option>
-                                        <option value="uk">United Kingdom</option>
-                                    </select>
-                                    <svg
-                                        className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-[13px] font-medium text-[#1F2937] mb-2">
-                                    State
-                                </label>
-                                <div className="relative">
-                                    <select
-                                        className="w-[330px] appearance-none border border-[#E5E7EB] rounded-lg p-3 font-medium text-xs text-gray-400"
-                                    >
-                                        <option value="" disabled>
-                                            Select State
-                                        </option>
-                                        <option value="andhra">Andhra Pradesh</option>
-                                        <option value="arunachal">Arunachal Pradesh</option>
-                                        <option value="karnataka">Karnataka</option>
-                                        <option value="kerala">Kerala</option>
-                                        <option value="madhya">Madhya Pradesh</option>
-                                        <option value="maharashtra">Maharashtra</option>
-                                        <option value="manipur">Manipur</option>
-                                        <option value="meghalaya">Meghalaya</option>
-                                        <option value="mizoram">Mizoram</option>
-                                        <option value="nagaland">Nagaland</option>
-                                        <option value="odisha">Odisha</option>
-                                        <option value="punjab">Punjab</option>
-                                        <option value="rajasthan">Rajasthan</option>
-                                        <option value="sikkim">Sikkim</option>
-                                        <option value="tamilnadu">Tamil Nadu</option>
-                                    </select>
-                                    <svg
-                                        className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
+                                    className="mt-1 w-[290px] p-4 border rounded-lg h-36 font-medium text-xs text-slate-500 font-Gilroy"
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleChange}
+                               />
+                                {errors.description && (
+                                    <p className="text-red-500 text-xs flex items-center gap-1">
+                                        <MdError className="text-red-500 text-xs mt-0.5" />
+                                        {errors.description}
+                                    </p>
+                                )}
                             </div>
                         </div>
-                    </div>
 
-                    {/* Right Section (Full Width) */}
-                    <div className="flex-1 space-y-4">
 
-                        <div className="w-full p-0 bg-white">
 
+                        <div className="w-full p-2 flex flex-col h-full">
                             <label className="block font-normal text-sm font-Outfit">Add Photos</label>
 
-                            <div className="flex gap-">
+                            <div className="flex mt-2 gap-0">
                                 {images?.length > 0 && (
-                                    <div className=" mt-2">
+                                    <div className="w-[450px] bg-white">
                                         <Slider {...settings}>
                                             {images.map((img, index) => (
-                                                <div key={index} className="px-2 mt-2">
-                                                    <div className="relative w-36 h-[135px] border rounded-md overflow-hidden">
+                                                <div key={index} className="px-1">
+                                                    <div className="relative w-32 h-32 rounded-md overflow-hidden">
                                                         <img
                                                             src={img}
                                                             alt={`Uploaded-${index}`}
@@ -341,35 +353,31 @@ export default function AddProduct() {
                                     </div>
                                 )}
 
-
-                                <div className="px-2 mt-4">
-                                    <div className="w-36 h-[135px] border-dashed border flex items-center justify-center rounded-md cursor-pointer">
-                                        <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
-                                            <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
-                                            <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center">Add Image</span>
-                                            <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">Max size 10 MB</span>
-                                            <input
-                                                type="file"
-                                                name="image"
-                                                accept="image/*"
-                                                className="hidden"
-                                                onChange={handleImageAdd}
-                                            />
-                                        </label>
-                                    </div>
+                                <div className="w-32 h-32 border-dashed border flex items-center justify-center rounded-md cursor-pointer bg-white">
+                                    <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
+                                        <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
+                                        <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">Add Image</span>
+                                        <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">Max size 10 MB</span>
+                                        <input
+                                            type="file"
+                                            name="image"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleImageAdd}
+                                        />
+                                    </label>
                                 </div>
-
                             </div>
-
                             <label className="block font-normal text-sm font-Outfit mt-2">Technical</label>
 
-                            <div className="mt-2 flex gap-4 items-start">
+                            <div className="flex mt-2">
+
                                 {techImages?.length > 0 && (
-                                    <div className="max-w-[480px] w-full">
+                                    <div className="w-[450px] bg-white rounded-md">
                                         <Slider {...techSettings}>
                                             {techImages.map((file, index) => (
                                                 <div key={index} className="px-1">
-                                                    <div className="relative w-36 h-[140px] border rounded-md flex items-center justify-center text-center">
+                                                    <div className="relative w-32 h-32 border rounded-md flex items-center justify-center text-center">
                                                         {file.type && file.type.startsWith("image/") ? (
                                                             <img
                                                                 src={file.preview}
@@ -417,9 +425,9 @@ export default function AddProduct() {
                                         </Slider>
                                     </div>
                                 )}
-                                <label className="w-36 h-[142px] border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
+                                <label className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
                                     <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
-                                    <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center">
+                                    <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
                                         Add Documents
                                     </span>
                                     <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">
@@ -434,184 +442,406 @@ export default function AddProduct() {
                                     />
                                 </label>
                             </div>
+                        </div>
+                    </div>
 
-
-
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
-                                <div>
-                                    <label className="block text-[13px] font-Gilroy font-medium text-[#1F2937] mb-2">Unit of measurement</label>
-                                    <div className="relative">
-                                        <select className="w-full p-3 border rounded-lg font-Gilroy font-medium text-xs text-gray-400 appearance-none">
-                                            <option value="" disabled selected>Select Unit of measurement</option>
-                                            <option value="kg">Kilogram (kg)</option>
-                                            <option value="g">Gram (g)</option>
-                                            <option value="l">Litre (l)</option>
-                                            <option value="ml">Millilitre (ml)</option>
-                                            <option value="pcs">Pieces (pcs)</option>
-                                        </select>
-                                        <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                            <path d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
+                    <div>
+                        <div className="flex flex-wrap gap-3 mb-3">
+                            <div className="flex-1">
+                                <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                    Available Quantity
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter Available Quantity"
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <label className="block font-normal text-sm font-Outfit mb-1.5">Unit of measurement</label>
+                                <div className="relative">
+                                    <select className="w-full p-3 border rounded-lg font-medium text-xs text-slate-400 appearance-none">
+                                        <option value="" disabled selected>Select Unit of measurement</option>
+                                        <option value="kg">Kilogram (kg)</option>
+                                        <option value="g">Gram (g)</option>
+                                        <option value="l">Litre (l)</option>
+                                        <option value="ml">Millilitre (ml)</option>
+                                        <option value="pcs">Pieces (pcs)</option>
+                                    </select>
+                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" />
+                                    </svg>
                                 </div>
+                            </div>
+                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1">Price</label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter Price"
+                                />
+                            </div>
+                        </div>
 
-                                <div>
-                                    <label className="block font-normal text-sm font-Outfit mb-2">Price</label>
-                                    <input type="text" placeholder="Enter Price" className="w-full p-3 border rounded-lg font-Gilroy font-medium text-xs text-gray-500" />
+                        <div className="flex flex-wrap gap-3 mb-3">
+
+                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1 flex items-center gap-1">
+                                    Currency
+                                    <span className="text-red-500 text-sm">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter Product Name"
+                                    name="currency"
+                                    value={formData.currency}
+                                    onChange={handleChange}
+                                />
+
+                                {errors.currency && (
+                                    <p className="text-red-500 mt-1 text-xs flex items-center gap-1">
+                                        <MdError className="text-red-500 text-xs mt-0.5" />
+                                        {errors.currency}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1">Weight</label>
+                                <div className="relative">
+                                    <select className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        <option value="" disabled selected>Select Weight</option>
+                                        <option value="kg">Kilogram (kg)</option>
+                                        <option value="g">Gram (g)</option>
+                                        <option value="mg">Milligram (mg)</option>
+                                        <option value="lb">Pound (lb)</option>
+                                        <option value="oz">Ounce (oz)</option>
+                                    </select>
+                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" />
+                                    </svg>
                                 </div>
                             </div>
 
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-                                <div>
-                                    <label className="block text-[13px] font-Gilroy font-medium text-[#1F2937] mb-2">Weight</label>
-                                    <div className="relative">
-                                        <select className="w-full p-3 border rounded-lg font-Gilroy font-medium text-xs text-gray-400 appearance-none">
-                                            <option value="" disabled selected>Select Weight</option>
-                                            <option value="kg">Kilogram (kg)</option>
-                                            <option value="g">Gram (g)</option>
-                                            <option value="l">Litre (l)</option>
-                                            <option value="ml">Millilitre (ml)</option>
-                                            <option value="pcs">Pieces (pcs)</option>
-                                        </select>
-                                        <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                            <path d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-[13px] font-Gilroy font-medium text-[#1F2937] mb-2">Discount</label>
-                                    <div className="flex items-center w-full border rounded-lg overflow-hidden">
-                                        <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
-                                        <input type="text" placeholder="Enter Discount" className="w-full px-3 py-3 text-xs font-medium text-slate-500 font-Gilroy focus:outline-none" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
-                                <div className="">
-                                    <label className="block text-[13px] font-[Gilroy] font-medium text-[#1F2937] mb-2">
-                                        GST
-                                    </label>
-                                    <div className="flex items-center w-full border rounded-lg overflow-hidden">
-                                        <div className="px-3 py-2 border-r text-slate-400 text-sm">
-                                            %
-                                        </div>
-                                        <input
-                                            type="text"
-                                            placeholder="Enter Gst"
-                                            className="w-full px-3 py-3 text-xs font-medium text-slate-500 font-Gilroy focus:outline-none"
-
-                                        />
-                                    </div>
-
-
-                                </div>
-
-                                <div className="">
-                                    <label className="block font-normal text-sm font-Outfit mb-0.5">
-                                        Serial No
-                                    </label>
+                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1">Discount</label>
+                                <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
+                                    <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
                                     <input
                                         type="text"
-                                        placeholder="Enter Serial No"
-                                        className="mt-1 w-full p-3 border rounded-lg font-Gilroy font-medium text-xs text-gray-500 font-Gilroy"
+                                        placeholder="Enter Discount"
+                                        className="w-full px-3 py-3 font-medium text-xs text-slate-400 focus:outline-none font-Gilroy"
                                     />
                                 </div>
-
-
-
                             </div>
 
+                        </div>
 
-
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
-                                <div>
-                                    <label className="block font-normal text-sm font-Outfit mb-px">Sub Category</label>
-                                    <input type="text" placeholder="Enter Sub Category" className="w-full p-3 border rounded-lg font-Gilroy font-medium text-xs text-gray-500 mt-1" />
-                                </div>
-
-                                <div>
-                                    <label className="block text-[13px] font-Gilroy font-medium text-[#1F2937] mb-1 mt-0.5">Make</label>
-                                    <div className="relative">
-                                        <select className="w-full p-3 border rounded-lg font-Gilroy font-medium text-xs text-gray-400 appearance-none">
-                                            <option value="" disabled selected>Select Make</option>
-                                            <option value="kg">Kilogram (kg)</option>
-                                            <option value="g">Gram (g)</option>
-                                            <option value="l">Litre (l)</option>
-                                            <option value="ml">Millilitre (ml)</option>
-                                            <option value="pcs">Pieces (pcs)</option>
-                                        </select>
-                                        <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                            <path d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
-                                </div>
+                        <div className="flex flex-wrap gap-3 mb-3">
+                            <div className="flex-1">
+                                <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                    HSN
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter Currency"
+                                />
                             </div>
-
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 mt-4">
-                                <div className="flex flex-col justify-end">
-                                    <label className="block text-xs font-Gilroy font-medium text-[#1F2937] mb-2">Month and Year of Manufacture</label>
-                                    <DatePicker
-                                        selected={selectedDate}
-                                        onChange={(date) => setSelectedDate(date)}
-                                        dateFormat="dd/MM/yyyy"
-                                        customInput={
-                                            <CustomInput
-                                                value={selectedDate ? format(selectedDate, "dd/MM/yyyy") : ""}
-                                                placeholder="Month and Year of Manufacture"
-                                            />
-                                        }
+                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1">Gst</label>
+                                <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
+                                    <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter GST"
+                                        className="w-full px-3 py-3 font-medium text-xs text-slate-400 focus:outline-none font-Gilroy"
                                     />
-
                                 </div>
                             </div>
+                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1">Serial No</label>
+                                <input
+                                    type="text"
+                                    value={formData.serialNo}
+                                    onChange={handleChange}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter Serial No"
+                                />
+                            </div>
+                        </div>
 
+                        <div className="flex flex-wrap gap-3 mb-3">
+                            <div className="flex-1">
+                                <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                    Category
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter Category"
+                                />
+                            </div>
+                            <div className="flex-1">
+                                <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                    Sub Category
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter Sub Category"
+                                />
+                            </div>
+                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1">Make</label>
+                                <div className="relative">
+                                    <select className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        <option value="" disabled selected>Select Make</option>
+                                        <option value="zara">Zara</option>
+                                        <option value="hm">H&M</option>
+                                        <option value="forever21">Forever 21</option>
+                                        <option value="uniqlo">Uniqlo</option>
+                                        <option value="mango">Mango</option>
+                                    </select>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 mt-4">
-                                <div className="w-[310px]">
-                                    <label className="block font-normal text-sm font-Outfit mb-1">District</label>
-                                    <input type="text" placeholder="Enter District" className="w-full p-3 border rounded-lg font-Gilroy font-medium text-xs text-gray-500 mt-1" />
+                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" />
+                                    </svg>
                                 </div>
                             </div>
                         </div>
 
+                        <div className="flex flex-wrap gap-3 mb-3">
+                            <div className="flex-1 max-w-[290px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1">Country of Origin</label>
+                                <div className="relative">
+                                    <select className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        <option value="" disabled>
+                                            Enter Country of Origin
+                                        </option>
+                                        <option value="india">India</option>
+                                        <option value="usa">United States</option>
+                                        <option value="china">China</option>
+                                        <option value="germany">Germany</option>
+                                        <option value="japan">Japan</option>                                         <option value="uk">United Kingdom</option>
+                                    </select>
+
+                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 ">
+                                <label className="block text-xs font-Gilroy font-medium text-[#1F2937] mb-2">
+                                    Month and Year of Manufacture
+                                </label>
+                                <DatePicker
+                                    selected={selectedDate}
+                                    onChange={(date) => setSelectedDate(date)}
+                                    dateFormat="dd/MM/yyyy"
+                                    placeholderText="Month and Year of Manufacture"
+                                    customInput={<CustomInput />}
+                                />
+                            </div>
+
+                        </div>
+
+                        <div className="flex flex-wrap gap-3 mb-3">
+                            <div className="flex-1 max-w-[290px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1">State</label>
+                                <div className="relative">
+                                    <select className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        <option value="" disabled selected>
+                                            Enter State
+                                        </option>
+                                        <option value="tamil-nadu">Tamil Nadu</option>
+                                        <option value="maharashtra">Maharashtra</option>
+                                        <option value="karnataka">Karnataka</option>
+                                        <option value="delhi">Delhi</option>
+                                        <option value="kerala">Kerala</option>
+                                        <option value="gujarat">Gujarat</option>
+                                        <option value="rajasthan">Rajasthan</option>
+                                        <option value="west-bengal">West Bengal</option>
+                                        <option value="uttar-pradesh">Uttar Pradesh</option>
+                                        <option value="andhra-pradesh">Andhra Pradesh</option>
+                                    </select>
+
+                                    <svg
+                                        className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+
+
+                            <div className="flex-1 max-w-[290px]">
+                                <label className="block font-normal text-sm font-Outfit mb-1">
+                                    District
+                                </label>
+                                <input
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter District"
+                                />
+                            </div>
 
 
 
+                        </div>
+                    </div>
+
+
+                    <div className="flex flex-wrap -mx-2 mb-3">
+                        {displayItems.length > 0 &&
+                            displayItems.map((field, index) => (
+                                <div key={index} className="w-full sm:w-1/2 md:w-1/3 px-2 mb-4 max-w-[100%]">
+                                    {field.type === "text" && (
+                                        <div>
+                                            <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                                {field.title}
+                                            </label>
+                                            <input
+                                                type="text"
+                                                value={formValues[field.title] || ""}
+                                                placeholder={field.placeholder}
+                                                onChange={(e) =>
+                                                    textInputCallbackForName(field.title, e.target.value)
+                                                }
+                                                className="w-full border border-gray-300 rounded-lg font-medium text-xs text-slate-400 py-3 px-3 font-Gilroy"
+                                            />
+                                        </div>
+                                    )}
+
+
+                                    {field.type === "radio" && (
+                                        <div>
+                                            <label className="block font-normal text-sm font-Outfit mb-1.5 capitalize">
+                                                {field.title}
+                                            </label>
+                                            <div className="flex flex-wrap gap-4">
+                                                {field.options?.map((option, idx) => (
+                                                    <label key={idx} className="inline-flex items-center space-x-2 text-xs text-gray-600 font-Outfit">
+                                                        <input
+                                                            type="radio"
+                                                            id={`radio-${index}-${idx}`}
+                                                            name={field.name}
+                                                            value={option}
+                                                            checked={field.value === option}
+                                                            onChange={() => RadioOptionsChange(field.title, option)}
+                                                            className="w-3 h-3 text-blue-600 border-gray-300 focus:ring-blue-500 font-Gilroy"
+                                                        />
+                                                        <span>{option}</span>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {field.type === "checkbox" && (
+                                        <div>
+                                            <label className="block text-sm font-Outfit mb-1.5 capitalize text-black">
+                                                {field.title}
+                                            </label>
+                                            <div className="flex flex-wrap gap-4">
+                                                {field.options?.map((option, idx) => (
+                                                    <label
+                                                        key={idx}
+                                                        className="flex items-center w-[calc(33.333%-0.5rem)] space-x-2 text-xs text-gray-600 font-Outfit"
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            name={field.name}
+                                                            value={option}
+                                                            checked={field.defaultValue?.includes(option)}
+                                                            onChange={() => CheckboxOptionsChange(field.title, option)}
+                                                            className="w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500 font-Gilroy"
+                                                        />
+                                                        <span>{option}</span>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {field.type === "select" && (
+                                        <div>
+                                            <label className="block font-normal text-sm font-Outfit mb-1.5 capitalize text-black">
+                                                {field.title}
+                                            </label>
+                                            <div className="relative">
+                                                <select
+                                                    className="w-full border border-gray-300 rounded-lg px-3 py-[10px] text-sm font-Gilroy font-medium text-gray-700 appearance-none"
+                                                    defaultValue=""
+                                                    onChange={(e) => SelectOptionsChange(field.title, e.target.value)}
+                                                >
+                                                    <option value="" disabled>
+                                                        Select {field.title}
+                                                    </option>
+                                                    {field.options?.map((option, idx) => (
+                                                        <option key={idx} value={option}>
+                                                            {option}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <svg
+                                                    className="w-4 h-4 text-gray-500 absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path d="M19 9l-7 7-7-7" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {field.type === "textarea" && (
+                                        <div>
+                                            <label className="block font-normal text-sm font-Outfit mb-1.5 capitalize text-black font-Outfit">
+                                                {field.title}
+                                            </label>
+                                            <textarea
+                                                className="w-full border border-gray-300 rounded-lg px-3 py-[10px] text-sm  font-Gilroy font-medium text-gray-700 resize-none h-28"
+                                                placeholder={field.placeholder}
+                                                value={field.value}
+                                                onChange={(e) => CallbackForTextArea(field.title, e.target.value)}
+                                            />
+                                        </div>
+                                    )}
+
+                                </div>
+                            ))}
+                    </div>
+
+
+
+
+                    <div> {
+                        showAdditionalFields && <FormBuilder update={updateDisplayItems} handleClose={handleCloseForm} />}
 
                     </div>
-                </div>
-                <div className='flex flex-row flex-wrap'>
-                    {displayItems.length > 0 && displayItems.map((field, index) => {
-                        return <div key={index} className='flex-33%' >
-                            <div >
-                            {field.type === "text" && (
-                                <TextInput value={field.title || ""} title={field.title} placeholder={field.placeholder} callback={(newValue) => textInputCallbackForName(field.title, newValue)} />
-                            )}
-                          </div>
-                        </div>
-                    })}
-                </div>
-                <div className='-ml-5'> {
-                    showAdditionalFields && <FormBuilder update={updateDisplayItems} handleClose={handleCloseForm} />}
+
+                    <button className='bg-blue-900 px-4 py-3 rounded-lg text-base font-bold text-white flex items-center mt-3 font-Outfit' onClick={updateShowAdditionalFields} >+ Additional Field</button>
+
+                    <div className="flex flex-col md:flex-row items-center gap-4 mt-6">
+                        <button className="bg-white border border-rose-600 text-rose-600 font-medium py-2 px-6 rounded-lg font-Montserrat">
+                            Cancel
+                        </button>
+                        <button onClick={handleSubmit} className="bg-blue-900 text-white font-medium py-2 px-6 rounded-lg font-Montserrat">
+                            Submit
+                        </button>
+                    </div>
 
                 </div>
 
-                <button className='bg-blue-900 px-4 py-3 rounded-lg text-base font-bold text-white flex items-center m-5 ' onClick={updateShowAdditionalFields} >+ Additional Field</button>
-
-                <div className="flex flex-col md:flex-row items-center gap-4 mt-6">
-                    <button className="bg-white border border-rose-600 text-rose-600 font-medium py-2 px-6 rounded-lg">
-                        Cancel
-                    </button>
-                    <button className="bg-blue-900 text-white font-medium py-2 px-6 rounded-lg">
-                        Submit
-                    </button>
-                </div>
 
             </div>
         </div>

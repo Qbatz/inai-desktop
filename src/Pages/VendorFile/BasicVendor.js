@@ -16,7 +16,6 @@ function BasicVendor({ vendorDetails }) {
     const state = useSelector(state => state)
     const navigate = useNavigate()
     const [initialValues, setInitialValues] = useState(null);
-    const [payload, setPayload] = useState(null);
     const [activeTab, setActiveTab] = useState(1);
     const [businessName, setBusinessName] = useState("");
     const [contactPerson, setContactPerson] = useState("");
@@ -69,17 +68,7 @@ function BasicVendor({ vendorDetails }) {
 
 
 
-    const handleBackBasic = (value) => {
-        setActiveTab(value)
-    }
-
-
-    const handleNextToBank = (value, payload) => {
-        setActiveTab(value)
-        setPayload(payload);
-
-
-    }
+   
 
 
     const handleBackToAddress = (value, Address, bankDetails) => {
@@ -1656,7 +1645,7 @@ const handleSaveClickAddress = () => {
 
                     </div>
                     }
-                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} payload={payload} vendorDetail={vendorDetails} addressDetails={addressDetails} contactPerson={contactPerson} addressInfo={addressInfo} /></div>}
+                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails}  vendorDetail={vendorDetails} addressDetails={addressDetails} contactPerson={contactPerson} addressInfo={addressInfo} /></div>}
                 </div>
             </div>
         </div>

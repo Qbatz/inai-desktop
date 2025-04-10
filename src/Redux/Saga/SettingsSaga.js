@@ -1,25 +1,10 @@
 import { takeEvery, call, put } from "redux-saga/effects";
 import { GET_MASTER_REDUCER,GET_MASTER_SAGA,ERROR_CODE} from "../../Utils/Constant";
 import { refreshToken } from "../../Token_Access/Token";
-import { toast } from 'react-toastify';
 import { Master } from "../Action/SettingsAction";
 
 
-// export const toastStyle = {
-//     backgroundColor: "#28C76F",
-//     color: "#F8F9FA",
-//     width: "100%",
-//     borderRadius: "12px",
-//     height: "40px",
-//     fontFamily: "Gilroy",
-//     fontWeight: 600,
-//     fontSize: "14px",
-//     textAlign: "start",
-//     display: "flex",
-//     alignItems: "center",
-//     padding: "12px 20px",
-//     boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
-// };
+
 
 
 function* handleMaster() {

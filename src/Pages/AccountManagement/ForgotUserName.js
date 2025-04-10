@@ -57,7 +57,7 @@ function UserName() {
         }
 
         if (!email) {
-            errors.email = "Email is required.";
+            errors.email = "Email is required";
         } else {
             const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
             if (!emailRegex.test(email)) {
@@ -67,7 +67,7 @@ function UserName() {
 
 
         if (!captchaValue) {
-            errors.captcha = "Please verify that you are not a robot.";
+            errors.captcha = "Please verify that you are not a robot";
         }
 
 
@@ -164,7 +164,7 @@ function UserName() {
                                     <ReCAPTCHA
                                         sitekey={siteKey}
                                         onChange={handleCaptchaChange}
-                                    />
+                                                                           />
                                 )}
 
 
@@ -198,7 +198,7 @@ function UserName() {
                             <div className="text-start mt-4">
                                 <p className="text-black font-Montserrat font-normal text-base">
                                     Already have an account?{' '}
-                                    <span onClick={() => navigate("/")}
+                                    <span onClick={() => {navigate("/"); dispatch({ type: RESET_CODE }) }}
                                         className=" cursor-pointer text-[#205DA8] hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat"
                                     >
                                         Sign In

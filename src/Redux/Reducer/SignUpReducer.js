@@ -11,6 +11,7 @@ export const initialState = {
 
 const SignUpReducer = (state = initialState, action) => {
 
+
    switch (action.type) {
 
       case SIGN_UP_VERIFICATION_REDUCER:

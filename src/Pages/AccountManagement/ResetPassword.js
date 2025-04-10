@@ -66,7 +66,7 @@ const ReSetPassword = () => {
             try {
                 dispatch({ type: RESET_PAGE_API_CALL, payload: { verify_code: hashValue } });
             } catch (error) {
-                sethashError("Error verifying link. Please try again.");
+                sethashError("Error verifying link. Please try again");
             } finally {
                 setLoading(false);
             }
@@ -74,6 +74,15 @@ const ReSetPassword = () => {
     }, [location.search]);
 
 
+    useEffect(() => {
+        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
+        
+          setTimeout(()=>{
+            dispatch({ type: RESET_CODE })
+          },5000)
+          
+        }
+      }, [state.Common.successCode, state.Common.code]);
 
 
 
@@ -102,18 +111,18 @@ const ReSetPassword = () => {
         let newErrors = {};
 
         if (!password.match(passwordRegex.length))
-            newErrors.password = "Password must be 8-20 characters long.";
+            newErrors.password = "Password must be 8-20 characters long";
         else if (!password.match(passwordRegex.upperCase))
-            newErrors.password = "Password must contain at least one uppercase letter.";
+            newErrors.password = "Password must contain at least one uppercase letter";
         else if (!password.match(passwordRegex.number))
-            newErrors.password = "Password must contain at least one number.";
+            newErrors.password = "Password must contain at least one number";
         else if (!password.match(passwordRegex.specialChar))
-            newErrors.password = "Password must contain at least one special character.";
+            newErrors.password = "Password must contain at least one special character";
 
         if (!confirmPassword)
-            newErrors.confirmPassword = "Confirm Password is required.";
+            newErrors.confirmPassword = "Confirm Password is required";
         else if (confirmPassword !== password)
-            newErrors.confirmPassword = "Passwords do not match.";
+            newErrors.confirmPassword = "Passwords do not match";
 
         setError(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -164,17 +173,17 @@ const ReSetPassword = () => {
                             placeholder="Password *"
                             value={password}
                             onChange={handlePassword}
-                            className="w-full h-12 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-12 px-3 border text-md border-gray-300 font-Gilroy rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <button
                             type="button"
                             className="absolute right-3 top-3 text-gray-500"
                             onClick={() => setShowPassword(!showPassword)}
                         >
-                            {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                            {showPassword ?   <EyeOff size={20} /> : <Eye size={20} />}
                         </button>
                         {error.password && (
-                            <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2">
+                            <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2 font-Gilroy">
                                 <InfoCircle size="14" color="#DC2626" /> {error.password}
                             </p>
                         )}
@@ -186,17 +195,17 @@ const ReSetPassword = () => {
                             placeholder="Confirm Password *"
                             value={confirmPassword}
                             onChange={handleConfirmPassword}
-                            className="w-full h-12 px-3 border font-Gilroy border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-12 px-3 border text-md font-Gilroy border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                         <button
                             type="button"
                             className="absolute right-3 top-3 text-gray-500"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
-                            {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                            {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                         </button>
                         {error.confirmPassword && (
-                            <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2">
+                            <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2 font-Gilroy">
                                 <InfoCircle size="14" color="#DC2626" /> {error.confirmPassword}
                             </p>
                         )}
@@ -208,7 +217,7 @@ const ReSetPassword = () => {
                         </div>
                     )}
                     {errorResetMessage && (
-                        <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                        <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1 font-Gilroy">
                             <InfoCircle size="14" color="#DC2626" />
                             {errorResetMessage}
                         </div>
@@ -218,7 +227,7 @@ const ReSetPassword = () => {
                         type="submit"
                         onClick={handleSubmit}
                         className="mt-2 font-semibold text-base w-full p-[10px] rounded-xl transition duration-300 
-                    bg-[#205DA8] text-white hover:bg-blue-700 cursor-pointer"
+                    bg-[#205DA8] text-white  cursor-pointer font-Gilroy"
                     >
                         Submit
                     </button>

@@ -18,7 +18,7 @@ function CustomerDetails() {
     }, []);
 
 
-console.log("customer",customer)
+
 
     return (
         <div className="bg-blueGray-100 min-h-screen w-full">

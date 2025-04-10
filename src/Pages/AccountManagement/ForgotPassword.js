@@ -58,7 +58,7 @@ function ClientIDChange() {
         }
 
         if (!email) {
-            errors.email = "Email is required.";
+            errors.email = "Email is required";
         } else {
             const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
             if (!emailRegex.test(email)) {
@@ -68,7 +68,7 @@ function ClientIDChange() {
 
 
         if (!captchaValue) {
-            errors.captcha = "Please verify that you are not a robot.";
+            errors.captcha = "Please verify that you are not a robot";
         }
 
 
@@ -102,6 +102,26 @@ function ClientIDChange() {
         setSiteKey(selectedKey)
 
     }, [])
+
+
+
+
+
+useEffect(() => {
+    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
+    
+      setTimeout(()=>{
+        dispatch({ type: RESET_CODE })
+      },5000)
+      
+    }
+  }, [state.Common.successCode, state.Common.code]);
+
+
+
+
+
+
 
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center '>
@@ -188,7 +208,7 @@ function ClientIDChange() {
                                     {errorMessage}
                                 </div>
                             )}
-                            <button type='submit' className='mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg'
+                            <button type='submit' className='mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl  transition duration-300 sm:text-lg'
                                 onClick={handleSubmit}>
                                 Submit
                             </button>
@@ -197,7 +217,7 @@ function ClientIDChange() {
                             <div className="text-start mt-4">
                                 <p className="text-black font-Montserrat font-normal text-base">
                                     Already have an account?{' '}
-                                    <span onClick={() => navigate("/")}
+                                    <span onClick={() => { navigate("/");  dispatch({ type: RESET_CODE });}}
                                         className="cursor-pointer text-[#205DA8] hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat"
                                     >
                                         Sign In

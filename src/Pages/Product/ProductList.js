@@ -17,6 +17,7 @@ import RoundNeck from "../../Asset/Icon/Round Neck.svg";
 import SolidTShirt from "../../Asset/Icon/SolidTShirt.svg";
 import Stylish from "../../Asset/Icon/Stylish.svg";
 import { useNavigate } from 'react-router-dom';
+import DeleteProduct from './DeleteProduct';
 
 function ProductList() {
 
@@ -25,6 +26,8 @@ function ProductList() {
 
     const [showPicker, setShowPicker] = useState(false);
     const [showPopup, setShowPopUp] = useState(null);
+    const [showDeleteProduct, setShowDeleteProduct] = useState(false);
+    const [deleteProductId, setDeleteProductId] = useState(false);
     const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
     const popupRef = useRef(null);
     const pickerRef = useRef(null);
@@ -75,6 +78,14 @@ function ProductList() {
         });
         setShowPopUp(showPopup === id ? null : id);
     };
+    const handleDeleteProductPopup = (id) => {
+        setShowDeleteProduct(true);
+        setShowPopUp(null);
+        setDeleteProductId(id)
+      };
+    const handleCloseForDeleteProduct = () => {
+        setShowDeleteProduct(false);
+      };
    
     const imageMapping = {
         kurtiSets: KurtiSets,
@@ -317,13 +328,10 @@ function ProductList() {
                                             <td className="pl-6 text-start py-2 text-center text-black text-sm font-medium font-Gilroy">
                                                 {item.year}
                                             </td>
-
-                                            {/* Price */}
                                             <td className="pl-4 text-start py-2 text-black text-sm font-medium font-Gilroy">
                                                 {item.price}
                                             </td>
 
-                                            {/* Total Price */}
                                             <td className="pl-7 text-start py-2 text-black text-sm font-medium font-Gilroy">
                                                 {item.totalPrice}
                                             </td>
@@ -360,7 +368,7 @@ function ProductList() {
                                                                 <Edit size="16" color="#205DA8" /> Edit
                                                             </div>
                                                             <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700"
-                                                            // onClick={() => handleDeleteProductPopup(item.productId)}
+                                                            onClick={() => handleDeleteProductPopup(item.productId)}
                                                             >
                                                                 <Trash size="16" color="#B91C1C" /> Delete
                                                             </div>
@@ -384,7 +392,7 @@ function ProductList() {
 
 
             </div>
-
+ {showDeleteProduct && <DeleteProduct handleClose={handleCloseForDeleteProduct} deleteProductId={deleteProductId} />}
 
         </div>
     );

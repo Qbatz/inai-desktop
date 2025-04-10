@@ -56,7 +56,7 @@ export default function SignUp() {
     setUserId(e.target.value);
   };
 
- 
+
   const handleMobile = (e) => {
     const value = e.target.value;
     if (/^\d{0,10}$/.test(value) || value === "") {
@@ -75,7 +75,7 @@ export default function SignUp() {
     setConfirmPassword(e.target.value);
   };
 
-  
+
   const passwordRegex = {
     length: /^.{8,20}$/,
     upperCase: /[A-Z]/,
@@ -87,7 +87,7 @@ export default function SignUp() {
 
   const handleSENDOTP = () => {
     if (!mobile.match(/^[0-9]{10}$/)) {
-      setMobileError("Mobile number must be 10 digits.")
+      setMobileError("Mobile number must be 10 digits")
     }
     if (mobile) {
       dispatch({ type: OTP_SEND_SAGA, payload: { mobile: mobile } })
@@ -136,7 +136,7 @@ export default function SignUp() {
       setShowOtp(false);
       setShowMobile(false);
       setShowSignUp(true)
-      dispatch({ type: RESET_CODE })
+
     }
 
   }, [state.Common.successCode])
@@ -144,22 +144,22 @@ export default function SignUp() {
   const validateForm = () => {
     let newErrors = {};
 
-    if (!firstName.trim()) newErrors.firstName = "First name is required.";
-    if (!lastName.trim()) newErrors.lastName = "Last name is required.";
-    if (!userId.trim()) newErrors.userId = "User ID is required.";
-    if (!mobile.match(/^[0-9]{10}$/)) newErrors.mobile = "Mobile number must be 10 digits.";
+    if (!firstName.trim()) newErrors.firstName = "First name is required";
+    if (!lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!userId.trim()) newErrors.userId = "User ID is required";
+    if (!mobile.match(/^[0-9]{10}$/)) newErrors.mobile = "Mobile number must be 10 digits";
 
     if (!password.match(passwordRegex.length))
-      newErrors.password = "Password must be 8-20 characters long.";
+      newErrors.password = "Password must be 8-20 characters long";
     else if (!password.match(passwordRegex.upperCase))
-      newErrors.password = "Password must contain at least one uppercase letter.";
+      newErrors.password = "Password must contain at least one uppercase letter";
     else if (!password.match(passwordRegex.number))
-      newErrors.password = "Password must contain at least one number.";
+      newErrors.password = "Password must contain at least one number";
     else if (!password.match(passwordRegex.specialChar))
-      newErrors.password = "Password must contain at least one special character.";
+      newErrors.password = "Password must contain at least one special character";
 
     if (confirmPassword !== password)
-      newErrors.confirmPassword = "Passwords do not match.";
+      newErrors.confirmPassword = "Passwords do not match";
 
     setError(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -191,13 +191,12 @@ export default function SignUp() {
   }
 
 
-  const [message, setMessage] = useState(false);
+
 
   useEffect(() => {
     if (state.signUp.isTrue) {
       setLoading(false)
-      setMessage(true);
-      setShowOtp(false);
+           setShowOtp(false);
       setShowMobile(false);
       setShowSignUp(false)
       navigate('/register')
@@ -212,11 +211,22 @@ export default function SignUp() {
   useEffect(() => {
     if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
       setLoading(false)
-       setTimeout(()=>{
-               dispatch({ type: RESET_CODE })
-             },5000)
+           setTimeout(() => {
+        dispatch({ type: RESET_CODE })
+      }, 8000)
     }
   }, [state.Common.successCode, state.Common.code]);
+
+
+
+  useEffect(() => {
+    if (showSignUp) {
+      setShowOtp(false);
+    }
+  }, [showSignUp])
+
+
+
 
 
 
@@ -230,12 +240,11 @@ export default function SignUp() {
           </div>
         )}
 
-        {message && <><label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3" ><b>Mail Verified</b>
-        </label> 
-        <label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3">Successfully, We have created a unique Client ID.<br/>Please check your registered email and log in to proceed with registration</label> 
-        </>}
-
-{state?.Common?.errorMessage && <label className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3">{state?.Common?.errorMessage}</label>}
+        
+        {
+          state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
+        }
+        {state?.Common?.errorMessage && <label className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3">{state?.Common?.errorMessage}</label>}
 
         {
           showMobile &&

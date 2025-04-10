@@ -122,8 +122,7 @@ function CreateAccount() {
                 ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
                 : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
         setSiteKey(selectedKey)
-        console.log("key", selectedKey)
-
+     
     }, [])
 
 

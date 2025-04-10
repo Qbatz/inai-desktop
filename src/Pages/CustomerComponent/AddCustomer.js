@@ -37,19 +37,12 @@ function AddCustomer({ editCustomerDetails }) {
 
     const [natureOfBusiness, setNatureOfBusiness] = useState([]);
 
-    console.log("errors", errors)
 
 
     const [contacts, setContacts] = useState([
-        // { name: "", number: "", email: "", designation: "" }
     ]
     );
 
-
-
-    console.log("natureOfBusiness", natureOfBusiness)
-
-    console.log("state", state)
 
 
 
@@ -108,7 +101,7 @@ function AddCustomer({ editCustomerDetails }) {
     });
 
 
-    console.log("[officeAddress", officeAddress, "shippingAddress", shippingAddress)
+
 
     const [initialFormData, setInitialFormData] = useState(null);
     const [initialContacts, setInitialContacts] = useState(null);
@@ -186,52 +179,12 @@ function AddCustomer({ editCustomerDetails }) {
             if (isValid) {
                 setValue(id);
             } else {
-                console.log("Validation failed. Fix the errors to proceed.");
+
             }
         } else {
             setValue(id);
         }
     };
-
-
-
-
-    // const validateAddress = () => {
-    //     let isValid = true;
-    //     let errors = {};
-
-    //     if (!officeAddress.address1?.trim()) {
-    //         errors.address1 = "Address Line 1 is required";
-    //         isValid = false;
-    //     }
-
-    //     if (!officeAddress.city?.trim()) {
-    //         errors.city = "City is required";
-    //         isValid = false;
-    //     }
-
-    //     if (!officeAddress.postalCode?.trim()) {
-    //         errors.postalCode = "Postal Code is required";
-    //         isValid = false;
-    //     }
-
-    //     if (!shippingAddress.address1?.trim()) {
-    //         errors.shipaddress1 = "Address Line 1 is required";
-    //         isValid = false;
-    //     }
-
-    //     if (!shippingAddress.city?.trim()) {
-    //         errors.shipcity = "City is required";
-    //         isValid = false;
-    //     }
-
-    //     if (!shippingAddress.postalCode?.trim()) {
-    //         errors.shippostalCode = "Postal Code is required";
-    //         isValid = false;
-    //     }
-
-    //     return { addressErrors: errors, isValid };
-    // };
 
 
 
@@ -386,29 +339,29 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
 
- useEffect(()=>{
-    if(isSameAsOffice){
-        setShippingAddress(prev => ({
-            ...prev,
-            ...officeAddress,
-        }));
-        setErrors({});
-    }else{
-        setShippingAddress({
-            address1: "",
-            address2: "",
-            address3: "",
-            address4: "",
-            city: "",
-            state: "",
-            country: "",
-            postalCode: "",
-            landmark: "",
-            googleMap: ""
-        });
-    }
+    useEffect(() => {
+        if (isSameAsOffice) {
+            setShippingAddress(prev => ({
+                ...prev,
+                ...officeAddress,
+            }));
+            setErrors({});
+        } else {
+            setShippingAddress({
+                address1: "",
+                address2: "",
+                address3: "",
+                address4: "",
+                city: "",
+                state: "",
+                country: "",
+                postalCode: "",
+                landmark: "",
+                googleMap: ""
+            });
+        }
 
-  },[officeAddress])
+    }, [officeAddress])
 
 
 
@@ -433,30 +386,6 @@ function AddCustomer({ editCustomerDetails }) {
         }
         setErrors(updatedErrors);
     };
-
-
-
-    // const addBankDetail = () => {
-    //     setBankDetailsList([
-    //         ...bankDetailsList,
-    //         {
-    //             beneficiaryCurrency: "",
-    //             accountNumber: "",
-    //             bankName: "",
-    //             ifscCode: "",
-    //             swiftCode: "",
-    //             bankAddress1: "",
-    //             bankAddress2: "",
-    //             bankCountry: "",
-    //             intermediaryRoutingBank: "",
-    //             intermediarySiftCode: "",
-    //             bankAddress: "",
-    //             intermediaryAccountNumber: "",
-    //             iban: ""
-    //         }
-    //     ]);
-    // };
-
 
 
 
@@ -2051,7 +1980,10 @@ function AddCustomer({ editCustomerDetails }) {
                             </div>
 
 
-                            <h4 className="text-base font-medium mb-4 font-Gilroy text-black" >Shipping Address  <span className='text-red-500'>*</span> <span className='text-md accent-[#205DA8]'><input type="checkbox" checked={isSameAsOffice} onChange={handleSameAsOffice} /></span><span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
+                            <h4 className="text-base font-medium mb-4 font-Gilroy text-black" >Shipping Address  <span className='text-red-500'>*</span>
+                                <span className='text-md accent-[#205DA8]'>
+                                    <input type="checkbox" checked={isSameAsOffice} onChange={handleSameAsOffice} /></span>
+                                <span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
                             <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-4'>
 
 
@@ -2242,12 +2174,7 @@ function AddCustomer({ editCustomerDetails }) {
     lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
                             {bankDetailsList?.map((bankDetails, index) => (
                                 <div className='mb-4  p-4 rounded-lg'>
-                                    {/* {
-                                        bankDetailsList.length > 1 && <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
-                                            {`Bank Details ${index + 1}`}
-                                        </h2>
-                                    } */}
-
+                                  
                                     <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
                                         Bank Details
                                     </h2>
@@ -2507,16 +2434,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 </div>
                             ))}
                         </div>
-                        {/* {
-                        bankDetailsList.length === 1 &&
-                        <label onClick={addBankDetail} className="px-3 py-2 cursor-pointer  rounded-lg text-[#205DA8] font-semibold font-Gilroy"> + Add Another Bank Detail</label>
-
-
-                    } */}
-
-
-
-
+                       
 
                         <div className="flex justify-between mt-4 mb-4">
                             <button className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleBackToAddress} >Back</button>

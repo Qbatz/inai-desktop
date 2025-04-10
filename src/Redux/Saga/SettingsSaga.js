@@ -25,8 +25,7 @@ import { Master } from "../Action/SettingsAction";
 function* handleMaster() {
     try {
         const response = yield call(Master)
-        console.log("master", response)
-        if (response.status === 200 || response.data.statusCode === 200) {
+               if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: GET_MASTER_REDUCER , payload:{ response: response.data}});
 
            

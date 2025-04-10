@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
-import AddressVendor from "./AddressVendor";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
@@ -229,8 +228,23 @@ function BasicVendor({ vendorDetails }) {
     // basic info save & click button
 
     const handleSaveClick = () => {
+        const fieldsToCompare = [
+            'businessName',
+            'surName',
+            'countryCode',
+            'contactPerson',
+            'contactNumber',
+            'email',
+            'designation',
+            'gstVat',
+            'additionalContacts'
+        ];
+
+
         const current = {
             businessName,
+            surName,
+            countryCode,
             contactPerson,
             contactNumber,
             email,
@@ -239,12 +253,19 @@ function BasicVendor({ vendorDetails }) {
             additionalContacts
         };
 
-        const isChanged = JSON.stringify(current) !== JSON.stringify(initialValues);
 
-        if (!isChanged) {
+        const filteredInitial = fieldsToCompare.reduce((acc, key) => {
+            acc[key] = initialValues[key];
+            return acc;
+        }, {});
+
+
+        const isChanged = JSON.stringify(current) !== JSON.stringify(filteredInitial);
+        if (vendorDetails && !isChanged) {
             setFormErrors({ general: "No changes detected" });
             return;
         }
+
         if (validateForm()) {
 
             const formattedAdditionalContacts = additionalContacts.map(contact => ({
@@ -321,7 +342,7 @@ function BasicVendor({ vendorDetails }) {
     };
 
 
-    console.log("additionalContacts", additionalContacts)
+
 
     const handleAdditionalContactChange = (index, field, value) => {
         const updatedContacts = [...additionalContacts];
@@ -355,47 +376,80 @@ function BasicVendor({ vendorDetails }) {
     ];
 
     const handleTabClick = (id) => {
-        if (id === 3) {
-            if (validateFormAddress()) {
-                setActiveTab(3)
-            }
+        const isFormValid = validateForm();
+        const isAddressValid = validateFormAddress();
+
+        const formattedAdditionalContacts = additionalContacts.map(contact => ({
+            title: contact.surName,
+            name: contact.name,
+            country_code: contact.countryCode,
+            contactNumber: Number(contact.contactNumber),
+            contactEmail: contact.email,
+            designation: contact.designation
+        }));
+
+        const payload = {
+            vendor_id: '',
+            businessName: businessName,
+            title: surName,
+            country_code: countryCode,
+            contactPersonName: contactPerson,
+            contactNumber: contactNumber,
+            emailId: email,
+            designation: designation,
+            gstvat: gstVat,
+            additionalContactInfo: formattedAdditionalContacts,
         }
 
-        if (id === 2 || id === 3) {
-            if (validateForm()) {
+        if (id === 3) {
+            if (isFormValid && isAddressValid) {
+                setBasicDetails(payload);
+                const payloadData = {
+                    vendorId: state.vendor.vendorId,
+                    address: [
+                        {
+                            doorNo: officeAddress1,
+                            street: officeAddress2,
+                            locality: officeAddress3,
+                            address4: officeAddress4,
+                            city: city,
+                            state: officeState,
+                            country: country,
+                            postalCode: postalCode,
+                            landMark: landmark,
+                            mapLink: googleMap,
+                            addressType: 1
+                        },
+                        {
+                            doorNo: shippingAddress1,
+                            street: shippingAddress2,
+                            locality: shippingAddress3,
+                            address4: shippingAddress4,
+                            city: shippingCity,
+                            state: shippingState,
+                            country: shippingCountry,
+                            postalCode: shippingPostalCode,
+                            landMark: shippingLandmark,
+                            mapLink: shippingGoogleMap,
+                            addressType: 2
+                        }
+                    ]
+                };
 
-                const formattedAdditionalContacts = additionalContacts.map(contact => ({
-                    title: contact.surName,
-                    name: contact.name,
-                    country_code: contact.countryCode,
-                    contactNumber: Number(contact.contactNumber),
-                    contactEmail: contact.email,
-                    designation: contact.designation
-                }));
+                setAddressInfo(payloadData)
 
 
-                const payload = {
-                    vendor_id: '',
-                    businessName: businessName,
-                    title: surName,
-                    country_code: countryCode,
-                    contactPersonName: contactPerson,
-                    contactNumber: contactNumber,
-                    emailId: email,
-                    designation: designation,
-                    gstvat: gstVat,
-                    additionalContactInfo: formattedAdditionalContacts,
-                }
-
-                setBasicDetails(payload)
-                setActiveTab(id);
+                setActiveTab(3);
             }
-
+        } else if (id === 2) {
+            if (isFormValid) {
+                setBasicDetails(payload);
+                setActiveTab(2);
+            }
         } else {
             setActiveTab(id);
         }
     };
-
 
 
 
@@ -492,7 +546,7 @@ function BasicVendor({ vendorDetails }) {
 
     const handleCheckboxChange = (e) => {
         setSameAsOffice(e.target.checked);
-
+        setFormErrors({})
         if (e.target.checked) {
             setShippingAddress1(officeAddress1);
             setShippingAddress2(officeAddress2);
@@ -625,7 +679,6 @@ function BasicVendor({ vendorDetails }) {
 
 
 
-    console.log("vendorDetails", vendorDetails)
 
 
 
@@ -666,18 +719,6 @@ function BasicVendor({ vendorDetails }) {
 
 
     useEffect(() => {
-        if (state.Common.IsVisible === 1) {
-            navigate('/vendor')
-        }
-
-    }, [state.Common.IsVisible])
-
-
-
-
-
-
-    useEffect(() => {
         if (state.Common?.IsVisible === 1) {
             navigate('/vendor')
         }
@@ -685,57 +726,107 @@ function BasicVendor({ vendorDetails }) {
     }, [state.Common?.IsVisible])
 
 
-    // check it mathu
-
-    const handleSaveClickAddress = () => {
-        if (validateFormAddress()) {
-            if (vendorDetails) {
-                const payload = {
-                    vendorId: vendorDetails?.vendorId || "",
-                    address: [
-                        {
-                            doorNo: officeAddress1,
-                            street: officeAddress2,
-                            locality: officeAddress3,
-                            address4: officeAddress4,
-                            city: city,
-                            state: officeState,
-                            country: country,
-                            postalCode: postalCode,
-                            landMark: landmark,
-                            mapLink: googleMap,
-                            addressType: 1
-                        },
-                        {
-                            doorNo: shippingAddress1,
-                            street: shippingAddress2,
-                            locality: shippingAddress3,
-                            address4: shippingAddress4,
-                            city: shippingCity,
-                            state: shippingState,
-                            country: shippingCountry,
-                            postalCode: shippingPostalCode,
-                            landMark: shippingLandmark,
-                            mapLink: shippingGoogleMap,
-                            addressType: 2
-                        }
-                    ]
-                };
 
 
-                dispatch({
-                    type: VENDOR_ADDRESS_INFO_SAGA,
-                    payload: payload
-                });
 
 
-                setLoading(true)
-            } else {
 
+
+
+    // Address Info save & exit
+
+    
+
+
+const handleSaveClickAddress = () => {
+    if (validateFormAddress()) {
+        if (vendorDetails) {
+            const currentAddress = [
+                {
+                    doorNo: officeAddress1,
+                    street: officeAddress2,
+                    locality: officeAddress3,
+                    address4: officeAddress4,
+                    city: city,
+                    state: officeState,
+                    country: country,
+                    postalCode: postalCode,
+                    landMark: landmark,
+                    mapLink: googleMap,
+                    addressType: 1
+                },
+                {
+                    doorNo: shippingAddress1,
+                    street: shippingAddress2,
+                    locality: shippingAddress3,
+                    address4: shippingAddress4,
+                    city: shippingCity,
+                    state: shippingState,
+                    country: shippingCountry,
+                    postalCode: shippingPostalCode,
+                    landMark: shippingLandmark,
+                    mapLink: shippingGoogleMap,
+                    addressType: 2
+                }
+            ];
+
+            const officeAddress = vendorDetails.address.find(addr => addr.addressType === "Office Address" || addr.addressType === 1) || {};
+            const shippingAddress = vendorDetails.address.find(addr => addr.addressType === "Shipping Address" || addr.addressType === 2) || {};
+
+            const initialAddress = [
+                {
+                    doorNo: officeAddress.doorNo || "",
+                    street: officeAddress.street || "",
+                    locality: officeAddress.locality || "",
+                    address4: officeAddress.address4 || "",
+                    city: officeAddress.city || "",
+                    state: officeAddress.state || "",
+                    country: officeAddress.country || "",
+                    postalCode: officeAddress.postalCode || "",
+                    landMark: officeAddress.landMark || "",
+                    mapLink: officeAddress.mapLink || "",
+                    addressType: 1
+                },
+                {
+                    doorNo: shippingAddress.doorNo || "",
+                    street: shippingAddress.street || "",
+                    locality: shippingAddress.locality || "",
+                    address4: shippingAddress.address4 || "",
+                    city: shippingAddress.city || "",
+                    state: shippingAddress.state || "",
+                    country: shippingAddress.country || "",
+                    postalCode: shippingAddress.postalCode || "",
+                    landMark: shippingAddress.landMark || "",
+                    mapLink: shippingAddress.mapLink || "",
+                    addressType: 2
+                }
+            ];
+
+            const isChanged = JSON.stringify(currentAddress) !== JSON.stringify(initialAddress);
+
+            if (!isChanged) {
+                setFormErrors({ general: "No changes detected" });
+                return;
             }
 
+          
+            const payload = {
+                vendorId: vendorDetails?.vendorId || "",
+                address: currentAddress
+            };
+
+            dispatch({
+                type: VENDOR_ADDRESS_INFO_SAGA,
+                payload: payload
+            });
+
+            setLoading(true);
         }
     }
+};
+
+
+
 
     useEffect(() => {
         if (state.Common.successCode === 200) {
@@ -1193,7 +1284,7 @@ function BasicVendor({ vendorDetails }) {
                         <div>
                             <div className='bg-white rounded-2xl h-auto  relative'>
 
-                               
+
                                 <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Address Information</h2>
                                 <div className='max-h-[250px] overflow-y-auto  
                                                   lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3'>
@@ -1294,7 +1385,7 @@ function BasicVendor({ vendorDetails }) {
                                         </div>
 
                                         <div className='mb-2 items-center'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country <span className='text-red-500'>*</span></label>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
 
                                             <select
                                                 id='country'
@@ -1314,8 +1405,7 @@ function BasicVendor({ vendorDetails }) {
                                         </div>
 
 
-                                        {/* </div>
-                                  <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'> */}
+
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>
                                             <input
@@ -1468,11 +1558,12 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             >
                                                 <option value="">Select Country</option>
+                                                <option value="India">India</option>
                                                 <option value="United States">United States</option>
                                                 <option value="Canada">Canada</option>
                                                 <option value="United Kingdom">United Kingdom</option>
                                                 <option value="Australia">Australia</option>
-                                                <option value="India">India</option>
+
                                             </select>
 
                                         </div>
@@ -1562,7 +1653,6 @@ function BasicVendor({ vendorDetails }) {
                         </div>
 
 
-                        {/* <AddressVendor   handleNextToBank={handleNextToBank} vendorDetails={vendorDetails} addressDetails={addressDetails} /> */}
 
                     </div>
                     }

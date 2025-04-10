@@ -28,7 +28,7 @@ function BasicVendor({ vendorDetails }) {
     const [surName, setSurName] = useState("")
     const [countryCode, setCountryCode] = useState("")
     const [additionalContacts, setAdditionalContacts] = useState([
-        // { name: "", contactNumber: "", email: "", designation: "" }
+        
     ]);
     const [formErrors, setFormErrors] = useState({});
     const [basicDetails, setBasicDetails] = useState('')
@@ -50,8 +50,7 @@ function BasicVendor({ vendorDetails }) {
     const [postalCode, setPostalCode] = useState("");
     const [landmark, setLandmark] = useState("");
     const [googleMap, setGoogleMap] = useState("");
-    //   const [formErrors, setFormErrors] = useState({});
-
+ 
     const [shippingAddress1, setShippingAddress1] = useState("");
     const [shippingAddress2, setShippingAddress2] = useState('');
     const [shippingAddress3, setShippingAddress3] = useState('');
@@ -203,9 +202,7 @@ function BasicVendor({ vendorDetails }) {
                 if (!contact.designation?.trim()) {
                     errors[`additionalDesignation${index}`] = `Designation is required`;
                 }
-            } else {
-
-            }
+            } 
         });
 
 

@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+// eslint-disable-next-line react/prop-types
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
@@ -68,13 +69,7 @@ function BankVendor(props) {
     }
   };
 
-  // const handleBankBranchChange = (e) => {
-  //   const value = e.target.value;
-  //   if (/^[A-Za-z\s]*$/.test(value)) {
-  //     setBankBarnch(value);
-  //     clearError("bankBranch");
-  //   }
-  // };
+
 
   const handleIfscCodeChange = (e) => {
     clearError("ifscCode");
@@ -429,67 +424,6 @@ function BankVendor(props) {
 
   }, [state.Common.IsVisible])
 
-  // useEffect(() => {
-  //   if (props.vendorDetail?.bankDetails?.length > 0) {
-  //     const bank = props.vendorDetail.bankDetails[0];
-
-  //     const addresses = props?.addressInfo?.address || [];
-
-  //     setBeneficiaryName(bank.name || "");
-  //     setBeneficiaryCurrency(bank.currency || "")
-  //     setAccountNumber(bank.accountNo || "");
-  //     setBankName(bank.bankName || "");
-  //     setIfscCode(bank.ifscCode || "");
-  //     setBankAddress(bank.address1 || "");
-  //     setBankAddress2(bank.address2 || "");
-  //     setBankAddress3(bank.address3 || "");
-  //     setBankCountry(bank.country || "");
-  //     setRountingBankAddress(bank.routingBankAddress)
-  //     setSiftCode(bank.intermediary_swift_code || "")
-  //     setIntermediaryBank(bank.routingBank || "");
-  //     setSwift(bank.swiftCode || "");
-  //     setIntermediaryDetails(bank.routingAccountIndusand || "");
-  //     setIban(bank.iban || "");
-
-
-  //     setInitialEditData({
-  //       businessName: props?.basicDetails?.businessName || "",
-  //       contactPersonName: props?.basicDetails?.contactPersonName || "",
-  //       contactNumber: props?.basicDetails?.contactNumber || "",
-  //       emailId: props?.basicDetails?.emailId || "",
-  //       designation: props?.basicDetails?.designation || "",
-  //       title: props?.basicDetails?.title,
-  //       country_code: props?.basicDetails?.country_code,
-  //       gstvat: props?.basicDetails?.gstvat || "",
-  //       additionalContactInfo: props?.basicDetails?.additionalContactInfo || [],
-  //       address_info: addresses,
-  //       bankDetails: {
-  //         name: beneficiaryName,
-  //         accountNo: accountNumber,
-  //         currency: beneficiaryCurrency,
-  //         bankName: bankName,
-  //         ifscCode: ifscCode,
-  //         address1: bankAddress,
-  //         address2: bankAddress2,
-  //         address3: bankAddress3,
-  //         country: bankCountry,
-  //         routingBank: intermediaryBank,
-  //         swiftCode: swift,
-  //         routingBankAddress: rountingBankAddress,
-  //         routingAccountIndusand: intermediaryDetails,
-  //         intermediary_swift_code: siftCode,
-  //         iban: iban,
-  //       }
-  //     });
-
-
-
-
-
-  //   }
-  // }, [props.vendorDetail]);
-
-
 
 
   useEffect(() => {
@@ -836,12 +770,7 @@ function BankVendor(props) {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
 
-              {/* {formErrors.bankAddress3 && (
-                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress3}
-                </p>
-              )} */}
-            </div>
+                         </div>
             <div className='mb-2  items-center '>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Bank Account Number with Intermediary Bank </label>
 
@@ -882,12 +811,6 @@ function BankVendor(props) {
 
 
           <div className="flex flex-col xs:flex-row sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-            {/* <button
-              type="button"
-              className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
-              onClick={handleSaveClick} >
-              Save & Exit
-            </button> */}
             <button className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
               onClick={handleSubmit}>
               Submit
@@ -904,7 +827,7 @@ function BankVendor(props) {
 }
 
 BankVendor.propTypes = {
-  payload: PropTypes.object.isRequired,
+  addressInfo: PropTypes.object,
   hanldeBackToAddress: PropTypes.func,
   basicDetails: PropTypes.object,
   vendorDetail: PropTypes.object,

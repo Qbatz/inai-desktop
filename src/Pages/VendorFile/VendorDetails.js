@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Dot from '../../Asset/Icon/Dot.svg'
 import { useDispatch, useSelector } from 'react-redux';
 import { VIEW_VENDOR_SAGA } from '../../Utils/Constant'
@@ -12,15 +12,18 @@ function VendorDetails() {
 
   const dispatch = useDispatch()
   const state = useSelector(state => state)
-  const {vendorId} = useParams()
+  const { vendorId } = useParams()
 
   useEffect(() => {
-      dispatch({ type: VIEW_VENDOR_SAGA, payload: vendorId });
+    dispatch({ type: VIEW_VENDOR_SAGA, payload: vendorId });
   }, []);
 
 
 
-  const VendorList = [state.vendor?.ParticularVendorList] || [];
+  const VendorList = state.vendor?.ParticularVendorList
+    ? [state.vendor.ParticularVendorList]
+    : [];
+
 
 
 
@@ -37,7 +40,7 @@ function VendorDetails() {
           <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 p-2">
             {VendorList?.map((vendor, index) => (
               <>
-                <div className="flex flex-col space-y-6">
+                <div key={index} className="flex flex-col space-y-6">
 
                   <div className="p-6 rounded-lg border border-gray-300 relative bg-white">
 
@@ -82,42 +85,42 @@ function VendorDetails() {
                     <hr className="my-2" />
                     <div >
 
-                     
-                        <div  class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 p-2" >
-                          <div>
-                            <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Beneficiary Customer Name</p>
-                            <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.name || 'N/A'}</p>
-                          </div>
-                          <div>
-                            <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Beneficiary Account Number</p>
-                            <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.accountNo || 'N/A'}</p>
-                          </div>
-                        
-                          <div>
-                            <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">IFSC Code</p>
-                            <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.ifscCode || 'N/A' }</p>
-                          </div>
-                          <div>
-                            <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Bank Address 1</p>
-                            <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.address1 || 'N/A'}</p>
-                          </div>
-                          <div>
-                            <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Bank Country</p>
-                            <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.country || 'N/A'}</p>
-                          </div>
 
-                          <div>
-                            <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Intermediary Routing Bank</p>
-                            <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.routingBank || "N/A"}</p>
-                          </div>
-                          <div>
-                            <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Swift Code for Intermediary Bank</p>
-                            <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.intermediary_swift_code || 'N/A'}</p>
-                          </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 p-2" >
+                        <div>
+                          <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Beneficiary Customer Name</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.name || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Beneficiary Account Number</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.accountNo || 'N/A'}</p>
                         </div>
 
+                        <div>
+                          <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">IFSC Code</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.ifscCode || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Bank Address 1</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.address1 || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Bank Country</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.country || 'N/A'}</p>
+                        </div>
 
-                    
+                        <div>
+                          <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Intermediary Routing Bank</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.routingBank || "N/A"}</p>
+                        </div>
+                        <div>
+                          <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Swift Code for Intermediary Bank</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.intermediary_swift_code || 'N/A'}</p>
+                        </div>
+                      </div>
+
+
+
                     </div>
                   </div>
                 </div>
@@ -132,7 +135,7 @@ function VendorDetails() {
                   <h2 className="text-base font-semibold font-Gilroy">Address Information</h2>
                   <hr className="my-2" />
 
-                
+
                   <div className="p-2 rounded-lg bg-white">
                     <h2 className="text-lg font-semibold mb-4 font-Gilroy">Office Address</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-2">
@@ -174,7 +177,7 @@ function VendorDetails() {
                     </div>
                   </div>
 
-               
+
                   <div className="p-2 rounded-lg bg-white">
                     <h2 className="text-lg font-semibold mb-4 font-Gilroy">Shipping Address</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-2">

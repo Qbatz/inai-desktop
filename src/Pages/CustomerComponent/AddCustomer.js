@@ -14,11 +14,10 @@ function AddCustomer({ editCustomerDetails }) {
     const dispatch = useDispatch();
     const state = useSelector(state => state)
     const [loading, setLoading] = useState(false)
-    const [isInitialSet, setIsInitialSet] = useState(false);    
+    const [isInitialSet, setIsInitialSet] = useState(false);
     const [contactAddressSameAsOfficeAddress, setContactAddressSameAsOfficeAddress] = useState(false)
 
     const navigate = useNavigate()
-    const [isSameAsOffice, setIsSameAsOffice] = useState(false);
     const [value, setValue] = useState(1);
     const [errors, setErrors] = useState({});
 
@@ -42,9 +41,7 @@ function AddCustomer({ editCustomerDetails }) {
 
 
 
-    const [contacts, setContacts] = useState([
-    ]
-    );
+    const [contacts, setContacts] = useState([]);
 
 
 
@@ -181,8 +178,6 @@ function AddCustomer({ editCustomerDetails }) {
 
             if (isValid) {
                 setValue(id);
-            } else {
-
             }
         } else {
             setValue(id);
@@ -318,7 +313,7 @@ function AddCustomer({ editCustomerDetails }) {
     const handleSameAsOffice = (e) => {
         setContactAddressSameAsOfficeAddress(!contactAddressSameAsOfficeAddress)
         const checked = e.target.checked;
-        setIsSameAsOffice(checked);
+
 
         if (checked) {
             setShippingAddress(prev => ({
@@ -344,7 +339,7 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     useEffect(() => {
-        if (isSameAsOffice) {
+        if (contactAddressSameAsOfficeAddress) {
             setShippingAddress(prev => ({
                 ...prev,
                 ...officeAddress,
@@ -1237,7 +1232,14 @@ function AddCustomer({ editCustomerDetails }) {
         );
     };
 
-
+    useEffect(() => {
+        if (compareData(officeAddress.address1, shippingAddress.address1) && compareData(officeAddress.address2, shippingAddress.address2) && compareData(officeAddress.address3, shippingAddress.address3) && compareData(officeAddress.city, shippingAddress.city) && compareData(officeAddress.postalCode, shippingAddress.postalCode)) {
+            setContactAddressSameAsOfficeAddress(true)
+        }
+        else {
+            setContactAddressSameAsOfficeAddress(false)
+        }
+    }, [officeAddress, shippingAddress])
 
 
 
@@ -1983,7 +1985,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                             <h4 className="text-base font-medium mb-4 font-Gilroy text-black" >Shipping Address  <span className='text-red-500'>*</span>
                                 <span className='text-md accent-[#205DA8]'>
-                                    <input type="checkbox" checked={isSameAsOffice} onChange={handleSameAsOffice} /></span>
+                                    <input type="checkbox" checked={contactAddressSameAsOfficeAddress} onChange={handleSameAsOffice} /></span>
                                 <span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
                             <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-4'>
 
@@ -2174,8 +2176,8 @@ function AddCustomer({ editCustomerDetails }) {
                         <div className='max-h-[300px] overflow-y-auto  
     lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
                             {bankDetailsList?.map((bankDetails, index) => (
-                                <div className='mb-4  p-4 rounded-lg'>
-                                  
+                                <div key={index} className='mb-4  p-4 rounded-lg'>
+
                                     <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
                                         Bank Details
                                     </h2>
@@ -2435,7 +2437,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 </div>
                             ))}
                         </div>
-                       
+
 
                         <div className="flex justify-between mt-4 mb-4">
                             <button className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleBackToAddress} >Back</button>

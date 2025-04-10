@@ -13,7 +13,7 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID } from '../../Utils/Constant'
 import { useNavigate } from 'react-router-dom';
-
+import moment from "moment";
 
 function VendorList() {
 
@@ -22,7 +22,7 @@ function VendorList() {
   const state = useSelector(state => state)
   const navigate = useNavigate()
 
-
+  const [searchTerm, setSearchTerm] = useState('');
 
   const [showPicker, setShowPicker] = useState(false);
   const [isVisible, setIsVisible] = useState(true)
@@ -51,6 +51,18 @@ function VendorList() {
   const totalPages = Math.ceil(vendorList.length / itemsPerPage);
 
   const handleSelect = (ranges) => {
+console.log("ranges",ranges)
+
+
+const startDate = ranges.selection.startDate;
+const endDate = ranges.selection.endDate;
+
+
+const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
+const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
+
+console.log("Start Date:", formattedStartDate); 
+console.log("End Date:", formattedEndDate); 
 
     setDateRange([ranges.selection]);
     setShowPicker(false);
@@ -109,7 +121,9 @@ function VendorList() {
   }
 
   
-
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); 
+  }
   // useEffect/////////////////////////////////////////////
 
 
@@ -173,7 +187,18 @@ function VendorList() {
   }, [state.Common.successCode])
 
 
-  
+   useEffect(() => {
+      const delayApi = setTimeout(() => {
+        if (searchTerm.trim() !== "") {
+          dispatch({
+            type: VENDOR_SAGA,
+            payload: { searchKeyword: searchTerm.trim(), endDate: null, startDate: null,  },
+          });
+        }
+      }, 500); 
+    
+      return () => clearTimeout(delayApi); 
+    }, [searchTerm]);
 
   return (
 
@@ -219,7 +244,9 @@ function VendorList() {
                   />
                   <input
                     type="text"
-                    placeholder='Search by ID, Support, or others'
+                    value={searchTerm} 
+                    onChange={handleSearchChange} 
+                    placeholder='Search by name'
                     className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
                   />
                 </div>

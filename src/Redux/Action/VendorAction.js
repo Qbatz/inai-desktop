@@ -3,6 +3,7 @@ import AxiosConfig from "../../WebService/AxiosConfig";
 
 
 export async function VendorAction(vendor) {
+  console.log("vendor",vendor)
   return await AxiosConfig.get('/usr/vendor',vendor, {
    data:vendor
   })

@@ -42,7 +42,7 @@ function CustomerList() {
   );
   
   const totalPages = Math.ceil(customerList.length / itemsPerPage);
-
+  const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -60,25 +60,15 @@ function CustomerList() {
        navigate('/add-customer')
   }
 
-
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); 
+  }
   const handleCloseAddCustomer = () => {
     setShowAddCustomer(false)
     setIsVisible(true)
   }
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
-        setShowPicker(false);
-      }
-    };
-
-    if (showPicker) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showPicker]);
+ 
 
   const handleShowPopup = (id, event) => {
     const { top, left, height } = event.target.getBoundingClientRect();
@@ -121,7 +111,19 @@ function CustomerList() {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
+        setShowPicker(false);
+      }
+    };
 
+    if (showPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showPicker]);
   useEffect(() => {
     if (state.Common.successCode === 200) {
 
@@ -136,6 +138,20 @@ function CustomerList() {
     }
 
   }, [state.Common.successCode])
+
+
+  useEffect(() => {
+    const delayApi = setTimeout(() => {
+      if (searchTerm.trim() !== "") {
+        dispatch({
+          type: GET_CUSTOMER_LIST_SAGA,
+          payload: { searchKeyword: searchTerm.trim() },
+        });
+      }
+    }, 500); 
+  
+    return () => clearTimeout(delayApi); 
+  }, [searchTerm]);
 
 
   useEffect(()=>{
@@ -211,7 +227,9 @@ if(state.customer.customerList){
             />
             <input
               type="text"
-              placeholder='Search by ID, Support, or others'
+              value={searchTerm} 
+              onChange={handleSearchChange} 
+              placeholder='Search by Name'
               className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
             />
           </div>

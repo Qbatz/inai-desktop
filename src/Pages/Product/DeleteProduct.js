@@ -1,33 +1,15 @@
-import React, { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-// import { DELETE_CUSTOMER_SAGA, GET_CUSTOMER_LIST_SAGA, RESET_CODE } from '../../Utils/Constant'
+import React from 'react'
+
 
 
 
 function DeleteProduct({ handleClose, deleteProductId }) {
 
 
-
-    // const dispatch = useDispatch()
-    // const state = useSelector(state => state)
-
-
     const handleDeleteProduct = () => {
         if (deleteProductId) {
-            // dispatch({ type: DELETE_CUSTOMER_SAGA, payload: deleteProductId })
         }
     }
-
-    // useEffect(() => {
-    //     if (state.Common.successCode === 200) {
-
-    //         dispatch({ type: GET_CUSTOMER_LIST_SAGA });
-    //         dispatch({ type: RESET_CODE })
-    //     }
-
-    // }, [state.Common.successCode])
-
-
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

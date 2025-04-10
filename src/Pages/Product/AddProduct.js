@@ -52,7 +52,7 @@ export default function AddProduct() {
         if (!formData.serialNo) {
             setFormData((prev) => ({ ...prev, serialNo: serialNo.toString() }));
         }
-    }, [serialNo]);
+    },[formData.serialNo]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;

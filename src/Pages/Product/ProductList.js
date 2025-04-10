@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
-import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2 } from "iconsax-react";
+import { SearchNormal1, Calendar, Edit, Trash } from "iconsax-react";
 import Filter from '../../Asset/Images/filter.png';
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -24,26 +24,11 @@ function ProductList() {
   const navigate = useNavigate()
 
     const [showPicker, setShowPicker] = useState(false);
-    const [isVisible, setIsVisible] = useState(true);
     const [showPopup, setShowPopUp] = useState(null);
     const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
     const popupRef = useRef(null);
     const pickerRef = useRef(null);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [productList, setProductList] = useState([]);
-    // const [loading, setLoading] = useState(true);
-    const [showAddProduct, setShowAddProduct] = useState(false)
-    const [showDeleteProduct, setShowDeleteProduct] = useState(false);
-    const [deleteProductId, setDeleteProductId] = useState('')
 
-
-      const paginatedData = productList.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      );
-
-      const totalPages = Math.ceil(productList.length / itemsPerPage);
 
     const [dateRange, setDateRange] = useState([
         {
@@ -90,42 +75,14 @@ function ProductList() {
         });
         setShowPopUp(showPopup === id ? null : id);
     };
-
-
-      const handleItemsPerPageChange = (e) => {
-        setItemsPerPage(Number(e.target.value));
-        setCurrentPage(1);
-      };
-
-      const handlePageChange = (newPage) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-          setCurrentPage(newPage);
-        }
-      };
-
-    //   const handleAddProduct = () => {
-    //     setShowAddCustomer(true)
-    //     setIsVisible(false)
-    // }
-
-    // const handleCloseAddProduct = () => {
-    //     setShowAddCustomer(false)
-    //     setIsVisible(true)
-    //   }
-
-    const handleDeleteProductPopup = (id) => {
-        setShowDeleteProduct(true);
-        setShowPopUp(null);
-        setDeleteProductId(id)
-      };
-
+   
     const imageMapping = {
         kurtiSets: KurtiSets,
         Longsleeves: LongSleeve,
         Salwar: Salwar,
         SolidTShirt: SolidTShirt,
         CottonBlend: CottonBlend,
-        "Round Neck": RoundNeck,
+        RoundNeck: RoundNeck,
         Stylish: Stylish,
         CollarTshirt: CollarTshirt,
     };
@@ -201,13 +158,7 @@ function ProductList() {
     return (
         <div className='bg-slate-100 flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0'>
 
-            {/* {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
-          <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
-        </div>
-      )} */}
-
-            {isVisible && <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative'>
+    <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative'>
 
                 <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
                     <div>
@@ -409,7 +360,8 @@ function ProductList() {
                                                                 <Edit size="16" color="#205DA8" /> Edit
                                                             </div>
                                                             <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700"
-                                                            onClick={() => handleDeleteProductPopup(item.productId)}>
+                                                            // onClick={() => handleDeleteProductPopup(item.productId)}
+                                                            >
                                                                 <Trash size="16" color="#B91C1C" /> Delete
                                                             </div>
                                                         </div>
@@ -427,59 +379,11 @@ function ProductList() {
                     </div>
                 </div>
 
-                <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center  bg-white p-4 rounded-lg">
-                    <div className="flex items-center gap-2">
-                        <select
-                            value={itemsPerPage}
-                            //   onChange={handleItemsPerPageChange}
-                            className="px-1 py-1 border border-[#205DA8] rounded-md text-[#205DA8] font-bold cursor-pointer outline-none shadow-none"
-                        >
-                            <option value={10}>10</option>
-                            <option value={50}>50</option>
-                            <option value={100}>100</option>
-                        </select>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <ul className="flex items-center list-none m-0 p-0 gap-4">
-
-                            <li>
-                                <button
-                                    className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
-                                        }`}
-                                      onClick={() => handlePageChange(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                >
-                                    <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
-                                </button>
-                            </li>
-
-
-                            <li className="text-sm font-bold">
-                {currentPage} of {totalPages}
-              </li>
-
-
-                            <li>
-                <button
-                  className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
-                    }`}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#1E45E1"} />
-                </button>
-              </li>
-                        </ul>
-                    </div>
-                </nav>
+              
 
 
 
             </div>
-            }
-            {/* {showAddProduct &&
-        <AddProduct handleClose={handleCloseAddProduct}  />
-      } */}
 
 
         </div>

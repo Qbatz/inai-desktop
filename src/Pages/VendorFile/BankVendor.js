@@ -158,9 +158,7 @@ function BankVendor(props) {
 
 
   const hanldeBackToAddress = () => {
-    const addresses = props?.payload?.address;
-
-
+    
     const bankDetails = {
       name: beneficiaryName,
       accountNo: accountNumber,
@@ -179,7 +177,7 @@ function BankVendor(props) {
       iban: iban,
     }
 
-    props.hanldeBackToAddress(2, addresses, bankDetails)
+    props.hanldeBackToAddress(2,bankDetails)
   }
 
 
@@ -492,6 +490,7 @@ function BankVendor(props) {
       const bank = props.addressDetails?.bank;
 
       setBeneficiaryName(bank.name || "");
+      setBeneficiaryCurrency(bank.currency || "");
       setAccountNumber(bank.accountNo || "");
       setBankName(bank.bankName || "");
       setIfscCode(bank.ifscCode || "");
@@ -499,10 +498,12 @@ function BankVendor(props) {
       setBankAddress2(bank.address2 || "");
       setBankAddress3(bank.address3 || "");
       setBankCountry(bank.country || "");
+      setRountingBankAddress(bank.routingBankAddress || "");
+      setSiftCode(bank.intermediary_swift_code || "");
       setIntermediaryBank(bank.routingBank || "");
       setSwift(bank.swiftCode || "");
-      setIntermediaryDetails(bank.routingBankAddress || "");
-      setIban(bank.routingAccountIndusand || "");
+      setIntermediaryDetails(bank.routingAccountIndusand || "");
+      setIban(bank.iban || "");
     }
   }, [props.addressDetails]);
 
@@ -827,11 +828,13 @@ function BankVendor(props) {
 }
 
 BankVendor.propTypes = {
-  addressInfo: PropTypes.object,
   hanldeBackToAddress: PropTypes.func,
   basicDetails: PropTypes.object,
   vendorDetail: PropTypes.object,
-  addressDetails: PropTypes.object
+  addressDetails: PropTypes.object,
+  addressInfo:PropTypes.object,
+  contactPerson:PropTypes.string
+
 }
 
 export default BankVendor

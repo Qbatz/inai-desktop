@@ -89,33 +89,33 @@ function VendorDetails() {
                       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 p-2" >
                         <div>
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Beneficiary Customer Name</p>
-                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.name || 'N/A'}</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails?.[0]?.name || 'N/A'}</p>
                         </div>
                         <div>
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Beneficiary Account Number</p>
-                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.accountNo || 'N/A'}</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails?.[0]?.accountNo || 'N/A'}</p>
                         </div>
 
                         <div>
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">IFSC Code</p>
-                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.ifscCode || 'N/A'}</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails?.[0]?.ifscCode || 'N/A'}</p>
                         </div>
                         <div>
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Bank Address 1</p>
-                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.address1 || 'N/A'}</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails?.[0]?.address1 || 'N/A'}</p>
                         </div>
                         <div>
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Bank Country</p>
-                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.country || 'N/A'}</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails?.[0]?.country || 'N/A'}</p>
                         </div>
 
                         <div>
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Intermediary Routing Bank</p>
-                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.routingBank || "N/A"}</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails?.[0]?.routingBank || "N/A"}</p>
                         </div>
                         <div>
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Swift Code for Intermediary Bank</p>
-                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails[0]?.intermediary_swift_code || 'N/A'}</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails?.[0]?.intermediary_swift_code || 'N/A'}</p>
                         </div>
                       </div>
 

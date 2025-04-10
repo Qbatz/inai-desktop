@@ -35,7 +35,7 @@ console.log("customer",customer)
                             <div className=''>
 
 
-                                <div class="bg-white p-4 rounded-xl shadow-sm border mb-5 ">
+                                <div className="bg-white p-4 rounded-xl shadow-sm border mb-5 ">
                                     <div className='flex items-center justify-between'>
 
                                         <h2 className="text-base font-semibold mb-2 font-Gilroy text-black">Basic Information</h2>
@@ -210,7 +210,7 @@ console.log("customer",customer)
                                 <hr className='mt-2 mb-[8px] border-1 border-[#E7E7E7] ' />
                                 <div className="grid gap-4">
                                     {
-                                        customer?.address.length > 0 ? (
+                                        customer?.address?.length > 0 ? (
                                         customer?.address?.map(item => {
                                             return <div key={item.id}>
                                                 <h3 className="text-base font-semibold mb-2 font-Gilroy text-black">{item.addressType === "Office Address" ? 'Office Address' : 'Shipping Address'}</h3>

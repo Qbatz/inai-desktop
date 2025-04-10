@@ -32,7 +32,7 @@ function BasicVendor({ vendorDetails }) {
     ]);
     const [formErrors, setFormErrors] = useState({});
     const [basicDetails, setBasicDetails] = useState('')
-    const [addressDetails, setAddressDetails] = useState({ address: null, bank: null })
+    const [addressDetails, setAddressDetails] = useState({ bank: null })
 
 
 
@@ -71,9 +71,9 @@ function BasicVendor({ vendorDetails }) {
    
 
 
-    const handleBackToAddress = (value, Address, bankDetails) => {
+    const handleBackToAddress = (value, bankDetails) => {
         setActiveTab(value)
-        setAddressDetails({ address: Address, bank: bankDetails })
+        setAddressDetails({ bank: bankDetails })
 
 
     }
@@ -870,37 +870,6 @@ const handleSaveClickAddress = () => {
     }, [vendorDetails]);
 
 
-
-
-    //   useEffect(() => {
-    //     if (props.addressDetails && props.addressDetails.address) {
-    //       const officeAddress = props.addressDetails.address.find(addr => addr.addressType === "Office Address") || {};
-    //       const shippingAddress = props.addressDetails.address.find(addr => addr.addressType === "Shipping Address") || {};
-
-    //       setOfficeAddress1(officeAddress.doorNo || "");
-    //       setOfficeAddress2(officeAddress.street || "");
-    //       setOfficeAddress3(officeAddress.locality || "");
-    //       setOfficeAddress4(officeAddress.address4 || "");
-    //       setCity(officeAddress.city || "");
-    //       setOfficeState(officeAddress.state || "");
-    //       setCountry(officeAddress.country || "");
-    //       setPostalCode(officeAddress.postalCode || "");
-    //       setLandmark(officeAddress.landMark || "");
-    //       setGoogleMap(officeAddress.mapLink || "");
-
-
-    //       setShippingAddress1(shippingAddress.doorNo || "");
-    //       setShippingAddress2(shippingAddress.street || "");
-    //       setShippingAddress3(shippingAddress.locality || "");
-    //       setShippingAddress4(shippingAddress.address4 || "");
-    //       setShippingCity(shippingAddress.city || "");
-    //       setShippingState(shippingAddress.state || "");
-    //       setShippingCountry(shippingAddress.country || "");
-    //       setShippingPostalCode(shippingAddress.postalCode || "");
-    //       setShippingLandmark(shippingAddress.landMark || "");
-    //       setShippingGoogleMap(shippingAddress.mapLink || "");
-    //     }
-    //   }, [props.addressDetails]);
 
 
 

@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
 function Login({ message, loginStatusCode }) {
 
   const navigate = useNavigate()
-    const [siteKey, setSiteKey] = useState('')
+  const [siteKey, setSiteKey] = useState('')
   const dispatch = useDispatch();
   const state = useSelector(state => state)
 
@@ -36,9 +36,13 @@ function Login({ message, loginStatusCode }) {
   const [loading, setLoading] = useState(false)
 
   const handleClientIdChange = (e) => {
-    dispatch({ type: RESET_CODE })
-    setClientIdError('');
-    setClientId(e.target.value)
+    const value = e.target.value;
+
+    if (/^\d*$/.test(value)) {
+      dispatch({ type: RESET_CODE });
+      setClientIdError('');
+      setClientId(value);
+    }
   };
   const handleUserIdChange = (e) => {
     dispatch({ type: RESET_CODE })
@@ -73,7 +77,7 @@ function Login({ message, loginStatusCode }) {
     }
 
     if (!userId.trim()) {
-      setUserIdError('User ID is required');
+      setUserIdError('User Name is required');
       valid = false;
     } else {
       setUserIdError('');
@@ -101,6 +105,8 @@ function Login({ message, loginStatusCode }) {
 
   const handleNavigateCreateAccount = () => {
     navigate('./register')
+    dispatch({ type: RESET_CODE })
+
   }
 
 
@@ -133,21 +139,24 @@ function Login({ message, loginStatusCode }) {
   useEffect(() => {
     if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
       setLoading(false)
+      setTimeout(()=>{
+        dispatch({ type: RESET_CODE })
+      },5000)
+      
     }
   }, [state.Common.successCode, state.Common.code]);
 
 
 
-useEffect(() => {
-        const hostname = window.location.hostname;
-        const selectedKey =
-            hostname === "localhost"
-                ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
-                : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
-        setSiteKey(selectedKey)
-        console.log("key", selectedKey)
-
-    }, [])
+  useEffect(() => {
+    const hostname = window.location.hostname;
+    const selectedKey =
+      hostname === "localhost"
+        ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
+        : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
+    setSiteKey(selectedKey)
+    
+  }, [])
 
 
 
@@ -271,12 +280,19 @@ useEffect(() => {
                 <div>
                   <label className="text-[#205DA8] font-Gilroy text-sm font-medium">
                     <span
-                      onClick={() => navigate("/forgot-user-name")}
+                      onClick={() => {
+                        dispatch({ type: RESET_CODE });
+                        navigate("/forgot-user-name")
+                      }}
                       className="cursor-pointer hover:underline"
                     >
                       Username / Client ID
                     </span> / {""}
-                    <span onClick={() => navigate("/password")} className="cursor-pointer hover:underline">
+                    <span onClick={() => {
+                      dispatch({ type: RESET_CODE });
+                      navigate("/password")
+                    }
+                    } className="cursor-pointer hover:underline">
                       Password?
                     </span>
                   </label>

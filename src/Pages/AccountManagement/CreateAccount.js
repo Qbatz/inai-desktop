@@ -92,6 +92,7 @@ function CreateAccount() {
     useEffect(() => {
         if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
             setLoading(false)
+             dispatch({ type: RESET_CODE })
         }
     }, [state.Common.successCode, state.Common.code]);
 
@@ -120,8 +121,7 @@ function CreateAccount() {
                 ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
                 : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
         setSiteKey(selectedKey)
-        console.log("key", selectedKey)
-
+     
     }, [])
 
 

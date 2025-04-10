@@ -106,6 +106,10 @@ export const compareData = (a, b) => {
 
 
 
+export const GET_MASTER_REDUCER = "Get_Master_Reducer";
+export const GET_MASTER_SAGA = "Get_Master_Saga";
+
+
 
 
 

@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+// eslint-disable-next-line react/prop-types
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,7 +17,8 @@ function BankVendor(props) {
 
 
   const [loading, setLoading] = useState(false)
-  const [beneficiaryName, setBeneficiaryName] = useState("");
+  const [beneficiaryName, setBeneficiaryName] = useState(props?.basicDetails?.contactPersonName);
+  const [beneficiaryCurrency, setBeneficiaryCurrency] = useState('');
   const [accountNumber, setAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
   const [ifscCode, setIfscCode] = useState("");
@@ -30,15 +32,26 @@ function BankVendor(props) {
   const [bankAddress2, setBankAddress2] = useState('');
   const [bankAddress3, setBankAddress3] = useState('');
   const [formErrors, setFormErrors] = useState({});
-
-
+  const [rountingBankAddress, setRountingBankAddress] = useState('')
+  const [initialEditData, setInitialEditData] = useState(null);
 
 
   const handleBeneficiaryNameChange = (e) => {
     clearError("beneficiaryName");
     setBeneficiaryName(e.target.value)
   }
-    ;
+
+
+  const handleRoutingBankAddressChange = (e) => {
+    clearError("rountingBankAddress");
+    setRountingBankAddress(e.target.value)
+  }
+
+  const handleBeneficiaryCurrency = (e) => {
+    clearError("beneficiaryCurrency");
+    setBeneficiaryCurrency(e.target.value)
+  }
+
 
   const handleAccountNumberChange = (e) => {
     const value = e.target.value;
@@ -56,13 +69,7 @@ function BankVendor(props) {
     }
   };
 
-  // const handleBankBranchChange = (e) => {
-  //   const value = e.target.value;
-  //   if (/^[A-Za-z\s]*$/.test(value)) {
-  //     setBankBarnch(value);
-  //     clearError("bankBranch");
-  //   }
-  // };
+
 
   const handleIfscCodeChange = (e) => {
     clearError("ifscCode");
@@ -124,13 +131,14 @@ function BankVendor(props) {
     let errors = {};
 
     if (!beneficiaryName) errors.beneficiaryName = 'Beneficiary Name is required';
+    if (!beneficiaryCurrency) errors.beneficiaryCurrency = 'Beneficiary Currency is required';
     if (!accountNumber) errors.accountNumber = 'Account Number is required';
     if (accountNumber && !/^\d{9,18}$/.test(accountNumber)) {
       errors.accountNumber = 'Account Number must be 9-18 digits';
     }
+
     if (!bankName) errors.bankName = 'Bank Name is required';
     if (!ifscCode) errors.ifscCode = 'IFSC Code is required';
-    if (!swift) errors.swift = 'SWIFT Code is required';
     if (!bankAddress) errors.bankAddress = 'BankAddress is required';
 
     setFormErrors(errors);
@@ -150,25 +158,26 @@ function BankVendor(props) {
 
 
   const hanldeBackToAddress = () => {
-    const addresses = props?.payload?.address || [];
-
-
+    
     const bankDetails = {
-      name: beneficiaryName || "",
-      accountNo: accountNumber || "",
-      bankName: bankName || "",
-      ifscCode: ifscCode || "",
-      address1: bankAddress || "",
-      address2: bankAddress2 || "",
-      address3: bankAddress3 || "",
-      country: bankCountry || "",
-      routingBank: intermediaryBank || "",
-      swiftCode: swift || "",
-      routingBankAddress: intermediaryDetails || "",
-      routingAccountIndusand: iban || ""
+      name: beneficiaryName,
+      accountNo: accountNumber,
+      currency: beneficiaryCurrency,
+      bankName: bankName,
+      ifscCode: ifscCode,
+      address1: bankAddress,
+      address2: bankAddress2,
+      address3: bankAddress3,
+      country: bankCountry,
+      routingBank: intermediaryBank,
+      swiftCode: swift,
+      routingBankAddress: rountingBankAddress,
+      routingAccountIndusand: intermediaryDetails,
+      intermediary_swift_code: siftCode,
+      iban: iban,
     }
 
-    props.hanldeBackToAddress(2, addresses, bankDetails)
+    props.hanldeBackToAddress(2,bankDetails)
   }
 
 
@@ -177,10 +186,60 @@ function BankVendor(props) {
 
 
 
+  const isDataChanged = () => {
+    if (!initialEditData) return true;
+    const addresses = props?.addressInfo?.address || [];
+    const officeAddress = addresses[0] || {};
+    const shippingAddress = addresses[1] || {};
+
+    const currentData = {
+      businessName: props?.basicDetails?.businessName || "",
+      contactPersonName: props?.basicDetails?.contactPersonName || "",
+      contactNumber: props?.basicDetails?.contactNumber || "",
+      emailId: props?.basicDetails?.emailId || "",
+      designation: props?.basicDetails?.designation || "",
+      title: props?.basicDetails?.title,
+      country_code: props?.basicDetails?.country_code,
+      gstvat: props?.basicDetails?.gstvat || "",
+      additionalContactInfo: props?.basicDetails?.additionalContactInfo || [],
+      address_info: [officeAddress, shippingAddress],
+      bankDetails: {
+        name: beneficiaryName,
+        accountNo: accountNumber,
+        currency: beneficiaryCurrency,
+        bankName: bankName,
+        ifscCode: ifscCode,
+        address1: bankAddress,
+        address2: bankAddress2,
+        address3: bankAddress3,
+        country: bankCountry,
+        routingBank: intermediaryBank,
+        swiftCode: swift,
+        routingBankAddress: rountingBankAddress,
+        routingAccountIndusand: intermediaryDetails,
+        intermediary_swift_code: siftCode,
+        iban: iban,
+      }
+    };
+
+    return JSON.stringify(currentData) !== JSON.stringify(initialEditData);
+  };
+
+
 
   const handleSubmit = () => {
     if (validateForm()) {
-      const addresses = props?.payload?.address || [];
+      const addresses = props?.addressInfo?.address || [];
+
+      const officeAddress = addresses[0] || {};
+      const shippingAddress = addresses[1] || {};
+
+
+      if (props.vendorDetail && !isDataChanged()) {
+        setFormErrors({ general: "No changes detected" });
+        return;
+      }
+
       const AddPayload = {
         vendor_details: {
           basic_info: {
@@ -189,36 +248,45 @@ function BankVendor(props) {
             contactNumber: props?.basicDetails?.contactNumber || "",
             emailId: props?.basicDetails?.emailId || "",
             designation: props?.basicDetails?.designation || "",
+            title: props?.basicDetails?.title,
+            country_code: props?.basicDetails.country_code,
             gstvat: props?.basicDetails?.gstvat || ""
           },
           additionalContactInfo: props?.basicDetails?.additionalContactInfo || [],
 
           address_info: [
             {
-              doorNo: addresses[0]?.doorNo || "",
-              street: addresses[0]?.street || "",
-              locality: addresses[0]?.locality || "",
-              city: addresses[0]?.city || "",
-              postalCode: addresses[0]?.postalCode || "",
-              landMark: addresses[0]?.landMark || "",
-              mapLink: addresses[0]?.mapLink || "",
-              addressType: addresses[0]?.addressType || 1
+              doorNo: officeAddress.doorNo || "",
+              street: officeAddress.street || "",
+              locality: officeAddress.locality || "",
+              address4: officeAddress.address4 || "",
+              city: officeAddress.city || "",
+              state: officeAddress.state || "",
+              country: officeAddress.country || "",
+              postalCode: officeAddress.postalCode || "",
+              landMark: officeAddress.landMark || "",
+              mapLink: officeAddress.mapLink || "",
+              addressType: officeAddress.addressType || 1
             },
             {
-              doorNo: addresses[1]?.doorNo || "",
-              street: addresses[1]?.street || "",
-              locality: addresses[1]?.locality || "",
-              city: addresses[1]?.city || "",
-              postalCode: addresses[1]?.postalCode || "",
-              landMark: addresses[1]?.landMark || "",
-              mapLink: addresses[1]?.mapLink || "",
-              addressType: addresses[1]?.addressType || 2
+              doorNo: shippingAddress.doorNo || "",
+              street: shippingAddress.street || "",
+              locality: shippingAddress.locality || "",
+              address4: shippingAddress.address4 || "",
+              city: shippingAddress.city || "",
+              state: shippingAddress.state || "",
+              country: shippingAddress.country || "",
+              postalCode: shippingAddress.postalCode || "",
+              landMark: shippingAddress.landMark || "",
+              mapLink: shippingAddress.mapLink || "",
+              addressType: shippingAddress.addressType || 2
             }
           ],
 
-          bankDetails: {
+          bankDetails: [{
             name: beneficiaryName,
             accountNo: accountNumber,
+            currency: beneficiaryCurrency,
             bankName: bankName,
             ifscCode: ifscCode,
             address1: bankAddress,
@@ -227,9 +295,11 @@ function BankVendor(props) {
             country: bankCountry,
             routingBank: intermediaryBank,
             swiftCode: swift,
-            routingBankAddress: intermediaryDetails,
-            routingAccountIndusand: iban
-          }
+            routingBankAddress: rountingBankAddress,
+            routingAccountIndusand: intermediaryDetails,
+            intermediary_swift_code: siftCode,
+            iban: iban,
+          }]
         }
       };
 
@@ -240,43 +310,54 @@ function BankVendor(props) {
         contactNumber: props?.basicDetails?.contactNumber || "",
         emailId: props?.basicDetails?.emailId || "",
         designation: props?.basicDetails?.designation || "",
+        title: props?.basicDetails?.title,
+        country_code: props?.basicDetails?.country_code,
         gstvat: props?.basicDetails?.gstvat || "",
         additionalContactInfo: props?.basicDetails?.additionalContactInfo || [],
-        address: [
+        address_info: [
           {
-            doorNo: addresses[0]?.doorNo || "",
-            street: addresses[0]?.street || "",
-            locality: addresses[0]?.locality || "",
-            city: addresses[0]?.city || "",
-            postalCode: addresses[0]?.postalCode || "",
-            landMark: addresses[0]?.landMark || "",
-            mapLink: addresses[0]?.mapLink || "",
-            addressType: addresses[0]?.addressType || 1
+            doorNo: officeAddress.doorNo || "",
+            street: officeAddress.street || "",
+            locality: officeAddress.locality || "",
+            address4: officeAddress.address4 || "",
+            city: officeAddress.city || "",
+            state: officeAddress.state || "",
+            country: officeAddress.country || "",
+            postalCode: officeAddress.postalCode || "",
+            landMark: officeAddress.landMark || "",
+            mapLink: officeAddress.mapLink || "",
+            addressType: officeAddress.addressType || 1
           },
           {
-            doorNo: addresses[1]?.doorNo || "",
-            street: addresses[1]?.street || "",
-            locality: addresses[1]?.locality || "",
-            city: addresses[1]?.city || "",
-            postalCode: addresses[1]?.postalCode || "",
-            landMark: addresses[1]?.landMark || "",
-            mapLink: addresses[1]?.mapLink || "",
-            addressType: addresses[1]?.addressType || 2
+            doorNo: shippingAddress.doorNo || "",
+            street: shippingAddress.street || "",
+            locality: shippingAddress.locality || "",
+            address4: shippingAddress.address4 || "",
+            city: shippingAddress.city || "",
+            state: shippingAddress.state || "",
+            country: shippingAddress.country || "",
+            postalCode: shippingAddress.postalCode || "",
+            landMark: shippingAddress.landMark || "",
+            mapLink: shippingAddress.mapLink || "",
+            addressType: shippingAddress.addressType || 2
           }
         ],
         bankDetails: [{
-          name: beneficiaryName || "",
-          accountNo: accountNumber || "",
-          bankName: bankName || "",
-          ifscCode: ifscCode || "",
-          address1: bankAddress || "",
-          address2: bankAddress2 || "",
-          address3: bankAddress3 || "",
-          country: bankCountry || "",
-          routingBank: intermediaryBank || "",
-          swiftCode: swift || "",
-          routingBankAddress: intermediaryDetails || "",
-          routingAccountIndusand: iban || ""
+          name: beneficiaryName,
+          accountNo: accountNumber,
+          currency: beneficiaryCurrency,
+          bankName: bankName,
+          ifscCode: ifscCode,
+          address1: bankAddress,
+          address2: bankAddress2,
+          address3: bankAddress3,
+          country: bankCountry,
+          routingBank: intermediaryBank,
+          swiftCode: swift,
+          routingBankAddress: rountingBankAddress,
+          routingAccountIndusand: intermediaryDetails,
+          intermediary_swift_code: siftCode,
+          iban: iban,
         }]
       }
 
@@ -300,33 +381,7 @@ function BankVendor(props) {
   };
 
 
-  // const handleSaveClick = () => {
-  //   if (!validateForm()) return;
-  //   dispatch({
-  //     type: VENDOR_BANK_INFO_SAGA,
-  //     payload: {
-  //       vendorId: props?.vendorDetail?.vendorId || "",
-  //       bankDetails: [
-  //         {
-  //           name: beneficiaryName,
-  //           accountNo: accountNumber,
-  //           bankName: bankName,
-  //           ifscCode: ifscCode,
-  //           address1: bankAddress,
-  //           address2: bankAddress2,
-  //           address3: bankAddress3,
-  //           country: bankCountry,
-  //           routingBank: intermediaryBank,
-  //           swiftCode: swift,
-  //           routingBankAddress: intermediaryDetails,
-  //           routingAccountIndusand: iban
-  //         }
-  //       ]
-  //     }
-  //   });
 
-
-  // }
 
 
 
@@ -352,10 +407,13 @@ function BankVendor(props) {
 
 
   useEffect(() => {
-                if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-                    setLoading(false)
-                }
-            }, [state.Common?.successCode, state.Common?.code]);
+    if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+      setLoading(false)
+      setTimeout(() => {
+        dispatch({ type: RESET_CODE })
+      }, 5000)
+    }
+  }, [state.Common?.successCode, state.Common?.code]);
 
   useEffect(() => {
     if (state.Common.IsVisible === 1) {
@@ -364,11 +422,16 @@ function BankVendor(props) {
 
   }, [state.Common.IsVisible])
 
+
+
   useEffect(() => {
     if (props.vendorDetail?.bankDetails?.length > 0) {
       const bank = props.vendorDetail.bankDetails[0];
+      const addresses = props?.addressInfo?.address || [];
+
 
       setBeneficiaryName(bank.name || "");
+      setBeneficiaryCurrency(bank.currency || "");
       setAccountNumber(bank.accountNo || "");
       setBankName(bank.bankName || "");
       setIfscCode(bank.ifscCode || "");
@@ -376,12 +439,50 @@ function BankVendor(props) {
       setBankAddress2(bank.address2 || "");
       setBankAddress3(bank.address3 || "");
       setBankCountry(bank.country || "");
+      setRountingBankAddress(bank.routingBankAddress || "");
+      setSiftCode(bank.intermediary_swift_code || "");
       setIntermediaryBank(bank.routingBank || "");
       setSwift(bank.swiftCode || "");
-      setIntermediaryDetails(bank.routingBankAddress || "");
-      setIban(bank.routingAccountIndusand || "");
+      setIntermediaryDetails(bank.routingAccountIndusand || "");
+      setIban(bank.iban || "");
+
+
+      setInitialEditData({
+        businessName: props?.basicDetails?.businessName || "",
+        contactPersonName: props?.basicDetails?.contactPersonName || "",
+        contactNumber: props?.basicDetails?.contactNumber || "",
+        emailId: props?.basicDetails?.emailId || "",
+        designation: props?.basicDetails?.designation || "",
+        title: props?.basicDetails?.title,
+        country_code: props?.basicDetails?.country_code,
+        gstvat: props?.basicDetails?.gstvat || "",
+        additionalContactInfo: props?.basicDetails?.additionalContactInfo || [],
+        address_info: addresses,
+        bankDetails: {
+          name: bank.name || "",
+          accountNo: bank.accountNo || "",
+          currency: bank.currency || "",
+          bankName: bank.bankName || "",
+          ifscCode: bank.ifscCode || "",
+          address1: bank.address1 || "",
+          address2: bank.address2 || "",
+          address3: bank.address3 || "",
+          country: bank.country || "",
+          routingBank: bank.routingBank || "",
+          swiftCode: bank.swiftCode || "",
+          routingBankAddress: bank.routingBankAddress || "",
+          routingAccountIndusand: bank.routingAccountIndusand || "",
+          intermediary_swift_code: bank.intermediary_swift_code || "",
+          iban: bank.iban || "",
+        }
+      });
     }
   }, [props.vendorDetail]);
+
+
+
+
+
 
 
   useEffect(() => {
@@ -389,6 +490,7 @@ function BankVendor(props) {
       const bank = props.addressDetails?.bank;
 
       setBeneficiaryName(bank.name || "");
+      setBeneficiaryCurrency(bank.currency || "");
       setAccountNumber(bank.accountNo || "");
       setBankName(bank.bankName || "");
       setIfscCode(bank.ifscCode || "");
@@ -396,10 +498,12 @@ function BankVendor(props) {
       setBankAddress2(bank.address2 || "");
       setBankAddress3(bank.address3 || "");
       setBankCountry(bank.country || "");
+      setRountingBankAddress(bank.routingBankAddress || "");
+      setSiftCode(bank.intermediary_swift_code || "");
       setIntermediaryBank(bank.routingBank || "");
       setSwift(bank.swiftCode || "");
-      setIntermediaryDetails(bank.routingBankAddress || "");
-      setIban(bank.routingAccountIndusand || "");
+      setIntermediaryDetails(bank.routingAccountIndusand || "");
+      setIban(bank.iban || "");
     }
   }, [props.addressDetails]);
 
@@ -416,11 +520,15 @@ function BankVendor(props) {
             <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
           </div>
         )}
-
+        {formErrors.general && (
+          <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2 mb-3">
+            <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.general}
+          </p>
+        )}
 
         <div className='max-h-[250px] overflow-y-auto  
                           lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3'>
-          <div className='grid md:grid-cols-4 sm:grid-cols-2 gap-2'>
+          <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-2'>
 
 
             <div className='mb-2 items-center'>
@@ -431,30 +539,39 @@ function BankVendor(props) {
               <input
                 id='clientId'
                 type='text'
-                value={beneficiaryName}
+                value={props.vendorDetail ? beneficiaryName : props?.basicDetails?.contactPersonName}
                 onChange={handleBeneficiaryNameChange}
                 placeholder='Enter Beneficiary Name '
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
-              {/* <select
-                id='beneficiaryName'
-                value={beneficiaryName}
-                onChange={handleBeneficiaryNameChange}
-                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-              >
-                <option value="">Select Beneficiary</option>
-                <option value="USD">USD</option>
-                <option value="INR">INR</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="JPY">JPY</option>
-              </select> */}
+
               {formErrors.beneficiaryName && (
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryName} </p>)}
             </div>
 
+            <div className='mb-2 items-center '>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
 
+
+              <select
+                value={beneficiaryCurrency}
+                onChange={handleBeneficiaryCurrency}
+                className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                <option value="">Select beneficiary currency</option>
+                <option value="USD">USD</option>
+                <option value="INR">INR</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="JPY">JPY</option>
+
+              </select>
+
+              {formErrors.beneficiaryCurrency && (
+                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                  <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryCurrency} </p>)}
+
+            </div>
             <div className='mb-2  items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Number
                 <span className='text-red-500'>*</span> </label>
@@ -471,6 +588,15 @@ function BankVendor(props) {
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.accountNumber} </p>)}
             </div>
+
+
+          </div>
+
+
+          <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+
+
+
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Bank Name
                 <span className='text-red-500'>*</span>
@@ -488,23 +614,7 @@ function BankVendor(props) {
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankName} </p>)}
             </div>
-            {/* <div className='mb-2 items-center  '>
-              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Branch </label>
-              <input
-                id='clientId'
-                type='text'
-                value={bankBarnch}
-                onChange={handleBankBranchChange}
-                placeholder='Enter Bank Barnch'
-                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-              />
 
-            </div> */}
-
-          </div>
-
-
-          <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IFSC Code
                 <span className='text-red-500'>*</span>
@@ -523,9 +633,9 @@ function BankVendor(props) {
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.ifscCode} </p>)}
             </div>
             <div className='mb-2  items-center'>
-              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code
-                <span className='text-red-500'>*</span>
-              </label>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code  </label>
+
+
 
               <input
                 id='clientId'
@@ -539,18 +649,7 @@ function BankVendor(props) {
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.swift} </p>)}
             </div>
-            {/* <div className='mb-2 items-center'>
-              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>AD Code</label>
 
-              <input
-                id='clientId'
-                type='text'
-                value={adCode}
-                onChange={handleAdCodeChange}
-                placeholder='Enter AD Code'
-                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-              />
-            </div> */}
             <div className='mb-2 items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 1         <span className='text-red-500'>*</span></label>
 
@@ -617,11 +716,12 @@ function BankVendor(props) {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               >
                 <option value="">Select Bank Country</option>
+                <option value="India">India</option>
                 <option value="United States">United States</option>
                 <option value="Canada">Canada</option>
                 <option value="United Kingdom">United Kingdom</option>
                 <option value="Australia">Australia</option>
-                <option value="India">India</option>
+
               </select>
             </div>
 
@@ -638,11 +738,8 @@ function BankVendor(props) {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
             </div>
-          </div>
 
-
-          <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3'>
-            <div className='mb-2 items-center col-span-4'>
+            <div className='mb-2 items-center '>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code for intermediary Bank</label>
 
               <input
@@ -655,7 +752,27 @@ function BankVendor(props) {
               />
             </div>
 
-            <div className='mb-2  items-center col-span-8'>
+
+
+
+          </div>
+
+
+          <div className='grid md:grid-cols-2 sm:grid-cols-2 gap-3 mt-1'>
+
+            <div className='mb-2 items-center'>
+              <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address</label>
+
+              <input
+                type='text'
+                value={rountingBankAddress}
+                onChange={handleRoutingBankAddressChange}
+                placeholder='Enter Bank Address 3'
+                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+              />
+
+                         </div>
+            <div className='mb-2  items-center '>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Bank Account Number with Intermediary Bank </label>
 
               <input
@@ -669,11 +786,7 @@ function BankVendor(props) {
             </div>
 
 
-
-          </div>
-
-          <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3'>
-            <div className='mb-2  items-center col-span-8'>
+            <div className='mb-2  items-center'>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IBAN (International Bank Account Number)</label>
 
               <input
@@ -699,12 +812,6 @@ function BankVendor(props) {
 
 
           <div className="flex flex-col xs:flex-row sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-            {/* <button
-              type="button"
-              className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
-              onClick={handleSaveClick} >
-              Save & Exit
-            </button> */}
             <button className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
               onClick={handleSubmit}>
               Submit
@@ -721,11 +828,13 @@ function BankVendor(props) {
 }
 
 BankVendor.propTypes = {
-  payload: PropTypes.object.isRequired,
   hanldeBackToAddress: PropTypes.func,
   basicDetails: PropTypes.object,
   vendorDetail: PropTypes.object,
-  addressDetails: PropTypes.object
+  addressDetails: PropTypes.object,
+  addressInfo:PropTypes.object,
+  contactPerson:PropTypes.string
+
 }
 
 export default BankVendor

@@ -1,3 +1,4 @@
+
 import AxiosConfig from "../../WebService/AxiosConfig";
 
 
@@ -51,4 +52,6 @@ export async function DeleteVendor(del) {
 export async function ParticularVendor(vendorId) {
     return await AxiosConfig.get(`/usr/vendor/${vendorId}`); 
 }
+
+
 

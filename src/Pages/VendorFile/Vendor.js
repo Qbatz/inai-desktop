@@ -271,9 +271,7 @@ function VendorList() {
                   <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
                     <thead className="bg-slate-100 sticky top-0 z-10">
                       <tr>
-                        {/* <th className="px-4 py-2">
-                    <img src={Minus} alt='Minus' />
-                  </th> */}
+                       
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
@@ -287,11 +285,10 @@ function VendorList() {
                     <tbody className=" ">
                       {paginatedData.map((item, index) => (
                         <tr key={index} className="border-0">
-                          {/* <td className=" px-4 py-2"> <img src={Minus} alt='Minus' /></td> */}
-                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
-                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contactPersonName}</td>
+                                                   <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.title}.{item.contactPersonName}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.emailId}</td>
-                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.contactNumber}</td>
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">+{item.country_code}{item.contactNumber}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.Amount || '-'}</td>
                           <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
                             <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">

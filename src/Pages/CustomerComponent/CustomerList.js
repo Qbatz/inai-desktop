@@ -291,9 +291,9 @@ if(state.customer.customerList){
                 paginatedData.map((item, index) => (
                   <tr key={index} className="border-0">
                     <td className="text-[#205DA8] px-4 py-2 text-center text-sm font-medium font-Gilroy overflow-hidden hover:underline hover:cursor-pointer" onClick={() =>handleCustomerDetails (item.clientId)}>{item.businessName}</td>
-                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.contactPerson}</td>
+                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.title}.{item.contactPerson}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]" >{item.emailId}</td>
-                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.contactNumber}</td>
+                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">+{item.country_code}{item.contactNumber}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.Amount || '-'}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
                       <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">

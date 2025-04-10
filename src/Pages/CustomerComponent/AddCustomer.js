@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA, compareData } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
-import { InfoCircle } from "iconsax-react";
+import { InfoCircle ,ArrowDown2} from "iconsax-react";
 import PropTypes from 'prop-types';
 
 
@@ -961,20 +961,7 @@ function AddCustomer({ editCustomerDetails }) {
         if (!shippingAddress.postalCode?.trim()) addressErrors.shippostalCode = "Shipping Postal Code is required";
 
 
-        // bankDetailsList.forEach((bank, index) => {
-        //     let bankError = {};
-        //     if (!bank.beneficiaryCurrency?.trim()) bankError.beneficiaryCurrency = "Currency is required";
-        //     if (!bank.beneficiaryName?.trim()) bankError.beneficiaryName = "Name is required";
-        //     if (!bank.accountNumber?.trim()) bankError.accountNumber = "Account Number is required";
-        //     if (!bank.bankName?.trim()) bankError.bankName = "Bank Name is required";
-        //     if (!bank.ifscCode?.trim()) bankError.ifscCode = "IFSC Code is required";
-        //     // if (!bank.swiftCode?.trim()) bankError.swiftCode = "SWIFT Code is required";
-        //     if (!bank.bankAddress1?.trim()) bankError.bankAddress1 = "Bank Address1 is required"
-        //     if (Object.keys(bankError).length > 0) {
-        //         bankErrors[index] = bankError;
-        //         isValid = false;
-        //     }
-        // })
+
 
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
 
@@ -1040,22 +1027,7 @@ function AddCustomer({ editCustomerDetails }) {
                         addressType: 2,
                     },
                 ],
-                // bankDetails: bankDetailsList.map(bank => ({
-                //     name: bank.beneficiaryName,
-                //     currency: bank.beneficiaryCurrency,
-                //     accountNo: bank.accountNumber,
-                //     bankName: bank.bankName,
-                //     ifscCode: bank.ifscCode,
-                //     address1: bank.bankAddress1,
-                //     address2: bank.bankAddress2 || "",
-                //     routingBankAddress: bank.bankAddress || "",
-                //     country: bank.bankCountry || "",
-                //     routingBank: bank.intermediaryRoutingBank || "",
-                //     swiftCode: bank.swiftCode || "",
-                //     routingAccountIndusand: bank.intermediaryAccountNumber || "",
-                //     iban: bank.iban || "",
-                //     intermediary_swift_code: bank.intermediarySiftCode
-                // }))
+
 
             };
 
@@ -1265,10 +1237,10 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     return (
-        <div className='bg-slate-100 flex flex-1 flex-col ps-5 pt-3 pe-5'>
+        <div className='bg-slate-100 flex flex-1 flex-col ps-5 pt-3 pe-5 rounded-t-2xl '>
 
 
-            <div className='bg-white rounded-2xl ps-5 pt-3 pe-5 relative'>
+            <div className='bg-slate-100 rounded-2xl ps-5 pt-3 pe-5 relative'>
                 {loading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
                         <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
@@ -1568,18 +1540,29 @@ function AddCustomer({ editCustomerDetails }) {
                                         </div>
                                     )}
                                 </div>
-                                <div className='mb-2' >
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Legal Status of firm <span className='text-red-500'>*</span></label>
+                                <div className='mb-2 relative w-full'>
+                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                        Legal Status of firm <span className='text-red-500'>*</span>
+                                    </label>
                                     <select
                                         value={formData.legalStatus}
-                                        onChange={(e) => handleInputChange('legalStatus', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-500" >
-                                        <option value="" selected>Select Legal Status of firm</option>
+                                        onChange={(e) => handleInputChange('legalStatus', e.target.value)}
+                                        className="appearance-none w-full px-3 py-3 border rounded-xl focus:outline-none capitalize font-Gilroy font-medium text-sm text-neutral-500 pr-10"
+                                    >
+                                        <option value="">Select Legal Status of firm</option>
                                         <option value="PRIVATE LIMITED">PRIVATE LIMITED</option>
                                         <option value="LLT_LOW LATENCY TRANSSPORT">LLT_LOW LATENCY TRANSSPORT</option>
                                         <option value="PARTNERSHIP">PARTNERSHIP</option>
                                         <option value="PROPRIETORSHIP">PROPRIETORSHIP</option>
                                     </select>
 
+                                    <div className="pointer-events-none absolute top-[54px] right-3 transform -translate-y-1/2 flex items-center text-neutral-500">
+                                        <ArrowDown2
+                                            size="16"
+                                            color="#555555"
+                                        />
+                                    </div>
+                                    
                                     {errors.legalStatus && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                             <InfoCircle size={16} color="#DC2626" />

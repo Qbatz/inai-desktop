@@ -28,7 +28,7 @@ function BasicVendor({ vendorDetails }) {
     const [surName, setSurName] = useState("")
     const [countryCode, setCountryCode] = useState("")
     const [additionalContacts, setAdditionalContacts] = useState([
-        
+
     ]);
     const [formErrors, setFormErrors] = useState({});
     const [basicDetails, setBasicDetails] = useState('')
@@ -50,7 +50,7 @@ function BasicVendor({ vendorDetails }) {
     const [postalCode, setPostalCode] = useState("");
     const [landmark, setLandmark] = useState("");
     const [googleMap, setGoogleMap] = useState("");
- 
+
     const [shippingAddress1, setShippingAddress1] = useState("");
     const [shippingAddress2, setShippingAddress2] = useState('');
     const [shippingAddress3, setShippingAddress3] = useState('');
@@ -68,7 +68,7 @@ function BasicVendor({ vendorDetails }) {
 
 
 
-   
+
 
 
     const handleBackToAddress = (value, bankDetails) => {
@@ -86,10 +86,9 @@ function BasicVendor({ vendorDetails }) {
 
     const handleBusinessNameChange = (e) => {
         const value = e.target.value;
-        if (/^[A-Za-z\s]+$/.test(value) || value === "") {
-            setBusinessName(value);
-            setFormErrors((prevErrors) => ({ ...prevErrors, businessName: "" }));
-        }
+        setBusinessName(value);
+        setFormErrors((prevErrors) => ({ ...prevErrors, businessName: "" }));
+
 
     };
 
@@ -156,7 +155,7 @@ function BasicVendor({ vendorDetails }) {
     const validateForm = () => {
         let errors = {};
 
-        if (!businessName?.trim()) errors.businessName = "Business Name is required";
+        if (!businessName) errors.businessName = "Business Name is required";
         if (!surName) errors.surName = "Title is required";
         if (!contactPerson?.trim()) errors.contactPerson = "Contact Person is required";
         if (!countryCode) errors.countryCode = "countryCode is required";
@@ -202,7 +201,7 @@ function BasicVendor({ vendorDetails }) {
                 if (!contact.designation?.trim()) {
                     errors[`additionalDesignation${index}`] = `Designation is required`;
                 }
-            } 
+            }
         });
 
 
@@ -242,9 +241,10 @@ function BasicVendor({ vendorDetails }) {
 
 
         const filteredInitial = fieldsToCompare.reduce((acc, key) => {
-            acc[key] = initialValues[key];
+            acc[key] = initialValues ? initialValues[key] : '';
             return acc;
         }, {});
+
 
 
         const isChanged = JSON.stringify(current) !== JSON.stringify(filteredInitial);
@@ -363,8 +363,6 @@ function BasicVendor({ vendorDetails }) {
     ];
 
     const handleTabClick = (id) => {
-        const isFormValid = validateForm();
-        const isAddressValid = validateFormAddress();
 
         const formattedAdditionalContacts = additionalContacts.map(contact => ({
             title: contact.surName,
@@ -388,8 +386,8 @@ function BasicVendor({ vendorDetails }) {
             additionalContactInfo: formattedAdditionalContacts,
         }
 
-        if (id === 3) {
-            if (isFormValid && isAddressValid) {
+        if (Number(id) === Number(3)) {
+            if (validateForm() && validateFormAddress()) {
                 setBasicDetails(payload);
                 const payloadData = {
                     vendorId: state.vendor.vendorId,
@@ -428,8 +426,8 @@ function BasicVendor({ vendorDetails }) {
 
                 setActiveTab(3);
             }
-        } else if (id === 2) {
-            if (isFormValid) {
+        } else if (Number(id) === Number(2)) {
+            if (validateForm()) {
                 setBasicDetails(payload);
                 setActiveTab(2);
             }
@@ -722,95 +720,95 @@ function BasicVendor({ vendorDetails }) {
 
     // Address Info save & exit
 
-    
 
 
-const handleSaveClickAddress = () => {
-    if (validateFormAddress()) {
-        if (vendorDetails) {
-            const currentAddress = [
-                {
-                    doorNo: officeAddress1,
-                    street: officeAddress2,
-                    locality: officeAddress3,
-                    address4: officeAddress4,
-                    city: city,
-                    state: officeState,
-                    country: country,
-                    postalCode: postalCode,
-                    landMark: landmark,
-                    mapLink: googleMap,
-                    addressType: 1
-                },
-                {
-                    doorNo: shippingAddress1,
-                    street: shippingAddress2,
-                    locality: shippingAddress3,
-                    address4: shippingAddress4,
-                    city: shippingCity,
-                    state: shippingState,
-                    country: shippingCountry,
-                    postalCode: shippingPostalCode,
-                    landMark: shippingLandmark,
-                    mapLink: shippingGoogleMap,
-                    addressType: 2
+
+    const handleSaveClickAddress = () => {
+        if (validateFormAddress()) {
+            if (vendorDetails) {
+                const currentAddress = [
+                    {
+                        doorNo: officeAddress1,
+                        street: officeAddress2,
+                        locality: officeAddress3,
+                        address4: officeAddress4,
+                        city: city,
+                        state: officeState,
+                        country: country,
+                        postalCode: postalCode,
+                        landMark: landmark,
+                        mapLink: googleMap,
+                        addressType: 1
+                    },
+                    {
+                        doorNo: shippingAddress1,
+                        street: shippingAddress2,
+                        locality: shippingAddress3,
+                        address4: shippingAddress4,
+                        city: shippingCity,
+                        state: shippingState,
+                        country: shippingCountry,
+                        postalCode: shippingPostalCode,
+                        landMark: shippingLandmark,
+                        mapLink: shippingGoogleMap,
+                        addressType: 2
+                    }
+                ];
+
+                const officeAddress = vendorDetails.address.find(addr => addr.addressType === "Office Address" || addr.addressType === 1) || {};
+                const shippingAddress = vendorDetails.address.find(addr => addr.addressType === "Shipping Address" || addr.addressType === 2) || {};
+
+                const initialAddress = [
+                    {
+                        doorNo: officeAddress.doorNo || "",
+                        street: officeAddress.street || "",
+                        locality: officeAddress.locality || "",
+                        address4: officeAddress.address4 || "",
+                        city: officeAddress.city || "",
+                        state: officeAddress.state || "",
+                        country: officeAddress.country || "",
+                        postalCode: officeAddress.postalCode || "",
+                        landMark: officeAddress.landMark || "",
+                        mapLink: officeAddress.mapLink || "",
+                        addressType: 1
+                    },
+                    {
+                        doorNo: shippingAddress.doorNo || "",
+                        street: shippingAddress.street || "",
+                        locality: shippingAddress.locality || "",
+                        address4: shippingAddress.address4 || "",
+                        city: shippingAddress.city || "",
+                        state: shippingAddress.state || "",
+                        country: shippingAddress.country || "",
+                        postalCode: shippingAddress.postalCode || "",
+                        landMark: shippingAddress.landMark || "",
+                        mapLink: shippingAddress.mapLink || "",
+                        addressType: 2
+                    }
+                ];
+
+                const isChanged = JSON.stringify(currentAddress) !== JSON.stringify(initialAddress);
+
+                if (!isChanged) {
+                    setFormErrors({ general: "No changes detected" });
+                    return;
                 }
-            ];
 
-            const officeAddress = vendorDetails.address.find(addr => addr.addressType === "Office Address" || addr.addressType === 1) || {};
-            const shippingAddress = vendorDetails.address.find(addr => addr.addressType === "Shipping Address" || addr.addressType === 2) || {};
 
-            const initialAddress = [
-                {
-                    doorNo: officeAddress.doorNo || "",
-                    street: officeAddress.street || "",
-                    locality: officeAddress.locality || "",
-                    address4: officeAddress.address4 || "",
-                    city: officeAddress.city || "",
-                    state: officeAddress.state || "",
-                    country: officeAddress.country || "",
-                    postalCode: officeAddress.postalCode || "",
-                    landMark: officeAddress.landMark || "",
-                    mapLink: officeAddress.mapLink || "",
-                    addressType: 1
-                },
-                {
-                    doorNo: shippingAddress.doorNo || "",
-                    street: shippingAddress.street || "",
-                    locality: shippingAddress.locality || "",
-                    address4: shippingAddress.address4 || "",
-                    city: shippingAddress.city || "",
-                    state: shippingAddress.state || "",
-                    country: shippingAddress.country || "",
-                    postalCode: shippingAddress.postalCode || "",
-                    landMark: shippingAddress.landMark || "",
-                    mapLink: shippingAddress.mapLink || "",
-                    addressType: 2
-                }
-            ];
+                const payload = {
+                    vendorId: vendorDetails?.vendorId || "",
+                    address: currentAddress
+                };
 
-            const isChanged = JSON.stringify(currentAddress) !== JSON.stringify(initialAddress);
+                dispatch({
+                    type: VENDOR_ADDRESS_INFO_SAGA,
+                    payload: payload
+                });
 
-            if (!isChanged) {
-                setFormErrors({ general: "No changes detected" });
-                return;
+                setLoading(true);
             }
-
-          
-            const payload = {
-                vendorId: vendorDetails?.vendorId || "",
-                address: currentAddress
-            };
-
-            dispatch({
-                type: VENDOR_ADDRESS_INFO_SAGA,
-                payload: payload
-            });
-
-            setLoading(true);
         }
-    }
-};
+    };
 
 
 
@@ -835,7 +833,6 @@ const handleSaveClickAddress = () => {
             setShippingPostalCode("");
             setShippingLandmark("");
             setShippingGoogleMap("");
-            //   dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
             dispatch({ type: RESET_CODE });
             dispatch({ type: RESET_VENDOR_ID })
         }
@@ -876,7 +873,7 @@ const handleSaveClickAddress = () => {
 
 
     return (
-        <div className="bg-blueGray-100  w-full">
+        <div className="bg-slate-100  w-full rounded-t-2xl ">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4 relative">
                 <div className="flex items-center justify-between pe-12 mb-4">
                     <h3 className="font-semibold text-xl font-Gilroy">{vendorDetails ? 'Edit Vendor' : 'Add Vendor'}</h3>
@@ -887,7 +884,7 @@ const handleSaveClickAddress = () => {
                     </div>
                 )}
 
-                <div className="sticky top-0  z-10 overflow-x-auto">
+                <div className="sticky top-0  z-10 overflow-x-auto bg-slate-100">
                     <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">
                         {tabs.map((tab) => (
                             <button
@@ -970,10 +967,25 @@ const handleSaveClickAddress = () => {
                                                 className="px-3 py-3 border w-full border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                             />
                                         </div>
-
-                                        {formErrors.contactPerson && (
+                                        {formErrors.surName && formErrors.contactPerson ? (
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.contactPerson} </p>)}
+                                                Title and Name are required
+                                            </p>
+                                        ) : (
+                                            <>
+                                                {formErrors.surName && (
+                                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.surName}
+                                                    </p>
+                                                )}
+                                                {formErrors.contactPerson && (
+                                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.contactPerson}
+                                                    </p>
+                                                )}
+                                            </>
+                                        )}
+
                                     </div>
 
 
@@ -1612,7 +1624,7 @@ const handleSaveClickAddress = () => {
 
                     </div>
                     }
-                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails}  vendorDetail={vendorDetails} addressDetails={addressDetails} contactPerson={contactPerson} addressInfo={addressInfo} /></div>}
+                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} vendorDetail={vendorDetails} addressDetails={addressDetails} contactPerson={contactPerson} addressInfo={addressInfo} /></div>}
                 </div>
             </div>
         </div>

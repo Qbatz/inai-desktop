@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
 import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2 } from "iconsax-react";
@@ -11,10 +12,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import AddCustomer from './AddCustomer';
 import DeleteCustomer from './DeleteCustomer';
 import { RESET_CODE, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
-import CustomerDetails from './CustomerDetails'
 import { useNavigate } from 'react-router-dom';
 
-function CustomerList({ item } ) {
+function CustomerList() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,15 +30,12 @@ function CustomerList({ item } ) {
   const [showDeleteCustomer, setShowDeleteCustomer] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [showAddCustomer, setShowAddCustomer] = useState(false)
   const [editCustomerDetails, setEditCustomerDetails] = useState('')
   const [deleteCustomerId, setDeleteCustomerId] = useState('')
   const [customerList, setCustomerList] = useState([])
-  const [showCustomerDetails, setShowCustomerDetails] = useState(false)
-  const [particularCustomerDetails, setParticularCustomerDetails] = useState(false)
-
-
+ 
   const paginatedData = customerList.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -60,10 +57,7 @@ function CustomerList({ item } ) {
   };
 
   const handleAddCustomer = () => {
-    // setShowAddCustomer(true)
-    // setIsVisible(false)
-    // setEditCustomerDetails('')
-    navigate('/add-customer')
+       navigate('/add-customer')
   }
 
 
@@ -132,7 +126,7 @@ function CustomerList({ item } ) {
     if (state.Common.successCode === 200) {
 
       setCustomerList(state.customer.customerList)
-      // setLoading(false)
+      setLoading(false)
       setIsVisible(true)
       setShowAddCustomer(false)
       setShowDeleteCustomer(false)
@@ -142,6 +136,17 @@ function CustomerList({ item } ) {
     }
 
   }, [state.Common.successCode])
+
+
+  useEffect(()=>{
+if(state.customer.customerList){
+  setCustomerList(state.customer.customerList)
+}
+  },[state.customer.customerList])
+
+
+
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -159,6 +164,7 @@ function CustomerList({ item } ) {
 
   useEffect(() => {
     if (state.customer.successCode === 200) {
+      dispatch({ type: GET_CUSTOMER_LIST_SAGA });
       setShowDeleteCustomer(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE });
@@ -167,9 +173,7 @@ function CustomerList({ item } ) {
   }, [state.customer.successCode]);
 
   const handleCustomerDetails = (customerId) => {
-    // updateProps(customerId)
-    // updateActiveItems('add_customer')
-    navigate(`/customer-details/${customerId}`)
+       navigate(`/customer-details/${customerId}`)
   }
 
 
@@ -179,11 +183,11 @@ function CustomerList({ item } ) {
   return (
     <div className='bg-slate-100 flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0'>
 
-      {/* {loading && (
+      {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
           <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
         </div>
-      )} */}
+      )}
 
       {isVisible && <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative'>
 
@@ -287,9 +291,9 @@ function CustomerList({ item } ) {
                 paginatedData.map((item, index) => (
                   <tr key={index} className="border-0">
                     <td className="text-[#205DA8] px-4 py-2 text-center text-sm font-medium font-Gilroy overflow-hidden hover:underline hover:cursor-pointer" onClick={() =>handleCustomerDetails (item.clientId)}>{item.businessName}</td>
-                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.contactPerson}</td>
+                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.title}.{item.contactPerson}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]" >{item.emailId}</td>
-                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.contactNumber}</td>
+                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">+{item.country_code}{item.contactNumber}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.Amount || '-'}</td>
                     <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
                       <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
@@ -382,10 +386,7 @@ function CustomerList({ item } ) {
       {showDeleteCustomer && <DeleteCustomer handleClose={handleCloseForDeleteCustomer} deleteCustomerId={deleteCustomerId} />}
    
    
-      {showCustomerDetails &&
-                <CustomerDetails particularCustomerDetails={particularCustomerDetails} />
-              }
-   
+        
    
     </div>
   );

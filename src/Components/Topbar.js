@@ -1,3 +1,4 @@
+import React from "react";
 import Profile from "../Asset/Images/Profile_S.svg";
 import DownArrow from '../Asset/Icon/arrow-down.svg';
 import Notification from '../Asset/Icon/notification.svg';
@@ -30,8 +31,8 @@ export default function Navbar() {
                 <div className="flex items-center space-x-2">
                     <img src={Profile} alt="Profile" className="w-6 h-6 sm:w-8 sm:h-8" />
                     <div className="hidden md:block">
-                        <p className="text-xs sm:text-sm font-semibold">Rakul Preet</p>
-                        <p className="text-[10px] sm:text-xs text-gray-500">rakulpreet@gmail.com</p>
+                        <p className="text-xs sm:text-sm font-semibold font-Gilroy">Rakul Preet</p>
+                        <p className="text-[10px] sm:text-xs text-gray-500 font-Gilroy">rakulpreet@gmail.com</p>
                     </div>
                     <button className="text-gray-600">
                         <img src={DownArrow} alt="DownArrow" className="w-3 sm:w-4" />

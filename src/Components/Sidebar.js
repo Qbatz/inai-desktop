@@ -21,7 +21,7 @@ import { Chart2, LoginCurve, Setting2, I24Support, Receipt1, Receipt2 } from "ic
 import { useDispatch} from 'react-redux';
 import { LOG_OUT } from "../Utils/Constant";
 import { encryptData } from "../Crypto/crypto";
-import { Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
+import { Route,  Routes, useNavigate } from "react-router-dom";
 import AddCustomer from "../Pages/CustomerComponent/AddCustomer";
 import BasicVendor from "../Pages/VendorFile/BasicVendor";
 import VendorDetails from "../Pages/VendorFile/VendorDetails";
@@ -36,11 +36,9 @@ function Sidebar() {
     const [activeItem, setActiveItem] = useState("dashboard");
 
     const [isLogout, setIsLogout] = useState(false)
-    const [values, setValues] = useState(null)
+   
 
-    const updateProps =(p)=>{
-      setValues(p)
-    }
+    
 
     const handleConfirmLogout = () => {
         dispatch({ type: LOG_OUT });
@@ -58,9 +56,7 @@ function Sidebar() {
         setIsLogout(false)
     }
 
-  const updateActiveItems = (item) => {
-   setActiveItem(item)
-}
+  
 
   
 
@@ -166,8 +162,8 @@ function Sidebar() {
 
 
                     <div className="hidden sm:hidden md:hidden lg:flex flex-col">
-                        <p className="text-sm font-semibold">Rakul Preet</p>
-                        <p className="text-xs text-gray-500">rakulpreet@gmail.com</p>
+                        <p className="text-sm font-semibold font-Gilroy">Rakul Preet</p>
+                        <p className="text-xs text-gray-500 font-Gilroy">rakulpreet@gmail.com</p>
                     </div>
 
 
@@ -237,14 +233,14 @@ function Sidebar() {
 
 
             <div className={`fixed inset-0  z-50 flex items-center justify-center ${isLogout ? "visible" : "hidden"} bg-black bg-opacity-50`}>
-                <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6">
+                <div className="bg-white rounded-lg shadow-lg w-[388px] h-[180px] p-6 pb-[6px] ">
                     <div className="flex justify-center border-b-0">
-                        <h2 className="text-[18px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">
+                        <h2 className="text-[20px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">
                             Logout?
                         </h2>
                     </div>
 
-                    <div className="text-center text-[14px] text-[#646464] font-medium mt-[20px] font-Gilroy">
+                    <div className="text-center text-[14px] text-[#646464] font-medium mt-[10px] font-Gilroy">
                         Are you sure you want to Logout?
                     </div>
 

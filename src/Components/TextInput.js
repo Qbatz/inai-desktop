@@ -7,10 +7,6 @@ const TextInput = ({placeholder, value, title, callback = ''}) => {
     const handleChange = (e) => {
         const inputValue = e.target.value;
         callback(inputValue);
-    
-               if (inputValue === "") {
-          
-        }
       };
     
     return <div className='w-full ps-4 '>

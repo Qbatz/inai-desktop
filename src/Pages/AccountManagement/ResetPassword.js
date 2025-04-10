@@ -24,7 +24,7 @@ const ReSetPassword = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState({});
     const [success, setSuccess] = useState(false);
-    const [verifycode, setverifycode] = useState('')
+    
 
 
     const location = useLocation();
@@ -119,7 +119,7 @@ const ReSetPassword = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = () => {
 
 
         if (validateForm()) {

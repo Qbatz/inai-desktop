@@ -6,6 +6,7 @@ export const initialState = {
    otpValue: 0,
    verifyCode: '',
    isTrue: false,
+   emailId: '',
 }
 
 const SignUpReducer = (state = initialState, action) => {
@@ -13,7 +14,7 @@ const SignUpReducer = (state = initialState, action) => {
    switch (action.type) {
 
       case SIGN_UP_VERIFICATION_REDUCER:
-         return { ...state, is_verified: action.payload.is_verified }
+         return { ...state, is_verified: action.payload.is_verified , emailId: action.payload.emailId}
 
       case OTP_SEND_REDUCER:
          return { ...state, otpValue: action.payload.response.otp }
@@ -21,7 +22,7 @@ const SignUpReducer = (state = initialState, action) => {
          return { ...state, verifyCode: action.payload || '' }
 
       case ACCOUNT_REGISTER_REDUCER:
-         return { ...state, isTrue: true }
+         return { ...state, isTrue: true , is_verified: null}
 
       default:
          return state;

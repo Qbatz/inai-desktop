@@ -1,14 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import Login from './Pages/AccountManagement/Login'
-import FormDisplay from './FormBuilderComponent/FormDisplay';
 import './App.css'
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import AddCustomer from './Pages/CustomerComponent/AddCustomer';
 import CreateAccount from './Pages/AccountManagement/CreateAccount';
 import ForgotUserName from './Pages/AccountManagement/ForgotUserName';
 import Sidebar from './Components/Sidebar';
-import CustomerDetails from './Pages/CustomerComponent/CustomerDetails';
-import ForgotClientId from './Pages/AccountManagement/ForgotClientId'
 import ForgotPassword from './Pages/AccountManagement/ForgotPassword';
 import SignUp from './Pages/AccountManagement/SignUp'
 import { ToastContainer } from 'react-toastify';
@@ -76,45 +73,32 @@ function App({ isLogged_In }) {
   return (
     <div>
       <ToastContainer position="top-right"
-        autoClose={2000}
-        hideProgressBar={true}
-        closeButton={false}
-        closeOnClick={true}
-        pauseOnHover={true}
-        draggable={true}
-        progress={undefined}
-        style={{ fontFamily: "Gilroy", fontSize: "14px" }} />
-      
-          <Router>
-          {
-            isLogged_In || successLogin ? (
-              <>
-                  <Sidebar />
-                
-                {/* <Route path="/" element={<Sidebar />} />
-                <Route path="/form-display" element={<FormDisplay />} />
-                <Route path="/add-customer" element={<AddCustomer />} />
-                <Route path="/customer-details" element={<CustomerDetails />} />
-                <Route path="*" element={<Navigate to="/" replace />} /> */}
-              </>
+      />
+
+      <Router>
+        {
+          isLogged_In || successLogin ? (
+            <>
+              <Sidebar />
+
+            </>
+          )
+            :
+            (
+              <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/register" element={<CreateAccount />} />
+                <Route path="/forgot-user-name" element={<ForgotUserName />} />
+                <Route path="/password" element={<ForgotPassword />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
             )
-              :
-              (
-                <Routes>
-                  <Route path="/" element={<Login />} />
-                  <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/sign-up" element={<SignUp />} />
-                  <Route path="/register" element={<CreateAccount />} />
-                  <Route path="/forgot-user-name" element={<ForgotUserName />} />
-                  <Route path="/forgot-client-id" element={<ForgotClientId />} />
-                  <Route path="/password" element={<ForgotPassword />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                  </Routes>
-              )
-          }
-          </Router>
-         
-        
+        }
+      </Router>
+
+
     </div>
   );
 }

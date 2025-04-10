@@ -7,34 +7,40 @@ function* handleCreateAccount(action) {
 
     try {
         const response = yield call(CreateAction, action.payload);
+        
+
         if (response?.success || response?.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { response } });
         }
         else if (response?.status === 400) {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Invalid request" } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Invalid request" , statusCode: response.status} });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong" } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message || 'An unexpected error occurred';
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage , statusCode  } });
     }
 }
+
 
 
 function* handleVerification(action) {
     try {
         const response = yield call(Verification, action.payload);
-        if (response?.success || response?.status === 200) {
-            yield put({ type: SIGN_UP_VERIFICATION_REDUCER, payload: { is_verified: response.data.data.is_verified } });
+
+           if (response?.success || response?.status === 200) {
+            yield put({ type: SIGN_UP_VERIFICATION_REDUCER, payload: { is_verified: response.data.data.is_verified, emailId: response.data.data.email} });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message,statusCode: response.status } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage , statusCode  } });
     }
 }
 
@@ -46,11 +52,12 @@ function* handleSendOtp(action) {
             yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message } });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message,statusCode: response.status } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage , statusCode  } });
     }
 }
 
@@ -63,11 +70,12 @@ function* handleOtpVerified(action) {
             yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status } });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message ,statusCode: response.status} });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage , statusCode  } });
     }
 }
 
@@ -80,11 +88,12 @@ function* handleAccountRegister(action) {
             yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status } });
         }
         else {
-            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message } });
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message,statusCode: response.status } });
         }
     } catch (error) {
         const errorMessage = error?.response?.data?.message || error?.message;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage } });
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage , statusCode  } });
     }
 }
 

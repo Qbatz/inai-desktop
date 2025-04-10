@@ -9,7 +9,7 @@ export const initialState = {
 }
 
 const CustomerReducer = (state = initialState, action) => {
-    console.log("Dispatched Action:", action);
+
 
     switch (action.type) {
         case GET_CUSTOMER_LIST_REDUCER:
@@ -22,7 +22,7 @@ const CustomerReducer = (state = initialState, action) => {
 
         case GET_CUSTOMER_DETAILS_REDUCER:
 
-            return { ...state, customerDetails: action.payload };
+            return { ...state, customerDetails: action.payload.customers};
 
 
 

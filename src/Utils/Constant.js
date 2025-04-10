@@ -97,6 +97,17 @@ export const GET_CUSTOMER_DETAILS_SAGA = "Get_Customer_Details_Saga";
 
 
 
+export const compareData = (a, b) => {
+    return a.length > 0 && b.length > 0 && a === b
+}
+
+
+
+
+
+
+export const GET_MASTER_REDUCER = "Get_Master_Reducer";
+export const GET_MASTER_SAGA = "Get_Master_Saga";
 
 
 

@@ -21,11 +21,12 @@ function CreateAccount() {
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
-
-
+    const [loading, setLoading] = useState(false)
+    const [siteKey, setSiteKey] = useState('')
 
 
     const handleEmailChange = (e) => {
+        setErrorMessage('')
         const value = e.target.value.toLowerCase();
         setEmail(value);
         setFormError((prevErrors) => ({ ...prevErrors, email: "" }));
@@ -40,16 +41,18 @@ function CreateAccount() {
     };
 
     const handleCaptchaChange = (value) => {
+        setErrorMessage('')
         setCaptchaValue(value);
         setFormError((prevErrors) => ({ ...prevErrors, captcha: "" }));
     };
 
     const handleSubmit = (e) => {
+        setErrorMessage('')
         e.preventDefault();
         let errors = { email: "", captcha: "" };
         if (email && captchaValue) {
             dispatch({ type: CREATE_ACCOUNT_API_CALL, payload: { email: email, recaptcha: captchaValue } })
-
+            setLoading(true)
         }
 
         if (!email) {
@@ -73,23 +76,31 @@ function CreateAccount() {
 
     useEffect(() => {
         if (emailid) {
-            setEmail("");
+            setLoading(false)
+            setErrorMessage('')
             setCaptchaValue(null);
             const timer = setTimeout(() => {
                 dispatch({ type: RESET_CODE });
-            }, 3000);
+            }, 5000);
 
             return () => clearTimeout(timer);
         }
-    }, [emailid, dispatch]);
+    }, [emailid]);
 
 
 
+    useEffect(() => {
+        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
+            setLoading(false)
+             dispatch({ type: RESET_CODE })
+        }
+    }, [state.Common.successCode, state.Common.code]);
 
 
     useEffect(() => {
         setErrorMessage(state?.Common?.errorMessage)
     }, [state.Common.errorMessage])
+
 
 
 
@@ -99,12 +110,19 @@ function CreateAccount() {
         if (verifyCode) {
             dispatch({ type: SIGN_UP_VERIFICATION_SAGA, payload: { verify_code: verifyCode } })
             dispatch({ type: STORE_VERIFY_CODE, payload: verifyCode })
-        } else {
-        }
+        } 
     }, []);
 
 
-
+    useEffect(() => {
+        const hostname = window.location.hostname;
+        const selectedKey =
+            hostname === "localhost"
+                ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
+                : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
+        setSiteKey(selectedKey)
+     
+    }, [])
 
 
 
@@ -112,15 +130,20 @@ function CreateAccount() {
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center p-4'>
 
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                    <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                </div>
+            )}
             <div className='bg-white  h-auto max-w-6xl rounded-3xl shadow-lg !mt-[8px] !mb-[10px]'>
 
                 {emailid && (
-                    <div className="p-6 text-center">
-                        <h2 className="text-[#0AEB7A]"> <span className="text-[#77DAA9] text-lg font-semibold">Success!</span>
+                    <div className="p-6 text-center font-Gilroy">
+                        <h2 className="text-[#0AEB7A] font-Gilroy"> <span className="text-[#77DAA9] text-lg font-semibold font-Gilroy">Success!</span>
 
-                            Check your email <span className="font-bold">{emailid}</span> to complete the registration.
+                            Check your email <span className="font-bold font-Gilroy">{emailid}</span> to complete the registration.
                             Check your Junk/Spam folder.
-                            Add <span className="font-semibold">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
+                            Add <span className="font-semibold font-Gilroy">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
                         </h2>
 
                     </div>)}
@@ -167,6 +190,7 @@ function CreateAccount() {
                                             id="userId"
                                             type="text"
                                             name="username"
+                                            value={email}
                                             onChange={handleEmailChange}
                                             autoComplete="username"
                                             autoCorrect="off"
@@ -182,10 +206,12 @@ function CreateAccount() {
 
                                     <div className="mt-6 flex flex-col items-center justify-center">
 
-                                        <ReCAPTCHA
-                                            sitekey='6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k'
-                                            onChange={handleCaptchaChange}
-                                        />
+                                        {siteKey && (
+                                            <ReCAPTCHA
+                                                sitekey={siteKey}
+                                                onChange={handleCaptchaChange}
+                                            />
+                                        )}
 
 
                                         {formError.captcha && (

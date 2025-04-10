@@ -14,7 +14,7 @@ function ClientIDChange() {
     const state = useSelector(state => state)
 
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
-
+    const [siteKey, setSiteKey] = useState('')
     const resetPassword = useSelector(state => state?.Common?.resetPassword);
     const [email, setEmail] = useState("");
     const [formError, setFormError] = useState({ email: "", captcha: "" });
@@ -92,8 +92,16 @@ function ClientIDChange() {
         }
     }, [resetPassword, dispatch]);
 
-   
 
+    useEffect(() => {
+        const hostname = window.location.hostname;
+        const selectedKey =
+            hostname === "localhost"
+                ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
+                : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
+        setSiteKey(selectedKey)
+
+    }, [])
 
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center '>
@@ -152,10 +160,12 @@ function ClientIDChange() {
 
                             <div className="mt-6 flex flex-col items-center justify-center">
 
-                                <ReCAPTCHA
-                                    sitekey='6LcBN_4qAAAAAMYr7-fAVE1Xe-P1q1_ZD1dA3u7k'
-                                    onChange={handleCaptchaChange}
-                                />
+                                {siteKey && (
+                                    <ReCAPTCHA
+                                        sitekey={siteKey}
+                                        onChange={handleCaptchaChange}
+                                    />
+                                )}
 
 
                                 {formError.captcha && (

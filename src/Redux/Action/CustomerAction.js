@@ -10,7 +10,7 @@ export async function CreateCustomer(basic) {
   
 
   export async function EditCustomer(edit) {
-    return await AxiosConfig.patch('/usr/client/vendorUniqueId',edit,{
+    return await AxiosConfig.patch(`/usr/client/${edit.clientId}`,edit,{
      data: edit
     })
   }

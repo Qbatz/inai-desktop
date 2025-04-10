@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 
 
-function Radio({ id, name, value, checked, key, callback = '' }) {
+function Radio({ name, value, checked, key, callback = '' }) {
 
 
 
@@ -29,7 +29,7 @@ Radio.propTypes = {
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
-    Checked: PropTypes.bool.isRequired,
+    checked: PropTypes.bool.isRequired,
     key: PropTypes.number.isRequired,
     callback: PropTypes.func
 }

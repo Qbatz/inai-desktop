@@ -1,13 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { InfoCircle } from "iconsax-react";
-import { RESET_VENDOR_ID,VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA } from '../../Utils/Constant';
+import { RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA, RESET_CODE, VENDOR_SAGA, compareData } from '../../Utils/Constant';
 import { useDispatch, useSelector } from 'react-redux';
-
+import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 
 function AddressVendor(props) {
   const dispatch = useDispatch();
   const stateData = useSelector(state => state)
+
+
+  const navigate = useNavigate()
+
+
 
   const [officeAddress1, setOfficeAddress1] = useState("");
   const [officeAddress2, setOfficeAddress2] = useState('');
@@ -30,6 +37,7 @@ function AddressVendor(props) {
   const [shippingLandmark, setShippingLandmark] = useState("");
   const [shippingGoogleMap, setShippingGoogleMap] = useState("");
   const [sameAsOffice, setSameAsOffice] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const handleBackToBasic = () => {
     props.handleBack(1)
@@ -110,7 +118,7 @@ function AddressVendor(props) {
 
     if (e.target.checked) {
       setShippingAddress1(officeAddress1);
-         setShippingAddress2(officeAddress2);
+      setShippingAddress2(officeAddress2);
       setShippingAddress3(officeAddress3);
       setShippingCity(city);
       setShippingState(state);
@@ -177,46 +185,73 @@ function AddressVendor(props) {
 
   };
 
+  useEffect(() => {
+    if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+      setLoading(false)
+    }
+  }, [state.Common?.successCode, state.Common?.code]);
+
+
+  useEffect(() => {
+    if (state.Common?.IsVisible === 1) {
+      navigate('/vendor')
+    }
+
+  }, [state.Common?.IsVisible])
+
+  useEffect(() => {
+      if (compareData(officeAddress1, shippingAddress1 ) && compareData(officeAddress2, shippingAddress2) && compareData(officeAddress3, shippingAddress3) && compareData(city, city)) {
+        setSameAsOffice(true)
+      }
+      else {
+        setSameAsOffice(false)
+      }
+  }, [officeAddress1, officeAddress2, officeAddress3, city, shippingAddress1, shippingAddress2, shippingAddress3, city])
+
+
+
+
   const handleSaveClick = () => {
     if (validateForm()) {
 
-      if(props.vendorDetails){
-
-    
-      const payload = {
-        vendorId: props.vendorDetails?.vendorId || "",
-        address: [
-          {
-            doorNo: officeAddress1,
-            street: officeAddress2,
-            locality: officeAddress3,
-            city: city,
-            postalCode: postalCode,
-            landMark: landmark,
-            mapLink: googleMap,
-            addressType: 1
-          },
-          {
-            doorNo: shippingAddress1,
-            street: shippingAddress2,
-            locality: shippingAddress3,
-            city: shippingCity,
-            postalCode: shippingPostalCode,
-            landMark: shippingLandmark,
-            mapLink: shippingGoogleMap,
-            addressType: 2
-          }
-        ]
-      };
+      if (props.vendorDetails) {
 
 
-      dispatch({
-        type: VENDOR_ADDRESS_INFO_SAGA,
-        payload: payload
-      });
-    }else{
+        const payload = {
+          vendorId: props.vendorDetails?.vendorId || "",
+          address: [
+            {
+              doorNo: officeAddress1,
+              street: officeAddress2,
+              locality: officeAddress3,
+              city: city,
+              postalCode: postalCode,
+              landMark: landmark,
+              mapLink: googleMap,
+              addressType: 1
+            },
+            {
+              doorNo: shippingAddress1,
+              street: shippingAddress2,
+              locality: shippingAddress3,
+              city: shippingCity,
+              postalCode: shippingPostalCode,
+              landMark: shippingLandmark,
+              mapLink: shippingGoogleMap,
+              addressType: 2
+            }
+          ]
+        };
 
-    }
+
+        dispatch({
+          type: VENDOR_ADDRESS_INFO_SAGA,
+          payload: payload
+        });
+
+
+        setLoading(true)
+      } 
 
     }
   }
@@ -243,7 +278,7 @@ function AddressVendor(props) {
       setShippingGoogleMap("");
       dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
       dispatch({ type: RESET_CODE });
-      dispatch({ type: RESET_VENDOR_ID})
+      dispatch({ type: RESET_VENDOR_ID })
     }
   }, [stateData.Common.successCode]);
 
@@ -261,8 +296,8 @@ function AddressVendor(props) {
       setPostalCode(officeAddress.postalCode || "");
       setLandmark(officeAddress.landMark || "");
       setGoogleMap(officeAddress.mapLink || "");
-  
-   
+
+
       setShippingAddress1(shippingAddress.doorNo || "");
       setShippingAddress2(shippingAddress.street || "");
       setShippingAddress3(shippingAddress.locality || "");
@@ -273,15 +308,51 @@ function AddressVendor(props) {
       setShippingLandmark(shippingAddress.landMark || "");
       setShippingGoogleMap(shippingAddress.mapLink || "");
     }
-  }, [props.vendorDetails]); 
-  
+  }, [props.vendorDetails]);
+
+
+
+
+  useEffect(() => {
+    if (props.addressDetails && props.addressDetails.address) {
+      const officeAddress = props.addressDetails.address.find(addr => addr.addressType === 1) || {};
+      const shippingAddress = props.addressDetails.address.find(addr => addr.addressType === 2) || {};
+
+      setOfficeAddress1(officeAddress.doorNo || "");
+      setOfficeAddress2(officeAddress.street || "");
+      setOfficeAddress3(officeAddress.locality || "");
+      setCity(officeAddress.city || "");
+      setState(officeAddress.state || "");
+      setCountry(officeAddress.country || "");
+      setPostalCode(officeAddress.postalCode || "");
+      setLandmark(officeAddress.landMark || "");
+      setGoogleMap(officeAddress.mapLink || "");
+
+
+      setShippingAddress1(shippingAddress.doorNo || "");
+      setShippingAddress2(shippingAddress.street || "");
+      setShippingAddress3(shippingAddress.locality || "");
+      setShippingCity(shippingAddress.city || "");
+      setShippingState(shippingAddress.state || "");
+      setShippingCountry(shippingAddress.country || "");
+      setShippingPostalCode(shippingAddress.postalCode || "");
+      setShippingLandmark(shippingAddress.landMark || "");
+      setShippingGoogleMap(shippingAddress.mapLink || "");
+    }
+  }, [props.addressDetails]);
+
+
 
 
   return (
     <div>
-      <div className='bg-white rounded-2xl h-auto '>
+      <div className='bg-white rounded-2xl h-auto  relative'>
 
-
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+            <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+          </div>
+        )}
         <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Address Information</h2>
         <div className='max-h-[250px] overflow-y-auto  
                           lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3'>
@@ -591,16 +662,16 @@ function AddressVendor(props) {
           </button>
 
           <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
-           
-           {
-            props.vendorDetails &&  <button
-            type="button"
-            className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
-            onClick={handleSaveClick} >
-            Save & Exit
-          </button>
-           }
-           
+
+            {
+              props.vendorDetails && <button
+                type="button"
+                className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
+                onClick={handleSaveClick} >
+                Save & Exit
+              </button>
+            }
+
             <button
               className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat  text-base font-medium  font-Montserrat"
               onClick={handleNext}
@@ -617,6 +688,13 @@ function AddressVendor(props) {
       </div>
     </div>
   )
+}
+
+AddressVendor.propTypes = {
+  handleBack: PropTypes.func.isRequired,
+  handleNextToBank: PropTypes.func.isRequired,
+  vendorDetails: PropTypes.object,
+  addressDetails: PropTypes.object
 }
 
 export default AddressVendor

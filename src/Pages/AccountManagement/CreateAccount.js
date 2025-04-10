@@ -23,7 +23,7 @@ function CreateAccount() {
     const [captchaValue, setCaptchaValue] = useState(null);
     const [loading, setLoading] = useState(false)
     const [siteKey, setSiteKey] = useState('')
-
+    const [message, setMessage] = useState(false);
 
     const handleEmailChange = (e) => {
         setErrorMessage('')
@@ -56,7 +56,7 @@ function CreateAccount() {
         }
 
         if (!email) {
-            errors.email = "Email is required.";
+            errors.email = "Email is required";
         } else {
             const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
             if (!emailRegex.test(email)) {
@@ -64,7 +64,7 @@ function CreateAccount() {
             }
         }
         if (!captchaValue) {
-            errors.captcha = "Please verify that you are not a robot.";
+            errors.captcha = "Please verify that you are not a robot";
         }
         if (errors.email || errors.captcha) {
             setFormError(errors);
@@ -92,7 +92,10 @@ function CreateAccount() {
     useEffect(() => {
         if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
             setLoading(false)
-             dispatch({ type: RESET_CODE })
+
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 8000)
         }
     }, [state.Common.successCode, state.Common.code]);
 
@@ -110,7 +113,7 @@ function CreateAccount() {
         if (verifyCode) {
             dispatch({ type: SIGN_UP_VERIFICATION_SAGA, payload: { verify_code: verifyCode } })
             dispatch({ type: STORE_VERIFY_CODE, payload: verifyCode })
-        } 
+        }
     }, []);
 
 
@@ -121,9 +124,21 @@ function CreateAccount() {
                 ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
                 : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
         setSiteKey(selectedKey)
-     
+
     }, [])
 
+
+
+    useEffect(() => {
+        if (state.signUp.isTrue) {
+            setMessage(true);
+            setTimeout(() => {
+                setMessage(false);
+            }, 8000)
+
+        }
+
+    }, [state.signUp.isTrue])
 
 
 
@@ -137,12 +152,18 @@ function CreateAccount() {
             )}
             <div className='bg-white  h-auto max-w-6xl rounded-3xl shadow-lg !mt-[8px] !mb-[10px]'>
 
+
+
+
+
+
+
                 {emailid && (
                     <div className="p-6 text-center font-Gilroy">
                         <h2 className="text-[#0AEB7A] font-Gilroy"> <span className="text-[#77DAA9] text-lg font-semibold font-Gilroy">Success!</span>
 
-                            Check your email <span className="font-bold font-Gilroy">{emailid}</span> to complete the registration.
-                            Check your Junk/Spam folder.
+                            Check your email <span className="font-bold font-Gilroy">{emailid}</span> to complete the registration
+                            Check your Junk/Spam folder
                             Add <span className="font-semibold font-Gilroy">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
                         </h2>
 
@@ -165,6 +186,15 @@ function CreateAccount() {
 
                     </div>
                     <div className="flex flex-col items-center justify-center m-3">
+
+
+                        {message && <div className='mb-3'>
+                            <label className="text-green-600 font-Gilroy font-medium text-sm flex text-start gap-1 mb-3" ><b>Mail Verified</b>
+                            </label>
+                            <label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3">Successfully, We have created a unique Client ID.<br />Please check your registered email and log in to proceed with registration</label>
+                        </div>}
+
+
                         <div className="flex flex-col items-start">
                             <div className="flex justify-start items-start mb-2">
                                 <img src={InaiLogo} alt="INAI Logo" className="h-auto w-auto" />

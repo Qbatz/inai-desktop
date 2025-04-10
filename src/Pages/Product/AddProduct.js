@@ -16,7 +16,7 @@ import { MdError } from "react-icons/md";
 
 
 
-export default function AddProduct() {
+   function AddProduct() {
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [images, setImages] = useState([]);
@@ -52,7 +52,7 @@ export default function AddProduct() {
         if (!formData.serialNo) {
             setFormData((prev) => ({ ...prev, serialNo: serialNo.toString() }));
         }
-    },[formData.serialNo]);
+    },[formData.serialNo, serialNo]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -128,6 +128,8 @@ export default function AddProduct() {
             <CalendarDays className="text-gray-400 ml-2" size={18} />
         </div>
     ));
+    
+    CustomInput.displayName = "CustomInput";
 
     const PrevArrow = (props) => {
         const { onClick } = props;
@@ -207,7 +209,7 @@ export default function AddProduct() {
         setDisplayItems(updatedItems);
     }
 
-    const textInputCallbackForName = (title, newValue) => {
+    const textInputCallbackForName = () => {
 
     };
 
@@ -847,3 +849,9 @@ export default function AddProduct() {
         </div>
     );
 }
+AddProduct.propTypes = {
+    value: PropTypes.string,
+    onClick: PropTypes.func,
+    placeholder: PropTypes.string,
+  };
+export default AddProduct;

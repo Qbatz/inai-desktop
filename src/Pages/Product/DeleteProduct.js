@@ -6,10 +6,10 @@ import React from 'react'
 function DeleteProduct({ handleClose, deleteProductId }) {
 
 
-    const handleDeleteProduct = () => {
-        if (deleteProductId) {
-        }
-    }
+    // const handleDeleteProduct = () => {
+    //     if (deleteProductId) {
+    //     }
+    // }
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -36,7 +36,7 @@ function DeleteProduct({ handleClose, deleteProductId }) {
                         Cancel
                     </button>
                     <button
-                        onClick={handleDeleteProduct}
+                        // onClick={handleDeleteProduct}
                         className="w-[160px] h-[52px] rounded-lg bg-[#205DA8] text-white font-semibold text-[14px] font-Montserrat"
 
                     >
@@ -47,5 +47,9 @@ function DeleteProduct({ handleClose, deleteProductId }) {
         </div>
     )
 }
+DeleteProduct.propTypes = {
+    handleClose: PropTypes.func.isRequired,
+    deleteProductId: PropTypes.string.isRequired,
+};
 
 export default DeleteProduct;

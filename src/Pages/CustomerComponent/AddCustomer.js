@@ -2,9 +2,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA } from '../../Utils/Constant';
+import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA, compareData } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
 import { InfoCircle } from "iconsax-react";
+import PropTypes from 'prop-types';
 
 
 function AddCustomer({ editCustomerDetails }) {
@@ -13,7 +14,9 @@ function AddCustomer({ editCustomerDetails }) {
     const dispatch = useDispatch();
     const state = useSelector(state => state)
     const [loading, setLoading] = useState(false)
-    const [isInitialSet, setIsInitialSet] = useState(false);
+    const [isInitialSet, setIsInitialSet] = useState(false);    
+    const [contactAddressSameAsOfficeAddress, setContactAddressSameAsOfficeAddress] = useState(false)
+
     const navigate = useNavigate()
     const [isSameAsOffice, setIsSameAsOffice] = useState(false);
     const [value, setValue] = useState(1);
@@ -313,6 +316,7 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
     const handleSameAsOffice = (e) => {
+        setContactAddressSameAsOfficeAddress(!contactAddressSameAsOfficeAddress)
         const checked = e.target.checked;
         setIsSameAsOffice(checked);
 
@@ -1789,9 +1793,6 @@ function AddCustomer({ editCustomerDetails }) {
 
                                 <button onClick={handleSaveAndExit} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
 
-
-
-
                                 <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
                             </div>
                         </div>
@@ -2452,4 +2453,7 @@ function AddCustomer({ editCustomerDetails }) {
     )
 }
 
+AddCustomer.propTypes = {
+    editCustomerDetails: PropTypes.object
+}
 export default AddCustomer

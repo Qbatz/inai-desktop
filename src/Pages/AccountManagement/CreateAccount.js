@@ -110,8 +110,7 @@ function CreateAccount() {
         if (verifyCode) {
             dispatch({ type: SIGN_UP_VERIFICATION_SAGA, payload: { verify_code: verifyCode } })
             dispatch({ type: STORE_VERIFY_CODE, payload: verifyCode })
-        } else {
-        }
+        } 
     }, []);
 
 

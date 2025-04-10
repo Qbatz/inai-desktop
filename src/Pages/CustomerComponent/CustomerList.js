@@ -14,7 +14,7 @@ import DeleteCustomer from './DeleteCustomer';
 import { RESET_CODE, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
 
-function CustomerList({ item } ) {
+function CustomerList() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();

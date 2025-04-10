@@ -325,7 +325,8 @@ function Login({ message, loginStatusCode }) {
 
               <div className="text-start mt-1">
                 <p className="text-black font-Montserrat font-normal text-base">
-                  Don't have an account?{' '}
+                  {`Don't have an account?`}&nbsp;
+                 
                   <span
                     onClick={handleNavigateCreateAccount}
                     className=" cursor-pointer text-[#205DA8] hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat"

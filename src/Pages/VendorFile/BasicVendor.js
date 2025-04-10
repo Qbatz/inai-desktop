@@ -5,6 +5,7 @@ import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA } from "../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 
 function BasicVendor({ vendorDetails }) {
@@ -1652,4 +1653,8 @@ const handleSaveClickAddress = () => {
     );
 }
 
+
+BasicVendor.propTypes = {
+    vendorDetails: PropTypes.object
+}
 export default BasicVendor;

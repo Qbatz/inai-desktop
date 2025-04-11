@@ -13,7 +13,7 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
 import { RESET_CODE, VENDOR_SAGA, RESET_VENDOR_ID } from '../../Utils/Constant'
 import { useNavigate } from 'react-router-dom';
-
+import moment from "moment";
 
 function VendorList() {
 
@@ -22,7 +22,7 @@ function VendorList() {
   const state = useSelector(state => state)
   const navigate = useNavigate()
 
-
+  const [searchTerm, setSearchTerm] = useState('');
 
   const [showPicker, setShowPicker] = useState(false);
   const [isVisible, setIsVisible] = useState(true)
@@ -37,7 +37,9 @@ function VendorList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [vendorDetails, setVendorDetails] = useState('')
   const [deleteVendorId, setDeleteVendorId] = useState('')
-    const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const [dateRange, setDateRange] = useState([
     {
@@ -49,11 +51,22 @@ function VendorList() {
 
   const paginatedData = vendorList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(vendorList.length / itemsPerPage);
+  const [hasSelectedBoth, setHasSelectedBoth] = useState(false);
 
   const handleSelect = (ranges) => {
-
+    setDateRange([])
+    const startDate = ranges.selection.startDate;
+    const endDate = ranges.selection.endDate;
+    const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
+    const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
+    setStartDate(formattedStartDate);
+    setEndDate(formattedEndDate);
     setDateRange([ranges.selection]);
-    setShowPicker(false);
+    if (startDate && endDate && startDate !== endDate && !hasSelectedBoth) {
+      setShowPicker(false);
+      setHasSelectedBoth(true);
+    }
+
   };
 
 
@@ -108,8 +121,10 @@ function VendorList() {
     navigate(`/vendor-details/${item}`)
   }
 
-  
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  }
   // useEffect/////////////////////////////////////////////
 
 
@@ -154,7 +169,7 @@ function VendorList() {
 
 
   useEffect(() => {
-    dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
+    dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } })
   }, [])
 
 
@@ -173,7 +188,42 @@ function VendorList() {
   }, [state.Common.successCode])
 
 
-  
+  useEffect(() => {
+    const delayApi = setTimeout(() => {
+      if (searchTerm.trim() !== "") {
+        dispatch({
+          type: VENDOR_SAGA,
+          payload: { searchKeyword: searchTerm.trim() },
+        });
+      } else {
+        dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } })
+      }
+    }, 500);
+
+    return () => clearTimeout(delayApi);
+  }, [searchTerm]);
+
+
+
+  useEffect(() => {
+    const delayApi = setTimeout(() => {
+      if (startDate && endDate && startDate !== endDate) {
+        dispatch({
+          type: VENDOR_SAGA,
+          payload: { startDate: startDate, endDate: endDate },
+        });
+        setShowPicker(false)
+      } else {
+        dispatch({ type: VENDOR_SAGA, payload: { startDate: null, endDate: null } })
+      }
+    }, 500);
+
+    return () => clearTimeout(delayApi);
+  }, [startDate, endDate]);
+
+
+
+
 
   return (
 
@@ -219,7 +269,9 @@ function VendorList() {
                   />
                   <input
                     type="text"
-                    placeholder='Search by ID, Support, or others'
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    placeholder='Search by name'
                     className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
                   />
                 </div>
@@ -236,7 +288,7 @@ function VendorList() {
                 </div>
                 <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
                   <div
-                    className="flex items-center cursor-pointer"
+                    className="flex items-center cursor-pointer bg-dark"
                     onClick={() => setShowPicker(!showPicker)}
                   >
                     <Calendar
@@ -272,7 +324,7 @@ function VendorList() {
                   <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
                     <thead className="bg-slate-100 sticky top-0 z-10">
                       <tr>
-                       
+
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
@@ -284,9 +336,9 @@ function VendorList() {
                       </tr>
                     </thead>
                     <tbody className=" ">
-                      {paginatedData.map((item, index) => (
+                      {paginatedData.length > 0 ? paginatedData?.map((item, index) => (
                         <tr key={index} className="border-0">
-                                                   <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.title}.{item.contactPersonName}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.emailId}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">+{item.country_code}{item.contactNumber}</td>
@@ -322,7 +374,20 @@ function VendorList() {
                           </td>
 
                         </tr>
-                      ))}
+                      ))
+                    
+                      :
+
+                      <tr>
+                      <td colSpan="6" className="text-center text-red-600 font-Gilroy py-4">
+                        No Data Found
+                      </td>
+                    </tr>
+                    
+                    
+                    
+                    
+                    }
                     </tbody>
                   </table>
                 </div>
@@ -379,7 +444,7 @@ function VendorList() {
           <DeleteVendor handleClose={handleCloseForDeleteVedor} deleteVendorId={deleteVendorId} />
         }
 
-       
+
 
 
 

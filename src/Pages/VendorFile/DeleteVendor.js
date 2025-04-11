@@ -22,7 +22,7 @@ function DeleteCustomer({ handleClose, deleteVendorId }) {
     useEffect(() => {
         if (state.Common.successCode === 200) {
             setLoading(false)
-            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
+            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } })
 
             dispatch({ type: RESET_CODE })
         }

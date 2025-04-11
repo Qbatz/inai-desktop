@@ -399,7 +399,7 @@ function BankVendor(props) {
       setSwift("");
       setIntermediaryDetails("");
       setIban("");
-      dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
+      dispatch({ type: VENDOR_SAGA  , payload: { searchKeyword: "" }})
       dispatch({ type: RESET_CODE });
       dispatch({ type: RESET_VENDOR_ID })
     }

@@ -13,13 +13,15 @@ import AddCustomer from './AddCustomer';
 import DeleteCustomer from './DeleteCustomer';
 import { RESET_CODE, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
+
 
 function CustomerList() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const state = useSelector(state => state);
-  
+
 
   const [showPicker, setShowPicker] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -35,14 +37,17 @@ function CustomerList() {
   const [editCustomerDetails, setEditCustomerDetails] = useState('')
   const [deleteCustomerId, setDeleteCustomerId] = useState('')
   const [customerList, setCustomerList] = useState([])
- 
+  const [hasSelectedBoth, setHasSelectedBoth] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
   const paginatedData = customerList.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-  
-  const totalPages = Math.ceil(customerList.length / itemsPerPage);
 
+  const totalPages = Math.ceil(customerList.length / itemsPerPage);
+  const [searchTerm, setSearchTerm] = useState('');
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -52,33 +57,34 @@ function CustomerList() {
   ]);
 
   const handleSelect = (ranges) => {
+    setDateRange([])
+    const startDate = ranges.selection.startDate;
+    const endDate = ranges.selection.endDate;
+    const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
+    const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
+    setStartDate(formattedStartDate);
+    setEndDate(formattedEndDate);
     setDateRange([ranges.selection]);
-    setShowPicker(false);
+    if (startDate && endDate && startDate !== endDate && !hasSelectedBoth) {
+      setShowPicker(false);
+      setHasSelectedBoth(true);
+    }
+
   };
 
   const handleAddCustomer = () => {
-       navigate('/add-customer')
+    navigate('/add-customer')
   }
 
-
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  }
   const handleCloseAddCustomer = () => {
     setShowAddCustomer(false)
     setIsVisible(true)
   }
 
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
-        setShowPicker(false);
-      }
-    };
 
-    if (showPicker) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showPicker]);
 
   const handleShowPopup = (id, event) => {
     const { top, left, height } = event.target.getBoundingClientRect();
@@ -121,7 +127,19 @@ function CustomerList() {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
+        setShowPicker(false);
+      }
+    };
 
+    if (showPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showPicker]);
   useEffect(() => {
     if (state.Common.successCode === 200) {
 
@@ -138,14 +156,47 @@ function CustomerList() {
   }, [state.Common.successCode])
 
 
-  useEffect(()=>{
-if(state.customer.customerList){
-  setCustomerList(state.customer.customerList)
-}
-  },[state.customer.customerList])
+  useEffect(() => {
+    const delayApi = setTimeout(() => {
+      if (searchTerm.trim() !== "") {
+        dispatch({
+          type: GET_CUSTOMER_LIST_SAGA,
+          payload: { searchKeyword: searchTerm.trim() },
+        });
+      } else {
+        dispatch({
+          type: GET_CUSTOMER_LIST_SAGA,
+          payload: { searchKeyword: "" },
+        });
+      }
+    }, 500);
+
+    return () => clearTimeout(delayApi);
+  }, [searchTerm]);
 
 
+  useEffect(() => {
+    if (state.customer.customerList) {
+      setCustomerList(state.customer.customerList)
+    }
+  }, [state.customer.customerList])
 
+
+useEffect(() => {
+    const delayApi = setTimeout(() => {
+      if (startDate && endDate && startDate !== endDate) {
+        dispatch({
+          type: GET_CUSTOMER_LIST_SAGA,
+          payload: { startDate: startDate, endDate: endDate },
+        });
+        setShowPicker(false)
+      } else {
+        dispatch({ type:GET_CUSTOMER_LIST_SAGA, payload: { startDate: null, endDate: null } })
+      }
+    }, 500);
+
+    return () => clearTimeout(delayApi);
+  }, [startDate, endDate]);
 
 
   useEffect(() => {
@@ -159,12 +210,12 @@ if(state.customer.customerList){
   }, []);
 
   useEffect(() => {
-    dispatch({ type: GET_CUSTOMER_LIST_SAGA });
+    dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { searchKeyword: "" } });
   }, []);
 
   useEffect(() => {
     if (state.customer.successCode === 200) {
-      dispatch({ type: GET_CUSTOMER_LIST_SAGA });
+      dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { searchKeyword: "" } });
       setShowDeleteCustomer(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE });
@@ -173,7 +224,7 @@ if(state.customer.customerList){
   }, [state.customer.successCode]);
 
   const handleCustomerDetails = (customerId) => {
-       navigate(`/customer-details/${customerId}`)
+    navigate(`/customer-details/${customerId}`)
   }
 
 
@@ -211,7 +262,9 @@ if(state.customer.customerList){
             />
             <input
               type="text"
-              placeholder='Search by ID, Support, or others'
+              value={searchTerm}
+              onChange={handleSearchChange}
+              placeholder='Search by Name'
               className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
             />
           </div>
@@ -263,68 +316,68 @@ if(state.customer.customerList){
           className="flex-1 flex flex-col"
         >
           <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[350px] overflow-y-auto p-0 mt-4 mb-extra'>
-          <table
+            <table
 
-            className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]"
-          >
-            <thead className="bg-slate-100 sticky top-0 z-10">
-              <tr>
-                <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
-                <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
-                <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
-                <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Mobile no</th>
-                <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Receivable Amount</th>
-                <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy"></th>
-
-
-              </tr>
-            </thead>
-
-            <tbody className="">
-              {paginatedData.length === 0 ? (
+              className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]"
+            >
+              <thead className="bg-slate-100 sticky top-0 z-10">
                 <tr>
-                  <td colSpan="6" className="text-center text-red-600 font-Gilroy py-4">
-                    No Data Found
-                  </td>
+                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
+                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
+                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
+                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Mobile no</th>
+                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Receivable Amount</th>
+                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy"></th>
+
+
                 </tr>
-              ) : (
-                paginatedData.map((item, index) => (
-                  <tr key={index} className="border-0">
-                    <td className="text-[#205DA8] px-4 py-2 text-center text-sm font-medium font-Gilroy overflow-hidden hover:underline hover:cursor-pointer" onClick={() =>handleCustomerDetails (item.clientId)}>{item.businessName}</td>
-                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.title}.{item.contactPerson}</td>
-                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]" >{item.emailId}</td>
-                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">+{item.country_code}{item.contactNumber}</td>
-                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.Amount || '-'}</td>
-                    <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
-                      <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
-                        <HiOutlineDotsVertical className="text-black p-0" />
-                        {showPopup === index && (
-                          <div
-                            ref={popupRef}
-                            style={{
-                              position: "fixed",
-                              top: popupPosition.top,
-                              left: popupPosition.left,
-                              zIndex: 50,
-                            }}
-                            className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
-                          >
-                            <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy" onClick={() => handleEditCustomer(item)}>
-                              <Edit size="16" color="#205DA8" /> Edit
-                            </div>
-                            <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700" onClick={() => handleDeleteCustomerPopup(item.clientId)}>
-                              <Trash size="16" color="#B91C1C" /> Delete
-                            </div>
-                          </div>
-                        )}
-                      </div>
+              </thead>
+
+              <tbody className="">
+                {paginatedData.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="text-center text-red-600 font-Gilroy py-4">
+                      No Data Found
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
+                ) : (
+                  paginatedData.map((item, index) => (
+                    <tr key={index} className="border-0">
+                      <td className="text-[#205DA8] px-4 py-2 text-center text-sm font-medium font-Gilroy overflow-hidden hover:underline hover:cursor-pointer" onClick={() => handleCustomerDetails(item.clientId)}>{item.businessName}</td>
+                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.title}.{item.contactPerson}</td>
+                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]" >{item.emailId}</td>
+                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">+{item.country_code}{item.contactNumber}</td>
+                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.Amount || '-'}</td>
+                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
+                        <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">
+                          <HiOutlineDotsVertical className="text-black p-0" />
+                          {showPopup === index && (
+                            <div
+                              ref={popupRef}
+                              style={{
+                                position: "fixed",
+                                top: popupPosition.top,
+                                left: popupPosition.left,
+                                zIndex: 50,
+                              }}
+                              className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
+                            >
+                              <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy" onClick={() => handleEditCustomer(item)}>
+                                <Edit size="16" color="#205DA8" /> Edit
+                              </div>
+                              <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700" onClick={() => handleDeleteCustomerPopup(item.clientId)}>
+                                <Trash size="16" color="#B91C1C" /> Delete
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
 
-          </table>
+            </table>
           </div>
         </div>
 
@@ -384,10 +437,10 @@ if(state.customer.customerList){
 
 
       {showDeleteCustomer && <DeleteCustomer handleClose={handleCloseForDeleteCustomer} deleteCustomerId={deleteCustomerId} />}
-   
-   
-        
-   
+
+
+
+
     </div>
   );
 }

@@ -1,14 +1,6 @@
 
 import AxiosConfig from "../../WebService/AxiosConfig";
 
-
-export async function VendorAction(vendor) {
-  return await AxiosConfig.get('/usr/vendor',vendor, {
-   data:vendor
-  })
-}
-
-
 export async function AddBasicInfoVendor(basic) {
   return await AxiosConfig.post('/usr/vendor/addBasicInfo',basic,{
    data: basic
@@ -54,4 +46,27 @@ export async function ParticularVendor(vendorId) {
 }
 
 
+
+export async function VendorAction(vendor) {
+
+  let queryParams = '';
+
+    if (vendor.startDate && vendor.endDate) {
+    queryParams = new URLSearchParams({
+          startDate: vendor.startDate || '',
+      endDate: vendor.endDate || ''
+    }).toString();
+  } else if (vendor.searchKeyword) {
+      queryParams = new URLSearchParams({
+      searchKeyword: vendor.searchKeyword || ''
+    }).toString();
+  }
+
+  if (!vendor.startDate && !vendor.endDate && !vendor.searchKeyword) {
+    return await AxiosConfig.get('/usr/vendor');
+  }
+
+
+  return await AxiosConfig.get(`/usr/vendor?${queryParams}`);
+}
 

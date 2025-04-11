@@ -2,10 +2,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA, compareData } from '../../Utils/Constant';
+import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA, compareData, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
-import { InfoCircle ,ArrowDown2} from "iconsax-react";
+import { InfoCircle, ArrowDown2 } from "iconsax-react";
 import PropTypes from 'prop-types';
+
+
 
 
 function AddCustomer({ editCustomerDetails }) {
@@ -49,7 +51,7 @@ function AddCustomer({ editCustomerDetails }) {
     const [bankDetailsList, setBankDetailsList] = useState([
         {
             beneficiaryCurrency: "",
-            beneficiaryName: formData?.contactPerson,
+            beneficiaryName: "",
             accountNumber: "",
             bankName: "",
             ifscCode: "",
@@ -150,6 +152,7 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     const handleNatureOfBusinessChange = (value, isChecked) => {
+        setErrors({});
         const stringValue = String(value);
 
         setNatureOfBusiness((prev) => {
@@ -264,7 +267,6 @@ function AddCustomer({ editCustomerDetails }) {
 
 
 
-
     const handleChange = (index, field, value) => {
         if (field === "number" && !/^\d*$/.test(value)) return;
         setContacts((prev) => {
@@ -338,29 +340,7 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
 
-    useEffect(() => {
-        if (contactAddressSameAsOfficeAddress) {
-            setShippingAddress(prev => ({
-                ...prev,
-                ...officeAddress,
-            }));
-            setErrors({});
-        } else {
-            setShippingAddress({
-                address1: "",
-                address2: "",
-                address3: "",
-                address4: "",
-                city: "",
-                state: "",
-                country: "",
-                postalCode: "",
-                landmark: "",
-                googleMap: ""
-            });
-        }
 
-    }, [officeAddress])
 
 
 
@@ -685,7 +665,14 @@ function AddCustomer({ editCustomerDetails }) {
         bankDetailsList.forEach((bank, index) => {
             let bankError = {};
             if (!bank.beneficiaryCurrency?.trim()) bankError.beneficiaryCurrency = "Currency is required";
-            if (!bank.beneficiaryName?.trim() || !formData.contactPerson.trim()) bankError.beneficiaryName = "Name is required";
+            let nameToValidate = !editCustomerDetails
+                ? formData?.contactPerson
+                : (initialBankDetailsList.beneficiaryName ?? formData?.contactPerson);
+
+            if (!nameToValidate?.trim()) {
+                bankError.beneficiaryName = "Name is required";
+            }
+
             if (!bank.accountNumber?.trim()) bankError.accountNumber = "Account Number is required";
             if (!bank.bankName?.trim()) bankError.bankName = "Bank Name is required";
             if (!bank.ifscCode?.trim()) bankError.ifscCode = "IFSC Code is required";
@@ -1160,11 +1147,13 @@ function AddCustomer({ editCustomerDetails }) {
                 googleMap: shippingAddressData.mapLink || ''
             };
 
+
+
             setFormData(newFormData);
             setContacts(newContacts);
             setBankDetailsList(newBankDetailsList.length > 0 ? newBankDetailsList : [{
                 beneficiaryCurrency: "",
-                beneficiaryName: formData?.contactPerson,
+                beneficiaryName: "",
                 accountNumber: "",
                 bankName: "",
                 ifscCode: "",
@@ -1216,23 +1205,28 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     useEffect(() => {
-        if (formData?.contactPerson && !editCustomerDetails) {
-            setBankDetailsList((prev) => {
-                const updated = [...prev];
-                updated[0].beneficiaryName = formData.contactPerson;
-                return updated;
-            });
+        setBankDetailsList((prev) => {
+            const updated = [...prev];
+            updated[0] = {
+                ...updated[0],
+                beneficiaryName: !editCustomerDetails
+                    ? (formData?.contactPerson || '')
+                    : ((initialBankDetailsList?.[0]?.beneficiaryName ?? formData?.contactPerson) || '')
+            };
+            return updated;
+        });
+    }, [formData?.contactPerson,
+        initialBankDetailsList?.[0]?.beneficiaryName,
+        editCustomerDetails]);
+
+    useEffect(() => {
+        if (state.customer.successCode === 200) {
+            dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { searchKeyword: "" } });
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE });
+            }, 5000);
         }
-    }, [formData?.contactPerson]);
-
-
-
-
-
-
-
-
-
+    }, [state.customer.successCode]);
 
 
 
@@ -1562,7 +1556,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             color="#555555"
                                         />
                                     </div>
-                                    
+
                                     {errors.legalStatus && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                             <InfoCircle size={16} color="#DC2626" />
@@ -2173,8 +2167,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <input
 
                                                 type='text'
-                                                value={!editCustomerDetails ? (formData?.contactPerson || '') : (bankDetails.beneficiaryName || '')}
-
+                                                value={bankDetails?.beneficiaryName || ''}
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryName', e.target.value)}
                                                 placeholder='Enter Beneficiary Name '
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'

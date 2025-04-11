@@ -4,8 +4,6 @@ import React, { useState } from "react";
 
 function FormBuilder(props) {
 
-
-
     const [newOption, setNewOption] = useState("");
     const [type, setType] = useState("text");
 

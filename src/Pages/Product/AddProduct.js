@@ -4,7 +4,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Trash from "../../Asset/Icon/trash.svg";
 import addcircle from "../../Asset/Icon/add-circle.svg";
-import Slider from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import "react-datepicker/dist/react-datepicker.css";
@@ -161,15 +160,15 @@ function AddProduct() {
         );
     };
 
-    const techSettings = {
-        dots: false,
-        infinite: false,
-        speed: 500,
-        slidesToShow: Math.min(techImages.length, 3),
-        slidesToScroll: 1,
-        prevArrow: <PrevArrow />,
-        nextArrow: <NextArrow />,
-    };
+    // const techSettings = {
+    //     dots: false,
+    //     infinite: false,
+    //     speed: 500,
+    //     slidesToShow: Math.min(techImages.length, 3),
+    //     slidesToScroll: 1,
+    //     prevArrow: <PrevArrow />,
+    //     nextArrow: <NextArrow />,
+    // };
 
     const updateShowAdditionalFields = () => {
         setShowAdditionalFields(true)

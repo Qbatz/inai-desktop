@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA , } from "../../Utils/Constant";
+import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA ,compareData } from "../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -866,6 +866,14 @@ function BasicVendor({ vendorDetails }) {
         }
     }, [vendorDetails]);
 
+useEffect(() => {
+      if (compareData(officeAddress1, shippingAddress1 ) && compareData(officeAddress2, shippingAddress2) && compareData(officeAddress3, shippingAddress3) && compareData(city, city)) {
+        setSameAsOffice(true)
+      }
+      else {
+        setSameAsOffice(false)
+      }
+  }, [officeAddress1, officeAddress2, officeAddress3, city, shippingAddress1, shippingAddress2, shippingAddress3, city])
 
 
 

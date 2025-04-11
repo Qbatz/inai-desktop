@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA } from "../../Utils/Constant";
+import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA , } from "../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -676,7 +676,7 @@ function BasicVendor({ vendorDetails }) {
             setDesignation('');
             setGstVat('');
             setAdditionalContacts([]);
-            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "jos" } })
+            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } })
             setTimeout(() => {
                 dispatch({ type: RESET_VENDOR_ID })
             }, 6000)

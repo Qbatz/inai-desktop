@@ -12,3 +12,7 @@ export async function Master() {
 export async function GetCategory() {
   return await AxiosConfig.get('/product/category')
 }
+
+export async function GetSubCategory(category) {
+  return await AxiosConfig.get(`/product/subCategory${category}`)
+}

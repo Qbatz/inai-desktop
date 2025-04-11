@@ -19,7 +19,8 @@ module.exports = {
       },
       fontFamily: {
         Gilroy: ['Gilroy', 'sans-serif'],
-        Montserrat: ['Montserrat', 'sans-serif']
+        Montserrat: ['Montserrat', 'sans-serif'],
+        Outfit: ['Outfit', 'sans-serif'],
       },
       fontSize: {
         "28px": "28px",
@@ -36,6 +37,9 @@ module.exports = {
         'blueGray-100': '#F1F4F9',
         'trueGray-400':'#939393',
         'blueGray-50':'#F9FAFC'
+      },
+      flex: {
+        'flex-33%': '0 0 33.33%'
       }
 
     },

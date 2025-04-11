@@ -83,9 +83,7 @@ function FormDisplay() {
             item.title === title ? { ...item, value: newValue } : item
         );
         setDisplayItems(updatedItems);
-       
-
-    }
+  }
 
 
     return (
@@ -125,6 +123,7 @@ function FormDisplay() {
                             {field.type === "select" && (
                                 <SelectComponent title={field.title} field={field.options} callback={(newValue)=>SelectOptionsChange(field.title,newValue)} />
                             )}
+                            
 
                             {field.type === "textarea" && (
                                 <TextAreaComponent placeholder={field.placeholder} value={field.value} title={field.title} callback={(newValue) =>CallbackForTextArea(field.title, newValue)} />
@@ -136,7 +135,7 @@ function FormDisplay() {
                 }
             </div>
 
-            <button className='bg-[#205DA8] px-4 py-3 rounded-lg text-base font-bold text-white flex items-center m-5 ' onClick={handleAdditionalField} >+ Additional Field</button>
+            <button className='bg-blue-900 px-4 py-3 rounded-lg text-base font-bold text-white flex items-center m-5 ' onClick={handleAdditionalField} >+ Additional Field</button>
 
             {
                 display && <AdditionalFormField update={updateDisplayItems} handleClose={handleCloseForm} />

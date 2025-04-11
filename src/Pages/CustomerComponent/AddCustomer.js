@@ -1282,26 +1282,7 @@ function AddCustomer({ editCustomerDetails }) {
                             <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
 
-                                <div className=''>
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name  <span className='text-red-500'>*</span></label>
-                                    <input
-
-                                        type='text'
-                                        value={formData.businessName}
-                                        onChange={(e) => handleInputChange('businessName', e.target.value)}
-                                        placeholder='Enter Business Name'
-                                        className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.businessName && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.businessName}
-                                            </span>
-                                        </div>
-                                    )}
-
-                                </div>
+                            
                                 <div >
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact Person   <span className='text-red-500'>*</span></label>
 
@@ -1533,6 +1514,26 @@ function AddCustomer({ editCustomerDetails }) {
                                             </span>
                                         </div>
                                     )}
+                                </div>
+                                <div className=''>
+                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name  <span className='text-red-500'>*</span></label>
+                                    <input
+
+                                        type='text'
+                                        value={formData.businessName}
+                                        onChange={(e) => handleInputChange('businessName', e.target.value)}
+                                        placeholder='Enter Business Name'
+                                        className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                    />
+                                    {errors.businessName && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                {errors.businessName}
+                                            </span>
+                                        </div>
+                                    )}
+
                                 </div>
                                 <div className='mb-2 relative w-full'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>

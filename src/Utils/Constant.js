@@ -110,7 +110,8 @@ export const GET_MASTER_REDUCER = "Get_Master_Reducer";
 export const GET_MASTER_SAGA = "Get_Master_Saga";
 
 
-
+export const GET_CATEGORY_REDUCER = "Get_Category_Reducer";
+export const GET_CATEGORY_SAGA = "Get_Category_Saga";
 
 
 

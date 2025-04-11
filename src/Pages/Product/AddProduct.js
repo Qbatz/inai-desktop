@@ -14,11 +14,17 @@ import { FaFilePdf } from "react-icons/fa";
 import FormBuilder from '../../FormBuilderComponent/AdditionalFormField';
 import { MdError } from "react-icons/md";
 import PropTypes from 'prop-types';
+import { GET_CATEGORY_SAGA } from '../../Utils/Constant'
+import { useDispatch, useSelector } from 'react-redux';
+
+
+function AddProduct() {
 
 
 
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
 
-   function AddProduct() {
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [images, setImages] = useState([]);
@@ -39,6 +45,8 @@ import PropTypes from 'prop-types';
     const [errors, setErrors] = useState({});
 
 
+    console.log("state for add product")
+
     useEffect(() => {
         const storedImages = localStorage.getItem("uploadedImages");
         if (storedImages) {
@@ -54,21 +62,21 @@ import PropTypes from 'prop-types';
         if (!formData.serialNo) {
             setFormData((prev) => ({ ...prev, serialNo: serialNo.toString() }));
         }
-    },[formData.serialNo, serialNo]);
+    }, [formData.serialNo, serialNo]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-    
+
         setFormData((prev) => ({
-          ...prev,
-          [name]: value
+            ...prev,
+            [name]: value
         }));
 
         setErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: ""
+            ...prevErrors,
+            [name]: ""
         }));
-      };
+    };
 
     const validate = () => {
         let newErrors = {};
@@ -130,7 +138,7 @@ import PropTypes from 'prop-types';
             <CalendarDays className="text-gray-400 ml-2" size={18} />
         </div>
     ));
-    
+
     CustomInput.displayName = "CustomInput";
 
     const PrevArrow = (props) => {
@@ -243,14 +251,20 @@ import PropTypes from 'prop-types';
             alert("Form submitted successfully!");
         }
     };
-    
+
+
+
+    useEffect(() => {
+        console.log("alledjfsdhjkdbhjkdbndfjkhndbndbdnbkldfnblk")
+        dispatch({ type: GET_CATEGORY_SAGA })
+    }, [])
 
     return (
         <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full">
                 <h2 className="text-xl font-semibold mb-4 font-Gilroy">Add Product</h2>
 
-                <div className="flex-1 mx-auto w-full max-w-7xl rounded-xl max-h-[500px] overflow-y-auto">
+                <div className="flex-1 mx-auto w-full max-w-7xl rounded-xl max-h-[350px] overflow-y-auto">
 
                     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] mb-2 items-start ">
                         <div className="w-full flex flex-col h-full">
@@ -311,7 +325,7 @@ import PropTypes from 'prop-types';
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
-                               />
+                                />
                                 {errors.description && (
                                     <p className="text-red-500 text-xs flex items-center gap-1">
                                         <MdError className="text-red-500 text-xs mt-0.5" />
@@ -855,5 +869,5 @@ AddProduct.propTypes = {
     value: PropTypes.string,
     onClick: PropTypes.func,
     placeholder: PropTypes.string,
-  };
+};
 export default AddProduct;

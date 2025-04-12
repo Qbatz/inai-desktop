@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Dashboard from "../Pages/Dashboard";
+import Dashboard from "../Pages/Dashboard/Dashboard";
 import Vendor from "../Pages/VendorFile/Vendor";
 import ProductList from "../Pages/Product/ProductList";
 import AddProduct from "../Pages/Product/AddProduct";
@@ -213,7 +213,7 @@ function Sidebar() {
                              <Route path="/client" element={<CustomerList />}/>
                              <Route path="/vendor" element={<Vendor />}/>
                              <Route path="/product" element={<ProductList />} />
-                             <Route path="/add-Products" element={<AddProduct/>}/>
+                             <Route path="/add-products" element={<AddProduct/>}/>
                              <Route path="/add-customer" element={<AddCustomer />}/>
                              <Route path="/customer-details/:customerId" element={<CustomerDetails />} />
                              <Route path="/add-vendor" element={<BasicVendor />}/>

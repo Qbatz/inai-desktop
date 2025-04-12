@@ -178,7 +178,7 @@ function ProductList() {
 
                     <div className="">
                         <button
-                            onClick={() => {navigate('/add-Products')}}
+                            onClick={() => {navigate('/add-products')}}
                             className="px-6 md:px-8 lg:px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-xs md:text-base font-medium flex items-center gap-2">
                             <img src={PlusCircle} alt="plus" className='w-4 md:w-5 lg:w-4' /> AddProduct</button>
                     </div>

@@ -934,21 +934,7 @@ useEffect(() => {
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
 
-                                    <div className='  '>
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name <span className='text-red-500'>*</span> </label>
-                                        <input
-                                            id='clientId'
-                                            value={businessName}
-                                            onChange={handleBusinessNameChange}
-                                            type='text'
-                                            placeholder='Enter Business Name'
-                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                        {formErrors.businessName && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.businessName} </p>)}
-
-                                    </div>
+                                   
                                     <div>
                                         <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
                                             Contact Person<span className='text-red-500'>*</span>
@@ -1081,6 +1067,21 @@ useEffect(() => {
                                         {formErrors.gstVat && (
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                 <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.gstVat} </p>)}
+                                    </div>
+                                    <div className='  '>
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name <span className='text-red-500'>*</span> </label>
+                                        <input
+                                            id='clientId'
+                                            value={businessName}
+                                            onChange={handleBusinessNameChange}
+                                            type='text'
+                                            placeholder='Enter Business Name'
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {formErrors.businessName && (
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.businessName} </p>)}
+
                                     </div>
 
 

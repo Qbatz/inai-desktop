@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, forwardRef } from 'react';
+import React, { useState, useEffect, forwardRef, useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Trash from "../../Asset/Icon/trash.svg";
 import addcircle from "../../Asset/Icon/add-circle.svg";
-import Slider from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,10 +15,9 @@ import { MdError } from "react-icons/md";
 import PropTypes from 'prop-types';
 
 
+function AddProduct() {
 
-
-   function AddProduct() {
-
+    const scrollRef = useRef(null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [images, setImages] = useState([]);
     const [techImages, setTechImages] = useState([]);
@@ -54,21 +52,21 @@ import PropTypes from 'prop-types';
         if (!formData.serialNo) {
             setFormData((prev) => ({ ...prev, serialNo: serialNo.toString() }));
         }
-    },[formData.serialNo, serialNo]);
+    }, [formData.serialNo, serialNo]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-    
+
         setFormData((prev) => ({
-          ...prev,
-          [name]: value
+            ...prev,
+            [name]: value
         }));
 
         setErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: ""
+            ...prevErrors,
+            [name]: ""
         }));
-      };
+    };
 
     const validate = () => {
         let newErrors = {};
@@ -113,6 +111,14 @@ import PropTypes from 'prop-types';
         setTechImages((prev) => prev.filter((_, i) => i !== index));
     };
 
+    const handleScrollToLeftPhotos = () => {
+        scrollRef.current.scrollBy({ left: -500, behavior: 'smooth' });
+    }
+
+    const handleScrollToRightPhotos = () => {
+        scrollRef.current.scrollBy({ left: 500, behavior: 'smooth' });
+    }
+
     const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
         <div
             className="flex items-center border border-gray-300 rounded-md px-3 py-2.5 text-sm text-gray-700 cursor-pointer"
@@ -130,51 +136,39 @@ import PropTypes from 'prop-types';
             <CalendarDays className="text-gray-400 ml-2" size={18} />
         </div>
     ));
-    
+
     CustomInput.displayName = "CustomInput";
 
-    const PrevArrow = (props) => {
-        const { onClick } = props;
+    const PrevArrow = () => {
         return (
             <div
-                className="absolute -left-2 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer"
-                onClick={onClick}
+                className="fixed cursor-pointer"
+                onClick={handleScrollToLeftPhotos}
             >
                 <img src={Arrow} className="w-7 h-7 rotate-180" alt="prev" />
             </div>
         );
     };
-    const NextArrow = (props) => {
-        const { onClick } = props;
+    const NextArrow = () => {
         return (
             <div
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer"
-                onClick={onClick}
+                className="fixed cursor-pointer"
+                onClick={handleScrollToRightPhotos}
             >
                 <img src={Arrow} className="w-7 h-7" alt="next" />
             </div>
         );
     };
 
-    const settings = {
-        dots: false,
-        infinite: false,
-        speed: 500,
-        slidesToShow: Math.min(images.length, 3),
-        slidesToScroll: 1,
-        prevArrow: <PrevArrow />,
-        nextArrow: <NextArrow />,
-    };
-
-    const techSettings = {
-        dots: false,
-        infinite: false,
-        speed: 500,
-        slidesToShow: Math.min(techImages.length, 3),
-        slidesToScroll: 1,
-        prevArrow: <PrevArrow />,
-        nextArrow: <NextArrow />,
-    };
+    // const techSettings = {
+    //     dots: false,
+    //     infinite: false,
+    //     speed: 500,
+    //     slidesToShow: Math.min(techImages.length, 3),
+    //     slidesToScroll: 1,
+    //     prevArrow: <PrevArrow />,
+    //     nextArrow: <NextArrow />,
+    // };
 
     const updateShowAdditionalFields = () => {
         setShowAdditionalFields(true)
@@ -243,7 +237,7 @@ import PropTypes from 'prop-types';
             alert("Form submitted successfully!");
         }
     };
-    
+
 
     return (
         <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center">
@@ -311,7 +305,7 @@ import PropTypes from 'prop-types';
                                     name="description"
                                     value={formData.description}
                                     onChange={handleChange}
-                               />
+                                />
                                 {errors.description && (
                                     <p className="text-red-500 text-xs flex items-center gap-1">
                                         <MdError className="text-red-500 text-xs mt-0.5" />
@@ -327,9 +321,10 @@ import PropTypes from 'prop-types';
                             <label className="block font-normal text-sm font-Outfit">Add Photos</label>
 
                             <div className="flex mt-2 gap-0">
-                                {images?.length > 0 && (
-                                    <div className="w-[450px] bg-white">
-                                        <Slider {...settings}>
+
+                                <div ref={scrollRef} className='flex flex-row max-w-[640px] ml-[10px] overflow-scroll relative items-center'>
+                                    {images?.length > 0 && (
+                                        <div className="bg-white flex flex-row">
                                             {images.map((img, index) => (
                                                 <div key={index} className="px-1">
                                                     <div className="relative w-32 h-32 rounded-md overflow-hidden">
@@ -353,9 +348,25 @@ import PropTypes from 'prop-types';
                                                     </div>
                                                 </div>
                                             ))}
-                                        </Slider>
-                                    </div>
-                                )}
+                                        </div>
+                                    )}
+
+                                    {
+                                        images.length > 4 && <div className='absolute left-0 mb-[25px]'>
+                                            <PrevArrow className='fixed ' />
+
+                                        </div>
+                                    }
+
+                                    {
+                                        images.length > 4 && <div className='absolute right-[28px] mb-[25px]'>
+                                            <NextArrow className='fixed ' />
+
+                                        </div>
+                                    }
+
+
+                                </div>
 
                                 <div className="w-32 h-32 border-dashed border flex items-center justify-center rounded-md cursor-pointer bg-white">
                                     <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
@@ -371,6 +382,7 @@ import PropTypes from 'prop-types';
                                         />
                                     </label>
                                 </div>
+
                             </div>
                             <label className="block font-normal text-sm font-Outfit mt-2">Technical</label>
 
@@ -378,55 +390,53 @@ import PropTypes from 'prop-types';
 
                                 {techImages?.length > 0 && (
                                     <div className="w-[450px] bg-white rounded-md">
-                                        <Slider {...techSettings}>
-                                            {techImages.map((file, index) => (
-                                                <div key={index} className="px-1">
-                                                    <div className="relative w-32 h-32 border rounded-md flex items-center justify-center text-center">
-                                                        {file.type && file.type.startsWith("image/") ? (
-                                                            <img
-                                                                src={file.preview}
-                                                                alt={`tech-${index}`}
-                                                                className="w-full h-full object-cover rounded-md"
-                                                            />
-                                                        ) : (
-                                                            <div className="flex flex-col items-center justify-center w-full h-full px-1 text-center relative">
+                                        {techImages.map((file, index) => (
+                                            <div key={index} className="px-1">
+                                                <div className="relative w-32 h-32 border rounded-md flex items-center justify-center text-center">
+                                                    {file.type && file.type.startsWith("image/") ? (
+                                                        <img
+                                                            src={file.preview}
+                                                            alt={`tech-${index}`}
+                                                            className="w-full h-full object-cover rounded-md"
+                                                        />
+                                                    ) : (
+                                                        <div className="flex flex-col items-center justify-center w-full h-full px-1 text-center relative">
+                                                            <a
+                                                                href={file.preview}
+                                                                download={file.name}
+                                                                className="text-xs truncate w-full break-words max-h-[55px] overflow-hidden text-blue-600 hover:underline"
+                                                            >
+                                                                {file.name}
+                                                            </a>
+
+                                                            <div className="absolute bottom-2 left-2">
                                                                 <a
                                                                     href={file.preview}
                                                                     download={file.name}
-                                                                    className="text-xs truncate w-full break-words max-h-[55px] overflow-hidden text-blue-600 hover:underline"
+                                                                    title="Download PDF"
+                                                                    className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 hover:bg-gray-200 text-red-600"
                                                                 >
-                                                                    {file.name}
+                                                                    <FaFilePdf size={18} />
                                                                 </a>
+                                                            </div>
 
-                                                                <div className="absolute bottom-2 left-2">
-                                                                    <a
-                                                                        href={file.preview}
-                                                                        download={file.name}
-                                                                        title="Download PDF"
-                                                                        className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 hover:bg-gray-200 text-red-600"
-                                                                    >
-                                                                        <FaFilePdf size={18} />
-                                                                    </a>
-                                                                </div>
-
-                                                                <div className="absolute bottom-2 right-2">
-                                                                    <div
-                                                                        onClick={() => handleTechDocDelete(index, setTechImages)}
-                                                                        className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 bg-opacity-50 cursor-pointer hover:bg-opacity-75"
-                                                                    >
-                                                                        <img
-                                                                            src={Trash}
-                                                                            className="w-4 h-4 filter brightness-0 contrast-100"
-                                                                            alt="Delete"
-                                                                        />
-                                                                    </div>
+                                                            <div className="absolute bottom-2 right-2">
+                                                                <div
+                                                                    onClick={() => handleTechDocDelete(index, setTechImages)}
+                                                                    className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 bg-opacity-50 cursor-pointer hover:bg-opacity-75"
+                                                                >
+                                                                    <img
+                                                                        src={Trash}
+                                                                        className="w-4 h-4 filter brightness-0 contrast-100"
+                                                                        alt="Delete"
+                                                                    />
                                                                 </div>
                                                             </div>
-                                                        )}
-                                                    </div>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            ))}
-                                        </Slider>
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
                                 <label className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
@@ -855,5 +865,5 @@ AddProduct.propTypes = {
     value: PropTypes.string,
     onClick: PropTypes.func,
     placeholder: PropTypes.string,
-  };
+};
 export default AddProduct;

@@ -259,7 +259,7 @@ function Login({ message, loginStatusCode }) {
                   className='absolute right-3 top-10 cursor-pointer text-gray-500'
                   onClick={togglePasswordVisibility}
                 >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  {showPassword ? <FaEye /> : <FaEyeSlash />}
                 </span>
 
                 {passwordError &&

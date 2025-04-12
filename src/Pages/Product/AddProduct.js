@@ -9,13 +9,11 @@ import 'slick-carousel/slick/slick-theme.css';
 import "react-datepicker/dist/react-datepicker.css";
 import { CalendarDays } from "lucide-react";
 import Arrow from "../../Asset/Icon/Arrow.svg";
-import { FaFilePdf } from "react-icons/fa";
 import FormBuilder from '../../FormBuilderComponent/AdditionalFormField';
-import { MdError } from "react-icons/md";
+import { InfoCircle } from "iconsax-react";
 import PropTypes from 'prop-types';
-import { GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA ,GET_BRAND_SAGA} from '../../Utils/Constant'
+import { GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA, GET_BRAND_SAGA } from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
-
 
 function AddProduct() {
 
@@ -25,9 +23,14 @@ function AddProduct() {
 
 
     const scrollRef = useRef(null);
+    const scrollTechRef = useRef(null);
     const [selectedDate, setSelectedDate] = useState(null);
-    const [images, setImages] = useState([]);
-    const [techImages, setTechImages] = useState([]);
+    const [images, setImages] = useState([
+        
+    ]);
+    const [techImages, setTechImages] = useState([
+        
+    ]);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
     const [displayItems, setDisplayItems] = useState([])
     const [formValues, setFormValues] = useState({});
@@ -53,23 +56,12 @@ function AddProduct() {
         country: "",
         stateName: "",
         district: "",
-              });
-      
+    });
+
 
     const [errors, setErrors] = useState({});
 
 
-
-    useEffect(() => {
-        const storedImages = localStorage.getItem("uploadedImages");
-        if (storedImages) {
-            setImages(JSON.parse(storedImages));
-        }
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem("uploadedImages", JSON.stringify(images));
-    }, [images]);
 
     useEffect(() => {
         if (!formData.serialNo) {
@@ -78,7 +70,8 @@ function AddProduct() {
     }, [formData.serialNo, serialNo]);
 
     const handleInputChange = (field, value) => {
-        // if (field === "contactNumber" && !/^\d*$/.test(value)) return;
+
+
 
         setFormData((prevData) => ({
             ...prevData,
@@ -94,7 +87,7 @@ function AddProduct() {
 
 
 
-    
+
 
 
 
@@ -102,24 +95,27 @@ function AddProduct() {
     const validate = () => {
         let newErrors = {};
 
-        if (!formData.productCode.trim()) newErrors.productCode = "Product Code is required";
+        if (!formData.productCode) newErrors.productCode = "Product Code is required";
         if (!formData.productName.trim()) newErrors.productName = "Product Name is required";
         if (!formData.description.trim()) newErrors.description = "Description is required";
         if (!formData.currency.trim()) newErrors.currency = "Currency is required";
-
+        if (!formData.unit) newErrors.unit = "Unit is required";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
+   
+
+
     const handleImageAdd = (e) => {
         const files = Array.from(e.target.files);
-        const newPreviews = files.map(file => URL.createObjectURL(file));
 
         setImages((prev) => {
-            const unique = newPreviews.filter(preview => !prev.includes(preview));
+            const unique = files.filter(preview => !prev.includes(preview));
             return [...prev, ...unique];
         });
     };
+
 
     const handleImageDelete = (index) => {
         setImages((prev) => prev.filter((_, i) => i !== index));
@@ -127,15 +123,11 @@ function AddProduct() {
 
     const handleTechDocAdd = (e) => {
         const files = Array.from(e.target.files);
-        const filePreviews = files.map((file) => {
-            const previewUrl = URL.createObjectURL(file);
-            return {
-                name: file.name,
-                type: file.type,
-                preview: previewUrl,
-            };
+       
+        setTechImages((prev) => {
+            const unique = files.filter(preview => !prev.includes(preview));
+            return [...prev, ...unique];
         });
-        setTechImages((prev) => [...prev, ...filePreviews]);
     };
 
     const handleTechDocDelete = (index) => {
@@ -143,12 +135,31 @@ function AddProduct() {
     };
 
     const handleScrollToLeftPhotos = () => {
-        scrollRef.current.scrollBy({ left: -500, behavior: 'smooth' });
+                scrollRef.current?.scrollBy({ left: -500, behavior: 'smooth' });
+      };
+      
+      const handleScrollToRightPhotos = () => {
+              scrollRef.current?.scrollBy({ left: 500, behavior: 'smooth' });
+      };
+      
+
+
+    const handleScrollToLeftPhotosForTech = () => {
+        scrollTechRef.current?.scrollBy({ left: -500, behavior: 'smooth' });
     }
 
-    const handleScrollToRightPhotos = () => {
-        scrollRef.current.scrollBy({ left: 500, behavior: 'smooth' });
+    const handleScrollToRightPhotosForTech= () => {
+        scrollTechRef.current?.scrollBy({ left: 500, behavior: 'smooth' });
     }
+
+
+
+
+
+
+
+
+
 
     const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
         <div
@@ -173,7 +184,7 @@ function AddProduct() {
     const PrevArrow = () => {
         return (
             <div
-                className="fixed cursor-pointer"
+                className="cursor-pointer"
                 onClick={handleScrollToLeftPhotos}
             >
                 <img src={Arrow} className="w-7 h-7 rotate-180" alt="prev" />
@@ -183,7 +194,7 @@ function AddProduct() {
     const NextArrow = () => {
         return (
             <div
-                className="fixed cursor-pointer"
+                className="cursor-pointer"
                 onClick={handleScrollToRightPhotos}
             >
                 <img src={Arrow} className="w-7 h-7" alt="next" />
@@ -191,15 +202,33 @@ function AddProduct() {
         );
     };
 
-    // const techSettings = {
-    //     dots: false,
-    //     infinite: false,
-    //     speed: 500,
-    //     slidesToShow: Math.min(techImages.length, 3),
-    //     slidesToScroll: 1,
-    //     prevArrow: <PrevArrow />,
-    //     nextArrow: <NextArrow />,
-    // };
+
+
+
+    const PrevArrowTech = () => {
+        return (
+            <div
+                className="cursor-pointer"
+                onClick={handleScrollToLeftPhotosForTech}
+            >
+                <img src={Arrow} className="w-7 h-7 rotate-180" alt="prev" />
+            </div>
+        );
+    };
+    const NextArrowTech = () => {
+        return (
+            <div
+                className="cursor-pointer"
+                onClick={handleScrollToRightPhotosForTech}
+            >
+                <img src={Arrow} className="w-7 h-7" alt="next" />
+            </div>
+        );
+    };
+
+
+
+
 
     const updateShowAdditionalFields = () => {
         setShowAdditionalFields(true)
@@ -214,14 +243,20 @@ function AddProduct() {
         setShowAdditionalFields(false)
     }
     const RadioOptionsChange = (title, newValue) => {
-
+        setFormValues((prev) => ({
+            ...prev,
+            [title]: newValue,
+        }));
         const updatedItems = displayItems.map((item) =>
             item.title === title ? { ...item, value: newValue } : item
         );
         setDisplayItems(updatedItems);
     }
     const CheckboxOptionsChange = (title, newValue) => {
-
+        setFormValues((prev) => ({
+            ...prev,
+            [title]: newValue,
+        }));
         const updatedItems = displayItems.map((item) =>
             item.title === title ? { ...item, value: newValue } : item
         );
@@ -229,15 +264,25 @@ function AddProduct() {
     }
 
     const SelectOptionsChange = (title, newValue) => {
-
+        setFormValues((prev) => ({
+            ...prev,
+            [title]: newValue,
+        }));
         const updatedItems = displayItems.map((item) =>
             item.title === title ? { ...item, value: newValue } : item
         );
         setDisplayItems(updatedItems);
     }
 
-    const textInputCallbackForName = () => {
-
+    const textInputCallbackForName = (title, newValue) => {
+        setFormValues((prev) => ({
+            ...prev,
+            [title]: newValue,
+        }));
+        const updatedItems = displayItems.map((item) =>
+            item.title === title ? { ...item, value: newValue } : item
+        );
+        setDisplayItems(updatedItems);
     };
 
     const CallbackForTextArea = (title, newValue) => {
@@ -257,15 +302,11 @@ function AddProduct() {
         if (validate()) {
             const nextSerial = serialNo + 1;
             setSerialNo(nextSerial);
-            setFormData({
+            setFormData({   
                 serialNo: nextSerial.toString(),
-                productCode: "",
-                productName: "",
-                description: "",
-                currency: ""
             });
             setErrors({});
-            alert("Form submitted successfully!");
+          
         }
     };
 
@@ -273,7 +314,7 @@ function AddProduct() {
 
     useEffect(() => {
         dispatch({ type: GET_CATEGORY_SAGA })
-        dispatch({ type: GET_BRAND_SAGA})
+        dispatch({ type: GET_BRAND_SAGA })
 
     }, [])
 
@@ -287,25 +328,24 @@ function AddProduct() {
     }, [formData.category])
 
 
-
-
+   
 
     return (
         <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full">
                 <h2 className="text-xl font-semibold mb-4 font-Gilroy">Add Product</h2>
 
-                <div className="flex-1 mx-auto w-full max-w-7xl rounded-xl max-h-[400px] overflow-y-auto lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
+                <div className="flex-1 mx-auto  max-w-7xl rounded-xl max-h-[400px] overflow-y-auto lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
 
                     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] mb-2 items-start ">
                         <div className="w-full flex flex-col h-full">
                             <div>
-                                <label className="block font-normal text-xs font-Outfit mb-1">
+                                <label className="block font-normal text-md font-Outfit mb-1">
                                     Product Code (Unique) <span className="text-red-500 text-lg">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    className="mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                                     placeholder="Enter Product code"
                                     name="productCode"
                                     value={formData.productCode}
@@ -313,7 +353,7 @@ function AddProduct() {
                                 />
                                 {errors.productCode && (
                                     <p className="text-red-500 text-xs flex items-center gap-1">
-                                        <MdError className="text-red-500 text-xs mt-0.5" />
+                                        <InfoCircle size={16} color="#DC2626" />
                                         {errors.productCode}
                                     </p>
                                 )}
@@ -322,12 +362,12 @@ function AddProduct() {
 
 
                             <div>
-                                <label className="block font-normal text-xs font-Outfit mb-1">
+                                <label className="block font-normal text-md font-Outfit mb-1">
                                     Product Name <span className="text-red-500 text-lg">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    className="mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                                     placeholder="Enter Product Name"
                                     name="productName"
                                     value={formData.productName}
@@ -335,7 +375,7 @@ function AddProduct() {
                                 />
                                 {errors.productName && (
                                     <p className="text-red-500 text-xs flex items-center gap-1">
-                                        <MdError className="text-red-500 text-xs mt-0.5" />
+                                        <InfoCircle size={16} color="#DC2626" />
                                         {errors.productName}
                                     </p>
                                 )}
@@ -346,20 +386,20 @@ function AddProduct() {
                             </div>
 
                             <div>
-                                <label className="block font-normal text-xs font-Outfit mb-1">
+                                <label className="block font-normal text-md font-Outfit mb-1">
                                     Description<span className="text-red-500 text-lg">*</span>
                                 </label>
 
                                 <textarea
                                     placeholder="Enter Description"
-                                    className="mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-sm text-slate-500 font-Gilroy"
                                     name="description"
                                     value={formData.description}
                                     onChange={(e) => handleInputChange('description', e.target.value)}
                                 />
                                 {errors.description && (
                                     <p className="text-red-500 text-xs flex items-center gap-1">
-                                        <MdError className="text-red-500 text-xs mt-0.5" />
+                                        <InfoCircle size={16} color="#DC2626" />
                                         {errors.description}
                                     </p>
                                 )}
@@ -369,19 +409,36 @@ function AddProduct() {
 
                         {/* images  */}
                         <div className="w-full p-2 flex flex-col h-full">
-                            <label className="block font-normal text-sm font-Outfit">Add Photos</label>
+                            <label className="block font-normal text-md font-Outfit">Add Photos</label>
 
-                            <div className="flex mt-2 gap-0">
+                            <div className="flex mt-2 gap-0 relative z-10">
 
-                                <div ref={scrollRef} className='flex flex-row max-w-[640px] ml-[10px] overflow-scroll relative items-center'>
+
+
+                                {
+                                    images.length > 3 && <div className="absolute left-[0px] top-1/2 -translate-y-1/2 z-20 ">
+                                        <PrevArrow />
+
+                                    </div>
+                                }
+
+                                {
+                                    images.length > 3 && <div className='absolute right-[150px] top-1/2 -translate-y-1/2 z-20'>
+                                        <NextArrow />
+
+                                    </div>
+                                }
+
+
+                                <div ref={scrollRef} className=' flex flex-row   items-center max-w-[500px] ml-[10px] overflow-x-scroll'>
                                     {images?.length > 0 && (
                                         <div className="bg-white flex flex-row">
                                             {images.map((img, index) => (
                                                 <div key={index} className="px-1">
                                                     <div className="relative w-32 h-32 rounded-md overflow-hidden">
                                                         <img
-                                                            src={img}
-                                                            alt={`Uploaded-${index}`}
+                                                            src={URL.createObjectURL(img)}
+                                                            alt={`uploaded-${index}`}
                                                             className="w-full h-full object-cover"
                                                         />
                                                         <div className="absolute inset-0 flex items-center justify-center rounded-md">
@@ -400,21 +457,12 @@ function AddProduct() {
                                                 </div>
                                             ))}
                                         </div>
-                                    )}
+                                    )
 
-                                    {
-                                        images.length > 4 && <div className='absolute left-0 mb-[25px]'>
-                                            <PrevArrow className='fixed ' />
 
-                                        </div>
+
                                     }
 
-                                    {
-                                        images.length > 4 && <div className='absolute right-[28px] mb-[25px]'>
-                                            <NextArrow className='fixed ' />
-
-                                        </div>
-                                    }
 
 
                                 </div>
@@ -435,61 +483,68 @@ function AddProduct() {
                                 </div>
 
                             </div>
-                            <label className="block font-normal text-sm font-Outfit mt-2">Technical</label>
 
-                            <div className="flex mt-2">
 
-                                {techImages?.length > 0 && (
-                                    <div className="w-[450px] bg-white rounded-md">
-                                        {techImages.map((file, index) => (
-                                            <div key={index} className="px-1">
-                                                <div className="relative w-32 h-32 border rounded-md flex items-center justify-center text-center">
-                                                    {file.type && file.type.startsWith("image/") ? (
+
+
+
+
+                            <label className="block font-normal text-md font-Outfit mt-2">Technical</label>
+
+                            <div className="flex mt-2 gap-0 relative z-10">
+
+                                {
+                                    techImages.length > 3 && <div className="absolute left-[0px] top-1/2 -translate-y-1/2 z-20 ">
+                                        <PrevArrowTech />
+
+                                    </div>
+                                }
+
+                                {
+                                    techImages.length > 3 && <div className='absolute right-[150px] top-1/2 -translate-y-1/2 z-20'>
+                                        <NextArrowTech />
+
+                                    </div>
+                                }
+                                <div ref={scrollTechRef} className=' flex flex-row   items-center max-w-[500px] ml-[10px] overflow-x-scroll'>
+                                    {techImages?.length > 0 && (
+                                        <div className="bg-white flex flex-row">
+                                            {techImages.map((img, index) => (
+                                                <div key={index} className="px-1">
+                                                    <div className="relative w-32 h-32 rounded-md overflow-hidden">
                                                         <img
-                                                            src={file.preview}
-                                                            alt={`tech-${index}`}
-                                                            className="w-full h-full object-cover rounded-md"
+                                                             src={URL.createObjectURL(img)}
+                                                            alt={`uploaded-${index}`}
+                                                            className="w-full h-full object-cover"
                                                         />
-                                                    ) : (
-                                                        <div className="flex flex-col items-center justify-center w-full h-full px-1 text-center relative">
-                                                            <a
-                                                                href={file.preview}
-                                                                download={file.name}
-                                                                className="text-xs truncate w-full break-words max-h-[55px] overflow-hidden text-blue-600 hover:underline"
+                                                        <div className="absolute inset-0 flex items-center justify-center rounded-md">
+                                                            <div
+                                                                className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                onClick={() => handleTechDocDelete(index)}
                                                             >
-                                                                {file.name}
-                                                            </a>
-
-                                                            <div className="absolute bottom-2 left-2">
-                                                                <a
-                                                                    href={file.preview}
-                                                                    download={file.name}
-                                                                    title="Download PDF"
-                                                                    className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 hover:bg-gray-200 text-red-600"
-                                                                >
-                                                                    <FaFilePdf size={18} />
-                                                                </a>
-                                                            </div>
-
-                                                            <div className="absolute bottom-2 right-2">
-                                                                <div
-                                                                    onClick={() => handleTechDocDelete(index, setTechImages)}
-                                                                    className="flex items-center justify-center w-8 h-8 rounded-full border border-blue-900 bg-opacity-50 cursor-pointer hover:bg-opacity-75"
-                                                                >
-                                                                    <img
-                                                                        src={Trash}
-                                                                        className="w-4 h-4 filter brightness-0 contrast-100"
-                                                                        alt="Delete"
-                                                                    />
-                                                                </div>
+                                                                <img
+                                                                    src={Trash}
+                                                                    className="w-5 h-5 text-red-500 filter brightness-0 contrast-100"
+                                                                    alt="Delete"
+                                                                />
                                                             </div>
                                                         </div>
-                                                    )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
+                                            ))}
+                                        </div>
+                                    )
+
+
+
+                                    }
+
+
+
+                                </div>
+
+
+
                                 <label className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
                                     <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
                                     <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
@@ -513,24 +568,24 @@ function AddProduct() {
                     <div>
                         <div className="flex flex-wrap gap-3 mb-3">
                             <div className="flex-1">
-                                <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Available Quantity
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.availableQuantity}
                                     onChange={(e) => handleInputChange('availableQuantity', e.target.value)}
-                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                                     placeholder="Enter Available Quantity"
                                 />
                             </div>
                             <div className="flex-1">
-                                <label className="block font-normal text-sm font-Outfit mb-1.5">Unit of measurement</label>
+                                <label className="block font-normal text-md font-Outfit mb-1.5">Unit of measurement <span className="text-red-500 text-sm">*</span></label>
                                 <div className="relative">
                                     <select
                                         value={formData.unit}
                                         onChange={(e) => handleInputChange('unit', e.target.value)}
-                                        className="w-full focus:outline-none p-3 border rounded-lg font-medium text-xs text-slate-400 appearance-none">
+                                        className="w-full focus:outline-none p-3 border rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Unit of measurement</option>
                                         <option value="kg">Kilogram (kg)</option>
                                         <option value="g">Gram (g)</option>
@@ -542,14 +597,21 @@ function AddProduct() {
                                         <path d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </div>
+
+                                {errors.unit && (
+                                    <p className="text-red-500 text-xs flex items-center gap-1">
+                                        <InfoCircle size={16} color="#DC2626" />
+                                        {errors.unit}
+                                    </p>
+                                )}
                             </div>
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-sm font-Outfit mb-1">Price</label>
+                                <label className="block font-normal text-md font-Outfit mb-1">Price</label>
                                 <input
                                     type="text"
                                     value={formData.price}
                                     onChange={(e) => handleInputChange('price', e.target.value)}
-                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                                     placeholder="Enter Price"
                                 />
                             </div>
@@ -558,7 +620,7 @@ function AddProduct() {
                         <div className="flex flex-wrap gap-3 mb-3">
 
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-sm font-Outfit mb-1 flex items-center gap-1">
+                                <label className="block font-normal text-md font-Outfit mb-1 flex items-center gap-1">
                                     Currency
                                     <span className="text-red-500 text-sm">*</span>
                                 </label>
@@ -584,20 +646,20 @@ function AddProduct() {
 
                                 {errors.currency && (
                                     <p className="text-red-500 mt-1 text-xs flex items-center gap-1">
-                                        <MdError className="text-red-500 text-xs mt-0.5" />
+                                        <InfoCircle size={16} color="#DC2626" />
                                         {errors.currency}
                                     </p>
                                 )}
                             </div>
 
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-sm font-Outfit mb-1">Weight</label>
+                                <label className="block font-normal text-md font-Outfit mb-1">Weight</label>
                                 <div className="relative">
-                                    <select 
-                                                                        value={formData.weight}
+                                    <select
+                                        value={formData.weight}
                                         onChange={(e) => handleInputChange('weight', e.target.value)}
-                                                                       
-                                    className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+
+                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Weight</option>
                                         <option value="kg">Kilogram (kg)</option>
                                         <option value="g">Gram (g)</option>
@@ -612,7 +674,7 @@ function AddProduct() {
                             </div>
 
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-sm font-Outfit mb-1">Discount</label>
+                                <label className="block font-normal text-md font-Outfit mb-1">Discount</label>
                                 <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
                                     <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
                                     <input
@@ -620,7 +682,7 @@ function AddProduct() {
                                         value={formData.discount}
                                         onChange={(e) => handleInputChange('discount', e.target.value)}
                                         placeholder="Enter Discount"
-                                        className="w-full focus:outline-none px-3 py-3 font-medium text-xs text-slate-400 focus:outline-none font-Gilroy"
+                                        className="w-full focus:outline-none px-3 py-3 font-medium text-sm text-slate-400 focus:outline-none font-Gilroy"
                                     />
                                 </div>
                             </div>
@@ -636,12 +698,12 @@ function AddProduct() {
                                     type="text"
                                     value={formData.hsn}
                                     onChange={(e) => handleInputChange('hsn', e.target.value)}
-                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                                     placeholder="Enter hsn"
                                 />
                             </div>
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-sm font-Outfit mb-1">Gst</label>
+                                <label className="block font-normal text-md font-Outfit mb-1">Gst</label>
                                 <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
                                     <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
                                     <input
@@ -649,37 +711,37 @@ function AddProduct() {
                                         value={formData.gst}
                                         onChange={(e) => handleInputChange('gst', e.target.value)}
                                         placeholder="Enter GST"
-                                        className="w-full focus:outline-none px-3 py-3 font-medium text-xs text-slate-400 focus:outline-none font-Gilroy"
+                                        className="w-full focus:outline-none px-3 py-3 font-medium text-sm text-slate-400 focus:outline-none font-Gilroy"
                                     />
                                 </div>
                             </div>
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-sm font-Outfit mb-1">Serial No</label>
+                                <label className="block font-normal text-md font-Outfit mb-1">Serial No</label>
                                 <input
                                     type="text"
                                     value={formData.serialNo}
                                     onChange={(e) => handleInputChange('serialNo', e.target.value)}
-                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                                     placeholder="Enter Serial No"
                                 />
                             </div>
 
 
-                        
+
 
 
                         </div>
 
                         <div className="flex flex-wrap gap-3 mb-3">
-                        <div className="flex-1 ">
-                                <label className="block font-normal text-sm font-Outfit mb-1.5">
-                                 Brand
+                            <div className="flex-1 ">
+                                <label className="block font-normal text-md font-Outfit mb-1.5">
+                                    Brand
                                 </label>
                                 <div className="relative">
                                     <select
                                         value={formData.brand}
-                                        onChange={(e) => handleInputChange('category', e.target.value)}
-                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        onChange={(e) => handleInputChange('brand', e.target.value)}
+                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Brand</option>
                                         {state?.settings?.brandList.length > 0 ? state?.settings?.brandList?.map((brand, index) => (
                                             <option key={index} value={brand.id}>
@@ -703,14 +765,14 @@ function AddProduct() {
                             </div>
 
                             <div className="flex-1 ">
-                                <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Category
                                 </label>
                                 <div className="relative">
                                     <select
                                         value={formData.category}
                                         onChange={(e) => handleInputChange('category', e.target.value)}
-                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Category</option>
                                         {state?.settings?.categoryList.length > 0 ? state?.settings?.categoryList?.map((category, index) => (
                                             <option key={index} value={category.id}>
@@ -733,7 +795,7 @@ function AddProduct() {
                                 </div>
                             </div>
                             <div className="flex-1">
-                                <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Sub Category
                                 </label>
                                 <div className="relative">
@@ -741,7 +803,7 @@ function AddProduct() {
                                         value={formData.subCategory}
                                         onChange={(e) => handleInputChange('subCategory', e.target.value)}
 
-                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Sub Category</option>
                                         {state?.settings?.subCategoryList.length > 0 ? state?.settings?.subCategoryList?.map((subcategory, index) => (
                                             <option key={index} value={subcategory.id}>
@@ -761,19 +823,19 @@ function AddProduct() {
                                     </svg>
                                 </div>
                             </div>
-                        
+
                         </div>
 
                         <div className="flex flex-wrap gap-3 mb-3">
-                        <div className="flex-1 ">
-                                <label className="block font-normal text-sm font-Outfit mb-1">Make</label>
+                            <div className="flex-1 ">
+                                <label className="block font-normal text-md font-Outfit mb-1">Make</label>
                                 <div className="relative">
                                     <select
 
                                         value={formData.make}
                                         onChange={(e) => handleInputChange('make', e.target.value)}
 
-                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Make</option>
                                         <option value="zara">Zara</option>
                                         <option value="hm">H&M</option>
@@ -788,13 +850,13 @@ function AddProduct() {
                                 </div>
                             </div>
                             <div className="flex-1 ">
-                                <label className="block font-normal text-sm font-Outfit mb-1">Country of Origin</label>
+                                <label className="block font-normal text-md font-Outfit mb-1">Country of Origin</label>
                                 <div className="relative">
                                     <select
                                         value={formData.country}
                                         onChange={(e) => handleInputChange('country', e.target.value)}
 
-                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled>
                                             Enter Country of Origin
                                         </option>
@@ -813,7 +875,7 @@ function AddProduct() {
                             </div>
 
                             <div className="flex-1 ">
-                                <label className="block text-xs font-Gilroy font-medium text-[#1F2937] mb-2">
+                                <label className="block text-md font-Gilroy font-medium text-[#1F2937] mb-2">
                                     Month and Year of Manufacture
                                 </label>
                                 <DatePicker
@@ -829,13 +891,13 @@ function AddProduct() {
 
                         <div className="flex flex-wrap gap-3 mb-3">
                             <div className="flex-1 max-w-[290px]">
-                                <label className="block font-normal text-sm font-Outfit mb-1">State</label>
+                                <label className="block font-normal text-md font-Outfit mb-1">State</label>
                                 <div className="relative">
                                     <select
                                         value={formData.stateName}
                                         onChange={(e) => handleInputChange('stateName', e.target.value)}
 
-                                        className=" focus:outline-none w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className=" focus:outline-none w-full p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>
                                             Enter State
                                         </option>
@@ -865,14 +927,14 @@ function AddProduct() {
 
 
                             <div className="flex-1 max-w-[290px]">
-                                <label className="block font-normal text-sm font-Outfit mb-1">
+                                <label className="block font-normal text-md font-Outfit mb-1">
                                     District
                                 </label>
                                 <input
                                     type="text"
                                     value={formData.district}
                                     onChange={(e) => handleInputChange('district', e.target.value)}
-                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                                     placeholder="Enter District"
                                 />
                             </div>
@@ -884,6 +946,7 @@ function AddProduct() {
 
 
 
+
                     {/* additional field  */}
 
                     <div className="flex flex-wrap -mx-2 mb-3">
@@ -892,7 +955,7 @@ function AddProduct() {
                                 <div key={index} className="w-full sm:w-1/2 md:w-1/3 px-2 mb-4 max-w-[100%]">
                                     {field.type === "text" && (
                                         <div>
-                                            <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                            <label className="block font-normal text-md font-Outfit mb-1.5">
                                                 {field.title}
                                             </label>
                                             <input
@@ -902,7 +965,7 @@ function AddProduct() {
                                                 onChange={(e) =>
                                                     textInputCallbackForName(field.title, e.target.value)
                                                 }
-                                                className="w-full border border-gray-300 rounded-lg font-medium text-xs text-slate-400 py-3 px-3 font-Gilroy"
+                                                className="w-full border border-gray-300 rounded-lg font-medium text-sm text-slate-400 py-3 px-3 font-Gilroy"
                                             />
                                         </div>
                                     )}
@@ -910,12 +973,12 @@ function AddProduct() {
 
                                     {field.type === "radio" && (
                                         <div>
-                                            <label className="block font-normal text-sm font-Outfit mb-1.5 capitalize">
+                                            <label className="block font-normal text-md font-Outfit mb-1.5 capitalize">
                                                 {field.title}
                                             </label>
                                             <div className="flex flex-wrap gap-4">
                                                 {field.options?.map((option, idx) => (
-                                                    <label key={idx} className="inline-flex items-center space-x-2 text-xs text-gray-600 font-Outfit">
+                                                    <label key={idx} className="inline-flex items-center space-x-2 text-md text-gray-600 font-Outfit">
                                                         <input
                                                             type="radio"
                                                             id={`radio-${index}-${idx}`}
@@ -923,7 +986,7 @@ function AddProduct() {
                                                             value={option}
                                                             checked={field.value === option}
                                                             onChange={() => RadioOptionsChange(field.title, option)}
-                                                            className="w-3 h-3 text-blue-600 border-gray-300 focus:ring-blue-500 font-Gilroy"
+                                                            className="w-3 h-3 text-blue-600 border-gray-300 focus:ring-blue-500 font-Gilroy text-sm"
                                                         />
                                                         <span>{option}</span>
                                                     </label>
@@ -934,14 +997,14 @@ function AddProduct() {
 
                                     {field.type === "checkbox" && (
                                         <div>
-                                            <label className="block text-sm font-Outfit mb-1.5 capitalize text-black">
+                                            <label className="block text-md font-Outfit mb-1.5 capitalize text-black">
                                                 {field.title}
                                             </label>
                                             <div className="flex flex-wrap gap-4">
                                                 {field.options?.map((option, idx) => (
                                                     <label
                                                         key={idx}
-                                                        className="flex items-center w-[calc(33.333%-0.5rem)] space-x-2 text-xs text-gray-600 font-Outfit"
+                                                        className="flex items-center w-[calc(33.333%-0.5rem)] space-x-2 text-sm text-gray-600 font-Outfit"
                                                     >
                                                         <input
                                                             type="checkbox"
@@ -949,7 +1012,7 @@ function AddProduct() {
                                                             value={option}
                                                             checked={field.defaultValue?.includes(option)}
                                                             onChange={() => CheckboxOptionsChange(field.title, option)}
-                                                            className="w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500 font-Gilroy"
+                                                            className="w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500 font-Gilroy text-sm"
                                                         />
                                                         <span>{option}</span>
                                                     </label>
@@ -960,7 +1023,7 @@ function AddProduct() {
 
                                     {field.type === "select" && (
                                         <div>
-                                            <label className="block font-normal text-sm font-Outfit mb-1.5 capitalize text-black">
+                                            <label className="block font-normal text-md font-Outfit mb-1.5 capitalize text-black">
                                                 {field.title}
                                             </label>
                                             <div className="relative">

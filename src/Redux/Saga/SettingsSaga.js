@@ -43,8 +43,7 @@ function* handleMaster() {
 function* handleCategory() {
     try {
         const response = yield call(GetCategory)
-        console.log("response",response)
-        if (response.status === 200) {
+         if (response.status === 200) {
             yield put({ type: GET_CATEGORY_REDUCER, payload: { response: response.data } });
 
         }
@@ -67,7 +66,7 @@ function* handleCategory() {
 function* handleSubCategory(category) {
     try {
         const response = yield call(GetSubCategory, category.payload)
-        if (response.status === 200) {
+         if (response.status === 200) {
             yield put({ type: GET_SUB_CATEGORY_REDUCER, payload: { response: response.data } });
 
         }

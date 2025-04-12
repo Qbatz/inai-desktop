@@ -14,5 +14,7 @@ export async function GetCategory() {
 }
 
 export async function GetSubCategory(category) {
-  return await AxiosConfig.get(`/product/subCategory${category}`)
+  return await AxiosConfig.get(`/product/subCategory`, {
+    params: { catId: category.catId }
+  });
 }

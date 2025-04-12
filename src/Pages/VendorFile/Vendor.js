@@ -228,7 +228,7 @@ function VendorList() {
   return (
 
     <>
-      <div className='bg-slate-100 flex-1 w-full p-4 rounded-tl-lg rounded-tr-lg flex m-0'>
+      <div className='bg-slate-100 flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative '>
 
 
         {
@@ -244,7 +244,7 @@ function VendorList() {
                 </div>
               )}
 
-              <div className="sticky top-0 z-10 flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2">
+              <div className="sticky left-0 top-0 right-0  flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2">
 
                 <h2 className=" text-lg sm:text-xl md:text-xl lg:text-xl font-semibold font-Gilroy text-black">
                   Vendor
@@ -320,7 +320,7 @@ function VendorList() {
               </div>
 
               <div className="flex-1">
-                <div className='overflow-x-auto rounded-xl border border-slate-200 overflow-y-auto p-0 mt-4 mb-extra'>
+                <div className='overflow-x-auto rounded-xl border border-slate-200  max-h-[350px] overflow-y-auto p-0 mt-4 mb-extra'>
                   <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
                     <thead className="bg-slate-100 sticky top-0 z-10">
                       <tr>

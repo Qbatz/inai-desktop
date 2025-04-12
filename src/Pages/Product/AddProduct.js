@@ -21,7 +21,6 @@ import { useDispatch, useSelector } from 'react-redux';
 function AddProduct() {
 
 
-
     const dispatch = useDispatch();
     const state = useSelector(state => state)
 
@@ -39,16 +38,26 @@ function AddProduct() {
         productCode: "",
         productName: "",
         description: "",
+        availableQuantity: "",
+        unit: "",
+        price: "",
         currency: "",
+        weight: "",
+        discount: "",
+        hsn: "",
+        gst: "",
         category: "",
         subCategory: "",
-        type: "",
-    });
+        make: "",
+        country: "",
+        stateName: "",
+        district: "",
+              });
+      
 
     const [errors, setErrors] = useState({});
 
 
-    console.log("state for add product", state)
 
     useEffect(() => {
         const storedImages = localStorage.getItem("uploadedImages");
@@ -84,7 +93,7 @@ function AddProduct() {
 
 
 
-    console.log("formData", formData)
+    
 
 
 
@@ -267,9 +276,20 @@ function AddProduct() {
 
     useEffect(() => {
         dispatch({ type: GET_CATEGORY_SAGA })
-        dispatch({ type: GET_SUB_CATEGORY_SAGA })
-
     }, [])
+
+
+
+    useEffect(() => {
+        if (formData.category) {
+            dispatch({ type: GET_SUB_CATEGORY_SAGA, payload: { catId: Number(formData.category) } })
+        }
+
+    }, [formData.category])
+
+
+
+
 
     return (
         <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center">
@@ -558,7 +578,13 @@ function AddProduct() {
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
                                 <label className="block font-normal text-sm font-Outfit mb-1">Weight</label>
                                 <div className="relative">
-                                    <select className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                    <select 
+                                    
+                                    value={formData.weight}
+                                        onChange={(e) => handleInputChange('weight', e.target.value)}
+                                    
+                                    
+                                    className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Weight</option>
                                         <option value="kg">Kilogram (kg)</option>
                                         <option value="g">Gram (g)</option>
@@ -668,11 +694,16 @@ function AddProduct() {
 
                                         className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Sub Category</option>
-                                        {/* {categoryList.map((category, index) => (
-                                        <option key={index} value={category}>
-                                            {category}
-                                        </option>
-                                    ))} */}
+                                        {state?.settings?.subCategoryList.length > 0 ? state?.settings?.subCategoryList?.map((subcategory, index) => (
+                                            <option key={index} value={subcategory.id}>
+                                                {subcategory.name}
+                                            </option>
+                                        ))
+                                            :
+                                            <option >
+                                                No sub category available
+                                            </option>
+                                        }
                                     </select>
 
 
@@ -685,11 +716,11 @@ function AddProduct() {
                                 <label className="block font-normal text-sm font-Outfit mb-1">Make</label>
                                 <div className="relative">
                                     <select
-                                    
-                                    value={formData.make}
-                                    onChange={(e) => handleInputChange('make', e.target.value)}
-                                    
-                                    className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+
+                                        value={formData.make}
+                                        onChange={(e) => handleInputChange('make', e.target.value)}
+
+                                        className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Make</option>
                                         <option value="zara">Zara</option>
                                         <option value="hm">H&M</option>
@@ -710,10 +741,10 @@ function AddProduct() {
                                 <label className="block font-normal text-sm font-Outfit mb-1">Country of Origin</label>
                                 <div className="relative">
                                     <select
-                                     value={formData.country}
-                                     onChange={(e) => handleInputChange('country', e.target.value)}
-                                    
-                                    className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        value={formData.country}
+                                        onChange={(e) => handleInputChange('country', e.target.value)}
+
+                                        className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled>
                                             Enter Country of Origin
                                         </option>
@@ -751,10 +782,10 @@ function AddProduct() {
                                 <label className="block font-normal text-sm font-Outfit mb-1">State</label>
                                 <div className="relative">
                                     <select
-                                     value={formData.stateName}
-                                     onChange={(e) => handleInputChange('stateName', e.target.value)}
-                                    
-                                    className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        value={formData.stateName}
+                                        onChange={(e) => handleInputChange('stateName', e.target.value)}
+
+                                        className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>
                                             Enter State
                                         </option>

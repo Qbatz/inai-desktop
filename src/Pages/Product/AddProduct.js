@@ -14,7 +14,7 @@ import { FaFilePdf } from "react-icons/fa";
 import FormBuilder from '../../FormBuilderComponent/AdditionalFormField';
 import { MdError } from "react-icons/md";
 import PropTypes from 'prop-types';
-import { GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA } from '../../Utils/Constant'
+import { GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA ,GET_BRAND_SAGA} from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
 
 
@@ -48,6 +48,7 @@ function AddProduct() {
         gst: "",
         category: "",
         subCategory: "",
+        brand: "",
         make: "",
         country: "",
         stateName: "",
@@ -276,6 +277,8 @@ function AddProduct() {
 
     useEffect(() => {
         dispatch({ type: GET_CATEGORY_SAGA })
+        dispatch({ type: GET_BRAND_SAGA})
+
     }, [])
 
 
@@ -306,7 +309,7 @@ function AddProduct() {
                                 </label>
                                 <input
                                     type="text"
-                                    className="mb-1 w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
                                     placeholder="Enter Product code"
                                     name="productCode"
                                     value={formData.productCode}
@@ -328,7 +331,7 @@ function AddProduct() {
                                 </label>
                                 <input
                                     type="text"
-                                    className="mb-1 w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
                                     placeholder="Enter Product Name"
                                     name="productName"
                                     value={formData.productName}
@@ -353,7 +356,7 @@ function AddProduct() {
 
                                 <textarea
                                     placeholder="Enter Description"
-                                    className="mt-1 w-[290px] p-4 border rounded-lg h-36 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-xs text-slate-500 font-Gilroy"
                                     name="description"
                                     value={formData.description}
                                     onChange={(e) => handleInputChange('description', e.target.value)}
@@ -505,7 +508,7 @@ function AddProduct() {
                                     type="text"
                                     value={formData.availableQuantity}
                                     onChange={(e) => handleInputChange('availableQuantity', e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
                                     placeholder="Enter Available Quantity"
                                 />
                             </div>
@@ -515,7 +518,7 @@ function AddProduct() {
                                     <select
                                         value={formData.unit}
                                         onChange={(e) => handleInputChange('unit', e.target.value)}
-                                        className="w-full p-3 border rounded-lg font-medium text-xs text-slate-400 appearance-none">
+                                        className="w-full focus:outline-none p-3 border rounded-lg font-medium text-xs text-slate-400 appearance-none">
                                         <option value="" disabled selected>Select Unit of measurement</option>
                                         <option value="kg">Kilogram (kg)</option>
                                         <option value="g">Gram (g)</option>
@@ -534,7 +537,7 @@ function AddProduct() {
                                     type="text"
                                     value={formData.price}
                                     onChange={(e) => handleInputChange('price', e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
                                     placeholder="Enter Price"
                                 />
                             </div>
@@ -551,7 +554,7 @@ function AddProduct() {
                                     <select
                                         value={formData.currency}
                                         onChange={(e) => handleInputChange('currency', e.target.value)}
-                                        className="w-full px-3 py-3 border rounded-xl  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        className="w-full focus:outline-none px-3 py-3 border rounded-xl  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                         <option value="">Select beneficiary currency</option>
                                         <option value="USD">USD</option>
                                         <option value="INR">INR</option>
@@ -579,12 +582,10 @@ function AddProduct() {
                                 <label className="block font-normal text-sm font-Outfit mb-1">Weight</label>
                                 <div className="relative">
                                     <select 
-                                    
-                                    value={formData.weight}
+                                                                        value={formData.weight}
                                         onChange={(e) => handleInputChange('weight', e.target.value)}
-                                    
-                                    
-                                    className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                                                       
+                                    className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Weight</option>
                                         <option value="kg">Kilogram (kg)</option>
                                         <option value="g">Gram (g)</option>
@@ -607,7 +608,7 @@ function AddProduct() {
                                         value={formData.discount}
                                         onChange={(e) => handleInputChange('discount', e.target.value)}
                                         placeholder="Enter Discount"
-                                        className="w-full px-3 py-3 font-medium text-xs text-slate-400 focus:outline-none font-Gilroy"
+                                        className="w-full focus:outline-none px-3 py-3 font-medium text-xs text-slate-400 focus:outline-none font-Gilroy"
                                     />
                                 </div>
                             </div>
@@ -623,8 +624,8 @@ function AddProduct() {
                                     type="text"
                                     value={formData.hsn}
                                     onChange={(e) => handleInputChange('hsn', e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
-                                    placeholder="Enter Currency"
+                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    placeholder="Enter hsn"
                                 />
                             </div>
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
@@ -636,7 +637,7 @@ function AddProduct() {
                                         value={formData.gst}
                                         onChange={(e) => handleInputChange('gst', e.target.value)}
                                         placeholder="Enter GST"
-                                        className="w-full px-3 py-3 font-medium text-xs text-slate-400 focus:outline-none font-Gilroy"
+                                        className="w-full focus:outline-none px-3 py-3 font-medium text-xs text-slate-400 focus:outline-none font-Gilroy"
                                     />
                                 </div>
                             </div>
@@ -646,13 +647,49 @@ function AddProduct() {
                                     type="text"
                                     value={formData.serialNo}
                                     onChange={(e) => handleInputChange('serialNo', e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
                                     placeholder="Enter Serial No"
                                 />
                             </div>
+
+
+                        
+
+
                         </div>
 
                         <div className="flex flex-wrap gap-3 mb-3">
+                        <div className="flex-1 ">
+                                <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                 Brand
+                                </label>
+                                <div className="relative">
+                                    <select
+                                        value={formData.brand}
+                                        onChange={(e) => handleInputChange('category', e.target.value)}
+                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        <option value="" disabled selected>Select Brand</option>
+                                        {state?.settings?.brandList.length > 0 ? state?.settings?.brandList?.map((brand, index) => (
+                                            <option key={index} value={brand.id}>
+                                                {brand.name}
+                                            </option>
+                                        ))
+
+
+                                            :
+                                            <option >
+                                                No brand available
+                                            </option>
+                                        }
+                                    </select>
+
+
+                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                        <path d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+
                             <div className="flex-1 ">
                                 <label className="block font-normal text-sm font-Outfit mb-1.5">
                                     Category
@@ -661,7 +698,7 @@ function AddProduct() {
                                     <select
                                         value={formData.category}
                                         onChange={(e) => handleInputChange('category', e.target.value)}
-                                        className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Category</option>
                                         {state?.settings?.categoryList.length > 0 ? state?.settings?.categoryList?.map((category, index) => (
                                             <option key={index} value={category.id}>
@@ -672,7 +709,7 @@ function AddProduct() {
 
                                             :
                                             <option >
-                                                No category Available
+                                                No category available
                                             </option>
                                         }
                                     </select>
@@ -692,7 +729,7 @@ function AddProduct() {
                                         value={formData.subCategory}
                                         onChange={(e) => handleInputChange('subCategory', e.target.value)}
 
-                                        className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Sub Category</option>
                                         {state?.settings?.subCategoryList.length > 0 ? state?.settings?.subCategoryList?.map((subcategory, index) => (
                                             <option key={index} value={subcategory.id}>
@@ -712,7 +749,11 @@ function AddProduct() {
                                     </svg>
                                 </div>
                             </div>
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                        
+                        </div>
+
+                        <div className="flex flex-wrap gap-3 mb-3">
+                        <div className="flex-1 ">
                                 <label className="block font-normal text-sm font-Outfit mb-1">Make</label>
                                 <div className="relative">
                                     <select
@@ -720,7 +761,7 @@ function AddProduct() {
                                         value={formData.make}
                                         onChange={(e) => handleInputChange('make', e.target.value)}
 
-                                        className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Make</option>
                                         <option value="zara">Zara</option>
                                         <option value="hm">H&M</option>
@@ -734,17 +775,14 @@ function AddProduct() {
                                     </svg>
                                 </div>
                             </div>
-                        </div>
-
-                        <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1 max-w-[290px]">
+                            <div className="flex-1 ">
                                 <label className="block font-normal text-sm font-Outfit mb-1">Country of Origin</label>
                                 <div className="relative">
                                     <select
                                         value={formData.country}
                                         onChange={(e) => handleInputChange('country', e.target.value)}
 
-                                        className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled>
                                             Enter Country of Origin
                                         </option>
@@ -785,7 +823,7 @@ function AddProduct() {
                                         value={formData.stateName}
                                         onChange={(e) => handleInputChange('stateName', e.target.value)}
 
-                                        className="w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
+                                        className=" focus:outline-none w-full p-3 border border-gray-300 rounded-lg font-medium text-xs text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>
                                             Enter State
                                         </option>
@@ -822,7 +860,7 @@ function AddProduct() {
                                     type="text"
                                     value={formData.district}
                                     onChange={(e) => handleInputChange('district', e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
+                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-xs text-slate-500 font-Gilroy"
                                     placeholder="Enter District"
                                 />
                             </div>

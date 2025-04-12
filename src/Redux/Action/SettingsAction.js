@@ -18,3 +18,9 @@ export async function GetSubCategory(category) {
     params: { catId: category.catId }
   });
 }
+
+
+export async function GetBrand() {
+  return await AxiosConfig.get('/product/brand')
+}
+

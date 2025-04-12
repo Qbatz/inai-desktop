@@ -116,6 +116,7 @@ export const GET_CATEGORY_SAGA = "Get_Category_Saga";
 export const GET_SUB_CATEGORY_REDUCER = "Get_Sub_Category_Reducer";
 export const GET_SUB_CATEGORY_SAGA = "Get_Sub_Category_Saga";
 
-
+export const GET_BRAND_REDUCER = "Get_Brand_Reducer";
+export const GET_BRAND_SAGA = "Get_Brand_Saga";
 
 

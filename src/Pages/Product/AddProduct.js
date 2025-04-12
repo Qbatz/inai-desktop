@@ -12,24 +12,27 @@ import Arrow from "../../Asset/Icon/Arrow.svg";
 import FormBuilder from '../../FormBuilderComponent/AdditionalFormField';
 import { InfoCircle } from "iconsax-react";
 import PropTypes from 'prop-types';
-import { GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA, GET_BRAND_SAGA } from '../../Utils/Constant'
+import { GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA, GET_BRAND_SAGA, ADD_PRODUCT_SAGA,RESET_CODE} from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
+import moment from "moment";
+
+
 
 function AddProduct() {
 
 
     const dispatch = useDispatch();
     const state = useSelector(state => state)
-
+const [loading, setLoading] = useState(false)
 
     const scrollRef = useRef(null);
     const scrollTechRef = useRef(null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [images, setImages] = useState([
-        
+
     ]);
     const [techImages, setTechImages] = useState([
-        
+
     ]);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
     const [displayItems, setDisplayItems] = useState([])
@@ -37,8 +40,7 @@ function AddProduct() {
 
     const [serialNo, setSerialNo] = useState(1);
     const [formData, setFormData] = useState({
-        serialNo: "1",
-        productCode: "",
+              productCode: "",
         productName: "",
         description: "",
         availableQuantity: "",
@@ -61,13 +63,25 @@ function AddProduct() {
 
     const [errors, setErrors] = useState({});
 
+    console.log("images", images)
 
+    console.log("formdata", formData)
 
-    useEffect(() => {
-        if (!formData.serialNo) {
-            setFormData((prev) => ({ ...prev, serialNo: serialNo.toString() }));
-        }
-    }, [formData.serialNo, serialNo]);
+    console.log("techImages", techImages)
+    console.log("formValues", formValues)
+
+    console.log("selectedDate", selectedDate)
+
+    const handleDateChange = (date) => {
+        const formatted = moment(date).format("YYYY-MM-DD");
+        setSelectedDate(formatted);
+    };
+
+    // useEffect(() => {
+    //     if (!formData.serialNo) {
+    //         setFormData((prev) => ({ ...prev, serialNo: serialNo.toString() }));
+    //     }
+    // }, [formData.serialNo, serialNo]);
 
     const handleInputChange = (field, value) => {
 
@@ -100,11 +114,13 @@ function AddProduct() {
         if (!formData.description.trim()) newErrors.description = "Description is required";
         if (!formData.currency.trim()) newErrors.currency = "Currency is required";
         if (!formData.unit) newErrors.unit = "Unit is required";
+        if (!formData.category) newErrors.category = "Category is required";
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-   
+
 
 
     const handleImageAdd = (e) => {
@@ -123,7 +139,7 @@ function AddProduct() {
 
     const handleTechDocAdd = (e) => {
         const files = Array.from(e.target.files);
-       
+
         setTechImages((prev) => {
             const unique = files.filter(preview => !prev.includes(preview));
             return [...prev, ...unique];
@@ -135,20 +151,20 @@ function AddProduct() {
     };
 
     const handleScrollToLeftPhotos = () => {
-                scrollRef.current?.scrollBy({ left: -500, behavior: 'smooth' });
-      };
-      
-      const handleScrollToRightPhotos = () => {
-              scrollRef.current?.scrollBy({ left: 500, behavior: 'smooth' });
-      };
-      
+        scrollRef.current?.scrollBy({ left: -500, behavior: 'smooth' });
+    };
+
+    const handleScrollToRightPhotos = () => {
+        scrollRef.current?.scrollBy({ left: 500, behavior: 'smooth' });
+    };
+
 
 
     const handleScrollToLeftPhotosForTech = () => {
         scrollTechRef.current?.scrollBy({ left: -500, behavior: 'smooth' });
     }
 
-    const handleScrollToRightPhotosForTech= () => {
+    const handleScrollToRightPhotosForTech = () => {
         scrollTechRef.current?.scrollBy({ left: 500, behavior: 'smooth' });
     }
 
@@ -163,14 +179,14 @@ function AddProduct() {
 
     const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
         <div
-            className="flex items-center border border-gray-300 rounded-md px-3 py-2.5 text-sm text-gray-700 cursor-pointer"
+            className="flex  font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-sm text-gray-700 cursor-pointer"
             onClick={onClick}
             ref={ref}
             style={{ width: "285px" }}
         >
             <input
                 type="text"
-                className="flex-1 w-full bg-transparent outline-none  py-0.5 font-medium text-xs text-slate-500 placeholder-gray-400"
+                className="flex-1 w-full font-Gilroy bg-transparent outline-none  py-0.5 font-medium text-xs text-slate-500 placeholder-gray-400"
                 value={value}
                 placeholder={placeholder}
                 readOnly
@@ -300,13 +316,38 @@ function AddProduct() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validate()) {
-            const nextSerial = serialNo + 1;
-            setSerialNo(nextSerial);
-            setFormData({   
-                serialNo: nextSerial.toString(),
-            });
-            setErrors({});
-          
+            // const nextSerial = serialNo + 1;
+            // setSerialNo(nextSerial);
+            // setFormData({
+            //     serialNo: nextSerial.toString(),
+            // });
+
+            const AddPayload = {
+                productCode: formData.productCode,
+                productName: formData.productName,
+                description: formData.description,
+                unit: formData.unit,
+                price: formData.price,
+                quantity: formData.availableQuantity,
+                currency: formData.currency,
+                weight: formData.weight,
+                discount: formData.discount,
+                hsnCode: formData.hsn,
+                gst: formData.gst,
+                category: formData.category,
+                subCategory: formData.subCategory,
+                make: formData.make,
+                countryOfOrigin: formData.country,
+                manufaturingYearAndMonth: selectedDate,
+                State: formData.stateName,
+                district: formData.district,
+                brand: formData.brand,
+                images: images,
+                technicaldocs: techImages,
+                additional_fields: formValues ? [formValues] : []
+            };
+            dispatch({ type: ADD_PRODUCT_SAGA, payload: AddPayload })
+            setLoading(true)
         }
     };
 
@@ -328,12 +369,25 @@ function AddProduct() {
     }, [formData.category])
 
 
-   
+useEffect(() => {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 5000)
+        }
+    }, [state.Common?.successCode, state.Common?.code]);
 
     return (
         <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full">
                 <h2 className="text-xl font-semibold mb-4 font-Gilroy">Add Product</h2>
+
+
+
+                {
+                    state.Common?.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
+                }
 
                 <div className="flex-1 mx-auto  max-w-7xl rounded-xl max-h-[400px] overflow-y-auto lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
 
@@ -513,7 +567,7 @@ function AddProduct() {
                                                 <div key={index} className="px-1">
                                                     <div className="relative w-32 h-32 rounded-md overflow-hidden">
                                                         <img
-                                                             src={URL.createObjectURL(img)}
+                                                            src={URL.createObjectURL(img)}
                                                             alt={`uploaded-${index}`}
                                                             className="w-full h-full object-cover"
                                                         />
@@ -599,7 +653,7 @@ function AddProduct() {
                                 </div>
 
                                 {errors.unit && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1">
+                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.unit}
                                     </p>
@@ -766,7 +820,7 @@ function AddProduct() {
 
                             <div className="flex-1 ">
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
-                                    Category
+                                    Category   <span className="text-red-500 text-sm">*</span>
                                 </label>
                                 <div className="relative">
                                     <select
@@ -793,6 +847,13 @@ function AddProduct() {
                                         <path d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </div>
+
+                                {errors.category && (
+                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1">
+                                        <InfoCircle size={16} color="#DC2626" />
+                                        {errors.category}
+                                    </p>
+                                )}
                             </div>
                             <div className="flex-1">
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
@@ -880,8 +941,9 @@ function AddProduct() {
                                 </label>
                                 <DatePicker
                                     selected={selectedDate}
-                                    onChange={(date) => setSelectedDate(date)}
+                                    onChange={handleDateChange}
                                     dateFormat="dd/MM/yyyy"
+                                    className='font-Gilroy'
                                     placeholderText="Month and Year of Manufacture"
                                     customInput={<CustomInput />}
                                 />

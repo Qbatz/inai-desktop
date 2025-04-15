@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
-import { SearchNormal1, Calendar, Edit, Trash , ArrowLeft2, ArrowRight2} from "iconsax-react";
+import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2 } from "iconsax-react";
 import Filter from '../../Asset/Images/filter.png';
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -8,18 +8,12 @@ import "react-date-range/dist/theme/default.css";
 import { enGB } from "date-fns/locale";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import Vectors from "../../Asset/Icon/Vectors.svg";
-import KurtiSets from "../../Asset/Icon/KurtiSets.svg";
-import LongSleeve from "../../Asset/Icon/LongSleeve.svg";
-import Salwar from "../../Asset/Icon/Salwar.svg";
-import CollarTshirt from "../../Asset/Icon/CollarTshirt.svg";
-import CottonBlend from "../../Asset/Icon/CottonBlend.svg";
-import RoundNeck from "../../Asset/Icon/Round Neck.svg";
-import SolidTShirt from "../../Asset/Icon/SolidTShirt.svg";
-import Stylish from "../../Asset/Icon/Stylish.svg";
 import { useNavigate } from 'react-router-dom';
 import DeleteProduct from './DeleteProduct';
 import { useDispatch, useSelector } from 'react-redux';
 import { GET_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
+import moment from 'moment';
+import Cloth from '../../Asset/Images/Cloth.png'
 
 
 function ProductList() {
@@ -37,8 +31,18 @@ function ProductList() {
     const popupRef = useRef(null);
     const pickerRef = useRef(null);
     const [productList, setProductList] = useState([])
- const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [hasSelectedBoth, setHasSelectedBoth] = useState(false);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+
+
+
+
+
+
     const [dateRange, setDateRange] = useState([
         {
             startDate: new Date(),
@@ -61,16 +65,46 @@ function ProductList() {
     const totalPages = Math.ceil(productList?.length / itemsPerPage);
 
 
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    }
+
+    const handleSelect = (ranges) => {
+        setDateRange([])
+        const startDate = ranges.selection.startDate;
+        const endDate = ranges.selection.endDate;
+        const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
+        const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
+        setStartDate(formattedStartDate);
+        setEndDate(formattedEndDate);
+        setDateRange([ranges.selection]);
+        if (startDate && endDate && startDate !== endDate && !hasSelectedBoth) {
+            setShowPicker(false);
+            setHasSelectedBoth(true);
+        }
+
+    };
+
+
+
+
+
+
+
+
+
+
+
     const handleItemsPerPageChange = (e) => {
         setItemsPerPage(Number(e.target.value));
         setCurrentPage(1);
-      };
-    
-      const handlePageChange = (newPage) => {
+    };
+
+    const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
-          setCurrentPage(newPage);
+            setCurrentPage(newPage);
         }
-      };
+    };
 
 
 
@@ -98,10 +132,7 @@ function ProductList() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [showPicker]);
 
-    const handleSelect = (ranges) => {
-        setDateRange([ranges.selection]);
-        setShowPicker(false);
-    };
+
 
     const handleShowPopup = (id, event) => {
         const { top, left, height } = event.target.getBoundingClientRect();
@@ -120,82 +151,14 @@ function ProductList() {
         setShowDeleteProduct(false);
     };
 
-    const imageMapping = {
-        kurtiSets: KurtiSets,
-        Longsleeves: LongSleeve,
-        Salwar: Salwar,
-        SolidTShirt: SolidTShirt,
-        CottonBlend: CottonBlend,
-        RoundNeck: RoundNeck,
-        Stylish: Stylish,
-        CollarTshirt: CollarTshirt,
-    };
+    const handleEditProductPopup = (editDetails) => {
+        navigate('/add-products', { state: { editDetails } });
 
-    const Data = [
-        {
-            image: "kurtiSets",
-            productName: "Kurta With Dupatta",
-            quantity: 457,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Pending",
-        },
-        {
-            image: "Longsleeves",
-            productName: "Long Sleeves Pattern",
-            quantity: 360,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Completed",
-        },
-        {
-            image: "Salwar",
-            productName: "Three-Quarter Sleeves",
-            quantity: 219,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Cancel",
-        },
-        {
-            image: "SolidTShirt",
-            productName: "Collar T Shirt for Men",
-            quantity: 249,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Pending",
-        },
-        {
-            image: "CottonBlend",
-            productName: "Cotton Blend Solid T-shirt",
-            quantity: 321,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Cancel",
-        },
-        {
-            image: "Round Neck",
-            productName: "Men Printed Round Neck",
-            quantity: 523,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Pending",
-        },
-        {
-            image: "Stylish",
-            productName: "Sample Product",
-            quantity: 334,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Completed",
-        },
-    ];
+    }
+
+
+
+
 
     useEffect(() => {
         dispatch({ type: GET_PRODUCT_SAGA })
@@ -217,14 +180,70 @@ function ProductList() {
     }, [state.Common.successCode])
 
 
-useEffect(() => {
-        if (state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-            setLoading(false)
-            setTimeout(() => {
-                dispatch({ type: RESET_CODE })
-            }, 5000)
+    useEffect(() => {
+        if (state.product?.productList) {
+          setProductList(state.product?.productList)
         }
-    }, [state.Common?.code]);
+      }, [state.product?.productList])
+
+    useEffect(() => {
+           if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+               setLoading(false)
+               setTimeout(() => {
+                   dispatch({ type: RESET_CODE })
+               }, 5000)
+           }
+       }, [state.Common?.successCode, state.Common?.code]);
+
+
+
+
+
+    useEffect(() => {
+        const delayApi = setTimeout(() => {
+            if (searchTerm.trim() !== "") {
+                dispatch({
+                    type: "",
+                    payload: { searchKeyword: searchTerm.trim() },
+                });
+                setLoading(true)
+            } else {
+                dispatch({
+                    type: "",
+                    payload: { searchKeyword: "" },
+                });
+                            }
+        }, 500);
+
+        return () => clearTimeout(delayApi);
+    }, [searchTerm]);
+
+
+
+
+    useEffect(() => {
+        const delayApi = setTimeout(() => {
+            if (startDate && endDate && startDate !== endDate) {
+                dispatch({
+                    type: "",
+                    payload: { startDate: startDate, endDate: endDate },
+                });
+                setLoading(true)
+                setShowPicker(false)
+            } else {
+                dispatch({ type: "", payload: { startDate: null, endDate: null } })
+                
+            }
+        }, 500);
+
+        return () => clearTimeout(delayApi);
+    }, [startDate, endDate]);
+
+
+
+
+
+
 
 
 
@@ -235,6 +254,8 @@ useEffect(() => {
                     <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
                 </div>
             )}
+
+
             <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative'>
 
                 <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
@@ -259,6 +280,8 @@ useEffect(() => {
                         />
                         <input
                             type="text"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
                             placeholder='Search by name'
                             className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
                         />
@@ -358,7 +381,7 @@ useEffect(() => {
                                     <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
                                         <div className="flex items-center justify-center gap-4">
                                             Action
-                                           
+
                                         </div>
                                     </th>
                                 </tr>
@@ -377,7 +400,7 @@ useEffect(() => {
 
                                             <td className="flex items-center px-6 py-3 font-Gilroy font-semibold text-sm text-black cursor-pointer">
                                                 <img
-                                                    src={item.images[0]?.url}
+                                                    src={item.images[0]?.url || Cloth}
                                                     alt={item.productName}
                                                     className="w-10 h-10 rounded-md mr-4"
                                                     onError={(e) => e.target.src = "/images/default.jpg"}
@@ -429,7 +452,7 @@ useEffect(() => {
                                                             }}
                                                             className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
                                                         >
-                                                            <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy">
+                                                            <div onClick={() => handleEditProductPopup(item)} className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy">
                                                                 <Edit size="16" color="#205DA8" /> Edit
                                                             </div>
                                                             <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700"
@@ -456,59 +479,60 @@ useEffect(() => {
 
 
 
-               <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
-                      <div className="flex items-center gap-2">
+                <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
+                    <div className="flex items-center gap-2">
                         <select
-                          value={itemsPerPage}
-                          onChange={handleItemsPerPageChange}
-                          className="px-1 py-1 border border-[#205DA8] rounded-md text-[#205DA8] font-bold cursor-pointer outline-none shadow-none"
+                            value={itemsPerPage}
+                            onChange={handleItemsPerPageChange}
+                            className="px-1 py-1 border border-[#205DA8] rounded-md text-[#205DA8] font-bold cursor-pointer outline-none shadow-none"
                         >
-                          <option value={10}>10</option>
-                          <option value={50}>50</option>
-                          <option value={100}>100</option>
+                            <option value={10}>10</option>
+                            <option value={50}>50</option>
+                            <option value={100}>100</option>
                         </select>
-                      </div>
-                      <div className="flex items-center gap-4">
+                    </div>
+                    <div className="flex items-center gap-4">
                         <ul className="flex items-center list-none m-0 p-0 gap-4">
-            
-                          <li>
-                            <button
-                              className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
-                                }`}
-                              onClick={() => handlePageChange(currentPage - 1)}
-                              disabled={currentPage === 1}
-                            >
-                              <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
-                            </button>
-                          </li>
-            
-            
-                          <li className="text-sm font-bold">
-                            {currentPage} of {totalPages}
-                          </li>
-            
-            
-                          <li>
-                            <button
-                              className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
-                                }`}
-                              onClick={() => handlePageChange(currentPage + 1)}
-                              disabled={currentPage === totalPages}
-                            >
-                              <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#1E45E1"} />
-                            </button>
-                          </li>
+
+                            <li>
+                                <button
+                                    className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                                        }`}
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                >
+                                    <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
+                                </button>
+                            </li>
+
+
+                            <li className="text-sm font-bold">
+                                {currentPage} of {totalPages}
+                            </li>
+
+
+                            <li>
+                                <button
+                                    className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                                        }`}
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                >
+                                    <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#1E45E1"} />
+                                </button>
+                            </li>
                         </ul>
-                      </div>
-                    </nav>
-            
-            
-            
-            
-            
-            
-            
+                    </div>
+                </nav>
+
+
+
+
+
+
+
             </div>
+
             {showDeleteProduct && <DeleteProduct handleClose={handleCloseForDeleteProduct} deleteProductId={deleteProductId} />}
 
         </div>

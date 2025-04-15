@@ -12,19 +12,20 @@ import Arrow from "../../Asset/Icon/Arrow.svg";
 import FormBuilder from '../../FormBuilderComponent/AdditionalFormField';
 import { InfoCircle } from "iconsax-react";
 import PropTypes from 'prop-types';
-import { GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA, GET_BRAND_SAGA, ADD_PRODUCT_SAGA,RESET_CODE} from '../../Utils/Constant'
+import { EDIT_PRODUCT_SAGA, GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA, GET_BRAND_SAGA, ADD_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
 import moment from "moment";
-
-
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function AddProduct() {
 
-
+const navigate = useNavigate()
     const dispatch = useDispatch();
     const state = useSelector(state => state)
-const [loading, setLoading] = useState(false)
-
+    const [loading, setLoading] = useState(false)
+    const location = useLocation();
+    const editDetails = location.state?.editDetails;
     const scrollRef = useRef(null);
     const scrollTechRef = useRef(null);
     const [selectedDate, setSelectedDate] = useState(null);
@@ -38,9 +39,18 @@ const [loading, setLoading] = useState(false)
     const [displayItems, setDisplayItems] = useState([])
     const [formValues, setFormValues] = useState({});
 
-    const [serialNo, setSerialNo] = useState(1);
+    console.log("editDetails", editDetails)
+
+
+
+    const [serialNoList, setSerialNoList] = useState([]);
+    const [inputSerial, setInputSerial] = useState("");
+
+
+    console.log("serialNoList", serialNoList)
+
     const [formData, setFormData] = useState({
-              productCode: "",
+        productCode: "",
         productName: "",
         description: "",
         availableQuantity: "",
@@ -77,11 +87,24 @@ const [loading, setLoading] = useState(false)
         setSelectedDate(formatted);
     };
 
-    // useEffect(() => {
-    //     if (!formData.serialNo) {
-    //         setFormData((prev) => ({ ...prev, serialNo: serialNo.toString() }));
-    //     }
-    // }, [formData.serialNo, serialNo]);
+    const handleSerialChange = () => {
+        if (
+            inputSerial.trim() !== "" &&
+            serialNoList.length < parseInt(formData.availableQuantity)
+        ) {
+            setSerialNoList([...serialNoList, inputSerial.trim()]);
+            setInputSerial("");
+        }
+    };
+
+
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleSerialChange();
+        }
+    };
 
     const handleInputChange = (field, value) => {
 
@@ -115,7 +138,13 @@ const [loading, setLoading] = useState(false)
         if (!formData.currency.trim()) newErrors.currency = "Currency is required";
         if (!formData.unit) newErrors.unit = "Unit is required";
         if (!formData.category) newErrors.category = "Category is required";
-
+        if (!formData.brand) newErrors.brand = "Brand is required";
+        const quantity = parseInt(formData.availableQuantity);
+        if (quantity || quantity <= 0) {
+            if (serialNoList.length !== quantity) {
+                newErrors.serialNo = `Please enter ${quantity} serial number(s)`;
+            }
+        }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -167,14 +196,6 @@ const [loading, setLoading] = useState(false)
     const handleScrollToRightPhotosForTech = () => {
         scrollTechRef.current?.scrollBy({ left: 500, behavior: 'smooth' });
     }
-
-
-
-
-
-
-
-
 
 
     const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
@@ -316,11 +337,6 @@ const [loading, setLoading] = useState(false)
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validate()) {
-            // const nextSerial = serialNo + 1;
-            // setSerialNo(nextSerial);
-            // setFormData({
-            //     serialNo: nextSerial.toString(),
-            // });
 
             const AddPayload = {
                 productCode: formData.productCode,
@@ -344,10 +360,44 @@ const [loading, setLoading] = useState(false)
                 brand: formData.brand,
                 images: images,
                 technicaldocs: techImages,
+                serialNo: serialNoList,
                 additional_fields: formValues ? [formValues] : []
             };
-            dispatch({ type: ADD_PRODUCT_SAGA, payload: AddPayload })
-            setLoading(true)
+            const EditPayload = {
+                productCode: formData.productCode,
+                productName: formData.productName,
+                description: formData.description,
+                unit: formData.unit,
+                price: formData.price,
+                quantity: formData.availableQuantity,
+                currency: formData.currency,
+                weight: formData.weight,
+                discount: formData.discount,
+                hsnCode: formData.hsn,
+                gst: formData.gst,
+                category: formData.category,
+                subCategory: formData.subCategory,
+                make: formData.make,
+                countryOfOrigin: formData.country,
+                manufaturingYearAndMonth: selectedDate,
+                State: formData.stateName,
+                district: formData.district,
+                brand: formData.brand,
+                images: images,
+                technicaldocs: techImages,
+                serialNo: serialNoList,
+                additional_fields: formValues ? [formValues] : []
+            };
+
+            if (editDetails) {
+                // dispatch({ type: EDIT_PRODUCT_SAGA, payload: EditPayload })
+                setLoading(true)
+            } else {
+                dispatch({ type: ADD_PRODUCT_SAGA, payload: AddPayload })
+                setLoading(true)
+            }
+
+
         }
     };
 
@@ -369,7 +419,7 @@ const [loading, setLoading] = useState(false)
     }, [formData.category])
 
 
-useEffect(() => {
+    useEffect(() => {
         if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
             setLoading(false)
             setTimeout(() => {
@@ -378,10 +428,77 @@ useEffect(() => {
         }
     }, [state.Common?.successCode, state.Common?.code]);
 
+
+
+    useEffect(() => {
+        if (editDetails) {
+            setFormData({
+                productCode: editDetails.productCode || "",
+                productName: editDetails.productName || "",
+                description: editDetails.description || "",
+                availableQuantity: editDetails.quantity || "",
+                unit: editDetails.unit || "",
+                price: editDetails.price || "",
+                currency: editDetails.currency || "",
+                weight: editDetails.weight || "",
+                discount: editDetails.discount || "",
+                hsn: editDetails.hsnCode || "",
+                gst: editDetails.gst || "",
+                category: editDetails.categoryId || "",
+                subCategory: editDetails.subCategoryId || "",
+                brand: editDetails.brandId || "",
+                make: editDetails.make || "",
+                country: editDetails.countryOfOrigin || "",
+                stateName: editDetails.state || "",
+                district: editDetails.district || "",
+            });
+
+            setImages(editDetails.images || []);
+            setTechImages(editDetails.technicaldocs || []);
+            setSelectedDate(editDetails.manufacturingYearAndMonth || null);
+        }
+    }, [editDetails]);
+
+ useEffect(() => {
+        if (state.Common.IsVisible === 1) {
+            navigate('/product')
+        }
+
+    }, [state.Common.IsVisible])
+
+
+
+
+    useEffect(() => {
+        return () => {
+            images.forEach(img => {
+                if (img instanceof File) {
+                    URL.revokeObjectURL(img);
+                }
+            });
+        };
+    }, [images]);
+
+
+
+
+
+
+
+
     return (
         <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center">
+
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                    <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                </div>
+            )}
+
+
+
             <div className="bg-white p-6 rounded-lg shadow-lg w-full">
-                <h2 className="text-xl font-semibold mb-4 font-Gilroy">Add Product</h2>
+                <h2 className="text-xl font-semibold mb-4 font-Gilroy">{editDetails ? 'Edit Product' : 'Add Product'}</h2>
 
 
 
@@ -399,14 +516,14 @@ useEffect(() => {
                                 </label>
                                 <input
                                     type="text"
-                                    className="mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                                    className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm  font-Gilroy  ${formData.productCode ? "text-slate": "text-slate-500"}`}
                                     placeholder="Enter Product code"
                                     name="productCode"
                                     value={formData.productCode}
                                     onChange={(e) => handleInputChange('productCode', e.target.value)}
                                 />
                                 {errors.productCode && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1">
+                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.productCode}
                                     </p>
@@ -421,22 +538,18 @@ useEffect(() => {
                                 </label>
                                 <input
                                     type="text"
-                                    className="mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                                    className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm ${formData.productN? "text-slate": "text-slate-500"} font-Gilroy`}
                                     placeholder="Enter Product Name"
                                     name="productName"
                                     value={formData.productName}
                                     onChange={(e) => handleInputChange('productName', e.target.value)}
                                 />
                                 {errors.productName && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1">
+                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.productName}
                                     </p>
                                 )}
-
-
-
-
                             </div>
 
                             <div>
@@ -446,13 +559,13 @@ useEffect(() => {
 
                                 <textarea
                                     placeholder="Enter Description"
-                                    className="mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-sm text-slate-500 font-Gilroy"
+                                    className={`mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-sm ${formData.description? "text-slate": "text-slate-500"} font-Gilroy`} 
                                     name="description"
                                     value={formData.description}
                                     onChange={(e) => handleInputChange('description', e.target.value)}
                                 />
                                 {errors.description && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1">
+                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.description}
                                     </p>
@@ -463,7 +576,7 @@ useEffect(() => {
 
                         {/* images  */}
                         <div className="w-full p-2 flex flex-col h-full">
-                            <label className="block font-normal text-md font-Outfit">Add Photos</label>
+                            <label className="block font-normal text-md font-Outfit ps-2">Add Photos</label>
 
                             <div className="flex mt-2 gap-0 relative z-10">
 
@@ -484,41 +597,46 @@ useEffect(() => {
                                 }
 
 
-                                <div ref={scrollRef} className=' flex flex-row   items-center max-w-[500px] ml-[10px] overflow-x-scroll'>
+                                <div ref={scrollRef} className="flex flex-row items-center max-w-[500px] ml-[10px] overflow-x-scroll">
                                     {images?.length > 0 && (
                                         <div className="bg-white flex flex-row">
-                                            {images.map((img, index) => (
-                                                <div key={index} className="px-1">
-                                                    <div className="relative w-32 h-32 rounded-md overflow-hidden">
-                                                        <img
-                                                            src={URL.createObjectURL(img)}
-                                                            alt={`uploaded-${index}`}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                        <div className="absolute inset-0 flex items-center justify-center rounded-md">
-                                                            <div
-                                                                className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
-                                                                onClick={() => handleImageDelete(index)}
-                                                            >
-                                                                <img
-                                                                    src={Trash}
-                                                                    className="w-5 h-5 text-red-500 filter brightness-0 contrast-100"
-                                                                    alt="Delete"
-                                                                />
+                                            {images.map((img, index) => {
+                                                let imageSrc = "";
+
+                                                if (typeof img === "string") {
+                                                    imageSrc = img;
+                                                } else if (img instanceof File) {
+                                                    imageSrc = URL.createObjectURL(img);
+                                                } else if (img.url) {
+                                                    imageSrc = img.url;
+                                                }
+
+                                                return (
+                                                    <div key={index} className="px-1">
+                                                        <div className="relative w-32 h-32 rounded-md overflow-hidden">
+                                                            <img
+                                                                src={imageSrc}
+                                                                alt={`uploaded-${index}`}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                            <div className="absolute inset-0 flex items-center justify-center rounded-md">
+                                                                <div
+                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                    onClick={() => handleImageDelete(index)}
+                                                                >
+                                                                    <img
+                                                                        src={Trash}
+                                                                        className="w-5 h-5 text-red-500 filter brightness-0 contrast-100"
+                                                                        alt="Delete"
+                                                                    />
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
-                                    )
-
-
-
-                                    }
-
-
-
+                                    )}
                                 </div>
 
                                 <div className="w-32 h-32 border-dashed border flex items-center justify-center rounded-md cursor-pointer bg-white">
@@ -543,7 +661,7 @@ useEffect(() => {
 
 
 
-                            <label className="block font-normal text-md font-Outfit mt-2">Technical</label>
+                            <label className="block font-normal text-md font-Outfit mt-2 ps-2">Technical</label>
 
                             <div className="flex mt-2 gap-0 relative z-10">
 
@@ -563,29 +681,42 @@ useEffect(() => {
                                 <div ref={scrollTechRef} className=' flex flex-row   items-center max-w-[500px] ml-[10px] overflow-x-scroll'>
                                     {techImages?.length > 0 && (
                                         <div className="bg-white flex flex-row">
-                                            {techImages.map((img, index) => (
-                                                <div key={index} className="px-1">
-                                                    <div className="relative w-32 h-32 rounded-md overflow-hidden">
-                                                        <img
-                                                            src={URL.createObjectURL(img)}
-                                                            alt={`uploaded-${index}`}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                        <div className="absolute inset-0 flex items-center justify-center rounded-md">
-                                                            <div
-                                                                className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
-                                                                onClick={() => handleTechDocDelete(index)}
-                                                            >
-                                                                <img
-                                                                    src={Trash}
-                                                                    className="w-5 h-5 text-red-500 filter brightness-0 contrast-100"
-                                                                    alt="Delete"
-                                                                />
+                                            {techImages.map((img, index) => {
+
+
+                                                let imageSrc = "";
+
+                                                if (typeof img.url === "string") {
+                                                    imageSrc = img.url;
+                                                } else if (img instanceof File) {
+                                                    imageSrc = URL.createObjectURL(img.url);
+                                                } else if (img.url) {
+                                                    imageSrc = img.url;
+                                                }
+                                                return (
+                                                    <div key={index} className="px-1">
+                                                        <div className="relative w-32 h-32 rounded-md overflow-hidden">
+                                                            <img
+                                                                src={imageSrc}
+                                                                alt={`uploaded-${index}`}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                            <div className="absolute inset-0 flex items-center justify-center rounded-md">
+                                                                <div
+                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                    onClick={() => handleTechDocDelete(index)}
+                                                                >
+                                                                    <img
+                                                                        src={Trash}
+                                                                        className="w-5 h-5 text-red-500 filter brightness-0 contrast-100"
+                                                                        alt="Delete"
+                                                                    />
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                )
+                                            })}
                                         </div>
                                     )
 
@@ -653,7 +784,7 @@ useEffect(() => {
                                 </div>
 
                                 {errors.unit && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1">
+                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.unit}
                                     </p>
@@ -699,7 +830,7 @@ useEffect(() => {
                                 </div>
 
                                 {errors.currency && (
-                                    <p className="text-red-500 mt-1 text-xs flex items-center gap-1">
+                                    <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.currency}
                                     </p>
@@ -708,10 +839,20 @@ useEffect(() => {
 
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
                                 <label className="block font-normal text-md font-Outfit mb-1">Weight</label>
-                                <div className="relative">
-                                    <select
+
+
+                                <input
+                                        type="text"
                                         value={formData.weight}
                                         onChange={(e) => handleInputChange('weight', e.target.value)}
+                                        placeholder="Enter Weight"
+                                       className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                                    />
+
+
+                                {/* <div className="relative">
+                                    <select
+                                      
 
                                         className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Weight</option>
@@ -724,7 +865,7 @@ useEffect(() => {
                                     <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                         <path d="M19 9l-7 7-7-7" />
                                     </svg>
-                                </div>
+                                </div> */}
                             </div>
 
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
@@ -773,11 +914,31 @@ useEffect(() => {
                                 <label className="block font-normal text-md font-Outfit mb-1">Serial No</label>
                                 <input
                                     type="text"
-                                    value={formData.serialNo}
-                                    onChange={(e) => handleInputChange('serialNo', e.target.value)}
+                                    value={serialNoList.join(", ")}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            const newSerialNo = `SN${serialNoList.length + 1}`;
+                                            if (serialNoList.length < parseInt(formData.availableQuantity)) {
+                                                setSerialNoList([...serialNoList, newSerialNo]);
+                                            }
+                                            e.preventDefault();
+                                        }
+                                    }}
+                                    placeholder={`Enter Serial No (${serialNoList.length}/${formData.availableQuantity})`}
+                                    disabled={serialNoList.length >= parseInt(formData.availableQuantity)}
                                     className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
-                                    placeholder="Enter Serial No"
                                 />
+
+
+
+
+                                {errors.serialNo && (
+                                    <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
+                                        <InfoCircle size={16} color="#DC2626" />
+                                        {errors.serialNo}
+                                    </p>
+                                )}
+
                             </div>
 
 
@@ -789,7 +950,7 @@ useEffect(() => {
                         <div className="flex flex-wrap gap-3 mb-3">
                             <div className="flex-1 ">
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
-                                    Brand
+                                    Brand   <span className="text-red-500 text-sm">*</span>
                                 </label>
                                 <div className="relative">
                                     <select
@@ -797,7 +958,7 @@ useEffect(() => {
                                         onChange={(e) => handleInputChange('brand', e.target.value)}
                                         className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Brand</option>
-                                        {state?.settings?.brandList.length > 0 ? state?.settings?.brandList?.map((brand, index) => (
+                                        {state?.product?.brandList.length > 0 ? state?.product?.brandList?.map((brand, index) => (
                                             <option key={index} value={brand.id}>
                                                 {brand.name}
                                             </option>
@@ -816,6 +977,12 @@ useEffect(() => {
                                         <path d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </div>
+                                {errors.brand && (
+                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                        <InfoCircle size={16} color="#DC2626" />
+                                        {errors.brand}
+                                    </p>
+                                )}
                             </div>
 
                             <div className="flex-1 ">
@@ -828,7 +995,7 @@ useEffect(() => {
                                         onChange={(e) => handleInputChange('category', e.target.value)}
                                         className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Category</option>
-                                        {state?.settings?.categoryList.length > 0 ? state?.settings?.categoryList?.map((category, index) => (
+                                        {state?.product?.categoryList.length > 0 ? state?.product?.categoryList?.map((category, index) => (
                                             <option key={index} value={category.id}>
                                                 {category.name}
                                             </option>
@@ -849,7 +1016,7 @@ useEffect(() => {
                                 </div>
 
                                 {errors.category && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1">
+                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.category}
                                     </p>
@@ -866,7 +1033,7 @@ useEffect(() => {
 
                                         className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Sub Category</option>
-                                        {state?.settings?.subCategoryList.length > 0 ? state?.settings?.subCategoryList?.map((subcategory, index) => (
+                                        {state?.product?.subCategoryList.length > 0 ? state?.product?.subCategoryList?.map((subcategory, index) => (
                                             <option key={index} value={subcategory.id}>
                                                 {subcategory.name}
                                             </option>
@@ -898,11 +1065,10 @@ useEffect(() => {
 
                                         className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Make</option>
-                                        <option value="zara">Zara</option>
-                                        <option value="hm">H&M</option>
-                                        <option value="forever21">Forever 21</option>
-                                        <option value="uniqlo">Uniqlo</option>
-                                        <option value="mango">Mango</option>
+                                        <option value="2011">2011</option>
+                                        <option value="2012">2012</option>
+                                        <option value="2013">2013</option>
+                                        <option value="2014">2014</option>
                                     </select>
 
                                     <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

@@ -6,12 +6,17 @@ import {
     SUCCESS_CODE,
     ADD_PRODUCT_SAGA,
     DELETE_PRODUCT_SAGA,
-
-
+    EDIT_PRODUCT_SAGA,
+    GET_CATEGORY_REDUCER,
+    GET_CATEGORY_SAGA,
+    GET_SUB_CATEGORY_SAGA,
+    GET_SUB_CATEGORY_REDUCER,
+    GET_BRAND_REDUCER,
+    GET_BRAND_SAGA
 
 } from "../../Utils/Constant";
 import { refreshToken } from "../../Token_Access/Token";
-import { getProduct, addProduct, DeleteProduct } from "../Action/ProductAction";
+import { getProduct, addProduct, DeleteProduct, editProduct, GetCategory, GetSubCategory, GetBrand } from "../Action/ProductAction";
 import { toast } from 'react-toastify';
 
 
@@ -36,7 +41,76 @@ export const toastStyle = {
 
 
 
+function* handleCategory() {
+    try {
+        const response = yield call(GetCategory)
+        if (response.status === 200) {
+            yield put({ type: GET_CATEGORY_REDUCER, payload: { response: response.data } });
 
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
+
+
+function* handleSubCategory(category) {
+    try {
+        const response = yield call(GetSubCategory, category.payload)
+        if (response.status === 200) {
+            yield put({ type: GET_SUB_CATEGORY_REDUCER, payload: { response: response.data } });
+
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
+
+
+
+
+
+function* handleGetBrand() {
+    try {
+        const response = yield call(GetBrand)
+        if (response.status === 200) {
+            yield put({ type: GET_BRAND_REDUCER, payload: { response: response.data } });
+
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
 
 
 function* handleGetProduct(action) {
@@ -69,7 +143,7 @@ function* handleAddProduct(action) {
         console.log("response for add product", response)
 
         if (response.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message , IsVisible: 1 } });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
                 icon: false,
@@ -138,7 +212,41 @@ function* handleDeleteProduct(action) {
 
 
 
+function* handleEditProduct(action) {
+    try {
+        const response = yield call(editProduct, action.payload)
 
+        console.log("response for edit product", response)
+
+        if (response.status === 200) {
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message , IsVisible: 1} });
+            toast.success(response.data.message || 'Success!', {
+                autoClose: 2000,
+                icon: false,
+                hideProgressBar: true,
+                closeButton: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: toastStyle
+
+            });
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
 
 
 
@@ -146,5 +254,11 @@ function* ProductSaga() {
     yield takeEvery(GET_PRODUCT_SAGA, handleGetProduct)
     yield takeEvery(ADD_PRODUCT_SAGA, handleAddProduct)
     yield takeEvery(DELETE_PRODUCT_SAGA, handleDeleteProduct)
+    yield takeEvery(EDIT_PRODUCT_SAGA, handleEditProduct)
+    yield takeEvery(GET_CATEGORY_SAGA, handleCategory)
+    yield takeEvery(GET_SUB_CATEGORY_SAGA, handleSubCategory)
+    yield takeEvery(GET_BRAND_SAGA, handleGetBrand)
+
+
 }
 export default ProductSaga;

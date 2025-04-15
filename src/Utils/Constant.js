@@ -128,3 +128,7 @@ export const ADD_PRODUCT_SAGA = "Add_Product_Saga";
 
 export const DELETE_PRODUCT_REDUCER = "Delete_Product_Reducer";
 export const DELETE_PRODUCT_SAGA = "Delete_Product_Saga";
+
+
+export const EDIT_PRODUCT_REDUCER = "Edit_Product_Reducer";
+export const EDIT_PRODUCT_SAGA = "Edit_Product_Saga";

@@ -13,8 +13,7 @@ function DeleteProduct({ handleClose, deleteProductId }) {
     const handleDeleteProduct = () => {
         if (deleteProductId) {
             setLoading(true)
-            // dispatch({ type: DELETE_PRODUCT_SAGA , payload: {}})
-
+            dispatch({ type: DELETE_PRODUCT_SAGA , payload: {product_code: deleteProductId}})
         }
     }
 

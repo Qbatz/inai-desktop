@@ -2,25 +2,25 @@
 import React, { useState, useEffect, forwardRef, useRef } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import Trash from "../../Asset/Icon/trash.svg";
 import addcircle from "../../Asset/Icon/add-circle.svg";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import "react-datepicker/dist/react-datepicker.css";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Code2 } from "lucide-react";
 import Arrow from "../../Asset/Icon/Arrow.svg";
 import FormBuilder from '../../FormBuilderComponent/AdditionalFormField';
-import { InfoCircle } from "iconsax-react";
+import { InfoCircle, Gallery, Trash } from "iconsax-react";
 import PropTypes from 'prop-types';
-import { EDIT_PRODUCT_SAGA, GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA, GET_BRAND_SAGA, ADD_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
+import { ADD_TECH_IMAGE_PRODUCT_SAGA, ADD_IMAGE_PRODUCT_SAGA, EDIT_PRODUCT_SAGA, EDIT_TECH_IMAGE_PRODUCT_SAGA, EDIT_IMAGE_PRODUCT_SAGA, DELETE_TECH_IMAGE_PRODUCT_SAGA, DELETE_IMAGE_PRODUCT_SAGA, GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA, GET_BRAND_SAGA, ADD_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
 import moment from "moment";
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+
 
 function AddProduct() {
 
-const navigate = useNavigate()
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const state = useSelector(state => state)
     const [loading, setLoading] = useState(false)
@@ -126,9 +126,6 @@ const navigate = useNavigate()
 
 
 
-
-
-
     const validate = () => {
         let newErrors = {};
 
@@ -162,9 +159,141 @@ const navigate = useNavigate()
     };
 
 
-    const handleImageDelete = (index) => {
-        setImages((prev) => prev.filter((_, i) => i !== index));
+    const handleImageAddEditMode = (e) => {
+
+        const files = Array.from(e.target.files);
+
+        setImages((prev) => {
+            const unique = files.filter(preview => !prev.includes(preview));
+            return [...prev, ...unique];
+        });
+        if (files) {
+            dispatch({ type: ADD_IMAGE_PRODUCT_SAGA, payload: { productCode: formData.productCode, image: files } })
+            setLoading(true)
+        }
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const handleChangeImage = (index) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                setImages((prev) => {
+                    const updated = [...prev];
+                    updated[index] = file;
+                    return updated;
+                });
+            }
+        };
+
+        input.click();
     };
+
+
+
+    const handleEditTechChangeImage = (index, id) => {
+
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                setTechImages((prev) => {
+                    const updated = [...prev];
+                    updated[index] = file;
+
+                    if (formData?.productCode) {
+                        dispatch({
+                            type: EDIT_TECH_IMAGE_PRODUCT_SAGA,
+                            payload: {
+                                id: id,
+                                image: file,
+                                productCode: formData.productCode,
+                            }
+                        });
+                        setLoading(true)
+                    }
+
+                    return updated;
+                });
+            }
+        };
+
+        input.click();
+
+    }
+
+
+
+    const handleEditChangeImage = (index, id) => {
+
+        console.log("id", id)
+
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                setImages((prev) => {
+                    const updated = [...prev];
+                    updated[index] = file;
+
+                    if (formData?.productCode) {
+                        dispatch({
+                            type: EDIT_IMAGE_PRODUCT_SAGA,
+                            payload: {
+                                id: id,
+                                image: file,
+                                productCode: formData.productCode,
+                            }
+                        });
+                        setLoading(true)
+                    }
+
+                    return updated;
+                });
+            }
+        };
+
+        input.click();
+    };
+
+
+    const handleImageDelete = (imageId) => {
+        if (imageId) {
+            dispatch({ type: DELETE_IMAGE_PRODUCT_SAGA, payload: { id: imageId } })
+            setLoading(true)
+        }
+    };
+
+    const handleTechImageDelete = (imageId) => {
+        if (imageId) {
+            dispatch({ type: DELETE_TECH_IMAGE_PRODUCT_SAGA, payload: { id: imageId } })
+            setLoading(true)
+        }
+    }
+
 
     const handleTechDocAdd = (e) => {
         const files = Array.from(e.target.files);
@@ -174,6 +303,29 @@ const navigate = useNavigate()
             return [...prev, ...unique];
         });
     };
+
+
+    const handleTechDocAddImageinEditMode = (e) => {
+        const files = Array.from(e.target.files);
+
+        setTechImages((prev) => {
+            const unique = files.filter(preview => !prev.includes(preview));
+            return [...prev, ...unique];
+        });
+        if (files) {
+            dispatch({ type: ADD_TECH_IMAGE_PRODUCT_SAGA, payload: { productCode: formData.productCode, technicaldoc: files } })
+            setLoading(true)
+        }
+
+
+    }
+
+
+
+
+
+
+
 
     const handleTechDocDelete = (index) => {
         setTechImages((prev) => prev.filter((_, i) => i !== index));
@@ -337,7 +489,6 @@ const navigate = useNavigate()
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validate()) {
-
             const AddPayload = {
                 productCode: formData.productCode,
                 productName: formData.productName,
@@ -390,7 +541,7 @@ const navigate = useNavigate()
             };
 
             if (editDetails) {
-                // dispatch({ type: EDIT_PRODUCT_SAGA, payload: EditPayload })
+                dispatch({ type: EDIT_PRODUCT_SAGA, payload: EditPayload })
                 setLoading(true)
             } else {
                 dispatch({ type: ADD_PRODUCT_SAGA, payload: AddPayload })
@@ -456,10 +607,11 @@ const navigate = useNavigate()
             setImages(editDetails.images || []);
             setTechImages(editDetails.technicaldocs || []);
             setSelectedDate(editDetails.manufacturingYearAndMonth || null);
+            setSerialNoList(editDetails.serialNo || []);
         }
     }, [editDetails]);
 
- useEffect(() => {
+    useEffect(() => {
         if (state.Common.IsVisible === 1) {
             navigate('/product')
         }
@@ -479,6 +631,15 @@ const navigate = useNavigate()
         };
     }, [images]);
 
+    useEffect(() => {
+        return () => {
+            techImages.forEach(img => {
+                if (img instanceof File || img.url instanceof File) {
+                    URL.revokeObjectURL(img instanceof File ? img : img.url);
+                }
+            });
+        };
+    }, [techImages]);
 
 
 
@@ -487,7 +648,7 @@ const navigate = useNavigate()
 
 
     return (
-        <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center">
+        <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center relative">
 
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
@@ -516,7 +677,7 @@ const navigate = useNavigate()
                                 </label>
                                 <input
                                     type="text"
-                                    className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm  font-Gilroy  ${formData.productCode ? "text-slate": "text-slate-500"}`}
+                                    className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm  font-Gilroy  ${formData.productCode ? "text-slate" : "text-slate-500"}`}
                                     placeholder="Enter Product code"
                                     name="productCode"
                                     value={formData.productCode}
@@ -538,7 +699,7 @@ const navigate = useNavigate()
                                 </label>
                                 <input
                                     type="text"
-                                    className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm ${formData.productN? "text-slate": "text-slate-500"} font-Gilroy`}
+                                    className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm ${formData.productN ? "text-slate" : "text-slate-500"} font-Gilroy`}
                                     placeholder="Enter Product Name"
                                     name="productName"
                                     value={formData.productName}
@@ -559,7 +720,7 @@ const navigate = useNavigate()
 
                                 <textarea
                                     placeholder="Enter Description"
-                                    className={`mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-sm ${formData.description? "text-slate": "text-slate-500"} font-Gilroy`} 
+                                    className={`mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-sm ${formData.description ? "text-slate" : "text-slate-500"} font-Gilroy`}
                                     name="description"
                                     value={formData.description}
                                     onChange={(e) => handleInputChange('description', e.target.value)}
@@ -611,25 +772,69 @@ const navigate = useNavigate()
                                                     imageSrc = img.url;
                                                 }
 
+
                                                 return (
                                                     <div key={index} className="px-1">
-                                                        <div className="relative w-32 h-32 rounded-md overflow-hidden">
+                                                        <div className="relative w-32 h-32 rounded-md overflow-hidden  border border-zinc-300 group" >
+
                                                             <img
                                                                 src={imageSrc}
                                                                 alt={`uploaded-${index}`}
-                                                                className="w-full h-full object-cover"
+                                                                className={` cursor-pointer w-full h-full ${img.type === 'image/svg+xml' ? '' : 'object-cover'}`}
                                                             />
-                                                            <div className="absolute inset-0 flex items-center justify-center rounded-md">
-                                                                <div
-                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
-                                                                    onClick={() => handleImageDelete(index)}
-                                                                >
-                                                                    <img
-                                                                        src={Trash}
-                                                                        className="w-5 h-5 text-red-500 filter brightness-0 contrast-100"
-                                                                        alt="Delete"
-                                                                    />
+                                                            <div className="absolute inset-0 hidden group-hover:flex items-center justify-center bg-black bg-opacity-50 transition duration-300 ">
+
+                                                                <div className="flex items-center  space-x-2">
+
+                                                                    {
+                                                                        editDetails && images?.length > 0 ?
+                                                                            <>
+
+                                                                                <div
+                                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                    onClick={() => handleEditChangeImage(index, img.id)}
+                                                                                >
+                                                                                    <Gallery
+                                                                                        size="16"
+                                                                                        color="#FFF"
+                                                                                        variant="Bold"
+                                                                                        style={{ cursor: "pointer" }}
+                                                                                    />
+                                                                                </div>
+
+
+                                                                                <div className="w-px h-6 bg-white opacity-60" />
+                                                                                <div
+                                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                    onClick={() => handleImageDelete(img.id)}
+                                                                                >
+                                                                                    <Trash
+                                                                                        size="16"
+                                                                                        color="#FFF"
+                                                                                        variant="Bold"
+                                                                                        style={{ cursor: "pointer" }}
+                                                                                    />
+                                                                                </div>
+                                                                            </>
+
+
+                                                                            :
+                                                                            (
+                                                                                <div
+                                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                    onClick={() => handleChangeImage(index)}
+                                                                                >
+                                                                                    <Gallery
+                                                                                        size="16"
+                                                                                        color="#FFF"
+                                                                                        variant="Bold"
+                                                                                        style={{ cursor: "pointer" }}
+                                                                                    />
+                                                                                </div>
+                                                                            )
+                                                                    }
                                                                 </div>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -639,19 +844,38 @@ const navigate = useNavigate()
                                     )}
                                 </div>
 
+
                                 <div className="w-32 h-32 border-dashed border flex items-center justify-center rounded-md cursor-pointer bg-white">
-                                    <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
-                                        <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
-                                        <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">Add Image</span>
-                                        <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">Max size 10 MB</span>
-                                        <input
-                                            type="file"
-                                            name="image"
-                                            accept="image/*"
-                                            className="hidden"
-                                            onChange={handleImageAdd}
-                                        />
-                                    </label>
+                                    {
+                                        editDetails ?
+
+                                            <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
+                                                <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
+                                                <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">Add Image</span>
+                                                <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">Max size 10 MB</span>
+                                                <input
+                                                    type="file"
+                                                    name="image"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    onChange={handleImageAddEditMode}
+                                                />
+                                            </label>
+                                            :
+                                            <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
+                                                <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
+                                                <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">Add Image</span>
+                                                <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">Max size 10 MB</span>
+                                                <input
+                                                    type="file"
+                                                    name="image"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    onChange={handleImageAdd}
+                                                />
+                                            </label>
+                                    }
+
                                 </div>
 
                             </div>
@@ -689,29 +913,77 @@ const navigate = useNavigate()
                                                 if (typeof img.url === "string") {
                                                     imageSrc = img.url;
                                                 } else if (img instanceof File) {
+                                                    imageSrc = URL.createObjectURL(img);
+                                                } else if (img.url instanceof File) {
                                                     imageSrc = URL.createObjectURL(img.url);
                                                 } else if (img.url) {
                                                     imageSrc = img.url;
                                                 }
+                                                console.log("TechImageSrc", imageSrc, "FileType:", img?.type);
                                                 return (
                                                     <div key={index} className="px-1">
-                                                        <div className="relative w-32 h-32 rounded-md overflow-hidden">
+                                                        <div className="relative w-32 h-32 rounded-md overflow-hidden group">
                                                             <img
                                                                 src={imageSrc}
                                                                 alt={`uploaded-${index}`}
                                                                 className="w-full h-full object-cover"
                                                             />
-                                                            <div className="absolute inset-0 flex items-center justify-center rounded-md">
-                                                                <div
-                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
-                                                                    onClick={() => handleTechDocDelete(index)}
-                                                                >
-                                                                    <img
-                                                                        src={Trash}
-                                                                        className="w-5 h-5 text-red-500 filter brightness-0 contrast-100"
-                                                                        alt="Delete"
-                                                                    />
+                                                            <div className="absolute inset-0 hidden group-hover:flex items-center justify-center bg-black bg-opacity-50 transition duration-300 ">
+
+                                                                <div className="flex  items-center space-x-2">
+
+
+                                                                    {
+                                                                        editDetails && techImages?.length > 0 ? <>
+
+                                                                            <div
+                                                                                className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                onClick={() => handleEditTechChangeImage(index, img.id)}
+                                                                            >
+                                                                                <Gallery
+                                                                                    size="16"
+                                                                                    color="#FFF"
+                                                                                    variant="Bold"
+                                                                                    style={{ cursor: "pointer" }}
+                                                                                />
+                                                                            </div>
+
+
+                                                                            <div className="w-px h-6 bg-white opacity-60" />
+                                                                            <div
+                                                                                className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                onClick={() => handleTechImageDelete(img.id)}
+                                                                            >
+                                                                                <Trash
+                                                                                    size="16"
+                                                                                    color="#FFF"
+                                                                                    variant="Bold"
+                                                                                    style={{ cursor: "pointer" }}
+                                                                                />
+                                                                            </div>
+                                                                        </>
+                                                                            :
+                                                                            <>
+
+                                                                                <div
+                                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                    onClick={() => handleChangeImage(index)}
+                                                                                >
+                                                                                    <Gallery
+                                                                                        size="16"
+                                                                                        color="#FFF"
+                                                                                        variant="Bold"
+                                                                                        style={{ cursor: "pointer" }}
+                                                                                    />
+                                                                                </div>
+
+                                                                            </>
+
+
+
+                                                                    }
                                                                 </div>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -729,23 +1001,47 @@ const navigate = useNavigate()
                                 </div>
 
 
+                                {
+                                    editDetails ?
 
-                                <label className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
-                                    <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
-                                    <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
-                                        Add Documents
-                                    </span>
-                                    <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">
-                                        Max size 10 MB
-                                    </span>
-                                    <input
-                                        type="file"
-                                        name="tech"
-                                        accept=".pdf,.doc,.docx,.txt,image/*"
-                                        className="hidden"
-                                        onChange={handleTechDocAdd}
-                                    />
-                                </label>
+                                        <label className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
+                                            <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
+                                            <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
+                                                Add Documents
+                                            </span>
+                                            <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">
+                                                Max size 10 MB
+                                            </span>
+                                            <input
+                                                type="file"
+                                                name="tech"
+                                                accept=".pdf,.doc,.docx,.txt,image/*"
+                                                className="hidden"
+                                                onChange={handleTechDocAddImageinEditMode}
+                                            />
+                                        </label>
+
+                                        :
+
+
+
+                                        <label className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
+                                            <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
+                                            <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
+                                                Add Documents
+                                            </span>
+                                            <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">
+                                                Max size 10 MB
+                                            </span>
+                                            <input
+                                                type="file"
+                                                name="tech"
+                                                accept=".pdf,.doc,.docx,.txt,image/*"
+                                                className="hidden"
+                                                onChange={handleTechDocAdd}
+                                            />
+                                        </label>
+                                }
                             </div>
                         </div>
                     </div>
@@ -842,30 +1138,15 @@ const navigate = useNavigate()
 
 
                                 <input
-                                        type="text"
-                                        value={formData.weight}
-                                        onChange={(e) => handleInputChange('weight', e.target.value)}
-                                        placeholder="Enter Weight"
-                                       className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
-                                    />
+                                    type="text"
+                                    value={formData.weight}
+                                    onChange={(e) => handleInputChange('weight', e.target.value)}
+                                    placeholder="Enter Weight"
+                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                                />
 
 
-                                {/* <div className="relative">
-                                    <select
-                                      
 
-                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                        <option value="" disabled selected>Select Weight</option>
-                                        <option value="kg">Kilogram (kg)</option>
-                                        <option value="g">Gram (g)</option>
-                                        <option value="mg">Milligram (mg)</option>
-                                        <option value="lb">Pound (lb)</option>
-                                        <option value="oz">Ounce (oz)</option>
-                                    </select>
-                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div> */}
                             </div>
 
                             <div className="flex-1 min-w-[250px] max-w-[340px]">
@@ -914,7 +1195,7 @@ const navigate = useNavigate()
                                 <label className="block font-normal text-md font-Outfit mb-1">Serial No</label>
                                 <input
                                     type="text"
-                                    value={serialNoList.join(", ")}
+                                    value={Array.isArray(serialNoList) ? serialNoList.join(", ") : ""}
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
                                             const newSerialNo = `SN${serialNoList.length + 1}`;

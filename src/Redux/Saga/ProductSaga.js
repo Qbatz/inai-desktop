@@ -12,11 +12,19 @@ import {
     GET_SUB_CATEGORY_SAGA,
     GET_SUB_CATEGORY_REDUCER,
     GET_BRAND_REDUCER,
-    GET_BRAND_SAGA
+    GET_BRAND_SAGA,
+    EDIT_IMAGE_PRODUCT_SAGA,
+    EDIT_TECH_IMAGE_PRODUCT_SAGA,
+    DELETE_IMAGE_PRODUCT_SAGA,
+    DELETE_TECH_IMAGE_PRODUCT_SAGA,
+    ADD_IMAGE_PRODUCT_SAGA,
+    ADD_TECH_IMAGE_PRODUCT_SAGA
+
+
 
 } from "../../Utils/Constant";
 import { refreshToken } from "../../Token_Access/Token";
-import { getProduct, addProduct, DeleteProduct, editProduct, GetCategory, GetSubCategory, GetBrand } from "../Action/ProductAction";
+import { addTechImage,addImage,DeleteProductTechImage,DeleteProductImage,getProduct, addProduct, DeleteProduct, editProduct, GetCategory, GetSubCategory, GetBrand, editImage,editTechImage} from "../Action/ProductAction";
 import { toast } from 'react-toastify';
 
 
@@ -143,7 +151,7 @@ function* handleAddProduct(action) {
         console.log("response for add product", response)
 
         if (response.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message , IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
                 icon: false,
@@ -219,7 +227,152 @@ function* handleEditProduct(action) {
         console.log("response for edit product", response)
 
         if (response.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message , IsVisible: 1} });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            toast.success(response.data.message || 'Success!', {
+                autoClose: 2000,
+                icon: false,
+                hideProgressBar: true,
+                closeButton: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: toastStyle
+
+            });
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
+
+function* handleEditImageProduct(action) {
+    try {
+        const response = yield call(editImage, action.payload)
+
+        console.log("response for edit product", response)
+
+        if (response.status === 200) {
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            toast.success(response.data.message || 'Success!', {
+                autoClose: 2000,
+                icon: false,
+                hideProgressBar: true,
+                closeButton: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: toastStyle
+
+            });
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
+
+function* handleEditTechImageProduct(action) {
+    try {
+        const response = yield call(editTechImage, action.payload)
+
+        console.log("response for edit product", response)
+
+        if (response.status === 200) {
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            toast.success(response.data.message || 'Success!', {
+                autoClose: 2000,
+                icon: false,
+                hideProgressBar: true,
+                closeButton: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: toastStyle
+
+            });
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
+
+function* handleDeleteImageProduct(action) {
+    try {
+        const response = yield call(DeleteProductImage, action.payload)
+
+        console.log("response for edit product", response)
+
+        if (response.status === 200) {
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
+            toast.success(response.data.message || 'Success!', {
+                autoClose: 2000,
+                icon: false,
+                hideProgressBar: true,
+                closeButton: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: toastStyle
+
+            });
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
+
+
+function* handleDeleteTechImageProduct(action) {
+    try {
+        const response = yield call(DeleteProductTechImage, action.payload)
+
+        console.log("response for edit product", response)
+
+        if (response.status === 200) {
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message} });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
                 icon: false,
@@ -250,6 +403,82 @@ function* handleEditProduct(action) {
 
 
 
+
+function* handleAddImage(action) {
+    try {
+        const response = yield call(addImage, action.payload)
+
+        console.log("response", response)
+
+        if (response.status === 200) {
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message} });
+            toast.success(response.data.message || 'Success!', {
+                autoClose: 2000,
+                icon: false,
+                hideProgressBar: true,
+                closeButton: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: toastStyle
+
+            });
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
+
+function* handleAddTechImage(action) {
+    try {
+        const response = yield call(addTechImage, action.payload)
+
+        console.log("response", response)
+
+        if (response.status === 200) {
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message} });
+            toast.success(response.data.message || 'Success!', {
+                autoClose: 2000,
+                icon: false,
+                hideProgressBar: true,
+                closeButton: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: toastStyle
+
+            });
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
+
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
+
+
+
+
 function* ProductSaga() {
     yield takeEvery(GET_PRODUCT_SAGA, handleGetProduct)
     yield takeEvery(ADD_PRODUCT_SAGA, handleAddProduct)
@@ -258,7 +487,13 @@ function* ProductSaga() {
     yield takeEvery(GET_CATEGORY_SAGA, handleCategory)
     yield takeEvery(GET_SUB_CATEGORY_SAGA, handleSubCategory)
     yield takeEvery(GET_BRAND_SAGA, handleGetBrand)
-
+    yield takeEvery(EDIT_IMAGE_PRODUCT_SAGA, handleEditImageProduct)
+    yield takeEvery(EDIT_TECH_IMAGE_PRODUCT_SAGA , handleEditTechImageProduct)
+    yield takeEvery(DELETE_IMAGE_PRODUCT_SAGA,handleDeleteImageProduct)
+    yield takeEvery(DELETE_TECH_IMAGE_PRODUCT_SAGA,handleDeleteTechImageProduct)
+    yield takeEvery(ADD_IMAGE_PRODUCT_SAGA,handleAddImage)
+    yield takeEvery(ADD_TECH_IMAGE_PRODUCT_SAGA,handleAddTechImage)
+  
 
 }
 export default ProductSaga;

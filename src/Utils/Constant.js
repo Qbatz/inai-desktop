@@ -132,3 +132,26 @@ export const DELETE_PRODUCT_SAGA = "Delete_Product_Saga";
 
 export const EDIT_PRODUCT_REDUCER = "Edit_Product_Reducer";
 export const EDIT_PRODUCT_SAGA = "Edit_Product_Saga";
+
+
+
+
+export const EDIT_IMAGE_PRODUCT_SAGA = "Edit_Image_Product_Saga";
+
+export const EDIT_TECH_IMAGE_PRODUCT_SAGA = "Edit_Tech_Image_Product_Saga";
+
+export const DELETE_IMAGE_PRODUCT_SAGA = "Delete_Image_Product_Saga";
+
+export const DELETE_TECH_IMAGE_PRODUCT_SAGA = "Delete_Tech_Image_Product_Saga";
+
+export const ADD_IMAGE_PRODUCT_SAGA = "Add_Image_Product_Saga";
+
+export const ADD_TECH_IMAGE_PRODUCT_SAGA = "Add_Tech_Image_Product_Saga";
+
+
+
+
+
+
+
+

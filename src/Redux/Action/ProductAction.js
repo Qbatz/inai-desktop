@@ -1,9 +1,36 @@
 
 import AxiosConfig from "../../WebService/AxiosConfig";
 
-export async function getProduct() {
-  return await AxiosConfig.get('/product/product')
+// export async function getProduct() {
+//   return await AxiosConfig.get('/product/product')
+// }
+
+export async function getProduct(product) {
+
+  let queryParams = '';
+
+    if (product.startDate && product.endDate) {
+    queryParams = new URLSearchParams({
+          startDate: product.startDate || '',
+      endDate: product.endDate || ''
+    }).toString();
+  } else if (product.searchKeyword) {
+      queryParams = new URLSearchParams({
+      searchKeyword: product.searchKeyword || ''
+    }).toString();
+  }
+
+  if (!product.startDate && !product.endDate && !product.searchKeyword) {
+    return await AxiosConfig.get('/product/product');
+  }
+
+
+  return await AxiosConfig.get(`/product/product?${queryParams}`);
 }
+
+
+
+
 
 
 export async function addProduct(product) {

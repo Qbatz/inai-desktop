@@ -23,6 +23,10 @@ function FormBuilder(props) {
         { label: "TextArea", value: "textarea" }
     ];
 
+
+console.log("FormData ********************", formData)
+
+
     const handleTabClick = (type) => {
         setType(type)
            setFormData({ title: "", placeholder: "", value: "", type : type, options: [] });

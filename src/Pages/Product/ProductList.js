@@ -161,7 +161,7 @@ function ProductList() {
 
 
     useEffect(() => {
-        dispatch({ type: GET_PRODUCT_SAGA })
+        dispatch({ type: GET_PRODUCT_SAGA, payload: { searchKeyword: "" } })
         setLoading(true)
     }, [])
 
@@ -174,7 +174,7 @@ function ProductList() {
             setShowDeleteProduct(false);
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })
-            }, 5000)
+            }, 3000)
         }
 
     }, [state.Common.successCode])
@@ -182,18 +182,18 @@ function ProductList() {
 
     useEffect(() => {
         if (state.product?.productList) {
-          setProductList(state.product?.productList)
+            setProductList(state.product?.productList)
         }
-      }, [state.product?.productList])
+    }, [state.product?.productList])
 
     useEffect(() => {
-           if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-               setLoading(false)
-               setTimeout(() => {
-                   dispatch({ type: RESET_CODE })
-               }, 5000)
-           }
-       }, [state.Common?.successCode, state.Common?.code]);
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 3000)
+        }
+    }, [state.Common?.successCode, state.Common?.code]);
 
 
 
@@ -203,16 +203,16 @@ function ProductList() {
         const delayApi = setTimeout(() => {
             if (searchTerm.trim() !== "") {
                 dispatch({
-                    type: "",
+                    type: GET_PRODUCT_SAGA,
                     payload: { searchKeyword: searchTerm.trim() },
                 });
                 setLoading(true)
             } else {
                 dispatch({
-                    type: "",
+                    type: GET_PRODUCT_SAGA,
                     payload: { searchKeyword: "" },
                 });
-                            }
+            }
         }, 500);
 
         return () => clearTimeout(delayApi);
@@ -225,14 +225,13 @@ function ProductList() {
         const delayApi = setTimeout(() => {
             if (startDate && endDate && startDate !== endDate) {
                 dispatch({
-                    type: "",
+                    type: GET_PRODUCT_SAGA,
                     payload: { startDate: startDate, endDate: endDate },
                 });
-                setLoading(true)
                 setShowPicker(false)
             } else {
-                dispatch({ type: "", payload: { startDate: null, endDate: null } })
-                
+                dispatch({ type: GET_PRODUCT_SAGA, payload: { startDate: null, endDate: null } })
+
             }
         }, 500);
 
@@ -477,56 +476,58 @@ function ProductList() {
 
 
 
+                {
+                    productList.length > 10 &&
 
 
-                <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
-                    <div className="flex items-center gap-2">
-                        <select
-                            value={itemsPerPage}
-                            onChange={handleItemsPerPageChange}
-                            className="px-1 py-1 border border-[#205DA8] rounded-md text-[#205DA8] font-bold cursor-pointer outline-none shadow-none"
-                        >
-                            <option value={10}>10</option>
-                            <option value={50}>50</option>
-                            <option value={100}>100</option>
-                        </select>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <ul className="flex items-center list-none m-0 p-0 gap-4">
+                    <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
+                        <div className="flex items-center gap-2">
+                            <select
+                                value={itemsPerPage}
+                                onChange={handleItemsPerPageChange}
+                                className="px-1 py-1 border border-[#205DA8] rounded-md text-[#205DA8] font-bold cursor-pointer outline-none shadow-none"
+                            >
+                                <option value={10}>10</option>
+                                <option value={50}>50</option>
+                                <option value={100}>100</option>
+                            </select>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <ul className="flex items-center list-none m-0 p-0 gap-4">
 
-                            <li>
-                                <button
-                                    className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
-                                        }`}
-                                    onClick={() => handlePageChange(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                >
-                                    <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
-                                </button>
-                            </li>
-
-
-                            <li className="text-sm font-bold">
-                                {currentPage} of {totalPages}
-                            </li>
+                                <li>
+                                    <button
+                                        className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                                            }`}
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                    >
+                                        <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
+                                    </button>
+                                </li>
 
 
-                            <li>
-                                <button
-                                    className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
-                                        }`}
-                                    onClick={() => handlePageChange(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                >
-                                    <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#1E45E1"} />
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
+                                <li className="text-sm font-bold">
+                                    {currentPage} of {totalPages}
+                                </li>
 
 
+                                <li>
+                                    <button
+                                        className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                                            }`}
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#1E45E1"} />
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
 
+
+                }
 
 
 

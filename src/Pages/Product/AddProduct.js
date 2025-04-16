@@ -30,21 +30,23 @@ function AddProduct() {
     const scrollTechRef = useRef(null);
     const [selectedDate, setSelectedDate] = useState(null);
     const [images, setImages] = useState([
-
     ]);
     const [techImages, setTechImages] = useState([
-
     ]);
+
+
+
+    const [initialEditData, setInitialEditData] = useState(null);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
     const [displayItems, setDisplayItems] = useState([])
-    const [formValues, setFormValues] = useState({});
+    const [formValues, setFormValues] = useState([]);
 
     console.log("editDetails", editDetails)
 
 
-
+    const [isChanged, setIsChanged] = useState('')
     const [serialNoList, setSerialNoList] = useState([]);
-    const [inputSerial, setInputSerial] = useState("");
+    const [inputText, setInputText] = useState("");
 
 
     console.log("serialNoList", serialNoList)
@@ -87,24 +89,11 @@ function AddProduct() {
         setSelectedDate(formatted);
     };
 
-    const handleSerialChange = () => {
-        if (
-            inputSerial.trim() !== "" &&
-            serialNoList.length < parseInt(formData.availableQuantity)
-        ) {
-            setSerialNoList([...serialNoList, inputSerial.trim()]);
-            setInputSerial("");
-        }
-    };
 
 
 
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            handleSerialChange();
-        }
-    };
+
+
 
     const handleInputChange = (field, value) => {
 
@@ -149,20 +138,20 @@ function AddProduct() {
 
 
 
-    
+
 
     const handleImageAdd = (e) => {
         const files = Array.from(e.target.files);
         let imageError = {};
-    
+
         setImages((prev) => {
             const unique = files.filter(preview => !prev.includes(preview));
             const totalImages = prev.length + unique.length;
-    
+
             if (totalImages > 10) {
                 imageError.imageErrors = "You can only upload up to 10 images";
                 setErrors(imageError);
-                    const allowedCount = 10 - prev.length;
+                const allowedCount = 10 - prev.length;
                 return [...prev, ...unique.slice(0, allowedCount)];
             } else {
                 setErrors({});
@@ -170,41 +159,41 @@ function AddProduct() {
             }
         });
     };
-    
+
     const handleImageAddEditMode = (e) => {
         const files = Array.from(e.target.files);
         const unique = files.filter(preview => !images.includes(preview));
         const totalImages = images.length + unique.length;
         let imageError = {};
-    
+
         if (totalImages > 10) {
             imageError.imageErrors = "You can only upload up to 10 images";
             setErrors(imageError);
-    
+
             const allowedCount = 10 - images.length;
             const validFiles = unique.slice(0, allowedCount);
             setImages(prev => [...prev, ...validFiles]);
-    
-                        return;
+
+            return;
         }
-    
-  
+
+
         setErrors({});
         setImages(prev => [...prev, ...unique]);
-    
+
         if (files.length) {
             dispatch({
                 type: ADD_IMAGE_PRODUCT_SAGA,
                 payload: {
                     productCode: formData.productCode,
-                    image:files,
+                    image: files,
                 }
             });
             setLoading(true);
         }
     };
-    
-console.log("all errors", errors)
+
+
 
     const handleTechDocAdd = (e) => {
         const files = Array.from(e.target.files);
@@ -228,6 +217,44 @@ console.log("all errors", errors)
 
 
 
+    console.log("errorssssssssss", errors)
+
+    const handleSerialInputChange = (e) => {
+        const input = e.target.value;
+        setInputText(input);
+
+        let newErrors = {};
+
+        const serials = input
+            .split(",")
+            .map((s) => s.trim().toUpperCase())
+            .filter((s) => s !== "");
+
+        const allowedCount = parseInt(formData.availableQuantity);
+        const hasDuplicates = new Set(serials).size !== serials.length;
+
+        if (hasDuplicates) {
+            newErrors.serialNo = "Please enter unique serial numbers only";
+        } else if (serials.length > allowedCount) {
+            newErrors.serialNo = `Only ${allowedCount} serial number(s) allowed`;
+        }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            setSerialNoList(serials);
+        } else {
+            const limitedSerials = serials.slice(0, allowedCount);
+            setSerialNoList(limitedSerials);
+            setInputText(limitedSerials.join(", "));
+        }
+    };
+
+
+
+
+
+
 
 
     const handleTechDocAddImageinEditMode = (e) => {
@@ -235,20 +262,20 @@ console.log("all errors", errors)
         const unique = files.filter(preview => !techImages.includes(preview));
         const totalImages = techImages.length + unique.length;
         let imageError = {};
-    
+
         if (totalImages > 10) {
             imageError.techImagesError = "You can only upload up to 10 Technical images";
             setErrors(imageError);
-    
+
             const allowedCount = 10 - techImages.length;
             const validFiles = unique.slice(0, allowedCount);
             setTechImages(prev => [...prev, ...validFiles]);
-            return; 
+            return;
         }
-   
+
         setErrors({});
         setTechImages(prev => [...prev, ...unique]);
-    
+
         if (files.length) {
             dispatch({
                 type: ADD_TECH_IMAGE_PRODUCT_SAGA,
@@ -260,7 +287,7 @@ console.log("all errors", errors)
             setLoading(true);
         }
     };
-    
+
 
 
 
@@ -293,7 +320,7 @@ console.log("all errors", errors)
 
 
     const handleEditTechChangeImage = (index, id) => {
-
+        console.log("edit id", id)
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
@@ -379,7 +406,6 @@ console.log("all errors", errors)
     }
 
 
-  
 
 
 
@@ -387,9 +413,8 @@ console.log("all errors", errors)
 
 
 
-    const handleTechDocDelete = (index) => {
-        setTechImages((prev) => prev.filter((_, i) => i !== index));
-    };
+
+
 
     const handleScrollToLeftPhotos = () => {
         scrollRef.current?.scrollBy({ left: -500, behavior: 'smooth' });
@@ -412,14 +437,14 @@ console.log("all errors", errors)
 
     const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
         <div
-            className="flex  font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-sm text-gray-700 cursor-pointer"
+            className="flex  font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-md text-gray-700 cursor-pointer"
             onClick={onClick}
             ref={ref}
-            style={{ width: "285px" }}
+            style={{ width: "300px" }}
         >
             <input
                 type="text"
-                className="flex-1 w-full font-Gilroy bg-transparent outline-none  py-0.5 font-medium text-xs text-slate-500 placeholder-gray-400"
+                className="flex-1 w-full font-Gilroy bg-transparent outline-none py-0.5  font-medium text-sm text-slate-500 placeholder-gray-400"
                 value={value}
                 placeholder={placeholder}
                 readOnly
@@ -484,67 +509,154 @@ console.log("all errors", errors)
     }
 
     const updateDisplayItems = (item) => {
+        console.log("addtitional item", item)
         setDisplayItems([...displayItems, item])
+        setFormValues(prev => [...prev, item]);
         setShowAdditionalFields(false)
     }
 
     const handleCloseForm = () => {
         setShowAdditionalFields(false)
     }
+
+
+
+
+
+
+
+
+    const updateFormValues = (title, newValue, type) => {
+
+
+
+        const updatedItems = displayItems.map((item) => {
+            if (item.title === title) {
+                return {
+                    ...item,
+                    value: newValue,
+                    type: type || item.type
+                };
+            }
+            return item;
+        });
+        setDisplayItems(updatedItems);
+        setFormValues(updatedItems)
+    };
+
+
+
+
+
+
     const RadioOptionsChange = (title, newValue) => {
-        setFormValues((prev) => ({
-            ...prev,
-            [title]: newValue,
-        }));
-        const updatedItems = displayItems.map((item) =>
-            item.title === title ? { ...item, value: newValue } : item
-        );
-        setDisplayItems(updatedItems);
-    }
+        updateFormValues(title, newValue, "radio");
+    };
+
     const CheckboxOptionsChange = (title, newValue) => {
-        setFormValues((prev) => ({
-            ...prev,
-            [title]: newValue,
-        }));
-        const updatedItems = displayItems.map((item) =>
-            item.title === title ? { ...item, value: newValue } : item
-        );
-        setDisplayItems(updatedItems);
-    }
+
+        console.log("newValue", newValue)
+
+        updateFormValues(title, newValue, "checkbox");
+    };
 
     const SelectOptionsChange = (title, newValue) => {
-        setFormValues((prev) => ({
-            ...prev,
-            [title]: newValue,
-        }));
-        const updatedItems = displayItems.map((item) =>
-            item.title === title ? { ...item, value: newValue } : item
-        );
-        setDisplayItems(updatedItems);
-    }
+        updateFormValues(title, newValue, "select");
+    };
 
     const textInputCallbackForName = (title, newValue) => {
-        setFormValues((prev) => ({
-            ...prev,
-            [title]: newValue,
-        }));
-        const updatedItems = displayItems.map((item) =>
-            item.title === title ? { ...item, value: newValue } : item
-        );
-        setDisplayItems(updatedItems);
+        updateFormValues(title, newValue, "text");
     };
 
     const CallbackForTextArea = (title, newValue) => {
+        updateFormValues(title, newValue, "textarea");
+    };
 
-        setFormValues((prev) => ({
-            ...prev,
-            [title]: newValue,
-        }));
-        const updatedItems = displayItems.map((item) =>
-            item.title === title ? { ...item, value: newValue } : item
-        );
-        setDisplayItems(updatedItems);
-    }
+
+
+
+
+
+
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     if (validate()) {
+    //         const AddPayload = {
+    //             productCode: formData.productCode,
+    //             productName: formData.productName,
+    //             description: formData.description,
+    //             unit: formData.unit,
+    //             price: formData.price,
+    //             quantity: formData.availableQuantity,
+    //             currency: formData.currency,
+    //             weight: formData.weight,
+    //             discount: formData.discount,
+    //             hsnCode: formData.hsn,
+    //             gst: formData.gst,
+    //             category: formData.category,
+    //             subCategory: formData.subCategory,
+    //             make: formData.make,
+    //             countryOfOrigin: formData.country,
+    //             manufaturingYearAndMonth: selectedDate,
+    //             State: formData.stateName,
+    //             district: formData.district,
+    //             brand: formData.brand,
+    //             images: images,
+    //             technicaldocs: techImages,
+    //             serialNo: serialNoList,
+    //             additional_fields: formValues ? formValues : []
+    //         };
+    //         const EditPayload = {
+    //             productCode: formData.productCode,
+    //             productName: formData.productName,
+    //             description: formData.description,
+    //             unit: formData.unit,
+    //             price: formData.price,
+    //             quantity: Number(formData.availableQuantity),
+    //             currency: formData.currency,
+    //             weight: formData.weight,
+    //             discount: formData.discount,
+    //             hsnCode: formData.hsn,
+    //             gst: formData.gst,
+    //             category: formData.category,
+    //             subCategory: formData.subCategory,
+    //             make: formData.make,
+    //             countryOfOrigin: formData.country,
+    //             manufaturingYearAndMonth: selectedDate,
+    //             State: formData.stateName,
+    //             district: formData.district,
+    //             brand: formData.brand,
+    //             images: images,
+    //             technicaldocs: techImages,
+    //             serialNo: serialNoList,
+    //             additional_fields: formValues ? formValues : []
+    //         };
+
+
+    //         if (editDetails && initialEditData) {
+    //             const isEqual = JSON.stringify(EditPayload) === JSON.stringify(initialEditData);
+
+    //             if (isEqual) {
+    //                 alert('No changes detected')
+    //                 setIsChanged("No changes detected")
+    //             }
+    //             return;
+    //         }
+
+    //         if (editDetails) {
+    //             dispatch({ type: EDIT_PRODUCT_SAGA, payload: EditPayload })
+    //             setLoading(true)
+    //         } else {
+    //             dispatch({ type: ADD_PRODUCT_SAGA, payload: AddPayload })
+    //             setLoading(true)
+    //         }
+
+
+    //     }
+    // };
+
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -572,15 +684,16 @@ console.log("all errors", errors)
                 images: images,
                 technicaldocs: techImages,
                 serialNo: serialNoList,
-                additional_fields: formValues ? [formValues] : []
+                additional_fields: formValues ? formValues : []
             };
+
             const EditPayload = {
                 productCode: formData.productCode,
                 productName: formData.productName,
                 description: formData.description,
                 unit: formData.unit,
                 price: formData.price,
-                quantity: formData.availableQuantity,
+                quantity: Number(formData.availableQuantity),
                 currency: formData.currency,
                 weight: formData.weight,
                 discount: formData.discount,
@@ -597,21 +710,37 @@ console.log("all errors", errors)
                 images: images,
                 technicaldocs: techImages,
                 serialNo: serialNoList,
-                additional_fields: formValues ? [formValues] : []
+                additional_fields: formValues ? formValues : []
             };
 
-            if (editDetails) {
-                dispatch({ type: EDIT_PRODUCT_SAGA, payload: EditPayload })
-                setLoading(true)
-            } else {
-                dispatch({ type: ADD_PRODUCT_SAGA, payload: AddPayload })
-                setLoading(true)
+            if (editDetails && initialEditData) {
+                const currentData = {
+                    ...EditPayload,
+                    manufaturingYearAndMonth: selectedDate?.toISOString?.() || null,
+                };
+
+                const initialData = {
+                    ...initialEditData,
+                    manufaturingYearAndMonth: initialEditData.manufaturingYearAndMonth?.toISOString?.() || null,
+                };
+
+                const isEqual = JSON.stringify(currentData) === JSON.stringify(initialData);
+
+                if (isEqual) {
+                    setIsChanged("No changes detected");
+                    return;
+                }
             }
 
-
+            if (editDetails) {
+                dispatch({ type: EDIT_PRODUCT_SAGA, payload: EditPayload });
+                setLoading(true);
+            } else {
+                dispatch({ type: ADD_PRODUCT_SAGA, payload: AddPayload });
+                setLoading(true);
+            }
         }
     };
-
 
 
     useEffect(() => {
@@ -626,7 +755,6 @@ console.log("all errors", errors)
         if (formData.category) {
             dispatch({ type: GET_SUB_CATEGORY_SAGA, payload: { catId: Number(formData.category) } })
         }
-
     }, [formData.category])
 
 
@@ -641,9 +769,23 @@ console.log("all errors", errors)
 
 
 
+
     useEffect(() => {
         if (editDetails) {
-            setFormData({
+            let serialNoValue = [];
+
+            if (Array.isArray(editDetails.serialNo)) {
+                serialNoValue = editDetails.serialNo;
+            } else {
+                try {
+                    const parsed = JSON.parse(editDetails.serialNo);
+                    serialNoValue = Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    serialNoValue = [];
+                }
+            }
+
+            const initialForm = {
                 productCode: editDetails.productCode || "",
                 productName: editDetails.productName || "",
                 description: editDetails.description || "",
@@ -662,14 +804,110 @@ console.log("all errors", errors)
                 country: editDetails.countryOfOrigin || "",
                 stateName: editDetails.State || "",
                 district: editDetails.district || "",
+            };
+
+            setFormData(initialForm);
+
+            setInitialEditData({
+                ...initialForm,
+                images: editDetails.images || [],
+                technicaldocs: editDetails.technicaldocs || [],
+                manufaturingYearAndMonth: moment(editDetails.manufaturingYearAndMonth) || null,
+                serialNo: serialNoValue,
+                additional_fields: editDetails.additional_fields || []
             });
+
 
             setImages(editDetails.images || []);
             setTechImages(editDetails.technicaldocs || []);
-            setSelectedDate(editDetails.manufacturingYearAndMonth || null);
-            setSerialNoList(editDetails.serialNo || []);
+            setSelectedDate(moment(editDetails.manufaturingYearAndMonth) || null);
+            setSerialNoList(serialNoValue);
+            setInputText(serialNoValue)
+
+
+            if (editDetails.additional_fields && Array.isArray(editDetails.additional_fields)) {
+                const additionalFields = editDetails.additional_fields.map((field = {}) => ({
+                    title: field.title || "",
+                    value: field.value ?? "",
+                    type: field.type || "text",
+                    name: field.title || "",
+                    options: Array.isArray(field.options) ? field.options : [],
+                    placeholder: field.placeholder || ""
+                }));
+
+                setDisplayItems(additionalFields);
+                setFormValues(additionalFields);
+            }
         }
     }, [editDetails]);
+
+
+
+
+
+
+
+
+
+    // useEffect(() => {
+    //     if (editDetails) {
+    //         let serialNoValue = "";
+    //         setFormData({
+    //             productCode: editDetails.productCode || "",
+    //             productName: editDetails.productName || "",
+    //             description: editDetails.description || "",
+    //             availableQuantity: editDetails.quantity || "",
+    //             unit: editDetails.unit || "",
+    //             price: editDetails.price || "",
+    //             currency: editDetails.currency || "",
+    //             weight: editDetails.weight || "",
+    //             discount: editDetails.discount || "",
+    //             hsn: editDetails.hsnCode || "",
+    //             gst: editDetails.gst || "",
+    //             category: editDetails.categoryId || "",
+    //             subCategory: editDetails.subCategoryId || "",
+    //             brand: editDetails.brandId || "",
+    //             make: editDetails.make || "",
+    //             country: editDetails.countryOfOrigin || "",
+    //             stateName: editDetails.State || "",
+    //             district: editDetails.district || "",
+    //         });
+
+    //         setImages(editDetails.images || []);
+    //         setTechImages(editDetails.technicaldocs || []);
+    //         setSelectedDate(moment(editDetails.manufaturingYearAndMonth) || null);
+    //         try {
+    //             const parsed = JSON.parse(editDetails.serialNo);
+    //             serialNoValue = Array.isArray(parsed) && parsed.length > 0 ? parsed : "";
+    //         } catch (e) {
+    //             serialNoValue = "";
+    //         }
+
+    //         setSerialNoList(serialNoValue ? serialNoValue : []);
+
+    //         if (editDetails.additional_fields && Array.isArray(editDetails.additional_fields)) {
+    //             const additionalFields = editDetails.additional_fields.map((field = {}) => {
+    //                 console.log("field", field);
+    //                 return {
+    //                     title: field.title || "",
+    //                     value: field.value ?? "",
+    //                     type: field.type || "text",
+    //                     name: field.title || "",
+    //                     options: Array.isArray(field.options) ? field.options : [],
+    //                     placeholder: field.placeholder || ""
+    //                 };
+    //             });
+
+    //             setDisplayItems(additionalFields);
+    //             setFormValues(additionalFields);
+    //         }
+
+
+
+
+
+    //     }
+    // }, [editDetails]);
 
     useEffect(() => {
         if (state.Common.IsVisible === 1) {
@@ -680,22 +918,22 @@ console.log("all errors", errors)
 
     useEffect(() => {
         if (errors.imageErrors) {
-          const timer = setTimeout(() => {
-            setErrors({});
-          }, 3000);
-          return () => clearTimeout(timer);
+            const timer = setTimeout(() => {
+                setErrors({});
+            }, 3000);
+            return () => clearTimeout(timer);
         }
-      }, [errors.imageErrors]);
+    }, [errors.imageErrors]);
 
-      
-      useEffect(() => {
+
+    useEffect(() => {
         if (errors.techImagesErrorr) {
-          const timer = setTimeout(() => {
-            setErrors(prev => ({ ...prev, techImagesError: "" }));
-          }, 3000);
-          return () => clearTimeout(timer);
+            const timer = setTimeout(() => {
+                setErrors(prev => ({ ...prev, techImagesError: "" }));
+            }, 3000);
+            return () => clearTimeout(timer);
         }
-      }, [errors.techImagesError]);
+    }, [errors.techImagesError]);
 
 
     useEffect(() => {
@@ -720,6 +958,20 @@ console.log("all errors", errors)
 
 
 
+    useEffect(() => {
+        if (displayItems.length > 0) {
+            const initialFormValues = displayItems.map((field) => ({
+                title: field.title,
+                value: field.value || "",
+                type: field.type,
+                options: field.options || [],
+                placeholder: field.placeholder || ""
+            }));
+            setFormValues(initialFormValues);
+        }
+    }, [displayItems]);
+
+
 
 
 
@@ -738,7 +990,9 @@ console.log("all errors", errors)
             <div className="bg-white p-6 rounded-lg shadow-lg w-full">
                 <h2 className="text-xl font-semibold mb-4 font-Gilroy">{editDetails ? 'Edit Product' : 'Add Product'}</h2>
 
-
+                {
+                    isChanged && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {isChanged} </label>
+                }
 
                 {
                     state.Common?.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
@@ -814,7 +1068,7 @@ console.log("all errors", errors)
 
                         {/* images  */}
                         <div className="w-full p-2 flex flex-col h-full">
-                            <label className="block font-normal text-md font-Outfit ps-2">Add Photos</label>
+                            <label className="block font-normal text-md font-Outfit ps-2"> {editDetails ? "Edit Photos" : "Add Photos"}</label>
 
                             {errors.imageErrors && (
                                 <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
@@ -1294,18 +1548,10 @@ console.log("all errors", errors)
                                 <label className="block font-normal text-md font-Outfit mb-1">Serial No</label>
                                 <input
                                     type="text"
-                                    value={Array.isArray(serialNoList) ? serialNoList.join(", ") : ""}
-                                    onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
-                                            const newSerialNo = `SN${serialNoList.length + 1}`;
-                                            if (serialNoList.length < parseInt(formData.availableQuantity)) {
-                                                setSerialNoList([...serialNoList, newSerialNo]);
-                                            }
-                                            e.preventDefault();
-                                        }
-                                    }}
-                                    placeholder={`Enter Serial No (${serialNoList.length}/${formData.availableQuantity})`}
-                                    disabled={serialNoList.length >= parseInt(formData.availableQuantity)}
+                                    value={inputText}
+                                    onChange={handleSerialInputChange}
+                                    disabled={!formData.availableQuantity}
+                                    placeholder="Enter Serial No"
                                     className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                                 />
                                 {errors.serialNo && (
@@ -1473,14 +1719,14 @@ console.log("all errors", errors)
                             </div>
 
                             <div className="flex-1 ">
-                                <label className="block text-md font-Gilroy font-medium text-[#1F2937] mb-2">
+                                <label className="block text-md font-Outfit font-medium text-[#1F2937] mb-1">
                                     Month and Year of Manufacture
                                 </label>
                                 <DatePicker
                                     selected={selectedDate}
                                     onChange={handleDateChange}
                                     dateFormat="dd/MM/yyyy"
-                                    className='font-Gilroy'
+                                    className='font-Gilroy font-medium text-sm text-slate-400'
                                     placeholderText="Month and Year of Manufacture"
                                     customInput={<CustomInput />}
                                 />
@@ -1554,12 +1800,12 @@ console.log("all errors", errors)
                                 <div key={index} className="w-full sm:w-1/2 md:w-1/3 px-2 mb-4 max-w-[100%]">
                                     {field.type === "text" && (
                                         <div>
-                                            <label className="block font-normal text-md font-Outfit mb-1.5">
+                                            <label className="block font-normal text-md font-Outfit mb-1.5 capitalize">
                                                 {field.title}
                                             </label>
                                             <input
                                                 type="text"
-                                                value={formValues[field.title] || ""}
+                                                value={formValues?.find((item) => item.title === field.title)?.value || ""}
                                                 placeholder={field.placeholder}
                                                 onChange={(e) =>
                                                     textInputCallbackForName(field.title, e.target.value)
@@ -1609,7 +1855,7 @@ console.log("all errors", errors)
                                                             type="checkbox"
                                                             name={field.name}
                                                             value={option}
-                                                            checked={field.defaultValue?.includes(option)}
+                                                            checked={field.value === option}
                                                             onChange={() => CheckboxOptionsChange(field.title, option)}
                                                             className="w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500 font-Gilroy text-sm"
                                                         />
@@ -1628,7 +1874,7 @@ console.log("all errors", errors)
                                             <div className="relative">
                                                 <select
                                                     className="w-full border border-gray-300 rounded-lg px-3 py-[10px] text-sm font-Gilroy font-medium text-gray-700 appearance-none"
-                                                    defaultValue=""
+                                                    value={formValues?.find((item) => item.title === field.title)?.value || ""}
                                                     onChange={(e) => SelectOptionsChange(field.title, e.target.value)}
                                                 >
                                                     <option value="" disabled>

@@ -20,7 +20,7 @@ function DeleteProduct({ handleClose, deleteProductId }) {
     useEffect(() => {
         if (state.Common.successCode === 200) {
             setLoading(false)
-            dispatch({ type: GET_PRODUCT_SAGA });
+            dispatch({ type: GET_PRODUCT_SAGA , payload:{ searchKeyword: ""}});
             dispatch({ type: RESET_CODE })
         }
 

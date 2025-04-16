@@ -149,34 +149,118 @@ function AddProduct() {
 
 
 
+    
+
     const handleImageAdd = (e) => {
         const files = Array.from(e.target.files);
-
+        let imageError = {};
+    
         setImages((prev) => {
             const unique = files.filter(preview => !prev.includes(preview));
-            return [...prev, ...unique];
+            const totalImages = prev.length + unique.length;
+    
+            if (totalImages > 10) {
+                imageError.imageErrors = "You can only upload up to 10 images";
+                setErrors(imageError);
+                    const allowedCount = 10 - prev.length;
+                return [...prev, ...unique.slice(0, allowedCount)];
+            } else {
+                setErrors({});
+                return [...prev, ...unique];
+            }
+        });
+    };
+    
+    const handleImageAddEditMode = (e) => {
+        const files = Array.from(e.target.files);
+        const unique = files.filter(preview => !images.includes(preview));
+        const totalImages = images.length + unique.length;
+        let imageError = {};
+    
+        if (totalImages > 10) {
+            imageError.imageErrors = "You can only upload up to 10 images";
+            setErrors(imageError);
+    
+            const allowedCount = 10 - images.length;
+            const validFiles = unique.slice(0, allowedCount);
+            setImages(prev => [...prev, ...validFiles]);
+    
+                        return;
+        }
+    
+  
+        setErrors({});
+        setImages(prev => [...prev, ...unique]);
+    
+        if (files.length) {
+            dispatch({
+                type: ADD_IMAGE_PRODUCT_SAGA,
+                payload: {
+                    productCode: formData.productCode,
+                    image:files,
+                }
+            });
+            setLoading(true);
+        }
+    };
+    
+console.log("all errors", errors)
+
+    const handleTechDocAdd = (e) => {
+        const files = Array.from(e.target.files);
+        let imageError = {};
+
+        setTechImages((prev) => {
+            const unique = files.filter(preview => !prev.includes(preview));
+            const totalImages = prev.length + unique.length;
+
+            if (totalImages > 10) {
+                imageError.techImagesError = "You can only upload up to 10 Technical images";
+                setErrors(imageError);
+                const allowedCount = 10 - prev.length;
+                return [...prev, ...unique.slice(0, allowedCount)];
+            } else {
+                setErrors({});
+                return [...prev, ...unique];
+            }
         });
     };
 
 
-    const handleImageAddEditMode = (e) => {
 
+
+
+    const handleTechDocAddImageinEditMode = (e) => {
         const files = Array.from(e.target.files);
-
-        setImages((prev) => {
-            const unique = files.filter(preview => !prev.includes(preview));
-            return [...prev, ...unique];
-        });
-        if (files) {
-            dispatch({ type: ADD_IMAGE_PRODUCT_SAGA, payload: { productCode: formData.productCode, image: files } })
-            setLoading(true)
+        const unique = files.filter(preview => !techImages.includes(preview));
+        const totalImages = techImages.length + unique.length;
+        let imageError = {};
+    
+        if (totalImages > 10) {
+            imageError.techImagesError = "You can only upload up to 10 Technical images";
+            setErrors(imageError);
+    
+            const allowedCount = 10 - techImages.length;
+            const validFiles = unique.slice(0, allowedCount);
+            setTechImages(prev => [...prev, ...validFiles]);
+            return; 
         }
-
-
-    }
-
-
-
+   
+        setErrors({});
+        setTechImages(prev => [...prev, ...unique]);
+    
+        if (files.length) {
+            dispatch({
+                type: ADD_TECH_IMAGE_PRODUCT_SAGA,
+                payload: {
+                    productCode: formData.productCode,
+                    technicaldoc: files,
+                }
+            });
+            setLoading(true);
+        }
+    };
+    
 
 
 
@@ -295,31 +379,7 @@ function AddProduct() {
     }
 
 
-    const handleTechDocAdd = (e) => {
-        const files = Array.from(e.target.files);
-
-        setTechImages((prev) => {
-            const unique = files.filter(preview => !prev.includes(preview));
-            return [...prev, ...unique];
-        });
-    };
-
-
-    const handleTechDocAddImageinEditMode = (e) => {
-        const files = Array.from(e.target.files);
-
-        setTechImages((prev) => {
-            const unique = files.filter(preview => !prev.includes(preview));
-            return [...prev, ...unique];
-        });
-        if (files) {
-            dispatch({ type: ADD_TECH_IMAGE_PRODUCT_SAGA, payload: { productCode: formData.productCode, technicaldoc: files } })
-            setLoading(true)
-        }
-
-
-    }
-
+  
 
 
 
@@ -571,7 +631,7 @@ function AddProduct() {
 
 
     useEffect(() => {
-        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402 || state.Common?.code === 413) {
             setLoading(false)
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })
@@ -600,7 +660,7 @@ function AddProduct() {
                 brand: editDetails.brandId || "",
                 make: editDetails.make || "",
                 country: editDetails.countryOfOrigin || "",
-                stateName: editDetails.state || "",
+                stateName: editDetails.State || "",
                 district: editDetails.district || "",
             });
 
@@ -618,7 +678,24 @@ function AddProduct() {
 
     }, [state.Common.IsVisible])
 
+    useEffect(() => {
+        if (errors.imageErrors) {
+          const timer = setTimeout(() => {
+            setErrors({});
+          }, 3000);
+          return () => clearTimeout(timer);
+        }
+      }, [errors.imageErrors]);
 
+      
+      useEffect(() => {
+        if (errors.techImagesErrorr) {
+          const timer = setTimeout(() => {
+            setErrors(prev => ({ ...prev, techImagesError: "" }));
+          }, 3000);
+          return () => clearTimeout(timer);
+        }
+      }, [errors.techImagesError]);
 
 
     useEffect(() => {
@@ -739,6 +816,14 @@ function AddProduct() {
                         <div className="w-full p-2 flex flex-col h-full">
                             <label className="block font-normal text-md font-Outfit ps-2">Add Photos</label>
 
+                            {errors.imageErrors && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.imageErrors}
+                                </p>
+
+                            )}
+
                             <div className="flex mt-2 gap-0 relative z-10">
 
 
@@ -858,6 +943,7 @@ function AddProduct() {
                                                     name="image"
                                                     accept="image/*"
                                                     className="hidden"
+                                                    disabled={images.length > 10}
                                                     onChange={handleImageAddEditMode}
                                                 />
                                             </label>
@@ -871,6 +957,7 @@ function AddProduct() {
                                                     name="image"
                                                     accept="image/*"
                                                     className="hidden"
+                                                    disabled={images.length > 10}
                                                     onChange={handleImageAdd}
                                                 />
                                             </label>
@@ -886,6 +973,16 @@ function AddProduct() {
 
 
                             <label className="block font-normal text-md font-Outfit mt-2 ps-2">Technical</label>
+
+                            {errors.techImagesError && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.techImagesError}
+                                </p>
+
+                            )}
+
+
 
                             <div className="flex mt-2 gap-0 relative z-10">
 
@@ -922,7 +1019,7 @@ function AddProduct() {
                                                 console.log("TechImageSrc", imageSrc, "FileType:", img?.type);
                                                 return (
                                                     <div key={index} className="px-1">
-                                                        <div className="relative w-32 h-32 rounded-md overflow-hidden group">
+                                                        <div className="relative w-32 h-32 rounded-md overflow-hidden group border border-zinc-300">
                                                             <img
                                                                 src={imageSrc}
                                                                 alt={`uploaded-${index}`}
@@ -1017,14 +1114,12 @@ function AddProduct() {
                                                 name="tech"
                                                 accept=".pdf,.doc,.docx,.txt,image/*"
                                                 className="hidden"
+                                                disabled={techImages.length > 10}
                                                 onChange={handleTechDocAddImageinEditMode}
                                             />
                                         </label>
 
                                         :
-
-
-
                                         <label className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
                                             <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
                                             <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
@@ -1038,13 +1133,17 @@ function AddProduct() {
                                                 name="tech"
                                                 accept=".pdf,.doc,.docx,.txt,image/*"
                                                 className="hidden"
+                                                disabled={techImages.length > 10}
                                                 onChange={handleTechDocAdd}
                                             />
                                         </label>
                                 }
                             </div>
+
                         </div>
+
                     </div>
+
 
                     <div>
                         <div className="flex flex-wrap gap-3 mb-3">
@@ -1209,10 +1308,6 @@ function AddProduct() {
                                     disabled={serialNoList.length >= parseInt(formData.availableQuantity)}
                                     className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                                 />
-
-
-
-
                                 {errors.serialNo && (
                                     <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
                                         <InfoCircle size={16} color="#DC2626" />
@@ -1281,8 +1376,6 @@ function AddProduct() {
                                                 {category.name}
                                             </option>
                                         ))
-
-
                                             :
                                             <option >
                                                 No category available
@@ -1340,10 +1433,8 @@ function AddProduct() {
                                 <label className="block font-normal text-md font-Outfit mb-1">Make</label>
                                 <div className="relative">
                                     <select
-
                                         value={formData.make}
                                         onChange={(e) => handleInputChange('make', e.target.value)}
-
                                         className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Make</option>
                                         <option value="2011">2011</option>
@@ -1363,7 +1454,6 @@ function AddProduct() {
                                     <select
                                         value={formData.country}
                                         onChange={(e) => handleInputChange('country', e.target.value)}
-
                                         className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled>
                                             Enter Country of Origin

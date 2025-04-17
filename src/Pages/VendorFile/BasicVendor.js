@@ -877,7 +877,6 @@ useEffect(() => {
 
 
 
-  console.log("state",state)
 
 
 

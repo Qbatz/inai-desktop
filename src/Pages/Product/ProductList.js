@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
 import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2 } from "iconsax-react";
@@ -51,9 +52,6 @@ function ProductList() {
         },
     ]);
 
-
-
-    console.log("state", state)
 
 
 
@@ -340,7 +338,9 @@ function ProductList() {
                             <thead className="bg-slate-100 sticky top-0 z-10">
                                 <tr>
 
-
+                                    <th className="px-4 py-4 text-center text-neutral-600 text-sm font-medium font-Gilroy">
+                                        S.No
+                                    </th>
                                     <th className="px-4 py-4 text-center text-neutral-600 text-sm font-medium font-Gilroy ">
                                         <div className="flex items-center justify-start gap-4 ml-4">
                                             Product Name
@@ -396,7 +396,7 @@ function ProductList() {
                                 ) : (
                                     paginatedData?.map((item, index) => (
                                         <tr key={index} className="border-0 mt-4">
-
+                                            <td className="px-4 py-3 text-center text-sm font-Gilroy">{index + 1}</td>
                                             <td className="flex items-center px-6 py-3 font-Gilroy font-semibold text-sm text-black cursor-pointer">
                                                 <img
                                                     src={item.images[0]?.url || Cloth}

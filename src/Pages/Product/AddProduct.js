@@ -6,16 +6,16 @@ import addcircle from "../../Asset/Icon/add-circle.svg";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import "react-datepicker/dist/react-datepicker.css";
-import { CalendarDays, Code2 } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import Arrow from "../../Asset/Icon/Arrow.svg";
 import FormBuilder from '../../FormBuilderComponent/AdditionalFormField';
 import { InfoCircle, Gallery, Trash } from "iconsax-react";
 import PropTypes from 'prop-types';
-import { ADD_TECH_IMAGE_PRODUCT_SAGA, ADD_IMAGE_PRODUCT_SAGA, EDIT_PRODUCT_SAGA, EDIT_TECH_IMAGE_PRODUCT_SAGA, EDIT_IMAGE_PRODUCT_SAGA, DELETE_TECH_IMAGE_PRODUCT_SAGA, DELETE_IMAGE_PRODUCT_SAGA, GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA, GET_BRAND_SAGA, ADD_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
+import { GET_PRODUCT_SAGA, ADD_TECH_IMAGE_PRODUCT_SAGA, ADD_IMAGE_PRODUCT_SAGA, EDIT_PRODUCT_SAGA, EDIT_TECH_IMAGE_PRODUCT_SAGA, EDIT_IMAGE_PRODUCT_SAGA, DELETE_TECH_IMAGE_PRODUCT_SAGA, DELETE_IMAGE_PRODUCT_SAGA, GET_CATEGORY_SAGA, GET_SUB_CATEGORY_SAGA, GET_BRAND_SAGA, ADD_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
 import moment from "moment";
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import imageCompression from 'browser-image-compression';
 
 
 function AddProduct() {
@@ -41,7 +41,7 @@ function AddProduct() {
     const [displayItems, setDisplayItems] = useState([])
     const [formValues, setFormValues] = useState([]);
 
-    console.log("editDetails", editDetails)
+
 
 
     const [isChanged, setIsChanged] = useState('')
@@ -49,7 +49,7 @@ function AddProduct() {
     const [inputText, setInputText] = useState("");
 
 
-    console.log("serialNoList", serialNoList)
+
 
     const [formData, setFormData] = useState({
         productCode: "",
@@ -75,14 +75,7 @@ function AddProduct() {
 
     const [errors, setErrors] = useState({});
 
-    console.log("images", images)
 
-    console.log("formdata", formData)
-
-    console.log("techImages", techImages)
-    console.log("formValues", formValues)
-
-    console.log("selectedDate", selectedDate)
 
     const handleDateChange = (date) => {
         const formatted = moment(date).format("YYYY-MM-DD");
@@ -97,8 +90,16 @@ function AddProduct() {
 
     const handleInputChange = (field, value) => {
 
+        const numericFields = ["availableQuantity", "price", "weight", "discount", "gst"];
+        const percentageFields = ["discount", "gst"];
+        const isNumeric = /^[0-9]*\.?[0-9]*$/;
 
-
+        if (numericFields.includes(field) && value !== "" && !isNumeric.test(value)) {
+            return;
+        }
+        if (percentageFields.includes(field) && parseFloat(value) > 100) {
+            return;
+        }
         setFormData((prevData) => ({
             ...prevData,
             [field]: value,
@@ -109,6 +110,7 @@ function AddProduct() {
             [field]: value.trim() ? "" : prevErrors[field],
         }));
     };
+
 
 
 
@@ -134,90 +136,6 @@ function AddProduct() {
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
-
-
-
-
-
-
-    const handleImageAdd = (e) => {
-        const files = Array.from(e.target.files);
-        let imageError = {};
-
-        setImages((prev) => {
-            const unique = files.filter(preview => !prev.includes(preview));
-            const totalImages = prev.length + unique.length;
-
-            if (totalImages > 10) {
-                imageError.imageErrors = "You can only upload up to 10 images";
-                setErrors(imageError);
-                const allowedCount = 10 - prev.length;
-                return [...prev, ...unique.slice(0, allowedCount)];
-            } else {
-                setErrors({});
-                return [...prev, ...unique];
-            }
-        });
-    };
-
-    const handleImageAddEditMode = (e) => {
-        const files = Array.from(e.target.files);
-        const unique = files.filter(preview => !images.includes(preview));
-        const totalImages = images.length + unique.length;
-        let imageError = {};
-
-        if (totalImages > 10) {
-            imageError.imageErrors = "You can only upload up to 10 images";
-            setErrors(imageError);
-
-            const allowedCount = 10 - images.length;
-            const validFiles = unique.slice(0, allowedCount);
-            setImages(prev => [...prev, ...validFiles]);
-
-            return;
-        }
-
-
-        setErrors({});
-        setImages(prev => [...prev, ...unique]);
-
-        if (files.length) {
-            dispatch({
-                type: ADD_IMAGE_PRODUCT_SAGA,
-                payload: {
-                    productCode: formData.productCode,
-                    image: files,
-                }
-            });
-            setLoading(true);
-        }
-    };
-
-
-
-    const handleTechDocAdd = (e) => {
-        const files = Array.from(e.target.files);
-        let imageError = {};
-
-        setTechImages((prev) => {
-            const unique = files.filter(preview => !prev.includes(preview));
-            const totalImages = prev.length + unique.length;
-
-            if (totalImages > 10) {
-                imageError.techImagesError = "You can only upload up to 10 Technical images";
-                setErrors(imageError);
-                const allowedCount = 10 - prev.length;
-                return [...prev, ...unique.slice(0, allowedCount)];
-            } else {
-                setErrors({});
-                return [...prev, ...unique];
-            }
-        });
-    };
-
-
-
-    console.log("errorssssssssss", errors)
 
     const handleSerialInputChange = (e) => {
         const input = e.target.value;
@@ -255,12 +173,117 @@ function AddProduct() {
 
 
 
+    const handleImageAdd = (e) => {
+        const files = Array.from(e.target.files);
+        let imageError = {};
+
+        setImages((prev) => {
+            const unique = files.filter(preview => !prev.includes(preview));
+            const totalImages = prev.length + unique.length;
+
+            if (totalImages > 10) {
+                imageError.imageErrors = "You can only upload up to 10 images";
+                setErrors(imageError);
+                const allowedCount = 10 - prev.length;
+                return [...prev, ...unique.slice(0, allowedCount)];
+            } else {
+                setErrors({});
+                return [...prev, ...unique];
+            }
+        });
+    };
 
 
-    const handleTechDocAddImageinEditMode = (e) => {
+    const handleClose = () => {
+        navigate('/product')
+    }
+
+
+    const handleImageAddEditMode = async (e) => {
+        const files = Array.from(e.target.files);
+        const maxSizeMB = 1;
+        const compressedImages = [];
+        const skippedTooLarge = [];
+        const uniqueFiles = files.filter(file => !images.includes(file));
+        const totalImages = images.length + uniqueFiles.length;
+
+        if (totalImages > 10) {
+            setErrors({ imageErrors: "You can only upload up to 10 images" });
+            return;
+        }
+
+        setLoading(true);
+        setErrors({});
+
+        for (const file of uniqueFiles) {
+            if (file.size / (1024 * 1024) > maxSizeMB) {
+                try {
+                    const options = {
+                        maxSizeMB: 1,
+                        maxWidthOrHeight: 1920,
+                        useWebWorker: true,
+                    };
+                    const compressedFile = await imageCompression(file, options);
+                    compressedImages.push(compressedFile);
+                } catch (err) {
+                    console.error("Compression failed:", err);
+                    skippedTooLarge.push(file.name);
+                }
+            } else {
+                compressedImages.push(file);
+            }
+        }
+
+        setImages(prev => [...prev, ...compressedImages]);
+
+        dispatch({
+            type: ADD_IMAGE_PRODUCT_SAGA,
+            payload: {
+                productCode: formData.productCode,
+                image: compressedImages,
+            }
+        });
+
+        if (skippedTooLarge.length) {
+            setErrors({
+                imageErrors: `Some files couldn't be compressed: ${skippedTooLarge.join(", ")}`
+            });
+        }
+
+    };
+
+
+    const handleTechDocAdd = (e) => {
+        const files = Array.from(e.target.files);
+        let imageError = {};
+
+        setTechImages((prev) => {
+            const unique = files.filter(preview => !prev.includes(preview));
+            const totalImages = prev.length + unique.length;
+
+            if (totalImages > 10) {
+                imageError.techImagesError = "You can only upload up to 10 Technical images";
+                setErrors(imageError);
+                const allowedCount = 10 - prev.length;
+                return [...prev, ...unique.slice(0, allowedCount)];
+            } else {
+                setErrors({});
+                return [...prev, ...unique];
+            }
+        });
+    };
+
+
+
+
+    const handleTechDocAddImageinEditMode = async (e) => {
         const files = Array.from(e.target.files);
         const unique = files.filter(preview => !techImages.includes(preview));
         const totalImages = techImages.length + unique.length;
+        const maxSizeMB = 1;
+        const compressedFiles = [];
+        const failedFiles = [];
+
         let imageError = {};
 
         if (totalImages > 10) {
@@ -273,28 +296,48 @@ function AddProduct() {
             return;
         }
 
+        setLoading(true);
         setErrors({});
-        setTechImages(prev => [...prev, ...unique]);
 
-        if (files.length) {
+        for (const file of unique) {
+            if (file.size / (1024 * 1024) > maxSizeMB) {
+                try {
+                    const options = {
+                        maxSizeMB: 1,
+                        maxWidthOrHeight: 1920,
+                        useWebWorker: true,
+                    };
+                    const compressed = await imageCompression(file, options);
+                    compressedFiles.push(compressed);
+                } catch (err) {
+                    console.error("Compression failed for", file.name, err);
+                    failedFiles.push(file.name);
+                }
+            } else {
+                compressedFiles.push(file);
+            }
+        }
+
+        setTechImages(prev => [...prev, ...compressedFiles]);
+
+        if (compressedFiles.length) {
             dispatch({
                 type: ADD_TECH_IMAGE_PRODUCT_SAGA,
                 payload: {
                     productCode: formData.productCode,
-                    technicaldoc: files,
+                    technicaldoc: compressedFiles,
                 }
             });
-            setLoading(true);
         }
+
+        if (failedFiles.length) {
+            setErrors({
+                techImagesError: `Some files couldn't be compressed: ${failedFiles.join(", ")}`
+            });
+        }
+
+
     };
-
-
-
-
-
-
-
-
 
 
 
@@ -318,68 +361,43 @@ function AddProduct() {
     };
 
 
-
     const handleEditTechChangeImage = (index, id) => {
-        console.log("edit id", id)
+
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
 
-        input.onchange = (e) => {
+        input.onchange = async (e) => {
             const file = e.target.files[0];
             if (file) {
+                let finalImage = file;
+                setLoading(true);
+                if (file.size / (1024 * 1024) > 1) {
+                    try {
+                        const options = {
+                            maxSizeMB: 1,
+                            maxWidthOrHeight: 1920,
+                            useWebWorker: true,
+                        };
+                        finalImage = await imageCompression(file, options);
+                    } catch (err) {
+                        console.error("Compression failed for tech doc image:", file.name, err);
+                    }
+                }
+
                 setTechImages((prev) => {
                     const updated = [...prev];
-                    updated[index] = file;
+                    updated[index] = finalImage;
 
                     if (formData?.productCode) {
                         dispatch({
                             type: EDIT_TECH_IMAGE_PRODUCT_SAGA,
                             payload: {
                                 id: id,
-                                image: file,
+                                image: finalImage,
                                 productCode: formData.productCode,
                             }
                         });
-                        setLoading(true)
-                    }
-
-                    return updated;
-                });
-            }
-        };
-
-        input.click();
-
-    }
-
-
-
-    const handleEditChangeImage = (index, id) => {
-
-        console.log("id", id)
-
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-
-        input.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                setImages((prev) => {
-                    const updated = [...prev];
-                    updated[index] = file;
-
-                    if (formData?.productCode) {
-                        dispatch({
-                            type: EDIT_IMAGE_PRODUCT_SAGA,
-                            payload: {
-                                id: id,
-                                image: file,
-                                productCode: formData.productCode,
-                            }
-                        });
-                        setLoading(true)
                     }
 
                     return updated;
@@ -389,6 +407,56 @@ function AddProduct() {
 
         input.click();
     };
+
+
+
+    const handleEditChangeImage = (index, id) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                let finalImage = file;
+                setLoading(true);
+                if (file.size / (1024 * 1024) > 1) {
+                    try {
+                        const options = {
+                            maxSizeMB: 1,
+                            maxWidthOrHeight: 1920,
+                            useWebWorker: true,
+                        };
+                        finalImage = await imageCompression(file, options);
+                    } catch (err) {
+                        console.error("Compression failed for product image:", file.name, err);
+                    }
+                }
+
+                setImages((prev) => {
+                    const updated = [...prev];
+                    updated[index] = finalImage;
+
+                    if (formData?.productCode) {
+                        dispatch({
+                            type: EDIT_IMAGE_PRODUCT_SAGA,
+                            payload: {
+                                id: id,
+                                image: finalImage,
+                                productCode: formData.productCode,
+                            }
+                        });
+
+                    }
+
+                    return updated;
+                });
+            }
+        };
+
+        input.click();
+    };
+
 
 
     const handleImageDelete = (imageId) => {
@@ -404,14 +472,6 @@ function AddProduct() {
             setLoading(true)
         }
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -509,7 +569,6 @@ function AddProduct() {
     }
 
     const updateDisplayItems = (item) => {
-        console.log("addtitional item", item)
         setDisplayItems([...displayItems, item])
         setFormValues(prev => [...prev, item]);
         setShowAdditionalFields(false)
@@ -553,12 +612,19 @@ function AddProduct() {
         updateFormValues(title, newValue, "radio");
     };
 
-    const CheckboxOptionsChange = (title, newValue) => {
+    const CheckboxOptionsChange = (title, selectedOption) => {
+        const field = displayItems.find((item) => item.title === title);
 
-        console.log("newValue", newValue)
+        let currentValues = Array.isArray(field.value) ? [...field.value] : [];
 
-        updateFormValues(title, newValue, "checkbox");
+        if (currentValues.includes(selectedOption)) {
+            currentValues = currentValues.filter((val) => val !== selectedOption);
+        } else {
+            currentValues.push(selectedOption);
+        }
+        updateFormValues(title, currentValues, "checkbox");
     };
+
 
     const SelectOptionsChange = (title, newValue) => {
         updateFormValues(title, newValue, "select");
@@ -576,87 +642,24 @@ function AddProduct() {
 
 
 
+    const deepEqual = (obj1, obj2) => {
+        if (obj1 === obj2) return true;
+        if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+            return false;
+        }
 
+        const keys1 = Object.keys(obj1);
+        const keys2 = Object.keys(obj2);
 
+        if (keys1.length !== keys2.length) return false;
 
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     if (validate()) {
-    //         const AddPayload = {
-    //             productCode: formData.productCode,
-    //             productName: formData.productName,
-    //             description: formData.description,
-    //             unit: formData.unit,
-    //             price: formData.price,
-    //             quantity: formData.availableQuantity,
-    //             currency: formData.currency,
-    //             weight: formData.weight,
-    //             discount: formData.discount,
-    //             hsnCode: formData.hsn,
-    //             gst: formData.gst,
-    //             category: formData.category,
-    //             subCategory: formData.subCategory,
-    //             make: formData.make,
-    //             countryOfOrigin: formData.country,
-    //             manufaturingYearAndMonth: selectedDate,
-    //             State: formData.stateName,
-    //             district: formData.district,
-    //             brand: formData.brand,
-    //             images: images,
-    //             technicaldocs: techImages,
-    //             serialNo: serialNoList,
-    //             additional_fields: formValues ? formValues : []
-    //         };
-    //         const EditPayload = {
-    //             productCode: formData.productCode,
-    //             productName: formData.productName,
-    //             description: formData.description,
-    //             unit: formData.unit,
-    //             price: formData.price,
-    //             quantity: Number(formData.availableQuantity),
-    //             currency: formData.currency,
-    //             weight: formData.weight,
-    //             discount: formData.discount,
-    //             hsnCode: formData.hsn,
-    //             gst: formData.gst,
-    //             category: formData.category,
-    //             subCategory: formData.subCategory,
-    //             make: formData.make,
-    //             countryOfOrigin: formData.country,
-    //             manufaturingYearAndMonth: selectedDate,
-    //             State: formData.stateName,
-    //             district: formData.district,
-    //             brand: formData.brand,
-    //             images: images,
-    //             technicaldocs: techImages,
-    //             serialNo: serialNoList,
-    //             additional_fields: formValues ? formValues : []
-    //         };
+        for (let key of keys1) {
+            if (!keys2.includes(key)) return false;
+            if (!deepEqual(obj1[key], obj2[key])) return false;
+        }
 
-
-    //         if (editDetails && initialEditData) {
-    //             const isEqual = JSON.stringify(EditPayload) === JSON.stringify(initialEditData);
-
-    //             if (isEqual) {
-    //                 alert('No changes detected')
-    //                 setIsChanged("No changes detected")
-    //             }
-    //             return;
-    //         }
-
-    //         if (editDetails) {
-    //             dispatch({ type: EDIT_PRODUCT_SAGA, payload: EditPayload })
-    //             setLoading(true)
-    //         } else {
-    //             dispatch({ type: ADD_PRODUCT_SAGA, payload: AddPayload })
-    //             setLoading(true)
-    //         }
-
-
-    //     }
-    // };
-
-
+        return true;
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -713,18 +716,27 @@ function AddProduct() {
                 additional_fields: formValues ? formValues : []
             };
 
-            if (editDetails && initialEditData) {
-                const currentData = {
+            if (editDetails) {
+                const normalizeData = (data) => {
+                    return Object.keys(data).reduce((acc, key) => {
+                        acc[key] = data[key] === undefined ? null : data[key];
+                        return acc;
+                    }, {});
+                };
+
+                const currentData = normalizeData({
                     ...EditPayload,
                     manufaturingYearAndMonth: selectedDate?.toISOString?.() || null,
-                };
+                });
 
-                const initialData = {
+                const initialData = normalizeData({
                     ...initialEditData,
                     manufaturingYearAndMonth: initialEditData.manufaturingYearAndMonth?.toISOString?.() || null,
-                };
+                });
 
-                const isEqual = JSON.stringify(currentData) === JSON.stringify(initialData);
+                const isEqual = deepEqual(currentData, initialData);
+
+
 
                 if (isEqual) {
                     setIsChanged("No changes detected");
@@ -760,10 +772,15 @@ function AddProduct() {
 
     useEffect(() => {
         if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402 || state.Common?.code === 413) {
-            setLoading(false)
+
+
+            dispatch({ type: GET_PRODUCT_SAGA, payload: { searchKeyword: "" } });
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })
             }, 5000)
+
+            setLoading(false)
+
         }
     }, [state.Common?.successCode, state.Common?.code]);
 
@@ -785,11 +802,15 @@ function AddProduct() {
                 }
             }
 
+
+
+            const filteredImages = state.product.productList.filter(img => img.productCode === editDetails.productCode);
+
             const initialForm = {
                 productCode: editDetails.productCode || "",
                 productName: editDetails.productName || "",
                 description: editDetails.description || "",
-                availableQuantity: editDetails.quantity || "",
+                availableQuantity: editDetails.quantity || 0,
                 unit: editDetails.unit || "",
                 price: editDetails.price || "",
                 currency: editDetails.currency || "",
@@ -809,21 +830,40 @@ function AddProduct() {
             setFormData(initialForm);
 
             setInitialEditData({
-                ...initialForm,
-                images: editDetails.images || [],
-                technicaldocs: editDetails.technicaldocs || [],
-                manufaturingYearAndMonth: moment(editDetails.manufaturingYearAndMonth) || null,
+                productCode: initialForm.productCode,
+                productName: initialForm.productName,
+                description: initialForm.description,
+                unit: initialForm.unit,
+                price: initialForm.price,
+                quantity: Number(initialForm.availableQuantity),
+                currency: initialForm.currency,
+                weight: initialForm.weight,
+                discount: initialForm.discount,
+                hsnCode: initialForm.hsn,
+                gst: initialForm.gst,
+                category: initialForm.category,
+                subCategory: initialForm.subCategory,
+                make: initialForm.make,
+                countryOfOrigin: initialForm.country,
+                manufaturingYearAndMonth: moment(editDetails.manufaturingYearAndMonth).isValid()
+                    ? moment(editDetails.manufaturingYearAndMonth)
+                    : null,
+                State: initialForm.stateName,
+                district: initialForm.district,
+                brand: initialForm.brand,
+                images: filteredImages[0]?.images || [],
+                technicaldocs: filteredImages[0]?.technicaldocs || [],
                 serialNo: serialNoValue,
-                additional_fields: editDetails.additional_fields || []
+                additional_fields: editDetails.additional_fields || [],
             });
 
 
-            setImages(editDetails.images || []);
-            setTechImages(editDetails.technicaldocs || []);
-            setSelectedDate(moment(editDetails.manufaturingYearAndMonth) || null);
+            setImages(filteredImages[0]?.images || []);
+            setTechImages(filteredImages[0]?.technicaldocs || []);
+            const manufacturingMoment = moment(editDetails.manufaturingYearAndMonth);
+            setSelectedDate(manufacturingMoment.isValid() ? manufacturingMoment : null);
             setSerialNoList(serialNoValue);
-            setInputText(serialNoValue)
-
+            setInputText(serialNoValue);
 
             if (editDetails.additional_fields && Array.isArray(editDetails.additional_fields)) {
                 const additionalFields = editDetails.additional_fields.map((field = {}) => ({
@@ -839,7 +879,7 @@ function AddProduct() {
                 setFormValues(additionalFields);
             }
         }
-    }, [editDetails]);
+    }, [editDetails, state.product.productList]);
 
 
 
@@ -849,65 +889,7 @@ function AddProduct() {
 
 
 
-    // useEffect(() => {
-    //     if (editDetails) {
-    //         let serialNoValue = "";
-    //         setFormData({
-    //             productCode: editDetails.productCode || "",
-    //             productName: editDetails.productName || "",
-    //             description: editDetails.description || "",
-    //             availableQuantity: editDetails.quantity || "",
-    //             unit: editDetails.unit || "",
-    //             price: editDetails.price || "",
-    //             currency: editDetails.currency || "",
-    //             weight: editDetails.weight || "",
-    //             discount: editDetails.discount || "",
-    //             hsn: editDetails.hsnCode || "",
-    //             gst: editDetails.gst || "",
-    //             category: editDetails.categoryId || "",
-    //             subCategory: editDetails.subCategoryId || "",
-    //             brand: editDetails.brandId || "",
-    //             make: editDetails.make || "",
-    //             country: editDetails.countryOfOrigin || "",
-    //             stateName: editDetails.State || "",
-    //             district: editDetails.district || "",
-    //         });
 
-    //         setImages(editDetails.images || []);
-    //         setTechImages(editDetails.technicaldocs || []);
-    //         setSelectedDate(moment(editDetails.manufaturingYearAndMonth) || null);
-    //         try {
-    //             const parsed = JSON.parse(editDetails.serialNo);
-    //             serialNoValue = Array.isArray(parsed) && parsed.length > 0 ? parsed : "";
-    //         } catch (e) {
-    //             serialNoValue = "";
-    //         }
-
-    //         setSerialNoList(serialNoValue ? serialNoValue : []);
-
-    //         if (editDetails.additional_fields && Array.isArray(editDetails.additional_fields)) {
-    //             const additionalFields = editDetails.additional_fields.map((field = {}) => {
-    //                 console.log("field", field);
-    //                 return {
-    //                     title: field.title || "",
-    //                     value: field.value ?? "",
-    //                     type: field.type || "text",
-    //                     name: field.title || "",
-    //                     options: Array.isArray(field.options) ? field.options : [],
-    //                     placeholder: field.placeholder || ""
-    //                 };
-    //             });
-
-    //             setDisplayItems(additionalFields);
-    //             setFormValues(additionalFields);
-    //         }
-
-
-
-
-
-    //     }
-    // }, [editDetails]);
 
     useEffect(() => {
         if (state.Common.IsVisible === 1) {
@@ -1270,7 +1252,7 @@ function AddProduct() {
                                                 } else if (img.url) {
                                                     imageSrc = img.url;
                                                 }
-                                                console.log("TechImageSrc", imageSrc, "FileType:", img?.type);
+
                                                 return (
                                                     <div key={index} className="px-1">
                                                         <div className="relative w-32 h-32 rounded-md overflow-hidden group border border-zinc-300">
@@ -1419,8 +1401,8 @@ function AddProduct() {
                                     <select
                                         value={formData.unit}
                                         onChange={(e) => handleInputChange('unit', e.target.value)}
-                                        className="w-full focus:outline-none p-3 border rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                        <option value="" disabled selected>Select Unit of measurement</option>
+                                        className="w-full cursor-pointer focus:outline-none p-3 border rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
+                                        <option className='cursor-pointer' value="" disabled selected>Select Unit of measurement</option>
                                         <option value="kg">Kilogram (kg)</option>
                                         <option value="g">Gram (g)</option>
                                         <option value="l">Litre (l)</option>
@@ -1810,7 +1792,7 @@ function AddProduct() {
                                                 onChange={(e) =>
                                                     textInputCallbackForName(field.title, e.target.value)
                                                 }
-                                                className="w-full border border-gray-300 rounded-lg font-medium text-sm text-slate-400 py-3 px-3 font-Gilroy"
+                                                className="w-full focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 py-3 px-3 font-Gilroy"
                                             />
                                         </div>
                                     )}
@@ -1831,7 +1813,7 @@ function AddProduct() {
                                                             value={option}
                                                             checked={field.value === option}
                                                             onChange={() => RadioOptionsChange(field.title, option)}
-                                                            className="w-3 h-3 text-blue-600 border-gray-300 focus:ring-blue-500 font-Gilroy text-sm"
+                                                            className="w-3 focus:outline-none h-3 text-blue-600 border-gray-300 focus:ring-blue-500 font-Gilroy text-sm"
                                                         />
                                                         <span>{option}</span>
                                                     </label>
@@ -1855,9 +1837,9 @@ function AddProduct() {
                                                             type="checkbox"
                                                             name={field.name}
                                                             value={option}
-                                                            checked={field.value === option}
+                                                            checked={field.value?.includes(option)}
                                                             onChange={() => CheckboxOptionsChange(field.title, option)}
-                                                            className="w-3 h-3 text-blue-600 border-gray-300 rounded focus:ring-blue-500 font-Gilroy text-sm"
+                                                            className="w-3 h-3 focus:outline-none text-blue-600 border-gray-300 rounded focus:ring-blue-500 font-Gilroy text-sm"
                                                         />
                                                         <span>{option}</span>
                                                     </label>
@@ -1873,7 +1855,7 @@ function AddProduct() {
                                             </label>
                                             <div className="relative">
                                                 <select
-                                                    className="w-full border border-gray-300 rounded-lg px-3 py-[10px] text-sm font-Gilroy font-medium text-gray-700 appearance-none"
+                                                    className="w-full border  focus:outline-none border-gray-300 rounded-lg px-3 py-[10px] text-sm font-Gilroy font-medium text-gray-700 appearance-none"
                                                     value={formValues?.find((item) => item.title === field.title)?.value || ""}
                                                     onChange={(e) => SelectOptionsChange(field.title, e.target.value)}
                                                 >
@@ -1901,11 +1883,11 @@ function AddProduct() {
 
                                     {field.type === "textarea" && (
                                         <div>
-                                            <label className="block font-normal text-sm font-Outfit mb-1.5 capitalize text-black font-Outfit">
+                                            <label className="block font-normal  text-sm font-Outfit mb-1.5 capitalize text-black font-Outfit">
                                                 {field.title}
                                             </label>
                                             <textarea
-                                                className="w-full border border-gray-300 rounded-lg px-3 py-[10px] text-sm  font-Gilroy font-medium text-gray-700 resize-none h-28"
+                                                className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-[10px] text-sm  font-Gilroy font-medium text-gray-700 resize-none h-28"
                                                 placeholder={field.placeholder}
                                                 value={field.value}
                                                 onChange={(e) => CallbackForTextArea(field.title, e.target.value)}
@@ -1929,7 +1911,7 @@ function AddProduct() {
                 </div>
 
                 <div className="flex flex-col md:flex-row items-center gap-4 mt-6">
-                    <button className="bg-white border border-rose-600 text-rose-600 font-medium py-2 px-6 rounded-lg font-Montserrat">
+                    <button onClick={handleClose} className="bg-white border border-rose-600 text-rose-600 font-medium py-2 px-6 rounded-lg font-Montserrat">
                         Cancel
                     </button>
                     <button onClick={handleSubmit} className="bg-blue-900 text-white font-medium py-2 px-6 rounded-lg font-Montserrat">

@@ -148,8 +148,7 @@ function* handleAddProduct(action) {
     try {
         const response = yield call(addProduct, action.payload)
 
-        console.log("response for add product", response)
-
+    
         if (response.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
             toast.success(response.data.message || 'Success!', {
@@ -186,7 +185,7 @@ function* handleDeleteProduct(action) {
     try {
         const response = yield call(DeleteProduct, action.payload)
 
-        console.log("response for add product", response)
+        
 
         if (response.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
@@ -224,10 +223,8 @@ function* handleEditProduct(action) {
     try {
         const response = yield call(editProduct, action.payload)
 
-        console.log("response for edit product", response)
-
         if (response.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
                 icon: false,
@@ -260,10 +257,8 @@ function* handleEditImageProduct(action) {
     try {
         const response = yield call(editImage, action.payload)
 
-        console.log("response for edit product", response)
-
         if (response.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
                 icon: false,
@@ -296,10 +291,8 @@ function* handleEditTechImageProduct(action) {
     try {
         const response = yield call(editTechImage, action.payload)
 
-        console.log("response for edit product", response)
-
         if (response.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
                 icon: false,
@@ -332,7 +325,7 @@ function* handleDeleteImageProduct(action) {
     try {
         const response = yield call(DeleteProductImage, action.payload)
 
-        console.log("response for edit product", response)
+        
 
         if (response.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
@@ -369,7 +362,6 @@ function* handleDeleteTechImageProduct(action) {
     try {
         const response = yield call(DeleteProductTechImage, action.payload)
 
-        console.log("response for edit product", response)
 
         if (response.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message} });
@@ -408,7 +400,7 @@ function* handleAddImage(action) {
     try {
         const response = yield call(addImage, action.payload)
 
-        console.log("response", response)
+     
 
         if (response.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message} });
@@ -444,9 +436,7 @@ function* handleAddTechImage(action) {
     try {
         const response = yield call(addTechImage, action.payload)
 
-        console.log("response", response)
-
-        if (response.status === 200) {
+             if (response.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message} });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,

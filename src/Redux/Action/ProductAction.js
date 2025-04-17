@@ -1,9 +1,6 @@
 
 import AxiosConfig from "../../WebService/AxiosConfig";
 
-// export async function getProduct() {
-//   return await AxiosConfig.get('/product/product')
-// }
 
 export async function getProduct(product) {
 
@@ -34,7 +31,7 @@ export async function getProduct(product) {
 
 
 export async function addProduct(product) {
-  console.log("product", product)
+ 
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("productName", product.productName);
@@ -64,7 +61,7 @@ export async function addProduct(product) {
     });
   }
 
-  product?.technicaldocs?.forEach((doc, index) => {
+  product?.technicaldocs?.forEach((doc) => {
     formData.append("technicaldocs", doc);
   });
   if (
@@ -95,7 +92,7 @@ export async function editProduct(product) {
 
 
 export async function DeleteProduct(del) {
-  console.log("dele", del)
+
   return await AxiosConfig.delete('/product/product', {
     data: del
   });
@@ -123,8 +120,8 @@ export async function GetBrand() {
 
 
 export async function editImage(product) {
-  console.log("edit image", product)
-
+ 
+   
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("id", product?.id);
@@ -140,7 +137,7 @@ export async function editImage(product) {
 
 
 export async function editTechImage(product) {
-  console.log("product ", product)
+ 
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("id", product?.id);
@@ -158,8 +155,7 @@ export async function editTechImage(product) {
 
 
 export async function addImage(product) {
-  console.log("edit image", product);
-
+ 
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
 
@@ -184,7 +180,7 @@ export async function addImage(product) {
 
 
 export async function addTechImage(product) {
-  console.log("product ", product)
+
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
   if (product?.technicaldoc?.length) {
@@ -212,7 +208,7 @@ export async function addTechImage(product) {
 
 
 export async function DeleteProductImage(del) {
-  console.log("dele", del)
+
   return await AxiosConfig.delete('/product/delete_image', {
     data: del
   });
@@ -220,7 +216,7 @@ export async function DeleteProductImage(del) {
 
 
 export async function DeleteProductTechImage(del) {
-  console.log("dele", del)
+
   return await AxiosConfig.delete('/product/delete_docs', {
     data: del
   });

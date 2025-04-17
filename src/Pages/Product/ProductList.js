@@ -8,7 +8,6 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { enGB } from "date-fns/locale";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import Vectors from "../../Asset/Icon/Vectors.svg";
 import { useNavigate } from 'react-router-dom';
 import DeleteProduct from './DeleteProduct';
 import { useDispatch, useSelector } from 'react-redux';

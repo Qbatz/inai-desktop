@@ -31,7 +31,6 @@ export async function getProduct(product) {
 
 
 export async function addProduct(product) {
-  console.log("addproduct", product)
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("productName", product.productName);

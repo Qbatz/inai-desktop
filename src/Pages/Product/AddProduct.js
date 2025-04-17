@@ -171,14 +171,41 @@ function AddProduct() {
 
 
 
-
-
-    const handleImageAdd = (e) => {
+    const handleImageAdd = async (e) => {
         const files = Array.from(e.target.files);
         let imageError = {};
 
+        const compressedImages = await Promise.all(
+            files.map(async (file) => {
+                try {
+                                 
+                    const options = {
+                        maxSizeMB: 1,
+                        maxWidthOrHeight: 1024,
+                        useWebWorker: true,
+                    };
+
+                    const compressedBlob = await imageCompression(file, options);
+
+                    const compressedFile = new File([compressedBlob], file.name, {
+                        type: compressedBlob.type,
+                        lastModified: Date.now(),
+                    });
+                                      
+                    return compressedFile;
+                } catch (error) {
+                    console.error(`Compression failed for ${file.name}:`, error);
+                    return null;
+                }
+            })
+        );
+
+        const filteredCompressed = compressedImages.filter((img) => img !== null);
+
         setImages((prev) => {
-            const unique = files.filter(preview => !prev.includes(preview));
+            const unique = filteredCompressed.filter(
+                (img) => !prev.some((p) => p.name === img.name && p.size === img.size)
+            );
             const totalImages = prev.length + unique.length;
 
             if (totalImages > 10) {
@@ -193,7 +220,7 @@ function AddProduct() {
         });
     };
 
-
+   
     const handleClose = () => {
         navigate('/product')
     }
@@ -253,14 +280,44 @@ function AddProduct() {
     };
 
 
-    const handleTechDocAdd = (e) => {
+    
+
+    const handleTechDocAdd = async (e) => {
         const files = Array.from(e.target.files);
         let imageError = {};
-
+    
+        const compressedImages = await Promise.all(
+            files.map(async (file) => {
+                try {
+                    const options = {
+                        maxSizeMB: 1,
+                        maxWidthOrHeight: 1024,
+                        useWebWorker: true,
+                    };
+    
+                    const compressedBlob = await imageCompression(file, options);
+    
+                    const compressedFile = new File([compressedBlob], file.name, {
+                        type: compressedBlob.type,
+                        lastModified: Date.now(),
+                    });
+    
+                    return compressedFile;
+                } catch (error) {
+                    console.error(`Compression failed for ${file.name}:`, error);
+                    return null;
+                }
+            })
+        );
+    
+        const filteredCompressed = compressedImages.filter((img) => img !== null);
+    
         setTechImages((prev) => {
-            const unique = files.filter(preview => !prev.includes(preview));
+            const unique = filteredCompressed.filter(
+                (img) => !prev.some((p) => p.name === img.name && p.size === img.size)
+            );
             const totalImages = prev.length + unique.length;
-
+    
             if (totalImages > 10) {
                 imageError.techImagesError = "You can only upload up to 10 Technical images";
                 setErrors(imageError);
@@ -272,8 +329,6 @@ function AddProduct() {
             }
         });
     };
-
-
 
 
     const handleTechDocAddImageinEditMode = async (e) => {
@@ -916,6 +971,17 @@ function AddProduct() {
             return () => clearTimeout(timer);
         }
     }, [errors.techImagesError]);
+
+
+    useEffect(() => {
+        if (errors.serialNo) {
+            const timer = setTimeout(() => {
+                setErrors(prev => ({ ...prev, serialNo: "" }));
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [errors.serialNo]);
+
 
 
     useEffect(() => {

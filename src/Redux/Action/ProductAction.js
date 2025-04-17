@@ -6,13 +6,13 @@ export async function getProduct(product) {
 
   let queryParams = '';
 
-    if (product.startDate && product.endDate) {
+  if (product.startDate && product.endDate) {
     queryParams = new URLSearchParams({
-          startDate: product.startDate || '',
+      startDate: product.startDate || '',
       endDate: product.endDate || ''
     }).toString();
   } else if (product.searchKeyword) {
-      queryParams = new URLSearchParams({
+    queryParams = new URLSearchParams({
       searchKeyword: product.searchKeyword || ''
     }).toString();
   }
@@ -31,7 +31,7 @@ export async function getProduct(product) {
 
 
 export async function addProduct(product) {
- 
+  console.log("addproduct", product)
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("productName", product.productName);
@@ -120,8 +120,8 @@ export async function GetBrand() {
 
 
 export async function editImage(product) {
- 
-   
+
+
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("id", product?.id);
@@ -137,7 +137,7 @@ export async function editImage(product) {
 
 
 export async function editTechImage(product) {
- 
+
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("id", product?.id);
@@ -155,7 +155,7 @@ export async function editTechImage(product) {
 
 
 export async function addImage(product) {
- 
+
   const formData = new FormData();
   formData.append("productCode", product?.productCode);
 

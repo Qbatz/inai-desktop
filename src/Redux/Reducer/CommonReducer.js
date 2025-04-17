@@ -2,6 +2,7 @@ import {
     ERROR_CODE,
     SUCCESS_CODE,
     RESET_CODE,
+    GET_MASTER_REDUCER,
 } from "../../Utils/Constant";
 
 export const initialState = {
@@ -13,6 +14,8 @@ export const initialState = {
     emailid: "",
     resetPassword: "",
     IsVisible: 0,
+    country: [],
+    titles: [],
 
 }
 
@@ -35,11 +38,12 @@ const CommonReducer = (state = initialState, action) => {
                 resetverify: data.message || '',
             }
         }
-            
+
 
         case RESET_CODE:
-            return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "",  IsVisible: 0 }
-
+            return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "", IsVisible: 0 }
+        case GET_MASTER_REDUCER:
+            return { ...state, country: action.payload.response.country, titles: action.payload.response.titles }
         default:
             return state;
     }

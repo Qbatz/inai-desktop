@@ -100,7 +100,7 @@ function* handleEditCustomer(action) {
 function* handleDeleteCustomer(action) {
     try {
         const response = yield call(DeleteCustomer, action.payload)
-        if (response.status === 200 || response.data.statusCode === 200) {
+        if (response.status === 200 ) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
 
             toast.success(response.data.message || 'Success!', {
@@ -117,7 +117,7 @@ function* handleDeleteCustomer(action) {
             });
 
         }
-        else if (response.status === 201 || response.data.statusCode === 201) {
+        else if (response.status === 201 ) {
             yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
         }
 
@@ -140,12 +140,12 @@ function* handleGetCustomerList(action) {
 
     try {
         const response = yield call(GetCustomerList, action.payload)
-        if (response.status === 200 || response.data.statusCode === 200) {
+        if (response.status === 200) {
 
             yield put({ type: GET_CUSTOMER_LIST_REDUCER, payload: { customers: response.data.customers } });
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
         }
-        else if (response.status === 201 || response.data.statusCode === 201) {
+        else if (response.status === 201 ) {
             yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
         }
 

@@ -119,4 +119,39 @@ export const GET_SUB_CATEGORY_SAGA = "Get_Sub_Category_Saga";
 export const GET_BRAND_REDUCER = "Get_Brand_Reducer";
 export const GET_BRAND_SAGA = "Get_Brand_Saga";
 
+export const GET_PRODUCT_REDUCER = "Get_Product_Reducer";
+export const GET_PRODUCT_SAGA = "Get_Product_Saga";
+
+export const ADD_PRODUCT_REDUCER = "Add_Product_Reducer";
+export const ADD_PRODUCT_SAGA = "Add_Product_Saga";
+
+
+export const DELETE_PRODUCT_REDUCER = "Delete_Product_Reducer";
+export const DELETE_PRODUCT_SAGA = "Delete_Product_Saga";
+
+
+export const EDIT_PRODUCT_REDUCER = "Edit_Product_Reducer";
+export const EDIT_PRODUCT_SAGA = "Edit_Product_Saga";
+
+
+
+
+export const EDIT_IMAGE_PRODUCT_SAGA = "Edit_Image_Product_Saga";
+
+export const EDIT_TECH_IMAGE_PRODUCT_SAGA = "Edit_Tech_Image_Product_Saga";
+
+export const DELETE_IMAGE_PRODUCT_SAGA = "Delete_Image_Product_Saga";
+
+export const DELETE_TECH_IMAGE_PRODUCT_SAGA = "Delete_Tech_Image_Product_Saga";
+
+export const ADD_IMAGE_PRODUCT_SAGA = "Add_Image_Product_Saga";
+
+export const ADD_TECH_IMAGE_PRODUCT_SAGA = "Add_Tech_Image_Product_Saga";
+
+
+
+
+
+
+
 

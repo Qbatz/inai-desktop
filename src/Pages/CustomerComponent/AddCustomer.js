@@ -1294,7 +1294,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px] "
                                         >
                                             <option value="" >Select</option>
-                                            {state?.settings?.titles.map((title) => (
+                                            {state?.Common?.titles.map((title) => (
                                                 <option key={title.id} value={title.id} >
                                                     {title.name}
                                                 </option>
@@ -1351,7 +1351,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                         >
                                             <option value="">Select</option>
-                                            {state.settings?.countryCode?.map((item) => (
+                                            {state.Common?.country?.map((item) => (
                                                 <option key={item.id} value={item.id} className='text-neutral-500'>
                                                     {item.phone}
                                                 </option>
@@ -1620,7 +1620,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                         className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                     >
                                                         <option value="">Select</option>
-                                                        {state?.settings?.titles?.map((title) => (
+                                                        {state?.Common?.titles?.map((title) => (
                                                             <option key={title.id} value={title.id} className='text-neutral-500'>
                                                                 {title.name}
                                                             </option>
@@ -1672,7 +1672,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                         className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                     >
                                                         <option value="">Select</option>
-                                                        {state.settings?.countryCode?.map((item) => (
+                                                        {state.Common?.country?.map((item) => (
                                                             <option key={item.id} value={item.id} className='text-neutral-500'>
                                                                 {item.phone}
                                                             </option>

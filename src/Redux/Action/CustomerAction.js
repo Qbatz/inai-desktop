@@ -24,11 +24,6 @@ export async function CreateCustomer(basic) {
       }
 
 
-//   export async function GetCustomerList(basic) {
-//     return await AxiosConfig.get('/usr/client',basic,{
-//     data: basic
-//    })
-//  }
 
 
 

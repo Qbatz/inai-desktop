@@ -163,6 +163,7 @@ function CustomerList() {
           type: GET_CUSTOMER_LIST_SAGA,
           payload: { searchKeyword: searchTerm.trim() },
         });
+        setLoading(true)
       } else {
         dispatch({
           type: GET_CUSTOMER_LIST_SAGA,
@@ -189,6 +190,7 @@ useEffect(() => {
           type: GET_CUSTOMER_LIST_SAGA,
           payload: { startDate: startDate, endDate: endDate },
         });
+        setLoading(true)
         setShowPicker(false)
       } else {
         dispatch({ type:GET_CUSTOMER_LIST_SAGA, payload: { startDate: null, endDate: null } })
@@ -211,6 +213,7 @@ useEffect(() => {
 
   useEffect(() => {
     dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { searchKeyword: "" } });
+    setLoading(true)
   }, []);
 
   useEffect(() => {
@@ -228,7 +231,14 @@ useEffect(() => {
   }
 
 
-
+ useEffect(() => {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 5000)
+        }
+    }, [state.Common?.successCode, state.Common?.code]);
 
 
   return (

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
-import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2 } from "iconsax-react";
+import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2, ArrowUp, ArrowDown } from "iconsax-react";
 import Filter from '../../Asset/Images/filter.png';
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -38,6 +38,7 @@ function ProductList() {
     const [hasSelectedBoth, setHasSelectedBoth] = useState(false);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
 
 
@@ -53,12 +54,55 @@ function ProductList() {
     ]);
 
 
+    const handleSort = (key) => {
+        setSortConfig(prev => {
+            if (prev.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+            } else {
+                return { key, direction: 'asc' };
+            }
+        });
+    };
 
 
-    const paginatedData = productList?.slice(
+    const sortedData = useMemo(() => {
+        let sorted = [...productList];
+        if (sortConfig.key !== null) {
+            sorted.sort((a, b) => {
+                const valA = a[sortConfig.key];
+                const valB = b[sortConfig.key];
+
+                // Handle number sorting if values are numeric
+                if (!isNaN(valA) && !isNaN(valB)) {
+                    return sortConfig.direction === 'asc' ? valA - valB : valB - valA;
+                }
+
+                // Otherwise string sorting
+                const strA = valA?.toString().toLowerCase() || "";
+                const strB = valB?.toString().toLowerCase() || "";
+
+                if (strA < strB) return sortConfig.direction === 'asc' ? -1 : 1;
+                if (strA > strB) return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        return sorted;
+    }, [productList, sortConfig]);
+
+
+
+
+
+    const paginatedData = sortedData.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
+
+
+    // const paginatedData = productList?.slice(
+    //     (currentPage - 1) * itemsPerPage,
+    //     currentPage * itemsPerPage
+    // );
 
     const totalPages = Math.ceil(productList?.length / itemsPerPage);
 
@@ -239,7 +283,21 @@ function ProductList() {
 
 
 
-
+    const renderSortableHeader = (label, key) => (
+        <div className="flex items-center justify-center gap-2 cursor-pointer" onClick={() => handleSort(key)}>
+            {label}
+            <div className="flex flex-row">
+                <ArrowUp
+                    size="16"
+                    color={sortConfig.key === key && sortConfig.direction === "asc" ? "#205DA8" : "#4a4a4a"}
+                />
+                <ArrowDown
+                    size="16"
+                    color={sortConfig.key === key && sortConfig.direction === "desc" ? "#205DA8" : "#4a4a4a"}
+                />
+            </div>
+        </div>
+    );
 
 
 
@@ -327,62 +385,20 @@ function ProductList() {
                 </div>
 
 
-                <div
-                    className="flex-1 flex flex-col"
-                >
+                <div className="flex-1 flex flex-col">
                     <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[380px] overflow-y-auto p-0 mt-4 mb-extra'>
-                        <table
-
-                            className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]"
-                        >
+                        <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                             <thead className="bg-slate-100 sticky top-0 z-10">
                                 <tr>
 
-                                    <th className="px-4 py-4 text-center text-neutral-600 text-sm font-medium font-Gilroy">
-                                        S.No
-                                    </th>
-                                    <th className="px-4 py-4 text-center text-neutral-600 text-sm font-medium font-Gilroy ">
-                                        <div className="flex items-center justify-start gap-4 ml-4">
-                                            Product Name
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Ava. Qty
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Make
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Price
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Currency
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Status
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Action
-
-                                        </div>
-                                    </th>
+                                    <th className="px-4 py-3 text-center text-neutral-800 text-sm font-medium font-Gilroy">S.No</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Product Name", "productName")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Ava. Qty", "quantity")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Make", "make")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Price", "price")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Currency", "currency")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Status", "status")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">Action</th>
                                 </tr>
                             </thead>
 

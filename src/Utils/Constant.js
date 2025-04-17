@@ -93,7 +93,8 @@ export const GET_CUSTOMER_DETAILS_REDUCER = "Get_Customer_Details_Reducer";
 export const CUSTOMER_ID_REDUCER = "Customer_Id_Reducer";   
 export const GET_CUSTOMER_DETAILS_SAGA = "Get_Customer_Details_Saga";
 
-
+export const GET_USER_INFO_REDUCER = "Get_User_Info_Reducer";
+export const GET_USER_INFO_SAGA = "Get_User_Info_Saga";
 
 
 

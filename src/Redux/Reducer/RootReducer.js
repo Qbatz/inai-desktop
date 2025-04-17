@@ -5,6 +5,7 @@ import SignUpReducer from './SignUpReducer'
 import VendorReducer from "./VendorReducer";
 import CustomerReducer from "./CustomerReducer";
 import SettingsReducer from "./SettingsReducer";
+import UserReducer from "./UserReducer";
 
 const RootReducer = combineReducers({
     signIn: SignInReducer,
@@ -12,6 +13,7 @@ const RootReducer = combineReducers({
     signUp: SignUpReducer,
     vendor: VendorReducer,
     customer: CustomerReducer,
-    settings: SettingsReducer
+    settings: SettingsReducer,
+    userInfo: UserReducer,
 })
 export default RootReducer;

@@ -324,7 +324,7 @@ function VendorList() {
                   <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
                     <thead className="bg-slate-100 sticky top-0 z-10">
                       <tr>
-
+                      <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">S.No</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
@@ -338,6 +338,9 @@ function VendorList() {
                     <tbody className=" ">
                       {paginatedData.length > 0 ? paginatedData?.map((item, index) => (
                         <tr key={index} className="border-0">
+                          <td className="px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">
+                            {(currentPage - 1) * itemsPerPage + index + 1}
+                          </td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.title}.{item.contactPersonName}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.emailId}</td>
@@ -375,19 +378,19 @@ function VendorList() {
 
                         </tr>
                       ))
-                    
-                      :
 
-                      <tr>
-                      <td colSpan="6" className="text-center text-red-600 font-Gilroy py-4">
-                        No Data Found
-                      </td>
-                    </tr>
-                    
-                    
-                    
-                    
-                    }
+                        :
+
+                        <tr>
+                          <td colSpan="6" className="text-center text-red-600 font-Gilroy py-4">
+                            No Data Found
+                          </td>
+                        </tr>
+
+
+
+
+                      }
                     </tbody>
                   </table>
                 </div>

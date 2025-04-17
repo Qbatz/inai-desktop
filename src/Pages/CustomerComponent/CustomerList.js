@@ -182,7 +182,7 @@ function CustomerList() {
   }, [state.customer.customerList])
 
 
-useEffect(() => {
+  useEffect(() => {
     const delayApi = setTimeout(() => {
       if (startDate && endDate && startDate !== endDate) {
         dispatch({
@@ -191,7 +191,7 @@ useEffect(() => {
         });
         setShowPicker(false)
       } else {
-        dispatch({ type:GET_CUSTOMER_LIST_SAGA, payload: { startDate: null, endDate: null } })
+        dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { startDate: null, endDate: null } })
       }
     }, 500);
 
@@ -316,36 +316,37 @@ useEffect(() => {
           className="flex-1 flex flex-col"
         >
           <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[350px] overflow-y-auto p-0 mt-4 mb-extra'>
-            <table
-
-              className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]"
-            >
+       
+            <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
               <thead className="bg-slate-100 sticky top-0 z-10">
                 <tr>
-                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
-                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
-                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
-                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Mobile no</th>
-                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Receivable Amount</th>
-                  <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy"></th>
-
-
+                  <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">S.No</th>
+                  <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
+                  <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
+                  <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>
+                  <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Mobile no</th>
+                  <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Receivable Amount</th>
+                  <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy"></th>
                 </tr>
               </thead>
 
-              <tbody className="">
+              <tbody>
                 {paginatedData.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="text-center text-red-600 font-Gilroy py-4">
+                    <td colSpan="7" className="text-center text-red-600 font-Gilroy py-4">
                       No Data Found
                     </td>
                   </tr>
                 ) : (
                   paginatedData.map((item, index) => (
                     <tr key={index} className="border-0">
+                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </td>
+
                       <td className="text-[#205DA8] px-4 py-2 text-center text-sm font-medium font-Gilroy overflow-hidden hover:underline hover:cursor-pointer" onClick={() => handleCustomerDetails(item.clientId)}>{item.businessName}</td>
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.title}.{item.contactPerson}</td>
-                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]" >{item.emailId}</td>
+                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.emailId}</td>
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">+{item.country_code}{item.contactNumber}</td>
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.Amount || '-'}</td>
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
@@ -376,8 +377,8 @@ useEffect(() => {
                   ))
                 )}
               </tbody>
-
             </table>
+
           </div>
         </div>
 

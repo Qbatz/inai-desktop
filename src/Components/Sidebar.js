@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from "react";
 import Dashboard from "../Pages/Dashboard/Dashboard";
 import Vendor from "../Pages/VendorFile/Vendor";
 import ProductList from "../Pages/Product/ProductList";
@@ -18,17 +19,21 @@ import Topbar from './Topbar'
 import CustomerDetails from "../Pages/CustomerComponent/CustomerDetails";
 import CustomerList from "../Pages/CustomerComponent/CustomerList";
 import { Chart2, LoginCurve, Setting2, I24Support, Receipt1, Receipt2 } from "iconsax-react";
-import { useDispatch} from 'react-redux';
+import { useDispatch, connect } from 'react-redux';
 import { LOG_OUT } from "../Utils/Constant";
 import { encryptData } from "../Crypto/crypto";
-import { Route,  Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import AddCustomer from "../Pages/CustomerComponent/AddCustomer";
 import BasicVendor from "../Pages/VendorFile/BasicVendor";
 import VendorDetails from "../Pages/VendorFile/VendorDetails";
+import UserDetails from "../Components/UserDetails";
+import { GET_USER_INFO_SAGA } from '../Utils/Constant';
+import PropTypes from 'prop-types';
 
 
 
-function Sidebar() {
+
+function Sidebar({state}) {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -36,9 +41,11 @@ function Sidebar() {
     const [activeItem, setActiveItem] = useState("dashboard");
 
     const [isLogout, setIsLogout] = useState(false)
-   
 
-    
+
+ useEffect(() => {
+        dispatch({ type: GET_USER_INFO_SAGA });
+    }, []);
 
     const handleConfirmLogout = () => {
         dispatch({ type: LOG_OUT });
@@ -56,9 +63,14 @@ function Sidebar() {
         setIsLogout(false)
     }
 
-  
 
-  
+    const handleUserDetails = () => {
+        navigate('/user/details');
+    };
+
+
+
+
 
 
     return (
@@ -90,7 +102,8 @@ function Sidebar() {
   ${activeItem === "dashboard" ? "text-[#205DA8]" : "text-black"}`}
                             onClick={() => {
                                 setActiveItem('dashboard')
-                                navigate("/")}}
+                                navigate("/")
+                            }}
                         >
                             <Chart2 size="22" color={activeItem === "dashboard" ? "#205DA8" : "#0F172A"} />
                             <span className="hidden lg:inline">Dashboard</span>
@@ -156,14 +169,14 @@ function Sidebar() {
 
 
                 </nav>
-                <div className=" mx-4   flex  space-x-3">
+                <div className=" mx-4   flex  space-x-3" onClick={handleUserDetails}>
 
                     <img src={Profile} alt="Profile" className="h-10 w-10 rounded-full object-cover" />
 
-
                     <div className="hidden sm:hidden md:hidden lg:flex flex-col">
-                        <p className="text-sm font-semibold font-Gilroy">Rakul Preet</p>
-                        <p className="text-xs text-gray-500 font-Gilroy">rakulpreet@gmail.com</p>
+                        <p className="text-sm font-semibold font-Gilroy">{state.firstName + state.lastName}</p>
+                        <p className="text-xs text-gray-500 font-Gilroy">{state.email
+                        }</p>
                     </div>
 
 
@@ -208,17 +221,18 @@ function Sidebar() {
                 </div>
 
                 <div className="flex flex-1">
-                        <Routes>
-                             <Route path="/" element={<Dashboard />} />
-                             <Route path="/client" element={<CustomerList />}/>
-                             <Route path="/vendor" element={<Vendor />}/>
-                             <Route path="/product" element={<ProductList />} />
-                             <Route path="/add-products" element={<AddProduct/>}/>
-                             <Route path="/add-customer" element={<AddCustomer />}/>
-                             <Route path="/customer-details/:customerId" element={<CustomerDetails />} />
-                             <Route path="/add-vendor" element={<BasicVendor />}/>
-                             <Route path="/vendor-details/:vendorId" element={<VendorDetails />}/>
-                        </Routes>
+                    <Routes>
+                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/client" element={<CustomerList />} />
+                        <Route path="/vendor" element={<Vendor />} />
+                        <Route path="/product" element={<ProductList />} />
+                        <Route path="/add-products" element={<AddProduct />} />
+                        <Route path="/add-customer" element={<AddCustomer />} />
+                        <Route path="/customer-details/:customerId" element={<CustomerDetails />} />
+                        <Route path="/add-vendor" element={<BasicVendor />} />
+                        <Route path="/vendor-details/:vendorId" element={<VendorDetails />} /> 
+                        <Route path="/user/details" element={<UserDetails />} />
+                    </Routes>
                     {/* {activeItem === "dashboard" && <Dashboard />}
                     {activeItem === "vendor" && <Vendor />}
                     {activeItem === "product" && <Product />}
@@ -228,40 +242,40 @@ function Sidebar() {
 
 
 
-           
 
 
 
-            <div className={`fixed inset-0  z-50 flex items-center justify-center ${isLogout ? "visible" : "hidden"} bg-black bg-opacity-50`}>
-                <div className="bg-white rounded-lg shadow-lg w-[388px] h-[180px] p-6 pb-[6px] ">
-                    <div className="flex justify-center border-b-0">
-                        <h2 className="text-[20px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">
-                            Logout?
-                        </h2>
-                    </div>
 
-                    <div className="text-center text-[14px] text-[#646464] font-medium mt-[10px] font-Gilroy">
-                        Are you sure you want to Logout?
-                    </div>
+                <div className={`fixed inset-0  z-50 flex items-center justify-center ${isLogout ? "visible" : "hidden"} bg-black bg-opacity-50`}>
+                    <div className="bg-white rounded-lg shadow-lg w-[388px] h-[180px] p-6 pb-[6px] ">
+                        <div className="flex justify-center border-b-0">
+                            <h2 className="text-[20px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">
+                                Logout?
+                            </h2>
+                        </div>
 
-                    <div className="flex justify-center border-t-0 mt-[10px] space-x-4">
-                        <button
-                            data-testid='button-close-logout'
-                            className="font-Gilroy w-[160px] h-[52px] rounded-lg border border-[#205DA8] text-[#205DA8] font-semibold text-[14px] bg-white"
-                            onClick={handleCloseLogout}
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            data-testid='button-logout'
-                            className="font-Gilroy w-[160px] h-[52px] rounded-lg bg-[#205DA8] text-white font-semibold text-[14px]"
-                            onClick={handleConfirmLogout}
-                        >
-                            Logout
-                        </button>
+                        <div className="text-center text-[14px] text-[#646464] font-medium mt-[10px] font-Gilroy">
+                            Are you sure you want to Logout?
+                        </div>
+
+                        <div className="flex justify-center border-t-0 mt-[10px] space-x-4">
+                            <button
+                                data-testid='button-close-logout'
+                                className="font-Gilroy w-[160px] h-[52px] rounded-lg border border-[#205DA8] text-[#205DA8] font-semibold text-[14px] bg-white"
+                                onClick={handleCloseLogout}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                data-testid='button-logout'
+                                className="font-Gilroy w-[160px] h-[52px] rounded-lg bg-[#205DA8] text-white font-semibold text-[14px]"
+                                onClick={handleConfirmLogout}
+                            >
+                                Logout
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
             </div>
 
@@ -276,9 +290,20 @@ function Sidebar() {
     );
 }
 
+const mapsToProps = (stateInfo) => {
+    return {
+      state: stateInfo.userInfo?.userDetails, 
+    };
+  };
+  
+  
+  Sidebar.propTypes = {
+    state: PropTypes.object
+  };
+  
+  export default connect(mapsToProps)(Sidebar);
 
 
-export default Sidebar;
 
 
 

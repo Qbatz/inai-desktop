@@ -12,9 +12,6 @@ import { GET_USER_INFO_SAGA } from '../Utils/Constant';
 
 const UserDetails = ({state}) => {
 
-    console.log("state",state);
-    
-
     const dispatch = useDispatch();
 
     const [activeTab, setActiveTab] = useState("editProfile");

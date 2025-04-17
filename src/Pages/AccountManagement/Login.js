@@ -125,7 +125,8 @@ function Login({ message, loginStatusCode }) {
       dispatch({ type: LOG_IN })
       const encryptData_Login = encryptData(JSON.stringify(true));
       localStorage.setItem("inai_login", encryptData_Login.toString());
-      const token = state.signIn.token;
+      // const token = state.signIn.token;
+      const token = state.userInfo.token;
       if (token) {
         const cookies = new Cookies();
         cookies.set('inai-token', token, { path: '/' });

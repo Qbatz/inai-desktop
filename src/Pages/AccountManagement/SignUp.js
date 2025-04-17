@@ -120,14 +120,16 @@ export default function SignUp() {
   };
 
   useEffect(() => {
+    
+    // if (state.signUp?.otpValue && state.signUp?.otpValue !== '') {
 
-    if (state.signUp?.otpValue && state.signUp?.otpValue !== '') {
-
+    if (state.userInfo?.otpValue && state.userInfo?.otpValue !== '') {
       setLoading(false)
       setShowOtp(true);
       setShowMobile(false);
     }
-  }, [state.signUp?.otpValue]);
+  // }, [state.signUp?.otpValue]);
+}, [state.userInfo?.otpValue]);
 
 
   useEffect(() => {
@@ -172,14 +174,16 @@ export default function SignUp() {
         type: ACCOUNT_REGISTER_SAGA,
         payload: {
           email: state?.signUp?.emailId,
-          email_verify_token: state.signUp?.verifyCode || '',
+          // email_verify_token: state.signUp?.verifyCode || '',
+          email_verify_token: state.userInfo?.verifyCode || '',
           first_name: firstName,
           last_name: lastName,
           password: password,
           password2: confirmPassword,
           phone: mobile,
           mobile: mobile,
-          otp: state.signUp?.otpValue || '',
+          // otp: state.signUp?.otpValue || '',
+          otp: state.userInfo?.otpValue || '',
           sent_otp: 1,
           otp_verified: 1,
           username: userId
@@ -194,7 +198,8 @@ export default function SignUp() {
 
 
   useEffect(() => {
-    if (state.signUp.isTrue) {
+   
+    if (state.userInfo.isTrue) {
       setLoading(false)
            setShowOtp(false);
       setShowMobile(false);
@@ -204,8 +209,9 @@ export default function SignUp() {
     } else {
       setLoading(false)
     }
+  }, [state.userInfo.isTrue])
 
-  }, [state.signUp.isTrue])
+  // }, [state.signUp.isTrue])
 
 
   useEffect(() => {
@@ -361,7 +367,8 @@ export default function SignUp() {
                 disabled
                 autoComplete="new-email"
                 autoCorrect="off"
-                value={state?.signUp?.emailId}
+                // value={state?.signUp?.emailId}
+                value={state?.userInfo?.emailId}
                 placeholder="Email ID*"
                 className="w-full h-12 px-3 font-Gilroy  border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />

@@ -1,29 +1,29 @@
-import { SIGN_IN_REDUCER, LOG_OUT, LOG_IN } from "../../Utils/Constant";
+// import { SIGN_IN_REDUCER, LOG_OUT, LOG_IN } from "../../Utils/Constant";
 
-export const initialState = {
+// export const initialState = {
    
- token: '',
- isLoggedIn: false,
+//  token: '',
+//  isLoggedIn: false,
  
- }
+//  }
  
- const SignInReducer = (state = initialState, action) => {
+//  const SignInReducer = (state = initialState, action) => {
 
-    switch (action.type) {
+//     switch (action.type) {
 
-       case SIGN_IN_REDUCER:
-          return { ...state, token : action.payload.token }
+//        case SIGN_IN_REDUCER:
+//           return { ...state, token : action.payload.token }
  
-          case LOG_IN:
-            return { ...state,  isLoggedIn: true  }
+//           case LOG_IN:
+//             return { ...state,  isLoggedIn: true  }
    
-          case LOG_OUT:
-          return { ...state,  isLoggedIn: false  }
+//           case LOG_OUT:
+//           return { ...state,  isLoggedIn: false  }
  
-          default:
-             return state;
-    }
+//           default:
+//              return state;
+//     }
  
     
- }
- export default SignInReducer;
+//  }
+//  export default SignInReducer;

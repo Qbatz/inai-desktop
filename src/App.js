@@ -106,7 +106,7 @@ function App({ isLogged_In }) {
 
 const mapsToProps = (state) => {
   return {
-    isLogged_In: state.signIn.isLoggedIn
+    isLogged_In: state.userInfo.isLoggedIn
   }
 }
 

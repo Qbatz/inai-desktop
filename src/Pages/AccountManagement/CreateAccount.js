@@ -128,18 +128,17 @@ function CreateAccount() {
     }, [])
 
 
-
     useEffect(() => {
-        if (state.signUp.isTrue) {
+        // if (state.signUp.isTrue) {
+            if (state.userInfo.isTrue) {
             setMessage(true);
             setTimeout(() => {
                 setMessage(false);
             }, 8000)
 
         }
-
-    }, [state.signUp.isTrue])
-
+     // }, [state.signUp.isTrue])
+    }, [state.userInfo.isTrue])
 
 
     return (
@@ -208,8 +207,10 @@ function CreateAccount() {
                             </div>
                         </div>
 
-                        {
-                            state.signUp.is_verified === null ? <>
+                        {      
+                            // state.signUp.is_verified === null ? <>
+
+                            state.userInfo.is_verified === null ? <>
 
                                 <div className="w-full max-w-[450px]">
                                     <div className="mb-2">
@@ -280,7 +281,9 @@ function CreateAccount() {
                                     </div>
                                 </div>
                             </>
-                                : state.signUp.is_verified === 0 ?
+                                // : state.signUp.is_verified === 0 ?
+
+                                : state.userInfo.is_verified === 0 ?
                                     <>
                                         <SignUp />
                                     </>

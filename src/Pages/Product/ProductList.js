@@ -71,12 +71,12 @@ function ProductList() {
                 const valA = a[sortConfig.key];
                 const valB = b[sortConfig.key];
 
-                // Handle number sorting if values are numeric
+               
                 if (!isNaN(valA) && !isNaN(valB)) {
                     return sortConfig.direction === 'asc' ? valA - valB : valB - valA;
                 }
 
-                // Otherwise string sorting
+               
                 const strA = valA?.toString().toLowerCase() || "";
                 const strB = valB?.toString().toLowerCase() || "";
 
@@ -98,10 +98,7 @@ function ProductList() {
     );
 
 
-    // const paginatedData = productList?.slice(
-    //     (currentPage - 1) * itemsPerPage,
-    //     currentPage * itemsPerPage
-    // );
+  
 
     const totalPages = Math.ceil(productList?.length / itemsPerPage);
 

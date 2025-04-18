@@ -128,18 +128,15 @@ function CreateAccount() {
     }, [])
 
 
-
     useEffect(() => {
-        if (state.signUp.isTrue) {
+        if (state.userInfo.isTrue) {
             setMessage(true);
             setTimeout(() => {
                 setMessage(false);
             }, 8000)
 
         }
-
-    }, [state.signUp.isTrue])
-
+    }, [state.userInfo.isTrue])
 
 
     return (
@@ -208,84 +205,83 @@ function CreateAccount() {
                             </div>
                         </div>
 
-                        {
-                            state.signUp.is_verified === null ? <>
+                        {state.userInfo.is_verified === null ? <>
 
-                                <div className="w-full max-w-[450px]">
-                                    <div className="mb-2">
-                                        <label className="block text-black mb-2 text-start font-Gilroy font-normal text-sm" htmlFor="userId">
-                                            Verify Your Email
-                                        </label>
-                                        <input
-                                            id="userId"
-                                            type="text"
-                                            name="username"
-                                            value={email}
-                                            onChange={handleEmailChange}
-                                            autoComplete="username"
-                                            autoCorrect="off"
-                                            placeholder="Enter Verify Your Email"
-                                            className="w-full h-14 px-3 py-2 border rounded-xl focus:outline-none text-sm font-Gilroy font-medium text-neutral-600"
+                            <div className="w-full max-w-[450px]">
+                                <div className="mb-2">
+                                    <label className="block text-black mb-2 text-start font-Gilroy font-normal text-sm" htmlFor="userId">
+                                        Verify Your Email
+                                    </label>
+                                    <input
+                                        id="userId"
+                                        type="text"
+                                        name="username"
+                                        value={email}
+                                        onChange={handleEmailChange}
+                                        autoComplete="username"
+                                        autoCorrect="off"
+                                        placeholder="Enter Verify Your Email"
+                                        className="w-full h-14 px-3 py-2 border rounded-xl focus:outline-none text-sm font-Gilroy font-medium text-neutral-600"
+                                    />
+                                    {formError.email && (
+                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formError.email} </p>)}
+                                </div>
+
+
+
+                                <div className="mt-6 flex flex-col items-center justify-center">
+
+                                    {siteKey && (
+                                        <ReCAPTCHA
+                                            sitekey={siteKey}
+                                            onChange={handleCaptchaChange}
                                         />
-                                        {formError.email && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formError.email} </p>)}
-                                    </div>
+                                    )}
 
 
-
-                                    <div className="mt-6 flex flex-col items-center justify-center">
-
-                                        {siteKey && (
-                                            <ReCAPTCHA
-                                                sitekey={siteKey}
-                                                onChange={handleCaptchaChange}
-                                            />
-                                        )}
-
-
-                                        {formError.captcha && (
-                                            <div className="mt-2 w-full text-center">
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
-                                                    <InfoCircle size="14" color="#DC2626" /> {formError.captcha}
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {errorMessage && (
-                                        <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
-                                            <InfoCircle size="14" color="#DC2626" />
-                                            {errorMessage}
+                                    {formError.captcha && (
+                                        <div className="mt-2 w-full text-center">
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                                <InfoCircle size="14" color="#DC2626" /> {formError.captcha}
+                                            </p>
                                         </div>
                                     )}
-                                    <button
-                                        type="submit"
-                                        className="mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl  transition duration-300 sm:text-lg"
-                                        onClick={handleSubmit}>
-                                        Submit
-                                    </button>
-
-
-
-
-
-                                    <div className="text-start mt-4">
-                                        <p className="text-black font-Montserrat font-normal text-base">
-                                            Already have an account?{' '}
-                                            <span onClick={() => navigate("/")} className="cursor-pointer  text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
-                                                Sign In
-                                            </span>
-                                        </p>
-                                    </div>
                                 </div>
-                            </>
-                                : state.signUp.is_verified === 0 ?
-                                    <>
-                                        <SignUp />
-                                    </>
-                                    :
-                                    <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 && "Email is already Verified"}</label>
+
+                                {errorMessage && (
+                                    <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                        <InfoCircle size="14" color="#DC2626" />
+                                        {errorMessage}
+                                    </div>
+                                )}
+                                <button
+                                    type="submit"
+                                    className="mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl  transition duration-300 sm:text-lg"
+                                    onClick={handleSubmit}>
+                                    Submit
+                                </button>
+
+
+
+
+
+                                <div className="text-start mt-4">
+                                    <p className="text-black font-Montserrat font-normal text-base">
+                                        Already have an account?{' '}
+                                        <span onClick={() => navigate("/")} className="cursor-pointer  text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
+                                            Sign In
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </>
+                            : state.userInfo.is_verified === 0 ?
+                                <>
+                                    <SignUp />
+                                </>
+                                :
+                                <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 && "Email is already Verified"}</label>
                         }
                     </div>
 

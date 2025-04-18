@@ -1,10 +1,21 @@
-import React from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect} from "react";
+import { useDispatch, connect } from 'react-redux';
 import Profile from "../Asset/Images/Profile_S.svg";
 import DownArrow from '../Asset/Icon/arrow-down.svg';
 import Notification from '../Asset/Icon/notification.svg';
 import Search from '../Asset/Icon/search-normal.svg';
+import { GET_USER_INFO_SAGA } from '../Utils/Constant';
+import PropTypes from 'prop-types'
 
-export default function Navbar() {
+ function Navbar({state}) {
+
+      const dispatch = useDispatch();
+
+
+    useEffect(() => {
+            dispatch({ type: GET_USER_INFO_SAGA });
+        },[]);
     return (
         <nav className="bg-white px-4 py-2 flex items-center justify-end md:justify-end w-full">
 
@@ -30,9 +41,10 @@ export default function Navbar() {
                 
                 <div className="flex items-center space-x-2">
                     <img src={Profile} alt="Profile" className="w-6 h-6 sm:w-8 sm:h-8" />
-                    <div className="hidden md:block">
-                        <p className="text-xs sm:text-sm font-semibold font-Gilroy">Rakul Preet</p>
-                        <p className="text-[10px] sm:text-xs text-gray-500 font-Gilroy">rakulpreet@gmail.com</p>
+                    <div className="hidden sm:hidden md:hidden lg:flex flex-col">
+                        <p className="text-sm font-semibold font-Gilroy">{state.firstName + state.lastName}</p>
+                        <p className="text-xs text-gray-500 font-Gilroy">{state.email
+                        }</p>
                     </div>
                     <button className="text-gray-600">
                         <img src={DownArrow} alt="DownArrow" className="w-3 sm:w-4" />
@@ -42,3 +54,15 @@ export default function Navbar() {
         </nav>
     );
 }
+const mapsToProps = (stateInfo) => {
+    return {
+      state: stateInfo.userInfo?.userDetails, 
+    };
+  };
+  
+  
+  Navbar.propTypes = {
+    state: PropTypes.object
+  };
+  
+  export default connect(mapsToProps)(Navbar);

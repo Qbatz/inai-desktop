@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA ,compareData } from "../../Utils/Constant";
+import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA, compareData } from "../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -33,12 +33,6 @@ function BasicVendor({ vendorDetails }) {
     const [formErrors, setFormErrors] = useState({});
     const [basicDetails, setBasicDetails] = useState('')
     const [addressDetails, setAddressDetails] = useState({ bank: null })
-
-
-
-
-    // address INfo
-
 
     const [officeAddress1, setOfficeAddress1] = useState("");
     const [officeAddress2, setOfficeAddress2] = useState('');
@@ -209,10 +203,6 @@ function BasicVendor({ vendorDetails }) {
         return Object.keys(errors).length === 0;
     };
 
-
-
-    // basic info save & click button
-
     const handleSaveClick = () => {
         const fieldsToCompare = [
             'businessName',
@@ -284,8 +274,6 @@ function BasicVendor({ vendorDetails }) {
         }
     };
 
-
-    //  next button
     const handleNextClick = () => {
         if (validateForm()) {
 
@@ -710,19 +698,6 @@ function BasicVendor({ vendorDetails }) {
 
     }, [state.Common?.IsVisible])
 
-
-
-
-
-
-
-
-
-    // Address Info save & exit
-
-
-
-
     const handleSaveClickAddress = () => {
         if (validateFormAddress()) {
             if (vendorDetails) {
@@ -866,14 +841,14 @@ function BasicVendor({ vendorDetails }) {
         }
     }, [vendorDetails]);
 
-useEffect(() => {
-      if (compareData(officeAddress1, shippingAddress1 ) && compareData(officeAddress2, shippingAddress2) && compareData(officeAddress3, shippingAddress3) && compareData(city, city)) {
-        setSameAsOffice(true)
-      }
-      else {
-        setSameAsOffice(false)
-      }
-  }, [officeAddress1, officeAddress2, officeAddress3, city, shippingAddress1, shippingAddress2, shippingAddress3, city])
+    useEffect(() => {
+        if (compareData(officeAddress1, shippingAddress1) && compareData(officeAddress2, shippingAddress2) && compareData(officeAddress3, shippingAddress3) && compareData(city, city)) {
+            setSameAsOffice(true)
+        }
+        else {
+            setSameAsOffice(false)
+        }
+    }, [officeAddress1, officeAddress2, officeAddress3, city, shippingAddress1, shippingAddress2, shippingAddress3, city])
 
 
 
@@ -934,7 +909,7 @@ useEffect(() => {
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
 
-                                   
+
                                     <div>
                                         <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
                                             Contact Person<span className='text-red-500'>*</span>
@@ -1544,11 +1519,6 @@ useEffect(() => {
                                             </select>
 
                                         </div>
-
-
-                                        {/* </div>
-                        
-                                  <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'> */}
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>
                                             <input

@@ -125,7 +125,7 @@ function Login({ message, loginStatusCode }) {
       dispatch({ type: LOG_IN })
       const encryptData_Login = encryptData(JSON.stringify(true));
       localStorage.setItem("inai_login", encryptData_Login.toString());
-      const token = state.signIn.token;
+      const token = state.userInfo.token;
       if (token) {
         const cookies = new Cookies();
         cookies.set('inai-token', token, { path: '/' });
@@ -139,10 +139,10 @@ function Login({ message, loginStatusCode }) {
   useEffect(() => {
     if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
       setLoading(false)
-      setTimeout(()=>{
+      setTimeout(() => {
         dispatch({ type: RESET_CODE })
-      },5000)
-      
+      }, 5000)
+
     }
   }, [state.Common.successCode, state.Common.code]);
 
@@ -155,7 +155,7 @@ function Login({ message, loginStatusCode }) {
         ? process.env.REACT_APP_RECAPTCHA_LOCAL_KEY
         : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
     setSiteKey(selectedKey)
-     }, [])
+  }, [])
 
 
 
@@ -325,7 +325,7 @@ function Login({ message, loginStatusCode }) {
               <div className="text-start mt-1">
                 <p className="text-black font-Montserrat font-normal text-base">
                   {`Don't have an account?`}&nbsp;
-                 
+
                   <span
                     onClick={handleNavigateCreateAccount}
                     className=" cursor-pointer text-[#205DA8] hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat"

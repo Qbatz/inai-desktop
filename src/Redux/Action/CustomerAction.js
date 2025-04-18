@@ -23,10 +23,6 @@ export async function CreateCustomer(basic) {
    
       }
 
-
-
-
-
  export async function GetCustomerDetails(customerId) {
   return await AxiosConfig.get(`/usr/client/${customerId}`); 
 }

@@ -482,9 +482,6 @@ function AddCustomer({ editCustomerDetails }) {
         return { tempErrors, contactErrors, isValid };
     };
 
-
-    // basic Save & exit
-
     const handleSaveAndExit = () => {
 
         const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
@@ -566,8 +563,6 @@ function AddCustomer({ editCustomerDetails }) {
         }
     };
 
-
-    //  3 taps payload send here (next button)
     const handleCustomerSubmit = () => {
         let isValid = true;
         let finalErrors = {};
@@ -857,8 +852,6 @@ function AddCustomer({ editCustomerDetails }) {
         }
     };
 
-
-    //  edit scenario enable address tab button for save & exit payload
     const handleCustomerEditAddress = () => {
         let isValid = true;
         let finalErrors = {};
@@ -1216,7 +1209,7 @@ function AddCustomer({ editCustomerDetails }) {
             return updated;
         });
     }, [formData?.contactPerson,
-        initialBankDetailsList?.[0]?.beneficiaryName,
+    initialBankDetailsList?.[0]?.beneficiaryName,
         editCustomerDetails]);
 
     useEffect(() => {
@@ -1282,7 +1275,7 @@ function AddCustomer({ editCustomerDetails }) {
                             <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
 
-                            
+
                                 <div >
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact Person   <span className='text-red-500'>*</span></label>
 

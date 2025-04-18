@@ -72,7 +72,7 @@ function App({ isLogged_In }) {
 
   return (
     <div>
-      <ToastContainer position="top-right"
+      <ToastContainer position="bottom-center"
       />
 
       <Router>

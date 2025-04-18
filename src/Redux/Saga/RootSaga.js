@@ -3,6 +3,7 @@ import VendorSaga from './VendorSaga';
 import CustomerSaga from './CustomerSaga';
 import SettingsSaga from './SettingsSaga';
 import UserSaga from './UserSaga';
+import ProductSaga from './ProductSaga'
 
 function* RootSaga() {
     
@@ -12,6 +13,7 @@ yield all([
     CustomerSaga(),
     SettingsSaga(),
     UserSaga(),
+    ProductSaga(),
 ])
 }
 export default RootSaga;

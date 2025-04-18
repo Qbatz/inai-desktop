@@ -1,29 +1,28 @@
-import React, { useState, useRef, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
-import { SearchNormal1, Calendar, Edit, Trash } from "iconsax-react";
+import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2, ArrowUp, ArrowDown } from "iconsax-react";
 import Filter from '../../Asset/Images/filter.png';
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { enGB } from "date-fns/locale";
 import { HiOutlineDotsVertical } from "react-icons/hi";
-import Vectors from "../../Asset/Icon/Vectors.svg";
-import KurtiSets from "../../Asset/Icon/KurtiSets.svg";
-import LongSleeve from "../../Asset/Icon/LongSleeve.svg";
-import Salwar from "../../Asset/Icon/Salwar.svg";
-import CollarTshirt from "../../Asset/Icon/CollarTshirt.svg";
-import CottonBlend from "../../Asset/Icon/CottonBlend.svg";
-import RoundNeck from "../../Asset/Icon/Round Neck.svg";
-import SolidTShirt from "../../Asset/Icon/SolidTShirt.svg";
-import Stylish from "../../Asset/Icon/Stylish.svg";
 import { useNavigate } from 'react-router-dom';
 import DeleteProduct from './DeleteProduct';
+import { useDispatch, useSelector } from 'react-redux';
+import { GET_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
+import moment from 'moment';
+import Cloth from '../../Asset/Images/Cloth.png'
+
 
 function ProductList() {
 
 
-  const navigate = useNavigate()
-
+    const navigate = useNavigate()
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
+    const [loading, setLoading] = useState(false)
     const [showPicker, setShowPicker] = useState(false);
     const [showPopup, setShowPopUp] = useState(null);
     const [showDeleteProduct, setShowDeleteProduct] = useState(false);
@@ -31,6 +30,18 @@ function ProductList() {
     const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
     const popupRef = useRef(null);
     const pickerRef = useRef(null);
+    const [productList, setProductList] = useState([])
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [hasSelectedBoth, setHasSelectedBoth] = useState(false);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+
+
+
 
 
     const [dateRange, setDateRange] = useState([
@@ -40,6 +51,100 @@ function ProductList() {
             key: "selection",
         },
     ]);
+
+
+    const handleSort = (key) => {
+        setSortConfig(prev => {
+            if (prev.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' };
+            } else {
+                return { key, direction: 'asc' };
+            }
+        });
+    };
+
+
+    const sortedData = useMemo(() => {
+        let sorted = [...productList];
+        if (sortConfig.key !== null) {
+            sorted.sort((a, b) => {
+                const valA = a[sortConfig.key];
+                const valB = b[sortConfig.key];
+
+               
+                if (!isNaN(valA) && !isNaN(valB)) {
+                    return sortConfig.direction === 'asc' ? valA - valB : valB - valA;
+                }
+
+               
+                const strA = valA?.toString().toLowerCase() || "";
+                const strB = valB?.toString().toLowerCase() || "";
+
+                if (strA < strB) return sortConfig.direction === 'asc' ? -1 : 1;
+                if (strA > strB) return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        return sorted;
+    }, [productList, sortConfig]);
+
+
+
+
+
+    const paginatedData = sortedData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+
+  
+
+    const totalPages = Math.ceil(productList?.length / itemsPerPage);
+
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    }
+
+    const handleSelect = (ranges) => {
+        setDateRange([])
+        const startDate = ranges.selection.startDate;
+        const endDate = ranges.selection.endDate;
+        const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
+        const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
+        setStartDate(formattedStartDate);
+        setEndDate(formattedEndDate);
+        setDateRange([ranges.selection]);
+        if (startDate && endDate && startDate !== endDate && !hasSelectedBoth) {
+            setShowPicker(false);
+            setHasSelectedBoth(true);
+        }
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+    const handleItemsPerPageChange = (e) => {
+        setItemsPerPage(Number(e.target.value));
+        setCurrentPage(1);
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
+
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -65,10 +170,7 @@ function ProductList() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [showPicker]);
 
-    const handleSelect = (ranges) => {
-        setDateRange([ranges.selection]);
-        setShowPicker(false);
-    };
+
 
     const handleShowPopup = (id, event) => {
         const { top, left, height } = event.target.getBoundingClientRect();
@@ -82,94 +184,130 @@ function ProductList() {
         setShowDeleteProduct(true);
         setShowPopUp(null);
         setDeleteProductId(id)
-      };
+    };
     const handleCloseForDeleteProduct = () => {
         setShowDeleteProduct(false);
-      };
-   
-    const imageMapping = {
-        kurtiSets: KurtiSets,
-        Longsleeves: LongSleeve,
-        Salwar: Salwar,
-        SolidTShirt: SolidTShirt,
-        CottonBlend: CottonBlend,
-        RoundNeck: RoundNeck,
-        Stylish: Stylish,
-        CollarTshirt: CollarTshirt,
     };
 
-    const Data = [
-        {
-            image: "kurtiSets",
-            productName: "Kurta With Dupatta",
-            quantity: 457,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Pending",
-        },
-        {
-            image: "Longsleeves",
-            productName: "Long Sleeves Pattern",
-            quantity: 360,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Completed",
-        },
-        {
-            image: "Salwar",
-            productName: "Three-Quarter Sleeves",
-            quantity: 219,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Cancel",
-        },
-        {
-            image: "SolidTShirt",
-            productName: "Collar T Shirt for Men",
-            quantity: 249,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Pending",
-        },
-        {
-            image: "CottonBlend",
-            productName: "Cotton Blend Solid T-shirt",
-            quantity: 321,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Cancel",
-        },
-        {
-            image: "Round Neck",
-            productName: "Men Printed Round Neck",
-            quantity: 523,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Pending",
-        },
-        {
-            image: "Stylish",
-            productName: "Sample Product",
-            quantity: 334,
-            year: 2023,
-            price: "₹ 2,500",
-            totalPrice: "₹ 2,500",
-            status: "Completed",
-        },
-    ];
+    const handleEditProductPopup = (editDetails) => {
+        navigate('/add-products', { state: { editDetails } });
 
- 
+    }
+
+
+
+
+
+    useEffect(() => {
+        dispatch({ type: GET_PRODUCT_SAGA, payload: { searchKeyword: "" } })
+        setLoading(true)
+    }, [])
+
+
+
+    useEffect(() => {
+        if (state.Common.successCode === 200) {
+            setProductList(state.product.productList)
+            setLoading(false)
+            setShowDeleteProduct(false);
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 3000)
+        }
+
+    }, [state.Common.successCode])
+
+
+    useEffect(() => {
+        if (state.product?.productList) {
+            setProductList(state.product?.productList)
+        }
+    }, [state.product?.productList])
+
+    useEffect(() => {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 3000)
+        }
+    }, [state.Common?.successCode, state.Common?.code]);
+
+
+
+
+
+    useEffect(() => {
+        const delayApi = setTimeout(() => {
+            if (searchTerm.trim() !== "") {
+                dispatch({
+                    type: GET_PRODUCT_SAGA,
+                    payload: { searchKeyword: searchTerm.trim() },
+                });
+                setLoading(true)
+            } else {
+                dispatch({
+                    type: GET_PRODUCT_SAGA,
+                    payload: { searchKeyword: "" },
+                });
+            }
+        }, 500);
+
+        return () => clearTimeout(delayApi);
+    }, [searchTerm]);
+
+
+
+
+    useEffect(() => {
+        const delayApi = setTimeout(() => {
+            if (startDate && endDate && startDate !== endDate) {
+                dispatch({
+                    type: GET_PRODUCT_SAGA,
+                    payload: { startDate: startDate, endDate: endDate },
+                });
+                setShowPicker(false)
+            } else {
+                dispatch({ type: GET_PRODUCT_SAGA, payload: { startDate: null, endDate: null } })
+
+            }
+        }, 500);
+
+        return () => clearTimeout(delayApi);
+    }, [startDate, endDate]);
+
+
+
+
+    const renderSortableHeader = (label, key) => (
+        <div className="flex items-center justify-center gap-2 cursor-pointer" onClick={() => handleSort(key)}>
+            {label}
+            <div className="flex flex-row">
+                <ArrowUp
+                    size="16"
+                    color={sortConfig.key === key && sortConfig.direction === "asc" ? "#205DA8" : "#4a4a4a"}
+                />
+                <ArrowDown
+                    size="16"
+                    color={sortConfig.key === key && sortConfig.direction === "desc" ? "#205DA8" : "#4a4a4a"}
+                />
+            </div>
+        </div>
+    );
+
+
+
 
     return (
-        <div className='bg-slate-100 flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0'>
+        <div className='bg-slate-100 flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative'>
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                    <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                </div>
+            )}
 
-    <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative'>
+
+            <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative'>
 
                 <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
                     <div>
@@ -178,7 +316,7 @@ function ProductList() {
 
                     <div className="">
                         <button
-                            onClick={() => {navigate('/add-products')}}
+                            onClick={() => { navigate('/add-products') }}
                             className="px-6 md:px-8 lg:px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-xs md:text-base font-medium flex items-center gap-2">
                             <img src={PlusCircle} alt="plus" className='w-4 md:w-5 lg:w-4' /> AddProduct</button>
                     </div>
@@ -193,7 +331,9 @@ function ProductList() {
                         />
                         <input
                             type="text"
-                            placeholder='Search by ID, Support, or others'
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            placeholder='Search by name'
                             className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
                         />
                     </div>
@@ -241,78 +381,37 @@ function ProductList() {
                 </div>
 
 
-                <div
-                    className="flex-1 flex flex-col"
-                >
+                <div className="flex-1 flex flex-col">
                     <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[380px] overflow-y-auto p-0 mt-4 mb-extra'>
-                        <table
-
-                            className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]"
-                        >
+                        <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                             <thead className="bg-slate-100 sticky top-0 z-10">
                                 <tr>
 
-
-                                    <th className="px-4 py-4 text-center text-neutral-600 text-sm font-medium font-Gilroy ">
-                                        <div className="flex items-center justify-start gap-4 ml-4">
-                                            Product Name
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Ava. Qty
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Make
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Price
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Currency
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Status
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
-                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">
-                                        <div className="flex items-center justify-center gap-4">
-                                            Action
-                                            <img src={Vectors} alt="icon" />
-                                        </div>
-                                    </th>
+                                    <th className="px-4 py-3 text-center text-neutral-800 text-sm font-medium font-Gilroy">S.No</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Product Name", "productName")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Ava. Qty", "quantity")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Make", "make")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Price", "price")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Currency", "currency")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">{renderSortableHeader("Status", "status")}</th>
+                                    <th className="px-4 py-2 text-center text-neutral-800 text-sm font-medium font-Gilroy">Action</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                {Data.length === 0 ? (
+                                {paginatedData?.length === 0 ? (
                                     <tr>
                                         <td colSpan="7" className="text-center text-red-600 font-Gilroy py-4">
                                             No Data Found
                                         </td>
                                     </tr>
                                 ) : (
-                                    Data.map((item, index) => (
+                                    paginatedData?.map((item, index) => (
                                         <tr key={index} className="border-0 mt-4">
-                                          
+                                            <td className="px-4 py-3 text-center text-sm font-Gilroy">{index + 1}</td>
                                             <td className="flex items-center px-6 py-3 font-Gilroy font-semibold text-sm text-black cursor-pointer">
-
                                                 <img
-                                                    src={imageMapping[item.image]}
+                                                    src={item.images[0]?.url || Cloth}
                                                     alt={item.productName}
                                                     className="w-10 h-10 rounded-md mr-4"
                                                     onError={(e) => e.target.src = "/images/default.jpg"}
@@ -326,14 +425,14 @@ function ProductList() {
                                             </td>
 
                                             <td className="pl-6 text-start py-2 text-center text-black text-sm font-medium font-Gilroy">
-                                                {item.year}
+                                                {item.make}
                                             </td>
                                             <td className="pl-4 text-start py-2 text-black text-sm font-medium font-Gilroy">
                                                 {item.price}
                                             </td>
 
                                             <td className="pl-7 text-start py-2 text-black text-sm font-medium font-Gilroy">
-                                                {item.totalPrice}
+                                                {item.currency}
                                             </td>
 
                                             <td
@@ -364,11 +463,11 @@ function ProductList() {
                                                             }}
                                                             className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
                                                         >
-                                                            <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy">
+                                                            <div onClick={() => handleEditProductPopup(item)} className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy">
                                                                 <Edit size="16" color="#205DA8" /> Edit
                                                             </div>
                                                             <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700"
-                                                            onClick={() => handleDeleteProductPopup(item.productId)}
+                                                                onClick={() => handleDeleteProductPopup(item.productCode)}
                                                             >
                                                                 <Trash size="16" color="#B91C1C" /> Delete
                                                             </div>
@@ -387,12 +486,67 @@ function ProductList() {
                     </div>
                 </div>
 
-              
+
+
+                {
+                    productList.length > 10 &&
+
+
+                    <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
+                        <div className="flex items-center gap-2">
+                            <select
+                                value={itemsPerPage}
+                                onChange={handleItemsPerPageChange}
+                                className="px-1 py-1 border border-[#205DA8] rounded-md text-[#205DA8] font-bold cursor-pointer outline-none shadow-none"
+                            >
+                                <option value={10}>10</option>
+                                <option value={50}>50</option>
+                                <option value={100}>100</option>
+                            </select>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <ul className="flex items-center list-none m-0 p-0 gap-4">
+
+                                <li>
+                                    <button
+                                        className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                                            }`}
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                    >
+                                        <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
+                                    </button>
+                                </li>
+
+
+                                <li className="text-sm font-bold">
+                                    {currentPage} of {totalPages}
+                                </li>
+
+
+                                <li>
+                                    <button
+                                        className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                                            }`}
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#1E45E1"} />
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+
+
+                }
+
 
 
 
             </div>
- {showDeleteProduct && <DeleteProduct handleClose={handleCloseForDeleteProduct} deleteProductId={deleteProductId} />}
+
+            {showDeleteProduct && <DeleteProduct handleClose={handleCloseForDeleteProduct} deleteProductId={deleteProductId} />}
 
         </div>
     );

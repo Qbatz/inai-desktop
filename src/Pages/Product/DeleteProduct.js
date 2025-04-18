@@ -1,24 +1,35 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { DELETE_PRODUCT_SAGA, RESET_CODE, GET_PRODUCT_SAGA } from '../../Utils/Constant'
+import { useDispatch, useSelector } from 'react-redux';
 
 
+function DeleteProduct({ handleClose, deleteProductId }) {
 
-
-function DeleteProduct({ handleClose, deleteProductId}) {
-
-const [loading, setLoading] = useState(false)
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
+    const [loading, setLoading] = useState(false)
 
     const handleDeleteProduct = () => {
         if (deleteProductId) {
             setLoading(true)
+            dispatch({ type: DELETE_PRODUCT_SAGA , payload: {product_code: deleteProductId}})
         }
     }
 
+    useEffect(() => {
+        if (state.Common.successCode === 200) {
+            setLoading(false)
+            dispatch({ type: GET_PRODUCT_SAGA , payload:{ searchKeyword: ""}});
+            dispatch({ type: RESET_CODE })
+        }
 
+    }, [state.Common.successCode])
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6">
-            {loading && (
+                {loading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
                         <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
                     </div>

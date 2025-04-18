@@ -120,16 +120,12 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    
-    // if (state.signUp?.otpValue && state.signUp?.otpValue !== '') {
-
     if (state.userInfo?.otpValue && state.userInfo?.otpValue !== '') {
       setLoading(false)
       setShowOtp(true);
       setShowMobile(false);
     }
-  // }, [state.signUp?.otpValue]);
-}, [state.userInfo?.otpValue]);
+  }, [state.userInfo?.otpValue]);
 
 
   useEffect(() => {
@@ -173,8 +169,7 @@ export default function SignUp() {
       dispatch({
         type: ACCOUNT_REGISTER_SAGA,
         payload: {
-          email: state?.signUp?.emailId,
-          // email_verify_token: state.signUp?.verifyCode || '',
+          email: state?.userInfo?.emailId,
           email_verify_token: state.userInfo?.verifyCode || '',
           first_name: firstName,
           last_name: lastName,
@@ -182,7 +177,6 @@ export default function SignUp() {
           password2: confirmPassword,
           phone: mobile,
           mobile: mobile,
-          // otp: state.signUp?.otpValue || '',
           otp: state.userInfo?.otpValue || '',
           sent_otp: 1,
           otp_verified: 1,
@@ -198,10 +192,10 @@ export default function SignUp() {
 
 
   useEffect(() => {
-   
+
     if (state.userInfo.isTrue) {
       setLoading(false)
-           setShowOtp(false);
+      setShowOtp(false);
       setShowMobile(false);
       setShowSignUp(false)
       navigate('/register')
@@ -211,13 +205,12 @@ export default function SignUp() {
     }
   }, [state.userInfo.isTrue])
 
-  // }, [state.signUp.isTrue])
 
 
   useEffect(() => {
     if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
       setLoading(false)
-           setTimeout(() => {
+      setTimeout(() => {
         dispatch({ type: RESET_CODE })
       }, 8000)
     }
@@ -246,7 +239,7 @@ export default function SignUp() {
           </div>
         )}
 
-        
+
         {
           state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
         }
@@ -367,7 +360,6 @@ export default function SignUp() {
                 disabled
                 autoComplete="new-email"
                 autoCorrect="off"
-                // value={state?.signUp?.emailId}
                 value={state?.userInfo?.emailId}
                 placeholder="Email ID*"
                 className="w-full h-12 px-3 font-Gilroy  border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

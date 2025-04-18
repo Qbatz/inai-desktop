@@ -1,11 +1,9 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-// import { GET_USER_INFO_REDUCER, GET_USER_INFO_SAGA, ERROR_CODE, } from "../../Utils/Constant";
 import { refreshToken } from "../../Token_Access/Token";
-// import { GetUserInfo } from '../Action/UserAction';
 import { signIn, ForgotAction, ForgotPasswordAction, ReSetPageAction, ReSetPassword, CreateAction, Verification, OtpSend, OtpVerified, AccountRegister, GetUserInfo } from "../Action/UserAction";
 import {
-    SIGN_IN_REDUCER, SIGN_IN_SAGA,FORGOT_PASSWORD_API_CALL,
-    FORGOT_USER_API_CALL, RESET_PAGE_API_CALL, RESET_PASSWORD_API_CALL,ACCOUNT_REGISTER_SAGA, ACCOUNT_REGISTER_REDUCER, OTP_VERIFY_SAGA, OTP_VERIFY_REDUCER, OTP_SEND_REDUCER, OTP_SEND_SAGA, CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE, SIGN_UP_VERIFICATION_SAGA, SIGN_UP_VERIFICATION_REDUCER, GET_USER_INFO_REDUCER, GET_USER_INFO_SAGA,
+    SIGN_IN_REDUCER, SIGN_IN_SAGA, FORGOT_PASSWORD_API_CALL,
+    FORGOT_USER_API_CALL, RESET_PAGE_API_CALL, RESET_PASSWORD_API_CALL, ACCOUNT_REGISTER_SAGA, ACCOUNT_REGISTER_REDUCER, OTP_VERIFY_SAGA, OTP_VERIFY_REDUCER, OTP_SEND_REDUCER, OTP_SEND_SAGA, CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE, SIGN_UP_VERIFICATION_SAGA, SIGN_UP_VERIFICATION_REDUCER, GET_USER_INFO_REDUCER, GET_USER_INFO_SAGA,
 } from "../../Utils/Constant";
 
 function* handleSignIn(action) {
@@ -94,7 +92,7 @@ function* handleCreateAccount(action) {
         const response = yield call(CreateAction, action.payload);
 
         if (response?.status && response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status} });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status } });
         }
         else if (response?.status === 400) {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Invalid request", statusCode: response.status } });
@@ -167,7 +165,7 @@ function* handleOtpVerified(action) {
 function* handleAccountRegister(action) {
     try {
         const response = yield call(AccountRegister, action.payload);
-       
+
         if (response?.status && response?.status === 200) {
             yield put({ type: ACCOUNT_REGISTER_REDUCER, payload: { response: response.data } });
             yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status } });

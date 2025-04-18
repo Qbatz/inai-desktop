@@ -125,9 +125,6 @@ function VendorList() {
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   }
-  // useEffect/////////////////////////////////////////////
-
-
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -324,7 +321,7 @@ function VendorList() {
                   <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
                     <thead className="bg-slate-100 sticky top-0 z-10">
                       <tr>
-                      <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">S.No</th>
+                        <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">S.No</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Business Name</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Contact Person Name</th>
                         <th className=" px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Email ID</th>

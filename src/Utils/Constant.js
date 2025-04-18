@@ -39,9 +39,6 @@ export const SIGN_UP_REDUCER = "Sign_up_Reducer";
 export const SIGN_UP_SAGA = "Sign_up_Saga";
 
 
-
-// Vendor
-
 export const VENDOR_REDUCER = "Vendor_Reducer";
 export const VENDOR_SAGA = "Vendor_Saga";
 
@@ -64,7 +61,6 @@ export const CREATE_VENDOR_SAGA = "Create_Vendor_Saga";
 
 export const EDIT_VENDOR_REDUCER = "Edit_Vendor_Reducer";
 export const EDIT_VENDOR_SAGA = "Edit_Vendor_Saga";
-
 export const RESET_VENDOR_ID = "Reset_Vendor_Id";
 
 export const DELETE_VENDOR_REDUCER = "Delete_Vendor_Reducer";
@@ -72,10 +68,6 @@ export const DELETE_VENDOR_SAGA = "Delete_Vendor_Saga";
 
 export const VIEW_VENDOR_REDUCER = "View_Vendor_Reducer";
 export const VIEW_VENDOR_SAGA = "View_Vendor_Saga";
-
-
-
-// Customer
 
 export const ADD_CUSTOMER_REDUCER = "Add_Customer_Reducer";
 export const ADD_CUSTOMER_SAGA = "Add_Customer_Saga";

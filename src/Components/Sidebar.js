@@ -33,7 +33,7 @@ import PropTypes from 'prop-types';
 
 
 
-function Sidebar({state}) {
+function Sidebar({ state }) {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -43,7 +43,7 @@ function Sidebar({state}) {
     const [isLogout, setIsLogout] = useState(false)
 
 
- useEffect(() => {
+    useEffect(() => {
         dispatch({ type: GET_USER_INFO_SAGA });
     }, []);
 
@@ -230,14 +230,10 @@ function Sidebar({state}) {
                         <Route path="/add-customer" element={<AddCustomer />} />
                         <Route path="/customer-details/:customerId" element={<CustomerDetails />} />
                         <Route path="/add-vendor" element={<BasicVendor />} />
-                        <Route path="/vendor-details/:vendorId" element={<VendorDetails />} /> 
+                        <Route path="/vendor-details/:vendorId" element={<VendorDetails />} />
                         <Route path="/user/details" element={<UserDetails />} />
                     </Routes>
-                    {/* {activeItem === "dashboard" && <Dashboard />}
-                    {activeItem === "vendor" && <Vendor />}
-                    {activeItem === "product" && <Product />}
-                    {activeItem === "client" && <CustomerList updateActiveItems={updateActiveItems} updateProps={updateProps}/>}
-                    {activeItem === "add_customer" && <CustomerDetails particularCustomerDetails={values}/>} */}
+
                 </div>
 
 
@@ -292,16 +288,16 @@ function Sidebar({state}) {
 
 const mapsToProps = (stateInfo) => {
     return {
-      state: stateInfo.userInfo?.userDetails, 
+        state: stateInfo.userInfo?.userDetails,
     };
-  };
-  
-  
-  Sidebar.propTypes = {
+};
+
+
+Sidebar.propTypes = {
     state: PropTypes.object
-  };
-  
-  export default connect(mapsToProps)(Sidebar);
+};
+
+export default connect(mapsToProps)(Sidebar);
 
 
 

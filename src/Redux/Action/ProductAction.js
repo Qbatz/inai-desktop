@@ -137,10 +137,10 @@ export async function editImage(product) {
 
 export async function editTechImage(product) {
 
-  const formData = new FormData();
+ const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("id", product?.id);
-  formData.append("technicaldoc", product.image);
+  formData.append("technicaldoc", product.image || product.file);
 
 
 

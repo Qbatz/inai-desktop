@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from "moment";
 import { useLocation, useNavigate } from 'react-router-dom';
 import imageCompression from 'browser-image-compression';
-
+import PdfImage from '../../Asset/Images/pdf.png'
 
 function AddProduct() {
 
@@ -34,7 +34,7 @@ function AddProduct() {
     const [techImages, setTechImages] = useState([
     ]);
 
-
+  
 
     const [initialEditData, setInitialEditData] = useState(null);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
@@ -82,8 +82,7 @@ function AddProduct() {
         setSelectedDate(formatted);
     };
 
-
-
+    
 
 
 
@@ -178,7 +177,7 @@ function AddProduct() {
         const compressedImages = await Promise.all(
             files.map(async (file) => {
                 try {
-                                 
+
                     const options = {
                         maxSizeMB: 1,
                         maxWidthOrHeight: 1024,
@@ -191,7 +190,7 @@ function AddProduct() {
                         type: compressedBlob.type,
                         lastModified: Date.now(),
                     });
-                                      
+
                     return compressedFile;
                 } catch (error) {
                     console.error(`Compression failed for ${file.name}:`, error);
@@ -220,7 +219,7 @@ function AddProduct() {
         });
     };
 
-   
+
     const handleClose = () => {
         navigate('/product')
     }
@@ -280,46 +279,55 @@ function AddProduct() {
     };
 
 
-    
+
+
+   
+
 
     const handleTechDocAdd = async (e) => {
         const files = Array.from(e.target.files);
-        let imageError = {};
-    
-        const compressedImages = await Promise.all(
+
+               let imageError = {};
+
+        const processedFiles = await Promise.all(
             files.map(async (file) => {
-                try {
-                    const options = {
-                        maxSizeMB: 1,
-                        maxWidthOrHeight: 1024,
-                        useWebWorker: true,
-                    };
-    
-                    const compressedBlob = await imageCompression(file, options);
-    
-                    const compressedFile = new File([compressedBlob], file.name, {
-                        type: compressedBlob.type,
-                        lastModified: Date.now(),
-                    });
-    
-                    return compressedFile;
-                } catch (error) {
-                    console.error(`Compression failed for ${file.name}:`, error);
-                    return null;
+                              if (file.type.startsWith("image/")) {
+                    try {
+                        const options = {
+                            maxSizeMB: 1,
+                            maxWidthOrHeight: 1024,
+                            useWebWorker: true,
+                        };
+
+                        const compressedBlob = await imageCompression(file, options);
+
+                        const compressedFile = new File([compressedBlob], file.name, {
+                            type: compressedBlob.type,
+                            lastModified: Date.now(),
+                        });
+
+                        return compressedFile;
+                    } catch (error) {
+                        console.error(`Compression failed for ${file.name}:`, error);
+                        return null;
+                    }
+                } else {
+                                        return file;
                 }
             })
         );
-    
-        const filteredCompressed = compressedImages.filter((img) => img !== null);
-    
+
+        const filteredCompressed = processedFiles.filter((file) => file !== null);
+
         setTechImages((prev) => {
             const unique = filteredCompressed.filter(
-                (img) => !prev.some((p) => p.name === img.name && p.size === img.size)
+                (file) => !prev.some((p) => p.name === file.name && p.size === file.size)
             );
-            const totalImages = prev.length + unique.length;
-    
-            if (totalImages > 10) {
-                imageError.techImagesError = "You can only upload up to 10 Technical images";
+
+            const totalFiles = prev.length + unique.length;
+
+            if (totalFiles > 10) {
+                imageError.techImagesError = "You can only upload up to 10 Technical documents";
                 setErrors(imageError);
                 const allowedCount = 10 - prev.length;
                 return [...prev, ...unique.slice(0, allowedCount)];
@@ -331,21 +339,32 @@ function AddProduct() {
     };
 
 
+
+
+
+
+
+    
+
     const handleTechDocAddImageinEditMode = async (e) => {
         const files = Array.from(e.target.files);
-        const unique = files.filter(preview => !techImages.includes(preview));
-        const totalImages = techImages.length + unique.length;
         const maxSizeMB = 1;
+        const maxFiles = 10;
+
+        const unique = files.filter(file => {
+            return !techImages.some(existing => existing.name === file.name && existing.size === file.size);
+        });
+
+        const totalImages = techImages.length + unique.length;
+        const imageError = {};
         const compressedFiles = [];
         const failedFiles = [];
 
-        let imageError = {};
-
-        if (totalImages > 10) {
-            imageError.techImagesError = "You can only upload up to 10 Technical images";
+        if (totalImages > maxFiles) {
+            imageError.techImagesError = `You can only upload up to ${maxFiles} Technical files`;
             setErrors(imageError);
 
-            const allowedCount = 10 - techImages.length;
+            const allowedCount = maxFiles - techImages.length;
             const validFiles = unique.slice(0, allowedCount);
             setTechImages(prev => [...prev, ...validFiles]);
             return;
@@ -355,15 +374,23 @@ function AddProduct() {
         setErrors({});
 
         for (const file of unique) {
-            if (file.size / (1024 * 1024) > maxSizeMB) {
+            const isImage = file.type.startsWith("image/");
+
+            if (isImage && file.size / (1024 * 1024) > maxSizeMB) {
                 try {
                     const options = {
                         maxSizeMB: 1,
                         maxWidthOrHeight: 1920,
                         useWebWorker: true,
                     };
+
                     const compressed = await imageCompression(file, options);
-                    compressedFiles.push(compressed);
+                    const compressedFile = new File([compressed], file.name, {
+                        type: compressed.type,
+                        lastModified: Date.now(),
+                    });
+
+                    compressedFiles.push(compressedFile);
                 } catch (err) {
                     console.error("Compression failed for", file.name, err);
                     failedFiles.push(file.name);
@@ -381,17 +408,17 @@ function AddProduct() {
                 payload: {
                     productCode: formData.productCode,
                     technicaldoc: compressedFiles,
-                }
+                },
             });
         }
 
         if (failedFiles.length) {
             setErrors({
-                techImagesError: `Some files couldn't be compressed: ${failedFiles.join(", ")}`
+                techImagesError: `Some files couldn't be compressed: ${failedFiles.join(", ")}`,
             });
         }
 
-
+        setLoading(false);
     };
 
 
@@ -416,25 +443,39 @@ function AddProduct() {
     };
 
 
-    const handleEditTechChangeImage = (index, id) => {
+    const handleImageDeleteLocally = (index) => {
+        const updatedImages = images.filter((_, i) => i !== index);
+        setImages(updatedImages);
+    };
 
+
+
+const handleTechImageDeleteLocally = (index) =>{
+    const updatedImages = techImages.filter((_, i) => i !== index);
+        setTechImages(updatedImages);
+}
+
+
+   
+    const handleEditTechChangeImage = (index, id) => {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = 'image/*';
+        input.accept = 'image/*,application/pdf';
 
         input.onchange = async (e) => {
             const file = e.target.files[0];
             if (file) {
-                let finalImage = file;
+                let finalFile = file;
                 setLoading(true);
-                if (file.size / (1024 * 1024) > 1) {
+
+                if (file.type.startsWith("image/") && file.size / (1024 * 1024) > 1) {
                     try {
                         const options = {
                             maxSizeMB: 1,
                             maxWidthOrHeight: 1920,
                             useWebWorker: true,
                         };
-                        finalImage = await imageCompression(file, options);
+                        finalFile = await imageCompression(file, options);
                     } catch (err) {
                         console.error("Compression failed for tech doc image:", file.name, err);
                     }
@@ -442,14 +483,14 @@ function AddProduct() {
 
                 setTechImages((prev) => {
                     const updated = [...prev];
-                    updated[index] = finalImage;
+                    updated[index] = finalFile;
 
                     if (formData?.productCode) {
                         dispatch({
                             type: EDIT_TECH_IMAGE_PRODUCT_SAGA,
                             payload: {
                                 id: id,
-                                image: finalImage,
+                                file: finalFile,
                                 productCode: formData.productCode,
                             }
                         });
@@ -464,7 +505,6 @@ function AddProduct() {
     };
 
 
-
     const handleEditChangeImage = (index, id) => {
         const input = document.createElement('input');
         input.type = 'file';
@@ -475,6 +515,8 @@ function AddProduct() {
             if (file) {
                 let finalImage = file;
                 setLoading(true);
+
+
                 if (file.size / (1024 * 1024) > 1) {
                     try {
                         const options = {
@@ -488,9 +530,14 @@ function AddProduct() {
                     }
                 }
 
+
                 setImages((prev) => {
                     const updated = [...prev];
-                    updated[index] = finalImage;
+                    updated[index] = {
+                        original: file,
+                        compressed: finalImage,
+                    };
+
 
                     if (formData?.productCode) {
                         dispatch({
@@ -501,7 +548,6 @@ function AddProduct() {
                                 productCode: formData.productCode,
                             }
                         });
-
                     }
 
                     return updated;
@@ -511,6 +557,7 @@ function AddProduct() {
 
         input.click();
     };
+
 
 
 
@@ -838,7 +885,6 @@ function AddProduct() {
 
         }
     }, [state.Common?.successCode, state.Common?.code]);
-
 
 
 
@@ -1207,6 +1253,7 @@ function AddProduct() {
 
                                                                             :
                                                                             (
+                                                                                <>
                                                                                 <div
                                                                                     className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
                                                                                     onClick={() => handleChangeImage(index)}
@@ -1218,6 +1265,19 @@ function AddProduct() {
                                                                                         style={{ cursor: "pointer" }}
                                                                                     />
                                                                                 </div>
+
+                                                                                <div
+                                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                    onClick={() => handleImageDeleteLocally(index)}
+                                                                                >
+                                                                                    <Trash
+                                                                                        size="16"
+                                                                                        color="#FFF"
+                                                                                        variant="Bold"
+                                                                                        style={{ cursor: "pointer" }}
+                                                                                    />
+                                                                                </div>
+                                                                                </>
                                                                             )
                                                                     }
                                                                 </div>
@@ -1308,25 +1368,39 @@ function AddProduct() {
 
 
                                                 let imageSrc = "";
+                                                let isImage = false;
+                                                let isPdf = false;
+
 
                                                 if (typeof img.url === "string") {
                                                     imageSrc = img.url;
+                                                    isImage = img.url.startsWith("https://") && img.url.match(/\.(jpeg|jpg|png|gif)$/i);
+                                                    isPdf = img.url.endsWith(".pdf");
                                                 } else if (img instanceof File) {
                                                     imageSrc = URL.createObjectURL(img);
+                                                    isImage = img.type.startsWith("image/");
                                                 } else if (img.url instanceof File) {
                                                     imageSrc = URL.createObjectURL(img.url);
-                                                } else if (img.url) {
-                                                    imageSrc = img.url;
+                                                    isImage = img.url.type.startsWith("image/");
                                                 }
+
+
 
                                                 return (
                                                     <div key={index} className="px-1">
                                                         <div className="relative w-32 h-32 rounded-md overflow-hidden group border border-zinc-300">
-                                                            <img
-                                                                src={imageSrc}
-                                                                alt={`uploaded-${index}`}
-                                                                className="w-full h-full object-cover"
-                                                            />
+                                                            {isImage ? (
+                                                                <img
+                                                                    src={imageSrc}
+                                                                    alt={`uploaded-${index}`}
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            ) : isPdf && (
+                                                                <div className="flex flex-col items-center justify-center text-center px-2">
+                                                                    <img src={PdfImage} alt="PDF" className="w-full h-full object-cover" />
+                                                                    <p className="text-xs text-zinc-700 truncate w-full">{img.name}</p>
+                                                                </div>
+                                                            )}
                                                             <div className="absolute inset-0 hidden group-hover:flex items-center justify-center bg-black bg-opacity-50 transition duration-300 ">
 
                                                                 <div className="flex  items-center space-x-2">
@@ -1375,6 +1449,20 @@ function AddProduct() {
                                                                                         style={{ cursor: "pointer" }}
                                                                                     />
                                                                                 </div>
+
+
+                                                                                <div
+                                                                                className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                onClick={() => handleTechImageDeleteLocally(index)}
+                                                                            >
+                                                                                <Trash
+                                                                                    size="16"
+                                                                                    color="#FFF"
+                                                                                    variant="Bold"
+                                                                                    style={{ cursor: "pointer" }}
+                                                                                />
+                                                                            </div>
+
 
                                                                             </>
 

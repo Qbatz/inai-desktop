@@ -121,8 +121,15 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     const handleInputChange = (field, value) => {
-        if ((field === "gstVat" || field === "pan") || field === "designation" || field === "cin" && /[^a-zA-Z0-9]/.test(value)) return;
-        if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
+        if (
+            (
+              field === "gstVat" ||
+              field === "pan" ||
+              field === "designation" ||
+              field === "cin"
+            ) && /[^a-zA-Z0-9]/.test(value)
+          ) return;
+                  if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
 
         setFormData((prevData) => ({

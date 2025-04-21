@@ -1,6 +1,6 @@
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA, compareData, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +18,10 @@ function AddCustomer({ editCustomerDetails }) {
     const [loading, setLoading] = useState(false)
     const [isInitialSet, setIsInitialSet] = useState(false);
     const [contactAddressSameAsOfficeAddress, setContactAddressSameAsOfficeAddress] = useState(false)
+
+
+
+
 
     const navigate = useNavigate()
     const [value, setValue] = useState(1);
@@ -45,7 +49,7 @@ function AddCustomer({ editCustomerDetails }) {
 
     const [contacts, setContacts] = useState([]);
 
-
+    console.log("Contacts", contacts)
 
 
     const [bankDetailsList, setBankDetailsList] = useState([
@@ -66,6 +70,56 @@ function AddCustomer({ editCustomerDetails }) {
             iban: ""
         }
     ]);
+
+    const businessNameRef = useRef();
+    const surNameRef = useRef();
+    const contactPersonRef = useRef();
+    const emailRef = useRef();
+    const countryCodeRef = useRef();
+    const contactNumberRef = useRef();
+    const designationRef = useRef();
+    const gstVatRef = useRef();
+    const panRef = useRef();
+    const legalStatusRef = useRef();
+    const natureOfBusinessRef = useRef()
+    const contactRefs = useRef([]);
+    const bankRefs = useRef([]);
+    const address1Ref = useRef(null);
+    const cityRef = useRef(null);
+    const postalCodeRef = useRef(null);
+    const shipAddress1Ref = useRef(null);
+    const shipCityRef = useRef(null);
+    const shipPostalCodeRef = useRef(null);
+
+
+    useEffect(() => {
+        contactRefs.current = contacts.map((_, index) => {
+            return contactRefs.current[index] || {
+                surName: React.createRef(),
+                countryCode: React.createRef(),
+                number: React.createRef(),
+                email: React.createRef(),
+                designation: React.createRef(),
+            };
+        });
+    }, [contacts]);
+    useEffect(() => {
+        bankRefs.current = bankDetailsList.map((_, index) => {
+            return bankRefs.current[index] || {
+                beneficiaryName: React.createRef(),
+                beneficiaryCurrency: React.createRef(),
+                accountNumber: React.createRef(),
+                bankName: React.createRef(),
+                ifscCode: React.createRef(),
+                bankAddress1: React.createRef(),
+            };
+        });
+    }, [bankDetailsList]);
+
+
+
+
+    console.log("bankRef", bankRefs)
 
 
 
@@ -123,13 +177,13 @@ function AddCustomer({ editCustomerDetails }) {
     const handleInputChange = (field, value) => {
         if (
             (
-              field === "gstVat" ||
-              field === "pan" ||
-              field === "designation" ||
-              field === "cin"
+                field === "gstVat" ||
+                field === "pan" ||
+                field === "designation" ||
+                field === "cin"
             ) && /[^a-zA-Z0-9]/.test(value)
-          ) return;
-                  if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
+        ) return;
+        if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
 
         setFormData((prevData) => ({
@@ -179,16 +233,89 @@ function AddCustomer({ editCustomerDetails }) {
 
     const handleTabClick = (id) => {
         if (id === 2 || id === 3) {
-            const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
-
+            const { tempErrors, contactErrors, isValid: baseValid } = validateForm(formData, contacts, natureOfBusiness);
+            let isValid = baseValid;
             const finalErrors = {
                 ...tempErrors,
                 contactErrors,
             };
 
-            setErrors(finalErrors);
+            let AddressErrors = {};
 
-            if (isValid) {
+            if (id === 3) {
+                if (!officeAddress.address1?.trim()) {
+                    AddressErrors.address1 = "Address Line 1 is required";
+                    isValid = false
+                }
+
+
+                if (!officeAddress.city?.trim()) {
+                    AddressErrors.city = "City is required";
+                    isValid = false
+                }
+
+
+                if (!officeAddress.postalCode?.trim()) {
+                    AddressErrors.postalCode = "Postal Code is required";
+                    isValid = false
+                }
+
+                if (!shippingAddress.address1?.trim()) {
+                    AddressErrors.shipaddress1 = "Address Line 1 is required";
+                    isValid = false
+                }
+
+                if (!shippingAddress.city?.trim()) {
+                    AddressErrors.shipcity = "City is required";
+                    isValid = false
+                }
+
+
+                if (!shippingAddress.postalCode?.trim()) {
+                    AddressErrors.shippostalCode = "Postal Code is required";
+                    isValid = false
+                }
+
+                Object.assign(finalErrors, AddressErrors);
+            }
+
+
+            setErrors(finalErrors);
+            if (!isValid) {
+                if (tempErrors.surName) surNameRef.current?.focus();
+                else if (tempErrors.contactPerson) contactPersonRef.current?.focus();
+                else if (tempErrors.countryCode) countryCodeRef.current?.focus();
+                else if (tempErrors.contactNumber) contactNumberRef.current?.focus();
+                else if (tempErrors.emailId) emailRef.current?.focus();
+                else if (tempErrors.designation) designationRef.current?.focus();
+                else if (tempErrors.gstVat) gstVatRef.current?.focus();
+                else if (tempErrors.pan) panRef.current?.focus();
+                else if (tempErrors.businessName) businessNameRef.current?.focus();
+                else if (tempErrors.legalStatus) legalStatusRef.current?.focus();
+                else if (tempErrors.natureOfBusiness) natureOfBusinessRef.current?.focus();
+                else {
+                    for (let i = 0; i < contactErrors.length; i++) {
+                        const cErr = contactErrors[i];
+                        if (cErr.surName) return contactRefs.current[i]?.surName?.current?.focus();
+                        if (cErr.countryCode) return contactRefs.current[i]?.countryCode?.current?.focus();
+                        if (cErr.number) return contactRefs.current[i]?.number?.current?.focus();
+                        if (cErr.email) return contactRefs.current[i]?.email?.current?.focus();
+                        if (cErr.designation) return contactRefs.current[i]?.designation?.current?.focus();
+                    }
+                }
+                if (id === 3) {
+                    if (AddressErrors.address1) return address1Ref.current?.focus();
+                    else if (AddressErrors.city) return cityRef.current?.focus();
+                    else if (AddressErrors.postalCode) return postalCodeRef.current?.focus();
+                    else if (AddressErrors.shipaddress1) return shipAddress1Ref.current?.focus();
+                    else if (AddressErrors.shipcity) return shipCityRef.current?.focus();
+                    else if (AddressErrors.shippostalCode) return shipPostalCodeRef.current?.focus();
+                }
+
+
+                return;
+            }
+            else {
                 setValue(id);
             }
         } else {
@@ -206,7 +333,31 @@ function AddCustomer({ editCustomerDetails }) {
         setIsChanged('')
         const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
         setErrors({ ...tempErrors, contactErrors });
+        if (!isValid) {
+            if (tempErrors.surName) surNameRef.current?.focus();
+            else if (tempErrors.contactPerson) contactPersonRef.current?.focus();
+            else if (tempErrors.countryCode) countryCodeRef.current?.focus();
+            else if (tempErrors.contactNumber) contactNumberRef.current?.focus();
+            else if (tempErrors.emailId) emailRef.current?.focus();
+            else if (tempErrors.designation) designationRef.current?.focus();
+            else if (tempErrors.gstVat) gstVatRef.current?.focus();
+            else if (tempErrors.pan) panRef.current?.focus();
+            else if (tempErrors.businessName) businessNameRef.current?.focus();
+            else if (tempErrors.legalStatus) legalStatusRef.current?.focus();
+            else if (tempErrors.natureOfBusiness) natureOfBusinessRef.current?.focus();
+            else {
+                for (let i = 0; i < contactErrors.length; i++) {
+                    const cErr = contactErrors[i];
+                    if (cErr.surName) return contactRefs.current[i]?.surName?.current?.focus();
+                    if (cErr.countryCode) return contactRefs.current[i]?.countryCode?.current?.focus();
+                    if (cErr.number) return contactRefs.current[i]?.number?.current?.focus();
+                    if (cErr.email) return contactRefs.current[i]?.email?.current?.focus();
+                    if (cErr.designation) return contactRefs.current[i]?.designation?.current?.focus();
+                }
+            }
 
+            return;
+        }
         if (isValid) {
             setValue(2)
         }
@@ -255,6 +406,17 @@ function AddCustomer({ editCustomerDetails }) {
         }
 
         setErrors(errors)
+
+        if (!isValid) {
+            if (errors.address1) address1Ref.current?.focus();
+            else if (errors.city) cityRef.current?.focus();
+            else if (errors.postalCode) postalCodeRef.current?.focus();
+            else if (errors.shipaddress1) shipAddress1Ref.current?.focus();
+            else if (errors.shipcity) shipCityRef.current?.focus();
+            else if (errors.shippostalCode) shipPostalCodeRef.current?.focus();
+            setErrors(errors)
+            return;
+        }
         if (isValid) {
             setValue(3)
         }
@@ -262,6 +424,7 @@ function AddCustomer({ editCustomerDetails }) {
     }
 
     const handleBackToAddress = () => {
+
         setValue(2)
     }
 
@@ -518,19 +681,49 @@ function AddCustomer({ editCustomerDetails }) {
                 }
             }
         });
-
         return { tempErrors, contactErrors, isValid };
+
     };
 
     const handleSaveAndExit = () => {
-
         const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
         setIsChanged('')
 
         setErrors({ ...tempErrors, contactErrors });
+        if (!isValid) {
+            if (tempErrors.surName) surNameRef.current?.focus();
+            else if (tempErrors.contactPerson) contactPersonRef.current?.focus();
+            else if (tempErrors.countryCode) countryCodeRef.current?.focus();
+            else if (tempErrors.contactNumber) contactNumberRef.current?.focus();
+            else if (tempErrors.emailId) emailRef.current?.focus();
+            else if (tempErrors.designation) designationRef.current?.focus();
+            else if (tempErrors.gstVat) gstVatRef.current?.focus();
+            else if (tempErrors.pan) panRef.current?.focus();
+            else if (tempErrors.businessName) businessNameRef.current?.focus();
+            else if (tempErrors.legalStatus) legalStatusRef.current?.focus();
+            else if (tempErrors.natureOfBusiness) natureOfBusinessRef.current?.focus();
+            else {
+                for (let i = 0; i < contactErrors.length; i++) {
+                    const cErr = contactErrors[i];
+                    if (cErr.surName) return contactRefs.current[i]?.surName?.current?.focus();
+                    if (cErr.countryCode) return contactRefs.current[i]?.countryCode?.current?.focus();
+                    if (cErr.number) return contactRefs.current[i]?.number?.current?.focus();
+                    if (cErr.email) return contactRefs.current[i]?.email?.current?.focus();
+                    if (cErr.designation) return contactRefs.current[i]?.designation?.current?.focus();
+                }
+            }
 
-        if (isValid) {
-
+            return;
+        }
+        else {
+            const filteredContacts = contacts.filter(contact =>
+                contact.surName.trim() !== '' ||
+                contact.name.trim() !== '' ||
+                contact.countryCode !== '' ||
+                contact.number !== '' ||
+                contact.email.trim() !== '' ||
+                contact.designation.trim() !== ''
+            );
             const AddPayload = {
                 businessName: formData.businessName,
                 title: formData.surName,
@@ -545,14 +738,16 @@ function AddCustomer({ editCustomerDetails }) {
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
                 natureOfBusiness: natureOfBusiness,
-                additionalContactInfo: contacts.map(contact => ({
-                    name: contact.name,
-                    title: contact.surName,
-                    country_code: contact.countryCode,
-                    contactNumber: contact.number,
-                    contactEmail: contact.email,
-                    designation: contact.designation
-                })),
+                additionalContactInfo: filteredContacts.length > 0
+                    ? filteredContacts.map(contact => ({
+                        name: contact.name,
+                        title: contact.surName,
+                        country_code: contact.countryCode,
+                        contactNumber: contact.number,
+                        contactEmail: contact.email,
+                        designation: contact.designation
+                    }))
+                    : []
 
 
             }
@@ -572,14 +767,16 @@ function AddCustomer({ editCustomerDetails }) {
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
                 natureOfBusiness: natureOfBusiness,
-                additionalContactInfo: contacts.map(contact => ({
-                    name: contact.name,
-                    title: contact.surName,
-                    country_code: contact.countryCode,
-                    contactNumber: contact.number,
-                    contactEmail: contact.email,
-                    designation: contact.designation
-                })),
+                additionalContactInfo: filteredContacts.length > 0
+                    ? filteredContacts.map(contact => ({
+                        name: contact.name,
+                        title: contact.surName,
+                        country_code: contact.countryCode,
+                        contactNumber: contact.number,
+                        contactEmail: contact.email,
+                        designation: contact.designation
+                    }))
+                    : []
 
 
             }
@@ -606,13 +803,14 @@ function AddCustomer({ editCustomerDetails }) {
     const handleCustomerSubmit = () => {
         let isValid = true;
         let finalErrors = {};
+        let tempErrors = {};
         let addressErrors = {};
         let bankErrors = {};
         let contactErrors = {};
         setIsChanged('')
 
 
-        let tempErrors = {};
+
 
         if (!formData.businessName?.trim()) {
             tempErrors.businessName = "Business Name is required";
@@ -708,7 +906,7 @@ function AddCustomer({ editCustomerDetails }) {
                 bankError.beneficiaryName = "Name is required";
             }
 
-            if (!bank.accountNumber?.trim()) bankError.accountNumber = "Account Number is required";
+            if (!bank.accountNumber) bankError.accountNumber = "Account Number is required";
             if (!bank.bankName?.trim()) bankError.bankName = "Bank Name is required";
             if (!bank.ifscCode?.trim()) bankError.ifscCode = "IFSC Code is required";
             if (!bank.bankAddress1?.trim()) bankError.bankAddress1 = "Bank Address1 is required"
@@ -720,13 +918,36 @@ function AddCustomer({ editCustomerDetails }) {
 
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
 
-        if (
-            Object.keys(finalErrors).length > 0 &&
-            (Object.keys(contactErrors).length > 0 || Object.keys(bankErrors).length > 0)
-        ) {
+        console.log("bankErrors", bankErrors)
+
+
+        if (!isValid) {
+            const firstErrorBank = Object.keys(bankErrors)[0];
+            const err = bankErrors[firstErrorBank];
+
+            const errorFields = [
+                'beneficiaryCurrency',
+                'beneficiaryName',
+                'accountNumber',
+                'bankName',
+                'ifscCode',
+                'bankAddress1'
+            ];
+
+            for (let field of errorFields) {
+                if (err?.[field]) {
+                    bankRefs.current[firstErrorBank]?.[field]?.current?.focus();
+                    break;
+                }
+            }
+
             setErrors(finalErrors);
             return;
         }
+
+
+
+
 
         if (editCustomerDetails && !isChangedCheck()) {
 
@@ -734,6 +955,17 @@ function AddCustomer({ editCustomerDetails }) {
             isValid = false;
         }
         if (isValid) {
+
+
+            const filteredContacts = contacts.filter(contact =>
+                contact.surName.trim() !== '' ||
+                contact.name.trim() !== '' ||
+                contact.countryCode !== '' ||
+                contact.number !== '' ||
+                contact.email.trim() !== '' ||
+                contact.designation.trim() !== ''
+            );
+
             const AddPayload = {
 
                 businessName: formData.businessName,
@@ -749,14 +981,16 @@ function AddCustomer({ editCustomerDetails }) {
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
                 natureOfBusiness: natureOfBusiness,
-                additionalContactInfo: contacts.map(contact => ({
-                    name: contact.name,
-                    title: contact.surName,
-                    country_code: contact.countryCode,
-                    contactNumber: contact.number,
-                    contactEmail: contact.email,
-                    designation: contact.designation,
-                })),
+                additionalContactInfo: filteredContacts.length > 0
+                    ? filteredContacts.map(contact => ({
+                        name: contact.name,
+                        title: contact.surName,
+                        country_code: contact.countryCode,
+                        contactNumber: contact.number,
+                        contactEmail: contact.email,
+                        designation: contact.designation
+                    }))
+                    : [],
                 address: [
                     {
                         doorNo: officeAddress.address1 || "",
@@ -822,14 +1056,16 @@ function AddCustomer({ editCustomerDetails }) {
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
                 natureOfBusiness: natureOfBusiness,
-                additionalContactInfo: contacts.map(contact => ({
-                    name: contact.name,
-                    title: contact.surName,
-                    country_code: contact.countryCode,
-                    contactNumber: contact.number,
-                    contactEmail: contact.email,
-                    designation: contact.designation,
-                })),
+                additionalContactInfo: filteredContacts.length > 0
+                    ? filteredContacts.map(contact => ({
+                        name: contact.name,
+                        title: contact.surName,
+                        country_code: contact.countryCode,
+                        contactNumber: contact.number,
+                        contactEmail: contact.email,
+                        designation: contact.designation
+                    }))
+                    : [],
                 address: [
                     {
                         doorNo: officeAddress.address1 || "",
@@ -973,29 +1209,57 @@ function AddCustomer({ editCustomerDetails }) {
         });
 
 
-        if (!officeAddress.address1?.trim()) addressErrors.address1 = "Address Line 1 is required";
-        if (!officeAddress.city?.trim()) addressErrors.city = "City is required";
-        if (!officeAddress.postalCode?.trim()) addressErrors.postalCode = "Postal Code is required";
-        if (!shippingAddress.address1?.trim()) addressErrors.shipaddress1 = "Shipping Address Line 1 is required";
-        if (!shippingAddress.city?.trim()) addressErrors.shipcity = "Shipping City is required";
-        if (!shippingAddress.postalCode?.trim()) addressErrors.shippostalCode = "Shipping Postal Code is required";
+        if (!officeAddress.address1?.trim()) {
+            addressErrors.address1 = "Address Line 1 is required"
+            isValid = false
+        };
+        if (!officeAddress.city?.trim()) {
+            addressErrors.city = "City is required"
+            isValid = false
+        };
+        if (!officeAddress.postalCode?.trim()) {
+            addressErrors.postalCode = "Postal Code is required"
+            isValid = false
+        };
+        if (!shippingAddress.address1?.trim()) {
+            addressErrors.shipaddress1 = "Shipping Address Line 1 is required"
+            isValid = false
+        };
+        if (!shippingAddress.city?.trim()) {
+            addressErrors.shipcity = "Shipping City is required"
+            isValid = false
+        };
+        if (!shippingAddress.postalCode?.trim()) {
+            addressErrors.shippostalCode = "Shipping Postal Code is required"
+            isValid = false
+        };
 
 
 
 
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
 
-        if (
-            Object.keys(finalErrors).length > 0 &&
-            (Object.keys(contactErrors).length > 0 || Object.keys(bankErrors).length > 0)
-        ) {
+
+        if (!isValid) {
+            if (addressErrors.address1) address1Ref.current?.focus();
+            else if (addressErrors.city) cityRef.current?.focus();
+            else if (addressErrors.postalCode) postalCodeRef.current?.focus();
+            else if (addressErrors.shipaddress1) shipAddress1Ref.current?.focus();
+            else if (addressErrors.shipcity) shipCityRef.current?.focus();
+            else if (addressErrors.shippostalCode) shipPostalCodeRef.current?.focus();
             setErrors(finalErrors);
             return;
         }
 
-
-        if (isValid) {
-
+        else {
+            const filteredContacts = contacts.filter(contact =>
+                contact.surName.trim() !== '' ||
+                contact.name.trim() !== '' ||
+                contact.countryCode !== '' ||
+                contact.number !== '' ||
+                contact.email.trim() !== '' ||
+                contact.designation.trim() !== ''
+            );
             const EditPayload = {
                 clientId: editCustomerDetails?.clientId || "",
                 businessName: formData.businessName,
@@ -1011,14 +1275,16 @@ function AddCustomer({ editCustomerDetails }) {
                 TAN: formData.tan,
                 statusOfFirm: formData.legalStatus,
                 natureOfBusiness: natureOfBusiness,
-                additionalContactInfo: contacts.map(contact => ({
-                    name: contact.name,
-                    title: contact.surName,
-                    country_code: contact.countryCode,
-                    contactNumber: contact.number,
-                    contactEmail: contact.email,
-                    designation: contact.designation,
-                })),
+                additionalContactInfo: filteredContacts.length > 0
+                    ? filteredContacts.map(contact => ({
+                        name: contact.name,
+                        title: contact.surName,
+                        country_code: contact.countryCode,
+                        contactNumber: contact.number,
+                        contactEmail: contact.email,
+                        designation: contact.designation
+                    }))
+                    : [],
                 address: [
                     {
                         doorNo: officeAddress.address1 || "",
@@ -1065,6 +1331,10 @@ function AddCustomer({ editCustomerDetails }) {
 
         }
     };
+
+
+
+
 
 
     useEffect(() => {
@@ -1215,6 +1485,7 @@ function AddCustomer({ editCustomerDetails }) {
 
 
 
+
     const isChangedCheck = () => {
         return (
             JSON.stringify(formData) !== JSON.stringify(initialFormData) ||
@@ -1323,6 +1594,7 @@ function AddCustomer({ editCustomerDetails }) {
                                     <div className="flex">
                                         <select
                                             value={formData.surName}
+                                            ref={surNameRef}
                                             onChange={(e) => handleInputChange('surName', e.target.value)}
                                             className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px] "
                                         >
@@ -1334,7 +1606,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             ))}
                                         </select>
                                         <input
-
+                                            ref={contactPersonRef}
                                             type='text'
                                             value={formData.contactPerson}
                                             onChange={(e) => handleInputChange('contactPerson', e.target.value)}
@@ -1379,6 +1651,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                     <div className="flex">
                                         <select
+                                            ref={countryCodeRef}
                                             value={formData.countryCode}
                                             onChange={(e) => handleInputChange('countryCode', e.target.value)}
                                             className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
@@ -1393,7 +1666,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         </select>
 
                                         <input
-
+                                            ref={contactNumberRef}
                                             type='text'
                                             value={formData.contactNumber}
                                             onChange={(e) => handleInputChange('contactNumber', e.target.value)}
@@ -1438,6 +1711,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div >
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID  <span className='text-red-500'>*</span></label>
                                     <input
+                                        ref={emailRef}
                                         type='text'
                                         value={formData.emailId}
                                         onChange={(e) => handleInputChange('emailId', e.target.value)}
@@ -1456,7 +1730,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div>
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Designation  <span className='text-red-500'>*</span></label>
                                     <input
-
+                                        ref={designationRef}
                                         type='text'
                                         value={formData.designation}
                                         onChange={(e) => handleInputChange('designation', e.target.value)}
@@ -1475,7 +1749,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div >
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>GST/VAT <span className='text-red-500'>*</span></label>
                                     <input
-
+                                        ref={gstVatRef}
                                         type='text'
                                         value={formData.gstVat}
                                         onChange={(e) => handleInputChange('gstVat', e.target.value)}
@@ -1513,7 +1787,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div >
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  <span className='text-red-500'>*</span></label>
                                     <input
-
+                                        ref={panRef}
                                         type='text'
                                         value={formData.pan}
                                         onChange={(e) => handleInputChange('pan', e.target.value)}
@@ -1553,6 +1827,7 @@ function AddCustomer({ editCustomerDetails }) {
                                     <input
 
                                         type='text'
+                                        ref={businessNameRef}
                                         value={formData.businessName}
                                         onChange={(e) => handleInputChange('businessName', e.target.value)}
                                         placeholder='Enter Business Name'
@@ -1573,6 +1848,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         Legal Status of firm <span className='text-red-500'>*</span>
                                     </label>
                                     <select
+                                        ref={legalStatusRef}
                                         value={formData.legalStatus}
                                         onChange={(e) => handleInputChange('legalStatus', e.target.value)}
                                         className="cursor-pointer appearance-none w-full px-3 py-3 border rounded-xl focus:outline-none capitalize font-Gilroy font-medium text-sm text-neutral-500 pr-10"
@@ -1613,6 +1889,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         <div key={business.id} className='flex gap-3 items-center'>
                                             <input
                                                 type="checkbox"
+                                                ref={natureOfBusinessRef}
                                                 className="ml-2 accent-[#205DA8]"
                                                 checked={natureOfBusiness.includes(String(business.id))}
                                                 onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
@@ -1637,10 +1914,12 @@ function AddCustomer({ editCustomerDetails }) {
                             <div className="p-4">
                                 {contacts.map((contact, index) => (
                                     <div key={index} className="mb-6">
-                                        <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
-                                            {`Additional Contact ${index + 1}`}
-                                        </h2>
+                                        <div>
+                                            <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
+                                                {`Additional Contact ${index + 1}`}
+                                            </h2>
 
+                                        </div>
                                         <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
@@ -1649,6 +1928,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                 <div className="flex">
                                                     <select
                                                         value={contact.surName}
+                                                        ref={contactRefs.current[index]?.surName}
                                                         onChange={(e) => handleChange(index, 'surName', e.target.value)}
                                                         className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                     >
@@ -1664,6 +1944,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                         type="text"
                                                         placeholder="Enter Contact Person Name"
                                                         value={contact.name}
+                                                        ref={contactRefs.current[index]?.name}
                                                         onChange={(e) => handleChange(index, "name", e.target.value)}
                                                         className="px-3 py-3 w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                                     />
@@ -1701,6 +1982,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                 <div className="flex">
                                                     <select
                                                         value={contact.countryCode}
+                                                        ref={contactRefs.current[index]?.countryCode}
                                                         onChange={(e) => handleChange(index, 'countryCode', e.target.value)}
                                                         className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                     >
@@ -1714,6 +1996,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     </select>
                                                     <input
                                                         type="text"
+                                                        ref={contactRefs.current[index]?.number}
                                                         placeholder="Enter Contact Number"
                                                         value={contact.number}
                                                         maxLength={10}
@@ -1755,6 +2038,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     type="text"
                                                     placeholder="Enter Email ID"
                                                     value={contact.email}
+                                                    ref={contactRefs.current[index]?.email}
                                                     onChange={(e) => handleChange(index, "email", e.target.value)}
                                                     className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                                 />
@@ -1775,6 +2059,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     type="text"
                                                     placeholder="Enter Designation"
                                                     value={contact.designation}
+                                                    ref={contactRefs.current[index]?.designation}
                                                     onChange={(e) =>
                                                         handleChange(index, "designation", e.target.value)
                                                     }
@@ -1830,6 +2115,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div className='mb-2 items-center '>
                                     <input
                                         type='text'
+                                        ref={address1Ref}
                                         placeholder='Enter Address Line 1'
                                         value={officeAddress.address1}
                                         onChange={(e) => handleOfficeChange('address1', e.target.value)}
@@ -1845,7 +2131,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                 <div className='mb-2  items-center'>
                                     <input
-                                        z
+
                                         type='text'
                                         placeholder='Enter Address Line 2'
                                         value={officeAddress.address2}
@@ -1875,7 +2161,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div className='mb-2 items-center'>
 
                                     <input
-
+                                        ref={cityRef}
                                         type='text'
                                         placeholder='Enter City'
                                         value={officeAddress.city}
@@ -1952,7 +2238,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500 h-fit'>*</span></label>
                                     <input
-
+                                        ref={postalCodeRef}
                                         type='text'
                                         placeholder='Enter Postal Code'
                                         value={officeAddress.postalCode}
@@ -2003,7 +2289,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                 <div className='mb-2 items-center '>
                                     <input
-
+                                        ref={shipAddress1Ref}
                                         type='text'
                                         placeholder='Enter Address Line 1'
                                         value={shippingAddress.address1}
@@ -2051,6 +2337,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 </div>
                                 <div className='mb-2 items-center'>
                                     <input
+                                        ref={shipCityRef}
 
                                         type='text'
                                         placeholder='Enter City'
@@ -2120,6 +2407,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>
                                     <input
+                                        ref={shipPostalCodeRef}
 
                                         type='text'
                                         placeholder='Enter Postal Code'
@@ -2199,7 +2487,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         <div className='mb-2 items-center '>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Name<span className='text-red-500'>*</span></label>
                                             <input
-
+                                                ref={bankRefs.current[index]?.beneficiaryName}
                                                 type='text'
                                                 value={bankDetails?.beneficiaryName || ''}
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryName', e.target.value)}
@@ -2222,6 +2510,7 @@ function AddCustomer({ editCustomerDetails }) {
 
 
                                             <select
+                                                ref={bankRefs.current[index]?.beneficiaryCurrency}
                                                 value={bankDetails.beneficiaryCurrency || ""}
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
                                                 className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
@@ -2249,7 +2538,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Number <span className='text-red-500'>*</span></label>
 
                                             <input
-
+                                                ref={bankRefs.current[index]?.accountNumber}
                                                 type='text'
                                                 placeholder='Enter Account Number'
                                                 value={bankDetails.accountNumber}
@@ -2267,7 +2556,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Bank Name<span className='text-red-500'>*</span></label>
 
                                             <input
-
+                                                ref={bankRefs.current[index]?.bankName}
                                                 type='text'
                                                 placeholder='Enter Account Name'
                                                 value={bankDetails.bankName}
@@ -2293,6 +2582,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                             <input
                                                 type='text'
+                                                ref={bankRefs.current[index]?.ifscCode}
                                                 placeholder='Enter IFSC Code'
                                                 value={bankDetails.ifscCode}
                                                 onChange={(e) => handleBankingChange(index, 'ifscCode', e.target.value)}
@@ -2326,7 +2616,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 1 <span className='text-red-500'>*</span> </label>
 
                                             <input
-
+                                                ref={bankRefs.current[index]?.bankAddress1}
                                                 type='text'
                                                 placeholder='Enter Bank Address 1'
                                                 value={bankDetails.bankAddress1}

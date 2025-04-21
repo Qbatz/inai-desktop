@@ -1013,7 +1013,7 @@ const handleCityChange = (e) => {
                                             />
                                         </div>
                                         {formErrors.surName && formErrors.contactPerson ? (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2"><span><InfoCircle size="14" color="#DC2626" /></span>{formErrors.surName}
                                                 Title and Name are required
                                             </p>
                                         ) : (

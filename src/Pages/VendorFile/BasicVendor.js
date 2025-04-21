@@ -444,10 +444,10 @@ function BasicVendor({ vendorDetails }) {
 
 
 
-    const handleBackToBasic = () => {
-        setActiveTab(1)
+    // const handleBackToBasic = () => {
+    //     setActiveTab(1)
 
-    }
+    // }
 
 const alphaNumericWithSpaceRegex = /^[A-Za-z0-9\s]*$/;
 
@@ -1639,14 +1639,14 @@ const handleCityChange = (e) => {
                                     </div>
 
                                 </div>
-                                <div className="flex flex-col xs:flex-row sm:flex-row  justify-between mb-2 mt-4">
-                                    <button
+                                <div className="flex flex-col xs:flex-row sm:flex-row  justify-end mb-2 mt-4">
+                                    {/* <button
                                         onClick={handleBackToBasic}
                                         className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat  text-base font-semibold font-Montserrat"
 
                                     >
                                         Back
-                                    </button>
+                                    </button> */}
 
                                     <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
 

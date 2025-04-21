@@ -121,8 +121,17 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     const handleInputChange = (field, value) => {
-
+        if (
+            (
+              field === "gstVat" ||
+              field === "pan" ||
+              field === "designation" ||
+              field === "cin"
+            ) && /[^a-zA-Z0-9]/.test(value)
+          ) return;
+                  if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
+
         setFormData((prevData) => ({
             ...prevData,
             [field]: value
@@ -268,6 +277,10 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     const handleChange = (index, field, value) => {
+
+        if (field === "designation" && /[^a-zA-Z0-9]/.test(value)) return;
+
+        if (field === "name" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "number" && !/^\d*$/.test(value)) return;
         setContacts((prev) => {
             const updatedContacts = [...prev];
@@ -288,7 +301,14 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     const handleOfficeChange = (field, value) => {
-
+        if (
+            (field === "address1" ||
+                field === "address2" ||
+                field === "address3" ||
+                field === "address4" ||
+                field === "city" || field === "landmark" || field === "googleMap") &&
+            /[^a-zA-Z0-9\s]/.test(value)
+        ) return;
         if (field === "postalCode" && !/^\d*$/.test(value)) return;
 
         setOfficeAddress((prev) => ({ ...prev, [field]: value }));
@@ -301,8 +321,16 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     const handleShippingChange = (field, value) => {
-
+        if (
+            (field === "address1" ||
+                field === "address2" ||
+                field === "address3" ||
+                field === "address4" ||
+                field === "city" || field === "landmark" || field === "googleMap") &&
+            /[^a-zA-Z0-9\s]/.test(value)
+        ) return;
         if (field === "postalCode" && !/^\d*$/.test(value)) return;
+
 
 
         setShippingAddress((prev) => ({ ...prev, [field]: value }));
@@ -348,6 +376,18 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     const handleBankingChange = (index, field, value) => {
+
+
+
+        if (
+            (field === "beneficiaryName" || field === "ifscCode" || field === "swiftCode" || field === "intermediarySiftCode") &&
+            /[^a-zA-Z0-9\s]/.test(value)
+        ) return;
+        if ((field === "accountNumber" || field === "intermediaryAccountNumber" || field === "iban") && !/^\d*$/.test(value)) return;
+        if ((field === "bankName" || field === "intermediaryRoutingBank") && /[^a-zA-Z\s]/.test(value)) return;
+
+
+
 
         const updatedList = [...bankDetailsList];
         updatedList[index][field] = value;

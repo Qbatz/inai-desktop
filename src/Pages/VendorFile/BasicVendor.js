@@ -80,8 +80,12 @@ function BasicVendor({ vendorDetails }) {
 
     const handleBusinessNameChange = (e) => {
         const value = e.target.value;
-        setBusinessName(value);
-        setFormErrors((prevErrors) => ({ ...prevErrors, businessName: "" }));
+        const alphanumericRegex = /^[a-zA-Z0-9\s]*$/;
+
+        if (alphanumericRegex.test(value)) {
+            setBusinessName(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, businessName: "" }));
+        }
 
 
     };
@@ -101,7 +105,6 @@ function BasicVendor({ vendorDetails }) {
     }
 
 
-
     const handleContactPersonChange = (e) => {
         const value = e.target.value;
         if (/^[A-Za-z\s]*$/.test(value) || value === "") {
@@ -109,6 +112,7 @@ function BasicVendor({ vendorDetails }) {
             setFormErrors((prevErrors) => ({ ...prevErrors, contactPerson: "" }));
         }
     };
+
 
     const handleContactNumberChange = (e) => {
         const value = e.target.value;
@@ -134,16 +138,23 @@ function BasicVendor({ vendorDetails }) {
 
     const handleDesignationChange = (e) => {
         const value = e.target.value;
-        if (/^[A-Za-z\s]*$/.test(value) || value === "") {
+
+        if (/^[A-Za-z0-9\s]*$/.test(value) || value === "") {
             setDesignation(value);
             setFormErrors((prevErrors) => ({ ...prevErrors, designation: "" }));
         }
     };
 
+
     const handleGstVatChange = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, gstVat: "" }));
-        setGstVat(e.target.value);
+        const value = e.target.value;
+
+        if (/^[A-Za-z0-9]*$/.test(value) || value === "") {
+            setGstVat(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, gstVat: "" }));
+        }
     };
+
 
 
     const validateForm = () => {
@@ -326,7 +337,7 @@ function BasicVendor({ vendorDetails }) {
             [`additional${field.charAt(0).toUpperCase() + field.slice(1)}${index}`]: "",
         }));
 
-        if (field === "name" || field === "designation") {
+        if (field === "name") {
             if (/^[A-Za-z\s]*$/.test(value)) {
                 updatedContacts[index][field] = value;
             }
@@ -336,8 +347,11 @@ function BasicVendor({ vendorDetails }) {
             }
         } else if (field === "email") {
             updatedContacts[index][field] = value.toLowerCase();
+        } else if (field === "designation") {
+            if (/^[A-Za-z0-9\s]*$/.test(value)) {
+                updatedContacts[index][field] = value;
+            }
         } else {
-
             updatedContacts[index][field] = value;
         }
 
@@ -435,35 +449,55 @@ function BasicVendor({ vendorDetails }) {
 
     }
 
-    const handleOfficeAddress1Change = (e) => {
+const alphaNumericWithSpaceRegex = /^[A-Za-z0-9\s]*$/;
+
+const handleOfficeAddress1Change = (e) => {
+    const value = e.target.value;
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+        setOfficeAddress1(value);
         setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress1: "" }));
-        setOfficeAddress1(e.target.value)
-    };
+    }
+};
 
-    const handleOfficeAddress2Change = (e) => {
+const handleOfficeAddress2Change = (e) => {
+    const value = e.target.value;
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+        setOfficeAddress2(value);
         setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress2: "" }));
-        setOfficeAddress2(e.target.value);
-    };
+    }
+};
 
-    const handleOfficeAddress3Change = (e) => {
+const handleOfficeAddress3Change = (e) => {
+    const value = e.target.value;
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+        setOfficeAddress3(value);
         setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress3: "" }));
-        setOfficeAddress3(e.target.value);
-    };
+    }
+};
 
-    const handleOfficeAddress4Change = (e) => {
+const handleOfficeAddress4Change = (e) => {
+    const value = e.target.value;
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+        setOfficeAddress4(value);
         setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress4: "" }));
-        setOfficeAddress4(e.target.value);
-    };
+    }
+};
 
-
-
-
-    const handleCityChange = (e) => {
+const handleCityChange = (e) => {
+    const value = e.target.value;
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+        setCity(value);
         setFormErrors((prevErrors) => ({ ...prevErrors, city: "" }));
-        setCity(e.target.value);
-    };
+    }
+};
+
+
+
+
     const handleStateChange = (e) => setOfficeState(e.target.value);
+
     const handleCountryChange = (e) => setCountry(e.target.value);
+
     const handlePostalCodeChange = (e) => {
         const value = e.target.value;
         if (/^\d{0,10}$/.test(value)) {
@@ -473,36 +507,65 @@ function BasicVendor({ vendorDetails }) {
             setFormErrors((prevErrors) => ({ ...prevErrors, postalCode: "" }));
         }
     };
-    const handleLandmarkChange = (e) => setLandmark(e.target.value);
 
-    const handleGoogleMapChange = (e) => setGoogleMap(e.target.value);
+    const handleLandmarkChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setLandmark(value);
+        }
+    };
+    
+    const handleGoogleMapChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setGoogleMap(value);
+        }
+    };
+
+
 
     const handleShippingAddress1Change = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress1: "" }));
-        setShippingAddress1(e.target.value)
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setShippingAddress1(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress1: "" }));
+        }
     };
-
-
+    
     const handleShippingAddress2Change = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress2: "" }));
-        setShippingAddress2(e.target.value);
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setShippingAddress2(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress2: "" }));
+        }
     };
-
+    
     const handleShippingAddress3Change = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress3: "" }));
-        setShippingAddress3(e.target.value);
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setShippingAddress3(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress3: "" }));
+        }
     };
-
+    
     const handleShippingAddress4Change = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress4: "" }));
-        setShippingAddress4(e.target.value);
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setShippingAddress4(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress4: "" }));
+        }
     };
-
-
+    
     const handleShippingCity = (e) => {
-        setFormErrors((prevErrors) => ({ ...prevErrors, shippingCity: "" }));
-        setShippingCity(e.target.value);
-    }
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setShippingCity(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, shippingCity: "" }));
+        }
+    };
+    
+
+
     const handleShippingState = (e) => setShippingState(e.target.value);
     const handleShippingCountry = (e) => setShippingCountry(e.target.value);
     const handleShippingPostalCodeChange = (e) => {
@@ -514,8 +577,21 @@ function BasicVendor({ vendorDetails }) {
             }
         }
     };
-    const handleShippingLandmarkChange = (e) => setShippingLandmark(e.target.value);
-    const handleShippingGoogleMapChange = (e) => setShippingGoogleMap(e.target.value);
+    const handleShippingLandmarkChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setShippingLandmark(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, shippingLandmark: "" }));
+        }
+    };
+    
+    const handleShippingGoogleMapChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setShippingGoogleMap(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, shippingGoogleMap: "" }));
+        }
+    };
 
     const handleCheckboxChange = (e) => {
         setSameAsOffice(e.target.checked);

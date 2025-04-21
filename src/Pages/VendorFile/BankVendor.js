@@ -190,28 +190,28 @@ const handleSwiftChange = (e) => {
   };
 
 
-  const hanldeBackToAddress = () => {
+  // const hanldeBackToAddress = () => {
 
-    const bankDetails = {
-      name: beneficiaryName,
-      accountNo: accountNumber,
-      currency: beneficiaryCurrency,
-      bankName: bankName,
-      ifscCode: ifscCode,
-      address1: bankAddress,
-      address2: bankAddress2,
-      address3: bankAddress3,
-      country: bankCountry,
-      routingBank: intermediaryBank,
-      swiftCode: swift,
-      routingBankAddress: rountingBankAddress,
-      routingAccountIndusand: intermediaryDetails,
-      intermediary_swift_code: siftCode,
-      iban: iban,
-    }
+  //   const bankDetails = {
+  //     name: beneficiaryName,
+  //     accountNo: accountNumber,
+  //     currency: beneficiaryCurrency,
+  //     bankName: bankName,
+  //     ifscCode: ifscCode,
+  //     address1: bankAddress,
+  //     address2: bankAddress2,
+  //     address3: bankAddress3,
+  //     country: bankCountry,
+  //     routingBank: intermediaryBank,
+  //     swiftCode: swift,
+  //     routingBankAddress: rountingBankAddress,
+  //     routingAccountIndusand: intermediaryDetails,
+  //     intermediary_swift_code: siftCode,
+  //     iban: iban,
+  //   }
 
-    props.hanldeBackToAddress(2, bankDetails)
-  }
+  //   props.hanldeBackToAddress(2, bankDetails)
+  // }
 
 
 
@@ -835,13 +835,13 @@ const handleSwiftChange = (e) => {
           </div>
 
         </div>
-        <div className="flex flex-col xs:flex-row sm:flex-row justify-between items-center mt-4 gap-3 sm:gap-0">
+        <div className="flex flex-col xs:flex-row sm:flex-row justify-end items-center mt-4 gap-3 sm:gap-0">
 
-          <button className="w-full sm:w-auto px-4 sm:px-6 py-2 bg-gray-400 rounded-lg text-white font-semibold"
+          {/* <button className="w-full sm:w-auto px-4 sm:px-6 py-2 bg-gray-400 rounded-lg text-white font-semibold"
             onClick={hanldeBackToAddress}>
 
             Back
-          </button>
+          </button> */}
 
 
           <div className="flex flex-col xs:flex-row sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
@@ -861,7 +861,7 @@ const handleSwiftChange = (e) => {
 }
 
 BankVendor.propTypes = {
-  hanldeBackToAddress: PropTypes.func,
+  // hanldeBackToAddress: PropTypes.func,
   basicDetails: PropTypes.object,
   vendorDetail: PropTypes.object,
   addressDetails: PropTypes.object,

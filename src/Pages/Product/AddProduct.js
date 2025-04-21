@@ -1598,7 +1598,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                     <select
                                         value={formData.currency}
                                         onChange={(e) => handleInputChange('currency', e.target.value)}
-                                        className="w-full focus:outline-none px-3 py-3 border rounded-xl  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        className="cursor-pointer w-full focus:outline-none px-3 py-3 border rounded-xl  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                         <option value="">Select beneficiary currency</option>
                                         <option value="USD">USD</option>
                                         <option value="INR">INR</option>
@@ -1714,7 +1714,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                     <select
                                         value={formData.brand}
                                         onChange={(e) => handleInputChange('brand', e.target.value)}
-                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
+                                        className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Brand</option>
                                         {state?.product?.brandList.length > 0 ? state?.product?.brandList?.map((brand, index) => (
                                             <option key={index} value={brand.id}>
@@ -1751,7 +1751,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                     <select
                                         value={formData.category}
                                         onChange={(e) => handleInputChange('category', e.target.value)}
-                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
+                                        className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Category</option>
                                         {state?.product?.categoryList.length > 0 ? state?.product?.categoryList?.map((category, index) => (
                                             <option key={index} value={category.id}>
@@ -1787,7 +1787,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                         value={formData.subCategory}
                                         onChange={(e) => handleInputChange('subCategory', e.target.value)}
 
-                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
+                                        className="cursor-pointer w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Sub Category</option>
                                         {state?.product?.subCategoryList.length > 0 ? state?.product?.subCategoryList?.map((subcategory, index) => (
                                             <option key={index} value={subcategory.id}>
@@ -1817,7 +1817,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                     <select
                                         value={formData.make}
                                         onChange={(e) => handleInputChange('make', e.target.value)}
-                                        className="w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
+                                        className="cursor-pointer w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>Select Make</option>
                                         <option value="2011">2011</option>
                                         <option value="2012">2012</option>
@@ -1836,7 +1836,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                     <select
                                         value={formData.country}
                                         onChange={(e) => handleInputChange('country', e.target.value)}
-                                        className="w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
+                                        className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled>
                                             Enter Country of Origin
                                         </option>
@@ -1862,7 +1862,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                     selected={selectedDate}
                                     onChange={handleDateChange}
                                     dateFormat="dd/MM/yyyy"
-                                    className='font-Gilroy font-medium text-sm text-slate-400'
+                                    className='cursor-pointer font-Gilroy font-medium text-sm text-slate-400'
                                     placeholderText="Month and Year of Manufacture"
                                     customInput={<CustomInput />}
                                 />
@@ -1878,7 +1878,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                         value={formData.stateName}
                                         onChange={(e) => handleInputChange('stateName', e.target.value)}
 
-                                        className=" focus:outline-none w-full p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
+                                        className="cursor-pointer focus:outline-none w-full p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option value="" disabled selected>
                                             Enter State
                                         </option>
@@ -2009,7 +2009,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                             </label>
                                             <div className="relative">
                                                 <select
-                                                    className="w-full border  focus:outline-none border-gray-300 rounded-lg px-3 py-[10px] text-sm font-Gilroy font-medium text-gray-700 appearance-none"
+                                                    className="cursor-pointer w-full border  focus:outline-none border-gray-300 rounded-lg px-3 py-[10px] text-sm font-Gilroy font-medium text-gray-700 appearance-none"
                                                     value={formValues?.find((item) => item.title === field.title)?.value || ""}
                                                     onChange={(e) => SelectOptionsChange(field.title, e.target.value)}
                                                 >

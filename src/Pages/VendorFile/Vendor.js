@@ -267,7 +267,7 @@ function VendorList() {
 
 
               <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3 mb-2 pt-4'>
-                <div className="relative  col-span-7">
+                <div className="relative col-span-7 cursor-pointer">
                   <SearchNormal1
                     size="16"
                     color="gray"
@@ -402,6 +402,7 @@ function VendorList() {
                 </div>
               </div>
 
+              {vendorList.length > 10 && (
               <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
                 <div className="flex items-center gap-2">
 
@@ -437,6 +438,7 @@ function VendorList() {
                   </button>
                 </div>
               </nav>
+              )}
             </div>
             :
             null

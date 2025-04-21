@@ -557,7 +557,7 @@ function BankVendor(props) {
               <select
                 value={beneficiaryCurrency}
                 onChange={handleBeneficiaryCurrency}
-                className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                 <option value="">Select beneficiary currency</option>
                 <option value="USD">USD</option>
                 <option value="INR">INR</option>
@@ -713,7 +713,7 @@ function BankVendor(props) {
                 id='bankCountry'
                 value={bankCountry}
                 onChange={handleBankCountryChange}
-                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               >
                 <option value="">Select Bank Country</option>
                 <option value="India">India</option>

@@ -264,7 +264,7 @@ function CustomerList() {
         </div>
 
         <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3 mb-2 pt-4'>
-          <div className="relative  col-span-7">
+          <div className="relative col-span-7 cursor-pointer">
             <SearchNormal1
               size="16"
               color="gray"
@@ -275,7 +275,7 @@ function CustomerList() {
               value={searchTerm}
               onChange={handleSearchChange}
               placeholder='Search by Name'
-              className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
+              className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy text-sm font-medium"
             />
           </div>
           <div className=" col-span-2 bg-slate-100  rounded-lg flex items-center gap-2 justify-center  cursor-pointer">
@@ -392,6 +392,7 @@ function CustomerList() {
           </div>
         </div>
 
+        {customerList.length > 10 && (
         <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
           <div className="flex items-center gap-2">
             <select
@@ -437,6 +438,7 @@ function CustomerList() {
             </ul>
           </div>
         </nav>
+        )}
 
 
 

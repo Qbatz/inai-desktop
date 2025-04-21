@@ -323,7 +323,7 @@ function ProductList() {
                 </div>
 
                 <div className='grid md:grid-cols-12 sm:grid-cols-2 gap-3 mb-2 pt-4'>
-                    <div className="relative  col-span-7">
+                    <div className="relative col-span-7 cursor-pointer">
                         <SearchNormal1
                             size="16"
                             color="gray"

@@ -173,11 +173,23 @@ function Sidebar({ state }) {
 
                     <img src={Profile} alt="Profile" className="h-10 w-10 rounded-full object-cover" />
 
-                    <div className="hidden sm:hidden md:hidden lg:flex flex-col">
-                        <p className="text-sm font-semibold font-Gilroy">{state.firstName + state.lastName}</p>
-                        <p className="text-xs text-gray-500 font-Gilroy">{state.email
-                        }</p>
+
+                    <div className="hidden sm:hidden md:hidden lg:flex flex-col w-[150px] overflow-hidden">
+                        <p
+                            className="text-sm font-semibold font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer"
+                            title={state.firstName + state.lastName}
+                        >
+                            {state.firstName + state.lastName}
+                        </p>
+                        <p
+                            className="text-xs text-gray-500 font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer"
+                            title={state.email}
+                        >
+                            {state.email}
+                        </p>
                     </div>
+
+
 
 
 

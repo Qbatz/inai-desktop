@@ -918,7 +918,7 @@ function BasicVendor({ vendorDetails }) {
                                             <select
                                                 value={surName}
                                                 onChange={handleSurNameChange}
-                                                className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                                className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                             >
                                                 <option value="" >Select</option>
                                                 {state.Common?.titles?.map((title) => (
@@ -965,7 +965,7 @@ function BasicVendor({ vendorDetails }) {
                                             <select
                                                 value={countryCode}
                                                 onChange={handleCountryCodeChange}
-                                                className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                                className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                             >
                                                 <option value="">Select</option>
                                                 {state.Common?.country?.map((item) => (
@@ -1080,7 +1080,7 @@ function BasicVendor({ vendorDetails }) {
                                                         <select
                                                             value={contact.surName}
                                                             onChange={(e) => handleAdditionalContactChange(index, "surName", e.target.value)}
-                                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                         >
                                                             <option value="" className="font-Gilroy text-neutral-800 " >Select</option>
                                                             {state.Common?.titles?.map((title) => (
@@ -1124,7 +1124,7 @@ function BasicVendor({ vendorDetails }) {
                                                         <select
                                                             value={contact.countryCode}
                                                             onChange={(e) => handleAdditionalContactChange(index, "countryCode", e.target.value)}
-                                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                         >
                                                             <option value="">Select</option>
                                                             {state.Common?.country?.map((item) => (
@@ -1322,7 +1322,7 @@ function BasicVendor({ vendorDetails }) {
                                                 id='state'
                                                 value={officeState}
                                                 onChange={handleStateChange}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             >
                                                 <option value="">Select State</option>
                                                 <option value="Tamil Nadu">Tamil Nadu</option>
@@ -1343,7 +1343,7 @@ function BasicVendor({ vendorDetails }) {
                                                 id='country'
                                                 value={country}
                                                 onChange={handleCountryChange}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             >
                                                 <option value="">Select Country</option>
                                                 <option value="India">India</option>
@@ -1487,7 +1487,7 @@ function BasicVendor({ vendorDetails }) {
                                                 id='shippingState'
                                                 value={shippingState}
                                                 onChange={handleShippingState}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             >
                                                 <option value="">Select State</option>
                                                 <option value="Tamil Nadu">Tamil Nadu</option>
@@ -1507,7 +1507,7 @@ function BasicVendor({ vendorDetails }) {
                                                 id='shippingCountry'
                                                 value={shippingCountry}
                                                 onChange={handleShippingCountry}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             >
                                                 <option value="">Select Country</option>
                                                 <option value="India">India</option>

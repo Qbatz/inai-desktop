@@ -16,6 +16,7 @@ function BankVendor(props) {
   const navigate = useNavigate()
 
 
+
   const [loading, setLoading] = useState(false)
   const [beneficiaryName, setBeneficiaryName] = useState(props?.basicDetails?.contactPersonName);
   const [beneficiaryCurrency, setBeneficiaryCurrency] = useState('');
@@ -35,11 +36,20 @@ function BankVendor(props) {
   const [rountingBankAddress, setRountingBankAddress] = useState('')
   const [initialEditData, setInitialEditData] = useState(null);
 
+  const alphaNumericRegex = /^[A-Za-z0-9]*$/; 
+  const alphaNumericWithSpaceRegex = /^[A-Za-z0-9\s]*$/;
+  const onlyNumbersRegex = /^[0-9]*$/;
 
   const handleBeneficiaryNameChange = (e) => {
-    clearError("beneficiaryName");
-    setBeneficiaryName(e.target.value)
-  }
+    const value = e.target.value;
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+      clearError("beneficiaryName");
+      setBeneficiaryName(value);
+    }
+  };
+
+
+
 
 
   const handleRoutingBankAddressChange = (e) => {
@@ -71,15 +81,24 @@ function BankVendor(props) {
 
 
 
-  const handleIfscCodeChange = (e) => {
-    clearError("ifscCode");
-    setIfscCode(e.target.value)
-  };
 
-  const handleSwiftChange = (e) => {
-    setSwift(e.target.value)
+
+const handleIfscCodeChange = (e) => {
+  const value = e.target.value;
+  if (alphaNumericRegex.test(value) || value === "") { 
+    clearError("ifscCode");
+    setIfscCode(value);  
+  }
+};
+
+const handleSwiftChange = (e) => {
+  const value = e.target.value;
+  if (alphaNumericRegex.test(value) || value === "") {  
+    setSwift(value); 
     clearError("swift");
   }
+};
+
 
 
 
@@ -112,21 +131,35 @@ function BankVendor(props) {
     }
   };
 
+
+
+
   const handleSiftCodeChange = (e) => {
-    setSiftCode(e.target.value);
-    clearError("siftCode");
+    const value = e.target.value;
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {  
+      setSiftCode(value);  
+      clearError("siftCode");
+    }
   };
+  
+  const handleIbanChange = (e) => {
+    const value = e.target.value;
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {  
+      setIban(value);  
+      clearError("iban");
+    }
+  }
 
   const handleIntermediaryDetailsChange = (e) => {
-    setIntermediaryDetails(e.target.value);
-    clearError("intermediaryDetails");
+    const value = e.target.value;
+    if (onlyNumbersRegex.test(value) || value === "") {
+      setIntermediaryDetails(value);
+      clearError("intermediaryDetails");
+    }
   };
+  
 
-  const handleIbanChange = (e) => {
-    setIban(e.target.value);
-    clearError("iban");
-  };
-
+ 
   const validateForm = () => {
     let errors = {};
 
@@ -158,7 +191,7 @@ function BankVendor(props) {
 
 
   const hanldeBackToAddress = () => {
-    
+
     const bankDetails = {
       name: beneficiaryName,
       accountNo: accountNumber,
@@ -177,7 +210,7 @@ function BankVendor(props) {
       iban: iban,
     }
 
-    props.hanldeBackToAddress(2,bankDetails)
+    props.hanldeBackToAddress(2, bankDetails)
   }
 
 
@@ -399,7 +432,7 @@ function BankVendor(props) {
       setSwift("");
       setIntermediaryDetails("");
       setIban("");
-      dispatch({ type: VENDOR_SAGA  , payload: { searchKeyword: "" }})
+      dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } })
       dispatch({ type: RESET_CODE });
       dispatch({ type: RESET_VENDOR_ID })
     }
@@ -771,7 +804,7 @@ function BankVendor(props) {
                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
               />
 
-                         </div>
+            </div>
             <div className='mb-2  items-center '>
               <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Bank Account Number with Intermediary Bank </label>
 
@@ -832,8 +865,8 @@ BankVendor.propTypes = {
   basicDetails: PropTypes.object,
   vendorDetail: PropTypes.object,
   addressDetails: PropTypes.object,
-  addressInfo:PropTypes.object,
-  contactPerson:PropTypes.string
+  addressInfo: PropTypes.object,
+  contactPerson: PropTypes.string
 
 }
 

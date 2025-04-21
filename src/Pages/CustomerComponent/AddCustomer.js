@@ -1324,7 +1324,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         <select
                                             value={formData.surName}
                                             onChange={(e) => handleInputChange('surName', e.target.value)}
-                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px] "
+                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px] "
                                         >
                                             <option value="" >Select</option>
                                             {state?.Common?.titles.map((title) => (
@@ -1381,7 +1381,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         <select
                                             value={formData.countryCode}
                                             onChange={(e) => handleInputChange('countryCode', e.target.value)}
-                                            className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                         >
                                             <option value="">Select</option>
                                             {state.Common?.country?.map((item) => (
@@ -1575,7 +1575,7 @@ function AddCustomer({ editCustomerDetails }) {
                                     <select
                                         value={formData.legalStatus}
                                         onChange={(e) => handleInputChange('legalStatus', e.target.value)}
-                                        className="appearance-none w-full px-3 py-3 border rounded-xl focus:outline-none capitalize font-Gilroy font-medium text-sm text-neutral-500 pr-10"
+                                        className="cursor-pointer appearance-none w-full px-3 py-3 border rounded-xl focus:outline-none capitalize font-Gilroy font-medium text-sm text-neutral-500 pr-10"
                                     >
                                         <option value="">Select Legal Status of firm</option>
                                         <option value="PRIVATE LIMITED">PRIVATE LIMITED</option>
@@ -1650,7 +1650,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     <select
                                                         value={contact.surName}
                                                         onChange={(e) => handleChange(index, 'surName', e.target.value)}
-                                                        className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                                        className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                     >
                                                         <option value="">Select</option>
                                                         {state?.Common?.titles?.map((title) => (
@@ -1702,7 +1702,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     <select
                                                         value={contact.countryCode}
                                                         onChange={(e) => handleChange(index, 'countryCode', e.target.value)}
-                                                        className="px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                                        className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                                     >
                                                         <option value="">Select</option>
                                                         {state.Common?.country?.map((item) => (
@@ -1892,10 +1892,10 @@ function AddCustomer({ editCustomerDetails }) {
 
 
 
-                                <div className='mb-2 items-center'>
+                                <div className='mb-2 items-center cursor-pointer'>
                                     <select
                                         value={officeAddress.state}
-                                        onChange={(e) => handleOfficeChange('state', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        onChange={(e) => handleOfficeChange('state', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                         <option value="">Select State</option>
                                         <option value="Tamil Nadu">Tamil Nadu</option>
                                         <option value="Andhra Pradesh">Andhra Pradesh</option>
@@ -1930,7 +1930,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                     <select
                                         value={officeAddress.country}
-                                        onChange={(e) => handleOfficeChange('country', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        onChange={(e) => handleOfficeChange('country', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                         <option value="">Select Country</option>
                                         <option value="India">India</option>
                                         <option value="United States">United States</option>
@@ -2068,7 +2068,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div className='mb-2 items-center'>
                                     <select
                                         value={shippingAddress.state}
-                                        onChange={(e) => handleShippingChange('state', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        onChange={(e) => handleShippingChange('state', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                         <option value="" >Select state</option>
                                         <option value="Tamil Nadu">Tamil Nadu</option>
                                         <option value="Andhra Pradesh">Andhra Pradesh</option>
@@ -2095,7 +2095,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                     <select
                                         value={shippingAddress.country}
-                                        onChange={(e) => handleOfficeChange('country', e.target.value)} className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        onChange={(e) => handleOfficeChange('country', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                         <option value="">Select Country</option>
                                         <option value="India">India</option>
                                         <option value="United States">United States</option>
@@ -2224,7 +2224,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <select
                                                 value={bankDetails.beneficiaryCurrency || ""}
                                                 onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
-                                                className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                                className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                                 <option value="">Select beneficiary currency</option>
                                                 <option value="USD">USD</option>
                                                 <option value="INR">INR</option>
@@ -2358,7 +2358,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <select
                                                 value={bankDetails.bankCountry}
                                                 onChange={(e) => handleBankingChange(index, 'bankCountry', e.target.value)}
-                                                className="w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                                className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                                 <option value="">Select Bank Country</option>
                                                 <option value="India">India</option>
                                                 <option value="United States">United States</option>

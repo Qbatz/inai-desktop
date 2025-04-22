@@ -337,9 +337,6 @@ function AddCustomer({ editCustomerDetails }) {
         }
     }
 
-    const handleBackToBasicInformation = () => {
-        setValue(1)
-    }
 
     const handleNextForBank = () => {
         setIsChanged('')
@@ -396,13 +393,6 @@ function AddCustomer({ editCustomerDetails }) {
         }
 
     }
-
-    const handleBackToAddress = () => {
-
-        setValue(2)
-    }
-
-
     const handleAddAdditionalContact = () => {
         setContacts([
             ...contacts,
@@ -2451,10 +2441,10 @@ function AddCustomer({ editCustomerDetails }) {
 
                                 </div>
 
-                            </div>
-                            <div className="flex justify-between mb-4 mt-4">
-                                <button className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleBackToBasicInformation} >Back</button>
-                                <div className='gap-3 flex '>
+                        </div>
+                        <div className="flex justify-end mb-4 mt-4">
+                          
+                            <div className='gap-3 flex '>
 
                                     {
                                         editCustomerDetails &&
@@ -2740,8 +2730,7 @@ function AddCustomer({ editCustomerDetails }) {
                             </div>
 
 
-                            <div className="flex justify-between mt-4 mb-4">
-                                <button className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleBackToAddress} >Back</button>
+                        <div className="flex justify-end mt-4 mb-4">
 
                                 <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleCustomerSubmit} >Submit</button>
 

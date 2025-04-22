@@ -602,7 +602,7 @@ const handleTechImageDeleteLocally = (index) =>{
             className="flex  font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-md text-gray-700 cursor-pointer"
             onClick={onClick}
             ref={ref}
-            style={{ width: "300px" }}
+            style={{ width: "320px" }}
         >
             <input
                 type="text"
@@ -1854,7 +1854,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                 </div>
                             </div>
 
-                            <div className="flex-1 ">
+                            <div className="flex-1">
                                 <label className="block text-md font-Outfit font-medium text-[#1F2937] mb-1">
                                     Month and Year of Manufacture
                                 </label>
@@ -1871,7 +1871,7 @@ const handleTechImageDeleteLocally = (index) =>{
                         </div>
 
                         <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1 max-w-[290px]">
+                            <div className="flex-1 max-w-[320px]">
                                 <label className="block font-normal text-md font-Outfit mb-1">State</label>
                                 <div className="relative">
                                     <select
@@ -1907,7 +1907,7 @@ const handleTechImageDeleteLocally = (index) =>{
                             </div>
 
 
-                            <div className="flex-1 max-w-[290px]">
+                            <div className="flex-1 max-w-[320px]">
                                 <label className="block font-normal text-md font-Outfit mb-1">
                                     District
                                 </label>

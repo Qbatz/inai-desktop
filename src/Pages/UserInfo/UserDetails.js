@@ -14,7 +14,7 @@ const UserDetails = ({ state }) => {
     const dispatch = useDispatch();
 
     const [activeTab, setActiveTab] = useState("editProfile");
-   
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -179,7 +179,7 @@ const UserDetails = ({ state }) => {
 
     };
 
-  
+
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -221,7 +221,7 @@ const UserDetails = ({ state }) => {
     };
 
 
-   
+
 
     const tabs = [
         { id: 1, label: "Profile" },
@@ -352,24 +352,24 @@ const UserDetails = ({ state }) => {
                                         </div>
                                         <div>
                                             <label className="block font-Gilroy text-sm mb-2">Mobile number</label>
-
-                                            <input
-                                                type="tel"
-                                                name="mobileNo"
-                                                value={formData.mobileNo}
-                                                onChange={(e) => {
-                                                    let value = e.target.value.replace(/\D/g, "");
-                                                    if (!value.startsWith("91")) {
-                                                        value = "+ 91" + value;
-                                                    }
-                                                    if (value.length <= 12) {
-                                                        handleChange({ target: { name: "mobileNo", value: `+${value}` } });
-                                                    }
-                                                }}
-                                                className="font-Gilroy font-medium text-xs border rounded-xl p-3 w-full max-w-sm"
-                                            />
-
-
+                                            <div className="relative w-full max-w-sm">
+                                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-500">
+                                                    +91
+                                                </span>
+                                                <input
+                                                    type="tel"
+                                                    name="mobileNo"
+                                                    value={formData.mobileNo}
+                                                    onChange={(e) => {
+                                                        const value = e.target.value.replace(/\D/g, "");
+                                                        if (value.length <= 10) {
+                                                            handleChange({ target: { name: "mobileNo", value } });
+                                                        }
+                                                    }}
+                                                    className="pl-14 pr-4 py-[10px] border border-gray-300 rounded-full w-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none"
+                                                    placeholder="Enter mobile number"
+                                                />
+                                            </div>
                                             {errors.mobileNo && (
                                                 <p className="text-red-500 text-xs flex items-center font-Gilroy mt-1">
                                                     <MdError className="mr-1" />

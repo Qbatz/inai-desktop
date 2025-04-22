@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from "react";
-import BankVendor from "./BankVendor";
+
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA, compareData } from "../../Utils/Constant";
+import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA, compareData, CREATE_VENDOR_SAGA, EDIT_VENDOR_SAGA } from "../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -31,8 +31,7 @@ function BasicVendor({ vendorDetails }) {
 
     ]);
     const [formErrors, setFormErrors] = useState({});
-    const [basicDetails, setBasicDetails] = useState('')
-    const [addressDetails, setAddressDetails] = useState({ bank: null })
+  
 
     const [officeAddress1, setOfficeAddress1] = useState("");
     const [officeAddress2, setOfficeAddress2] = useState('');
@@ -80,32 +79,41 @@ function BasicVendor({ vendorDetails }) {
     const shippingCityRef = useRef(null);
     const shippingPostalCodeRef = useRef(null);
 
+    const [beneficiaryName, setBeneficiaryName] = useState(contactPerson);
+    const [beneficiaryCurrency, setBeneficiaryCurrency] = useState('');
+    const [accountNumber, setAccountNumber] = useState("");
+    const [bankName, setBankName] = useState("");
+    const [ifscCode, setIfscCode] = useState("");
+    const [swift, setSwift] = useState("");
+    const [bankAddress, setBankAddress] = useState("");
+    const [bankCountry, setBankCountry] = useState("");
+    const [intermediaryBank, setIntermediaryBank] = useState("");
+    const [siftCode, setSiftCode] = useState("");
+    const [intermediaryDetails, setIntermediaryDetails] = useState("");
+    const [iban, setIban] = useState('');
+    const [bankAddress2, setBankAddress2] = useState('');
+    const [bankAddress3, setBankAddress3] = useState('');
+    const [rountingBankAddress, setRountingBankAddress] = useState('')
+    const [initialEditData, setInitialEditData] = useState(null);
+
+    const alphaNumericRegex = /^[A-Za-z0-9]*$/;
+    const alphaNumericWithSpaceRegex = /^[A-Za-z0-9\s]*$/;
+
+    const onlyNumbersRegex = /^[0-9]*$/;
 
 
-     useEffect(() => {
-       
-        additionalRefs.current = additionalContacts.map((_, index) => {
-        
-          if (!additionalRefs.current[index]) {
-            additionalRefs.current[index] = {
-              surNameRef: React.createRef(),
-              contactNumberRef: React.createRef(),
-              countryCodeRef: React.createRef(),
-              emailRef: React.createRef(),
-              designationRef: React.createRef(),
-            };
-          }
-          return additionalRefs.current[index];
-        });
-      }, [additionalContacts]);
-      
-
-    const handleBackToAddress = (value, bankDetails) => {
-        setActiveTab(value)
-        setAddressDetails({ bank: bankDetails })
+    const beneficiaryNameRef = useRef(null);
+    const beneficiaryCurrencyRef = useRef(null);
+    const accountNumberRef = useRef(null);
+    const bankNameRef = useRef(null);
+    const ifscCodeRef = useRef(null);
+    const bankAddressRef = useRef(null);
 
 
-    }
+
+
+
+
 
 
 
@@ -195,7 +203,7 @@ function BasicVendor({ vendorDetails }) {
     const validateForm = () => {
         let errors = {};
 
-        
+
         if (!surName) errors.surName = "Title is required";
         if (!contactPerson?.trim()) errors.contactPerson = "Contact Person is required";
         if (!countryCode) errors.countryCode = "countryCode is required";
@@ -248,7 +256,7 @@ function BasicVendor({ vendorDetails }) {
         setFormErrors(errors);
 
         if (Object.keys(errors).length > 0) {
-            
+
             if (errors.surName) surNameRef.current?.focus();
             else if (errors.contactPerson) contactPersonRef.current?.focus();
             else if (errors.countryCode) countryCodeRef.current?.focus();
@@ -263,23 +271,23 @@ function BasicVendor({ vendorDetails }) {
                     if (errors[`additionalSurName${index}`] && additionalRefs.current[index]) {
                         additionalRefs.current[index].surNameRef?.current?.focus();
                         break;
-                      }
-                      if (errors[`additionalContactNumber${index}`] && additionalRefs.current[index]) {
+                    }
+                    if (errors[`additionalContactNumber${index}`] && additionalRefs.current[index]) {
                         additionalRefs.current[index].contactNumberRef?.current?.focus();
                         break;
-                      }
-                      if (errors[`additionalCountryCode${index}`] && additionalRefs.current[index]) {
+                    }
+                    if (errors[`additionalCountryCode${index}`] && additionalRefs.current[index]) {
                         additionalRefs.current[index].countryCodeRef?.current?.focus();
                         break;
-                      }
-                      if (errors[`additionalEmail${index}`] && additionalRefs.current[index]) {
+                    }
+                    if (errors[`additionalEmail${index}`] && additionalRefs.current[index]) {
                         additionalRefs.current[index].emailRef?.current?.focus();
                         break;
-                      }
-                      if (errors[`additionalDesignation${index}`] && additionalRefs.current[index]) {
+                    }
+                    if (errors[`additionalDesignation${index}`] && additionalRefs.current[index]) {
                         additionalRefs.current[index].designationRef?.current?.focus();
                         break;
-                      }
+                    }
                 }
             }
         }
@@ -381,44 +389,7 @@ function BasicVendor({ vendorDetails }) {
 
     const handleNextClick = () => {
         if (validateForm()) {
-
             setActiveTab(2);
-            const filteredContacts = additionalContacts.filter(contact =>
-                contact.surName?.trim() !== '' ||
-                contact.name?.trim() !== '' ||
-                contact.countryCode?.toString().trim() !== '' ||
-                contact.contactNumber?.toString().trim() !== '' ||
-                contact.email?.trim() !== '' ||
-                contact.designation?.trim() !== ''
-            );
-            const formattedAdditionalContacts = filteredContacts.length > 0
-                ? filteredContacts.map(contact => ({
-                    title: contact.surName,
-                    name: contact.name,
-                    country_code: contact.countryCode,
-                    contactNumber: Number(contact.contactNumber),
-                    contactEmail: contact.email,
-                    designation: contact.designation
-                }))
-                : [];
-
-
-            const payload = {
-                vendor_id: '',
-                businessName: businessName,
-                title: surName,
-                country_code: countryCode,
-                contactPersonName: contactPerson,
-                contactNumber: contactNumber,
-                emailId: email,
-                designation: designation,
-                gstvat: gstVat,
-                additionalContactInfo: formattedAdditionalContacts,
-
-
-            }
-
-            setBasicDetails(payload)
         }
 
     };
@@ -469,42 +440,11 @@ function BasicVendor({ vendorDetails }) {
     ];
 
     const handleTabClick = (id) => {
-
-        const filteredContacts = additionalContacts.filter(contact =>
-            contact.surName?.trim() !== '' ||
-            contact.name?.trim() !== '' ||
-            contact.countryCode?.toString().trim() !== '' ||
-            contact.contactNumber?.toString().trim() !== '' ||
-            contact.email?.trim() !== '' ||
-            contact.designation?.trim() !== ''
-        );
-        const formattedAdditionalContacts = filteredContacts.length > 0
-            ? filteredContacts.map(contact => ({
-                title: contact.surName,
-                name: contact.name,
-                country_code: contact.countryCode,
-                contactNumber: Number(contact.contactNumber),
-                contactEmail: contact.email,
-                designation: contact.designation
-            }))
-            : [];
-
-        const payload = {
-            vendor_id: '',
-            businessName: businessName,
-            title: surName,
-            country_code: countryCode,
-            contactPersonName: contactPerson,
-            contactNumber: contactNumber,
-            emailId: email,
-            designation: designation,
-            gstvat: gstVat,
-            additionalContactInfo: formattedAdditionalContacts,
-        }
+    
 
         if (Number(id) === Number(3)) {
             if (validateForm() && validateFormAddress()) {
-                setBasicDetails(payload);
+             
                 const payloadData = {
                     vendorId: state.vendor.vendorId,
                     address: [
@@ -542,9 +482,8 @@ function BasicVendor({ vendorDetails }) {
             }
         } else if (Number(id) === Number(2)) {
             if (validateForm()) {
-                setBasicDetails(payload);
                 setActiveTab(2);
-            } 
+            }
         } else {
             setActiveTab(id);
         }
@@ -556,12 +495,9 @@ function BasicVendor({ vendorDetails }) {
 
 
 
-    // const handleBackToBasic = () => {
-    //     setActiveTab(1)
 
-    // }
 
-    const alphaNumericWithSpaceRegex = /^[A-Za-z0-9\s]*$/;
+
 
     const handleOfficeAddress1Change = (e) => {
         const value = e.target.value;
@@ -893,7 +829,427 @@ function BasicVendor({ vendorDetails }) {
 
 
 
-   
+
+
+
+
+
+
+
+
+    const handleBeneficiaryNameChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            clearError("beneficiaryName");
+            setBeneficiaryName(value);
+        }
+    };
+
+
+
+
+
+    const handleRoutingBankAddressChange = (e) => {
+        clearError("rountingBankAddress");
+        setRountingBankAddress(e.target.value)
+    }
+
+    const handleBeneficiaryCurrency = (e) => {
+        clearError("beneficiaryCurrency");
+        setBeneficiaryCurrency(e.target.value)
+    }
+
+
+    const handleAccountNumberChange = (e) => {
+        const value = e.target.value;
+        if (/^\d*$/.test(value)) {
+            setAccountNumber(value);
+            clearError("accountNumber");
+        }
+    };
+
+    const handleBankNameChange = (e) => {
+        const value = e.target.value;
+        if (/^[A-Za-z\s]*$/.test(value)) {
+            setBankName(value);
+            clearError("bankName");
+        }
+    };
+
+
+
+
+
+    const handleIfscCodeChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericRegex.test(value) || value === "") {
+            clearError("ifscCode");
+            setIfscCode(value);
+        }
+    };
+
+    const handleSwiftChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericRegex.test(value) || value === "") {
+            setSwift(value);
+            clearError("swift");
+        }
+    };
+
+
+
+    const handleBankAddressChange = (e) => {
+        setBankAddress(e.target.value)
+        clearError("bankAddress");
+    };
+
+    const handleBankAddress2Change = (e) => {
+        setFormErrors((prevErrors) => ({ ...prevErrors, bankAddress2: "" }));
+        setBankAddress2(e.target.value);
+    };
+
+    const handleBankAddress3Change = (e) => {
+        setFormErrors((prevErrors) => ({ ...prevErrors, bankAddress3: "" }));
+        setBankAddress3(e.target.value);
+    };
+
+
+    const handleBankCountryChange = (e) => {
+        clearError("bankCountry");
+        setBankCountry(e.target.value);
+    }
+
+    const handleIntermediaryBankChange = (e) => {
+        const value = e.target.value;
+        if (/^[A-Za-z\s]*$/.test(value)) {
+            setIntermediaryBank(value);
+            clearError("intermediaryBank");
+        }
+    };
+
+
+
+
+    const handleSiftCodeChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setSiftCode(value);
+            clearError("siftCode");
+        }
+    };
+
+    const handleIbanChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setIban(value);
+            clearError("iban");
+        }
+    }
+
+    const handleIntermediaryDetailsChange = (e) => {
+        const value = e.target.value;
+        if (onlyNumbersRegex.test(value) || value === "") {
+            setIntermediaryDetails(value);
+            clearError("intermediaryDetails");
+        }
+    };
+
+
+
+    const validateFormBank = () => {
+        let errors = {};
+
+        if (vendorDetails) {
+            if (!beneficiaryName.trim()) {
+                errors.beneficiaryName = "Beneficiary Name is required";
+            }
+        } else {
+            if (!contactPerson.trim()) {
+                errors.beneficiaryName = "Beneficiary Name is required";
+            }
+        }
+        if (!beneficiaryCurrency) errors.beneficiaryCurrency = 'Beneficiary Currency is required';
+        if (!accountNumber) errors.accountNumber = 'Account Number is required';
+        if (accountNumber && !/^\d{9,18}$/.test(accountNumber)) {
+            errors.accountNumber = 'Account Number must be 9-18 digits';
+        }
+
+        if (!bankName) errors.bankName = 'Bank Name is required';
+        if (!ifscCode) errors.ifscCode = 'IFSC Code is required';
+        if (!bankAddress) errors.bankAddress = 'BankAddress is required';
+
+        setFormErrors(errors);
+
+
+
+        if (Object.keys(errors).length > 0) {
+            if (errors.beneficiaryName) beneficiaryNameRef.current?.focus();
+            else if (errors.beneficiaryCurrency) beneficiaryCurrencyRef.current?.focus();
+            else if (errors.accountNumber) accountNumberRef.current?.focus();
+            else if (errors.bankName) bankNameRef.current?.focus();
+            else if (errors.ifscCode) ifscCodeRef.current?.focus();
+            else if (errors.bankAddress) bankAddressRef.current?.focus();
+        }
+        return Object.keys(errors).length === 0;
+    };
+
+
+
+
+
+
+    const clearError = (field) => {
+        if (formErrors[field]) {
+            setFormErrors({ ...formErrors, [field]: "" });
+        }
+    };
+
+
+
+
+
+    const isDataChanged = () => {
+        if (!initialEditData) return true;
+        const addresses = addressInfo?.address || [];
+        const officeAddress = addresses[0] || {};
+        const shippingAddress = addresses[1] || {};
+
+        const currentData = {
+            businessName: businessName || "",
+            contactPersonName: contactPerson || "",
+            contactNumber: contactNumber || "",
+            emailId: email || "",
+            designation: designation || "",
+            title: surName,
+            country_code: countryCode,
+            gstvat: gstVat || "",
+            additionalContactInfo: additionalContacts || [],
+            address_info: [officeAddress, shippingAddress],
+            bankDetails: {
+                name: beneficiaryName,
+                accountNo: accountNumber,
+                currency: beneficiaryCurrency,
+                bankName: bankName,
+                ifscCode: ifscCode,
+                address1: bankAddress,
+                address2: bankAddress2,
+                address3: bankAddress3,
+                country: bankCountry,
+                routingBank: intermediaryBank,
+                swiftCode: swift,
+                routingBankAddress: rountingBankAddress,
+                routingAccountIndusand: intermediaryDetails,
+                intermediary_swift_code: siftCode,
+                iban: iban,
+            }
+        };
+
+        return JSON.stringify(currentData) !== JSON.stringify(initialEditData);
+    };
+
+
+
+    const handleSubmit = () => {
+        if (validateFormBank()) {
+            const addresses = addressInfo?.address || [];
+
+            const officeAddress = addresses[0] || {};
+            const shippingAddress = addresses[1] || {};
+
+
+            if (vendorDetails && !isDataChanged()) {
+                setFormErrors({ general: "No changes detected" });
+                return;
+            }
+
+
+            const filteredContacts = additionalContacts.filter(contact =>
+                contact.surName?.trim() !== '' ||
+                contact.name?.trim() !== '' ||
+                contact.countryCode?.toString().trim() !== '' ||
+                contact.contactNumber?.toString().trim() !== '' ||
+                contact.email?.trim() !== '' ||
+                contact.designation?.trim() !== ''
+            );
+            const formattedAdditionalContacts = filteredContacts.length > 0
+                ? filteredContacts.map(contact => ({
+                    title: contact.surName,
+                    name: contact.name,
+                    country_code: contact.countryCode,
+                    contactNumber: Number(contact.contactNumber),
+                    contactEmail: contact.email,
+                    designation: contact.designation
+                }))
+                : [];
+    
+           
+
+
+
+
+
+
+
+            const AddPayload = {
+                vendor_details: {
+                    basic_info: {
+                        businessName: businessName || "",
+                        contactPersonName: contactPerson || "",
+                        contactNumber: contactNumber || "",
+                        emailId: email || "",
+                        designation: designation || "",
+                        title: surName,
+                        country_code: countryCode,
+                        gstvat: gstVat || ""
+                    },
+                    additionalContactInfo: formattedAdditionalContacts,
+
+                    address_info: [
+                        {
+                            doorNo: officeAddress.doorNo || "",
+                            street: officeAddress.street || "",
+                            locality: officeAddress.locality || "",
+                            address4: officeAddress.address4 || "",
+                            city: officeAddress.city || "",
+                            state: officeAddress.state || "",
+                            country: officeAddress.country || "",
+                            postalCode: officeAddress.postalCode || "",
+                            landMark: officeAddress.landMark || "",
+                            mapLink: officeAddress.mapLink || "",
+                            addressType: officeAddress.addressType || 1
+                        },
+                        {
+                            doorNo: shippingAddress.doorNo || "",
+                            street: shippingAddress.street || "",
+                            locality: shippingAddress.locality || "",
+                            address4: shippingAddress.address4 || "",
+                            city: shippingAddress.city || "",
+                            state: shippingAddress.state || "",
+                            country: shippingAddress.country || "",
+                            postalCode: shippingAddress.postalCode || "",
+                            landMark: shippingAddress.landMark || "",
+                            mapLink: shippingAddress.mapLink || "",
+                            addressType: shippingAddress.addressType || 2
+                        }
+                    ],
+
+                    bankDetails: [{
+                        name: beneficiaryName,
+                        accountNo: accountNumber,
+                        currency: beneficiaryCurrency,
+                        bankName: bankName,
+                        ifscCode: ifscCode,
+                        address1: bankAddress,
+                        address2: bankAddress2,
+                        address3: bankAddress3,
+                        country: bankCountry,
+                        routingBank: intermediaryBank,
+                        swiftCode: swift,
+                        routingBankAddress: rountingBankAddress,
+                        routingAccountIndusand: intermediaryDetails,
+                        intermediary_swift_code: siftCode,
+                        iban: iban,
+                    }]
+                }
+            };
+
+            const EditPayload = {
+                vendor_id: vendorDetails?.vendorId || "",
+                businessName: businessName || "",
+                contactPersonName: contactPerson || "",
+                contactNumber: contactNumber || "",
+                emailId: email || "",
+                designation: designation || "",
+                title: surName,
+                country_code: countryCode,
+                gstvat: gstVat || "",
+                additionalContactInfo: formattedAdditionalContacts,
+                address_info: [
+                    {
+                        doorNo: officeAddress.doorNo || "",
+                        street: officeAddress.street || "",
+                        locality: officeAddress.locality || "",
+                        address4: officeAddress.address4 || "",
+                        city: officeAddress.city || "",
+                        state: officeAddress.state || "",
+                        country: officeAddress.country || "",
+                        postalCode: officeAddress.postalCode || "",
+                        landMark: officeAddress.landMark || "",
+                        mapLink: officeAddress.mapLink || "",
+                        addressType: officeAddress.addressType || 1
+                    },
+                    {
+                        doorNo: shippingAddress.doorNo || "",
+                        street: shippingAddress.street || "",
+                        locality: shippingAddress.locality || "",
+                        address4: shippingAddress.address4 || "",
+                        city: shippingAddress.city || "",
+                        state: shippingAddress.state || "",
+                        country: shippingAddress.country || "",
+                        postalCode: shippingAddress.postalCode || "",
+                        landMark: shippingAddress.landMark || "",
+                        mapLink: shippingAddress.mapLink || "",
+                        addressType: shippingAddress.addressType || 2
+                    }
+                ],
+                bankDetails: [{
+                    name: beneficiaryName,
+                    accountNo: accountNumber,
+                    currency: beneficiaryCurrency,
+                    bankName: bankName,
+                    ifscCode: ifscCode,
+                    address1: bankAddress,
+                    address2: bankAddress2,
+                    address3: bankAddress3,
+                    country: bankCountry,
+                    routingBank: intermediaryBank,
+                    swiftCode: swift,
+                    routingBankAddress: rountingBankAddress,
+                    routingAccountIndusand: intermediaryDetails,
+                    intermediary_swift_code: siftCode,
+                    iban: iban,
+                }]
+            }
+
+
+            if (vendorDetails) {
+                dispatch({
+                    type: EDIT_VENDOR_SAGA,
+                    payload: EditPayload
+                });
+                setLoading(true)
+            } else {
+                dispatch({
+                    type: CREATE_VENDOR_SAGA,
+                    payload: AddPayload
+                });
+                setLoading(true)
+            }
+
+
+        }
+    };
+
+
+
+    useEffect(() => {
+
+        additionalRefs.current = additionalContacts.map((_, index) => {
+
+            if (!additionalRefs.current[index]) {
+                additionalRefs.current[index] = {
+                    surNameRef: React.createRef(),
+                    contactNumberRef: React.createRef(),
+                    countryCodeRef: React.createRef(),
+                    emailRef: React.createRef(),
+                    designationRef: React.createRef(),
+                };
+            }
+            return additionalRefs.current[index];
+        });
+    }, [additionalContacts]);
+
+
 
 
 
@@ -934,27 +1290,6 @@ function BasicVendor({ vendorDetails }) {
 
 
 
-
-
-
-    useEffect(() => {
-        if (state.Common.successCode === 200) {
-            setBusinessName('');
-            setContactPerson('');
-            setContactNumber('');
-            setEmail('');
-            setDesignation('');
-            setGstVat('');
-            setAdditionalContacts([]);
-            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } })
-            setTimeout(() => {
-                dispatch({ type: RESET_VENDOR_ID })
-            }, 6000)
-        }
-
-    }, [state.Common.successCode])
-
-
     useEffect(() => {
         dispatch({ type: GET_MASTER_SAGA })
     }, [])
@@ -982,10 +1317,27 @@ function BasicVendor({ vendorDetails }) {
 
 
 
-
-
     useEffect(() => {
         if (state.Common.successCode === 200) {
+            setBeneficiaryName("");
+            setAccountNumber("");
+            setBankName("");
+            setIfscCode("");
+            setBankAddress("");
+            setBankAddress2("");
+            setBankAddress3("");
+            setBankCountry("");
+            setIntermediaryBank("");
+            setSwift("");
+            setIntermediaryDetails("");
+            setIban("")
+            setBusinessName('');
+            setContactPerson('');
+            setContactNumber('');
+            setEmail('');
+            setDesignation('');
+            setGstVat('');
+            setAdditionalContacts([]);
             setOfficeAddress1("");
             setOfficeAddress2("");
             setOfficeAddress3("");
@@ -1004,10 +1356,16 @@ function BasicVendor({ vendorDetails }) {
             setShippingPostalCode("");
             setShippingLandmark("");
             setShippingGoogleMap("");
+            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } });
             dispatch({ type: RESET_CODE });
-            dispatch({ type: RESET_VENDOR_ID })
+            setTimeout(() => {
+                dispatch({ type: RESET_VENDOR_ID });
+            }, 3000);
         }
     }, [state.Common.successCode]);
+
+
+
 
     useEffect(() => {
         if (vendorDetails && vendorDetails.address) {
@@ -1045,6 +1403,79 @@ function BasicVendor({ vendorDetails }) {
             setSameAsOffice(false)
         }
     }, [officeAddress1, officeAddress2, officeAddress3, city, shippingAddress1, shippingAddress2, shippingAddress3, city])
+
+
+
+
+
+
+
+
+
+
+
+
+    useEffect(() => {
+        if (vendorDetails?.bankDetails?.length > 0) {
+            const bank = vendorDetails.bankDetails[0];
+            const addresses = addressInfo?.address || [];
+
+
+            setBeneficiaryName(bank.name || "");
+            setBeneficiaryCurrency(bank.currency || "");
+            setAccountNumber(bank.accountNo || "");
+            setBankName(bank.bankName || "");
+            setIfscCode(bank.ifscCode || "");
+            setBankAddress(bank.address1 || "");
+            setBankAddress2(bank.address2 || "");
+            setBankAddress3(bank.address3 || "");
+            setBankCountry(bank.country || "");
+            setRountingBankAddress(bank.routingBankAddress || "");
+            setSiftCode(bank.intermediary_swift_code || "");
+            setIntermediaryBank(bank.routingBank || "");
+            setSwift(bank.swiftCode || "");
+            setIntermediaryDetails(bank.routingAccountIndusand || "");
+            setIban(bank.iban || "");
+
+
+            setInitialEditData({
+                businessName: businessName || "",
+                contactPersonName: contactPerson || "",
+                contactNumber: contactNumber || "",
+                emailId: email || "",
+                designation: designation || "",
+                title: surName,
+                country_code: countryCode,
+                gstvat: gstVat || "",
+                additionalContactInfo: additionalContacts || [],
+                address_info: addresses,
+                bankDetails: {
+                    name: bank.name || "",
+                    accountNo: bank.accountNo || "",
+                    currency: bank.currency || "",
+                    bankName: bank.bankName || "",
+                    ifscCode: bank.ifscCode || "",
+                    address1: bank.address1 || "",
+                    address2: bank.address2 || "",
+                    address3: bank.address3 || "",
+                    country: bank.country || "",
+                    routingBank: bank.routingBank || "",
+                    swiftCode: bank.swiftCode || "",
+                    routingBankAddress: bank.routingBankAddress || "",
+                    routingAccountIndusand: bank.routingAccountIndusand || "",
+                    intermediary_swift_code: bank.intermediary_swift_code || "",
+                    iban: bank.iban || "",
+                }
+            });
+        } else {
+            setBeneficiaryName(contactPerson || "");
+        }
+    }, [vendorDetails, contactPerson]);
+
+
+
+
+
 
 
 
@@ -1293,7 +1724,7 @@ function BasicVendor({ vendorDetails }) {
                                                         </select>
                                                         <input
                                                             type="text"
-                                                          
+
                                                             value={contact.name}
                                                             onChange={(e) => handleAdditionalContactChange(index, "name", e.target.value)}
                                                             placeholder="Enter Contact Person Name"
@@ -1777,13 +2208,6 @@ function BasicVendor({ vendorDetails }) {
 
                                 </div>
                                 <div className="flex flex-col xs:flex-row sm:flex-row  justify-end mb-2 mt-4">
-                                    {/* <button
-                                        onClick={handleBackToBasic}
-                                        className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat  text-base font-semibold font-Montserrat"
-
-                                    >
-                                        Back
-                                    </button> */}
 
                                     <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
 
@@ -1816,11 +2240,317 @@ function BasicVendor({ vendorDetails }) {
 
                     </div>
                     }
-                    {activeTab === 3 && <div>
-                        
-                        <BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} vendorDetail={vendorDetails} addressDetails={addressDetails} contactPerson={contactPerson} addressInfo={addressInfo} />
-                                               
-                        
+                    {activeTab === 3 &&
+
+
+                        <div>
+                            <div className='bg-white rounded-2xl h-auto relative'>
+
+                                <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Bank Detail</h2>
+
+
+                                {formErrors.general && (
+                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2 mb-3">
+                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.general}
+                                    </p>
+                                )}
+
+                                <div className='max-h-[250px] overflow-y-auto  
+                          lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3'>
+                                    <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-2'>
+
+
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                                Beneficiary  Name<span className='text-red-500'>*</span>
+                                            </label>
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                ref={beneficiaryNameRef}
+                                                value={beneficiaryName}
+                                                onChange={handleBeneficiaryNameChange}
+                                                placeholder='Enter Beneficiary Name '
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+
+                                            {formErrors.beneficiaryName && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryName} </p>)}
+                                        </div>
+
+                                        <div className='mb-2 items-center '>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
+
+
+                                            <select
+                                                ref={beneficiaryCurrencyRef}
+                                                value={beneficiaryCurrency}
+                                                onChange={handleBeneficiaryCurrency}
+                                                className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                                <option value="">Select beneficiary currency</option>
+                                                <option value="USD">USD</option>
+                                                <option value="INR">INR</option>
+                                                <option value="EUR">EUR</option>
+                                                <option value="GBP">GBP</option>
+                                                <option value="JPY">JPY</option>
+
+                                            </select>
+
+                                            {formErrors.beneficiaryCurrency && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryCurrency} </p>)}
+
+                                        </div>
+                                        <div className='mb-2  items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Number
+                                                <span className='text-red-500'>*</span> </label>
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                ref={accountNumberRef}
+                                                value={accountNumber}
+                                                onChange={handleAccountNumberChange}
+                                                placeholder='Enter Account Number'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                            {formErrors.accountNumber && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.accountNumber} </p>)}
+                                        </div>
+
+
+                                    </div>
+
+
+                                    <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+
+
+
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Bank Name
+                                                <span className='text-red-500'>*</span>
+                                            </label>
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                ref={bankNameRef}
+                                                value={bankName}
+                                                onChange={handleBankNameChange}
+                                                placeholder='Enter Account Name'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                            {formErrors.bankName && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankName} </p>)}
+                                        </div>
+
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IFSC Code
+                                                <span className='text-red-500'>*</span>
+                                            </label>
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                ref={ifscCodeRef}
+                                                value={ifscCode}
+                                                onChange={handleIfscCodeChange}
+                                                placeholder='Enter IFSC Code'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                            {formErrors.ifscCode && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.ifscCode} </p>)}
+                                        </div>
+                                        <div className='mb-2  items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code  </label>
+
+
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                value={swift}
+                                                onChange={handleSwiftChange}
+                                                placeholder='Enter SWIFT Code'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                            {formErrors.swift && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.swift} </p>)}
+                                        </div>
+
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 1         <span className='text-red-500'>*</span></label>
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                ref={bankAddressRef}
+                                                value={bankAddress}
+                                                onChange={handleBankAddressChange}
+                                                placeholder='Enter Bank Address '
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+
+                                            {formErrors.bankAddress && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress} </p>)}
+
+                                        </div>
+
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 2</label>
+
+                                            <input
+                                                type='text'
+                                                value={bankAddress2}
+                                                onChange={handleBankAddress2Change}
+                                                placeholder='Enter Bank Address 2'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+
+                                            {formErrors.bankAddress2 && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress2}
+                                                </p>
+                                            )}
+                                        </div>
+
+
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 3</label>
+
+                                            <input
+                                                type='text'
+                                                value={bankAddress3}
+                                                onChange={handleBankAddress3Change}
+                                                placeholder='Enter Bank Address 3'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+
+                                            {formErrors.bankAddress3 && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress3}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                                Bank Country
+                                            </label>
+                                            <select
+                                                id='bankCountry'
+                                                value={bankCountry}
+                                                onChange={handleBankCountryChange}
+                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            >
+                                                <option value="">Select Bank Country</option>
+                                                <option value="India">India</option>
+                                                <option value="United States">United States</option>
+                                                <option value="Canada">Canada</option>
+                                                <option value="United Kingdom">United Kingdom</option>
+                                                <option value="Australia">Australia</option>
+
+                                            </select>
+                                        </div>
+
+
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Intermediary Routing Bank </label>
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                value={intermediaryBank}
+                                                onChange={handleIntermediaryBankChange}
+                                                placeholder='Enter Intermediary Routing Bank'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                        </div>
+
+                                        <div className='mb-2 items-center '>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code for intermediary Bank</label>
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                value={siftCode}
+                                                onChange={handleSiftCodeChange}
+                                                placeholder='Enter SWIFT Code for intermediary Bank'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                        </div>
+
+
+
+
+                                    </div>
+
+
+                                    <div className='grid md:grid-cols-2 sm:grid-cols-2 gap-3 mt-1'>
+
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address</label>
+
+                                            <input
+                                                type='text'
+                                                value={rountingBankAddress}
+                                                onChange={handleRoutingBankAddressChange}
+                                                placeholder='Enter Bank Address 3'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+
+                                        </div>
+                                        <div className='mb-2  items-center '>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Bank Account Number with Intermediary Bank </label>
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                value={intermediaryDetails}
+                                                onChange={handleIntermediaryDetailsChange}
+                                                placeholder='Enter Beneficiary Bank Account Number with Intermediary Bank '
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                        </div>
+
+
+                                        <div className='mb-2  items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IBAN (International Bank Account Number)</label>
+
+                                            <input
+                                                id='clientId'
+                                                type='text'
+                                                value={iban}
+                                                onChange={handleIbanChange}
+
+                                                placeholder='IBAN (International Bank Account Number)'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div className="flex flex-col xs:flex-row sm:flex-row justify-end items-center mt-4 gap-3 sm:gap-0">
+
+
+
+                                    <div className="flex flex-col xs:flex-row sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                                        <button className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
+                                            onClick={handleSubmit}>
+                                            Submit
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
                         </div>}
                 </div>
             </div>

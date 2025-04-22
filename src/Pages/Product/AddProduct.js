@@ -34,7 +34,7 @@ function AddProduct() {
     const [techImages, setTechImages] = useState([
     ]);
 
-  
+
 
     const [initialEditData, setInitialEditData] = useState(null);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
@@ -48,7 +48,15 @@ function AddProduct() {
     const [serialNoList, setSerialNoList] = useState([]);
     const [inputText, setInputText] = useState("");
 
-
+    const productCodeRef = useRef(null);
+    const productNameRef = useRef(null);
+    const descriptionRef = useRef(null);
+    const currencyRef = useRef(null);
+    const unitRef = useRef(null);
+    const categoryRef = useRef(null);
+    const brandRef = useRef(null);
+    const serialNoRef = useRef(null);
+    
 
 
     const [formData, setFormData] = useState({
@@ -82,7 +90,7 @@ function AddProduct() {
         setSelectedDate(formatted);
     };
 
-    
+
 
 
 
@@ -133,8 +141,22 @@ function AddProduct() {
             }
         }
         setErrors(newErrors);
+        setTimeout(() => {
+            if (newErrors.productCode) productCodeRef.current?.focus();
+            else if (newErrors.productName) productNameRef.current?.focus();
+            else if (newErrors.description) descriptionRef.current?.focus();
+            else if (newErrors.currency) currencyRef.current?.focus();
+            else if (newErrors.unit) unitRef.current?.focus();
+            else if (newErrors.category) categoryRef.current?.focus();
+            else if (newErrors.brand) brandRef.current?.focus();
+            else if (newErrors.serialNo) serialNoRef.current?.focus();
+        }, 0);
         return Object.keys(newErrors).length === 0;
     };
+
+
+    
+
 
     const handleSerialInputChange = (e) => {
         const input = e.target.value;
@@ -281,17 +303,17 @@ function AddProduct() {
 
 
 
-   
+
 
 
     const handleTechDocAdd = async (e) => {
         const files = Array.from(e.target.files);
 
-               let imageError = {};
+        let imageError = {};
 
         const processedFiles = await Promise.all(
             files.map(async (file) => {
-                              if (file.type.startsWith("image/")) {
+                if (file.type.startsWith("image/")) {
                     try {
                         const options = {
                             maxSizeMB: 1,
@@ -312,7 +334,7 @@ function AddProduct() {
                         return null;
                     }
                 } else {
-                                        return file;
+                    return file;
                 }
             })
         );
@@ -344,7 +366,7 @@ function AddProduct() {
 
 
 
-    
+
 
     const handleTechDocAddImageinEditMode = async (e) => {
         const files = Array.from(e.target.files);
@@ -450,13 +472,13 @@ function AddProduct() {
 
 
 
-const handleTechImageDeleteLocally = (index) =>{
-    const updatedImages = techImages.filter((_, i) => i !== index);
+    const handleTechImageDeleteLocally = (index) => {
+        const updatedImages = techImages.filter((_, i) => i !== index);
         setTechImages(updatedImages);
-}
+    }
 
 
-   
+
     const handleEditTechChangeImage = (index, id) => {
         const input = document.createElement('input');
         input.type = 'file';
@@ -1092,7 +1114,7 @@ const handleTechImageDeleteLocally = (index) =>{
                     state.Common?.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
                 }
 
-                <div className="flex-1 mx-auto  max-w-7xl rounded-xl max-h-[400px] overflow-y-auto lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
+                <div className="flex-1 mx-auto  max-w-7xl  max-h-[400px] overflow-y-auto lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
 
                     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] mb-2 items-start ">
                         <div className="w-full flex flex-col h-full">
@@ -1102,6 +1124,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                 </label>
                                 <input
                                     type="text"
+                                    ref={productCodeRef}
                                     className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm  font-Gilroy  ${formData.productCode ? "text-slate" : "text-slate-500"}`}
                                     placeholder="Enter Product code"
                                     name="productCode"
@@ -1124,6 +1147,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                 </label>
                                 <input
                                     type="text"
+                                    ref={productNameRef}
                                     className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm ${formData.productN ? "text-slate" : "text-slate-500"} font-Gilroy`}
                                     placeholder="Enter Product Name"
                                     name="productName"
@@ -1144,6 +1168,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                 </label>
 
                                 <textarea
+                                ref={descriptionRef}
                                     placeholder="Enter Description"
                                     className={`mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-sm ${formData.description ? "text-slate" : "text-slate-500"} font-Gilroy`}
                                     name="description"
@@ -1160,7 +1185,7 @@ const handleTechImageDeleteLocally = (index) =>{
                         </div>
 
 
-                        {/* images  */}
+           
                         <div className="w-full p-2 flex flex-col h-full">
                             <label className="block font-normal text-md font-Outfit ps-2"> {editDetails ? "Edit Photos" : "Add Photos"}</label>
 
@@ -1254,29 +1279,29 @@ const handleTechImageDeleteLocally = (index) =>{
                                                                             :
                                                                             (
                                                                                 <>
-                                                                                <div
-                                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
-                                                                                    onClick={() => handleChangeImage(index)}
-                                                                                >
-                                                                                    <Gallery
-                                                                                        size="16"
-                                                                                        color="#FFF"
-                                                                                        variant="Bold"
-                                                                                        style={{ cursor: "pointer" }}
-                                                                                    />
-                                                                                </div>
+                                                                                    <div
+                                                                                        className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                        onClick={() => handleChangeImage(index)}
+                                                                                    >
+                                                                                        <Gallery
+                                                                                            size="16"
+                                                                                            color="#FFF"
+                                                                                            variant="Bold"
+                                                                                            style={{ cursor: "pointer" }}
+                                                                                        />
+                                                                                    </div>
 
-                                                                                <div
-                                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
-                                                                                    onClick={() => handleImageDeleteLocally(index)}
-                                                                                >
-                                                                                    <Trash
-                                                                                        size="16"
-                                                                                        color="#FFF"
-                                                                                        variant="Bold"
-                                                                                        style={{ cursor: "pointer" }}
-                                                                                    />
-                                                                                </div>
+                                                                                    <div
+                                                                                        className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                        onClick={() => handleImageDeleteLocally(index)}
+                                                                                    >
+                                                                                        <Trash
+                                                                                            size="16"
+                                                                                            color="#FFF"
+                                                                                            variant="Bold"
+                                                                                            style={{ cursor: "pointer" }}
+                                                                                        />
+                                                                                    </div>
                                                                                 </>
                                                                             )
                                                                     }
@@ -1452,16 +1477,16 @@ const handleTechImageDeleteLocally = (index) =>{
 
 
                                                                                 <div
-                                                                                className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
-                                                                                onClick={() => handleTechImageDeleteLocally(index)}
-                                                                            >
-                                                                                <Trash
-                                                                                    size="16"
-                                                                                    color="#FFF"
-                                                                                    variant="Bold"
-                                                                                    style={{ cursor: "pointer" }}
-                                                                                />
-                                                                            </div>
+                                                                                    className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
+                                                                                    onClick={() => handleTechImageDeleteLocally(index)}
+                                                                                >
+                                                                                    <Trash
+                                                                                        size="16"
+                                                                                        color="#FFF"
+                                                                                        variant="Bold"
+                                                                                        style={{ cursor: "pointer" }}
+                                                                                    />
+                                                                                </div>
 
 
                                                                             </>
@@ -1554,6 +1579,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                 <div className="relative">
                                     <select
                                         value={formData.unit}
+                                        ref={unitRef}
                                         onChange={(e) => handleInputChange('unit', e.target.value)}
                                         className="w-full cursor-pointer focus:outline-none p-3 border rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
                                         <option className='cursor-pointer' value="" disabled selected>Select Unit of measurement</option>
@@ -1596,6 +1622,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                 </label>
                                 <div className='relative'>
                                     <select
+                                    ref={currencyRef}
                                         value={formData.currency}
                                         onChange={(e) => handleInputChange('currency', e.target.value)}
                                         className="cursor-pointer w-full focus:outline-none px-3 py-3 border rounded-xl  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
@@ -1684,6 +1711,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                 <label className="block font-normal text-md font-Outfit mb-1">Serial No</label>
                                 <input
                                     type="text"
+                                    ref={serialNoRef}
                                     value={inputText}
                                     onChange={handleSerialInputChange}
                                     disabled={!formData.availableQuantity}
@@ -1712,6 +1740,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                 </label>
                                 <div className="relative">
                                     <select
+                                    ref={brandRef}
                                         value={formData.brand}
                                         onChange={(e) => handleInputChange('brand', e.target.value)}
                                         className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
@@ -1749,6 +1778,7 @@ const handleTechImageDeleteLocally = (index) =>{
                                 </label>
                                 <div className="relative">
                                     <select
+                                    ref={categoryRef}
                                         value={formData.category}
                                         onChange={(e) => handleInputChange('category', e.target.value)}
                                         className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">

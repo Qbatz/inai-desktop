@@ -24,7 +24,7 @@ import { LOG_OUT } from "../Utils/Constant";
 import { encryptData } from "../Crypto/crypto";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import AddCustomer from "../Pages/CustomerComponent/AddCustomer";
-import BasicVendor from "../Pages/VendorFile/BasicVendor";
+import AddVendor from "../Pages/VendorFile/AddVendor";
 import VendorDetails from "../Pages/VendorFile/VendorDetails";
 import UserDetails from "../Components/UserDetails";
 import { GET_USER_INFO_SAGA } from '../Utils/Constant';
@@ -241,7 +241,7 @@ function Sidebar({ state }) {
                         <Route path="/add-products" element={<AddProduct />} />
                         <Route path="/add-customer" element={<AddCustomer />} />
                         <Route path="/customer-details/:customerId" element={<CustomerDetails />} />
-                        <Route path="/add-vendor" element={<BasicVendor />} />
+                        <Route path="/add-vendor" element={<AddVendor />} />
                         <Route path="/vendor-details/:vendorId" element={<VendorDetails />} />
                         <Route path="/user/details" element={<UserDetails />} />
                     </Routes>

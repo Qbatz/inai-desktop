@@ -7,7 +7,7 @@ import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { enGB } from "date-fns/locale";
-import BasicVendor from "./BasicVendor";
+import AddVendor from "./AddVendor";
 import DeleteVendor from './DeleteVendor';
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { useDispatch, useSelector } from 'react-redux';
@@ -446,7 +446,7 @@ function VendorList() {
 
         {
           showAddVendor &&
-          <BasicVendor handleClose={handleClose} vendorDetails={vendorDetails} />}
+          <AddVendor handleClose={handleClose} vendorDetails={vendorDetails} />}
 
 
 

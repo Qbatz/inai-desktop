@@ -1,3 +1,4 @@
+
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
@@ -7,7 +8,7 @@ import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { enGB } from "date-fns/locale";
-import { HiOutlineDotsVertical } from "react-icons/hi";
+import { HiOutlineDotsVertical } from "react-icons/hi"
 import { useDispatch, useSelector } from 'react-redux';
 import AddCustomer from './AddCustomer';
 import DeleteCustomer from './DeleteCustomer';
@@ -37,7 +38,6 @@ function CustomerList() {
   const [editCustomerDetails, setEditCustomerDetails] = useState('')
   const [deleteCustomerId, setDeleteCustomerId] = useState('')
   const [customerList, setCustomerList] = useState([])
-  const [hasSelectedBoth, setHasSelectedBoth] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
@@ -55,21 +55,31 @@ function CustomerList() {
       key: "selection",
     },
   ]);
+  const [isStartSelected, setIsStartSelected] = useState(false);
+
 
   const handleSelect = (ranges) => {
-    setDateRange([])
-    const startDate = ranges.selection.startDate;
-    const endDate = ranges.selection.endDate;
-    const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
-    const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
-    setStartDate(formattedStartDate);
-    setEndDate(formattedEndDate);
-    setDateRange([ranges.selection]);
-    if (startDate && endDate && startDate !== endDate && !hasSelectedBoth) {
-      setShowPicker(false);
-      setHasSelectedBoth(true);
-    }
+    const selection = ranges.selection;
+    const selectedStart = selection.startDate;
+    const selectedEnd = selection.endDate;
 
+    if (!isStartSelected) {
+     
+      setDateRange([
+        {
+          ...selection,
+          endDate: null,
+        },
+      ]);
+      setStartDate(moment(selectedStart).format("YYYY-MM-DD"));
+      setEndDate("");
+      setIsStartSelected(true);
+    } else {
+      setDateRange([selection]);
+      setEndDate(moment(selectedEnd).format("YYYY-MM-DD"));
+      setShowPicker(false);
+      setIsStartSelected(false);
+    }
   };
 
   const handleAddCustomer = () => {
@@ -150,7 +160,7 @@ function CustomerList() {
       setShowDeleteCustomer(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE })
-      }, 5000)
+      }, 1000)
     }
 
   }, [state.Common.successCode])
@@ -185,7 +195,7 @@ function CustomerList() {
 
   useEffect(() => {
     const delayApi = setTimeout(() => {
-      if (startDate && endDate && startDate !== endDate) {
+      if (startDate && endDate) {
         dispatch({
           type: GET_CUSTOMER_LIST_SAGA,
           payload: { startDate: startDate, endDate: endDate },
@@ -222,7 +232,7 @@ function CustomerList() {
       setShowDeleteCustomer(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE });
-      }, 5000);
+      }, 1000);
     }
   }, [state.customer.successCode]);
 
@@ -231,14 +241,14 @@ function CustomerList() {
   }
 
 
- useEffect(() => {
-        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-            setLoading(false)
-            setTimeout(() => {
-                dispatch({ type: RESET_CODE })
-            }, 5000)
-        }
-    }, [state.Common?.successCode, state.Common?.code]);
+  useEffect(() => {
+    if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+      setLoading(false)
+      setTimeout(() => {
+        dispatch({ type: RESET_CODE })
+      }, 1000)
+    }
+  }, [state.Common?.successCode, state.Common?.code]);
 
 
   return (
@@ -300,10 +310,17 @@ function CustomerList() {
               />
               <input
                 type="text"
-                value={`${dateRange[0].startDate.toLocaleDateString()} - ${dateRange[0].endDate.toLocaleDateString()}`}
+                value={`${dateRange[0].startDate
+                    ? dateRange[0].startDate.toLocaleDateString()
+                    : ""
+                  } - ${dateRange[0].endDate
+                    ? dateRange[0].endDate.toLocaleDateString()
+                    : ""
+                  }`}
                 readOnly
-                className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy  text-sm font-medium"
+                className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
               />
+
             </div>
 
             {showPicker && (
@@ -326,7 +343,7 @@ function CustomerList() {
           className="flex-1 flex flex-col"
         >
           <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[350px] overflow-y-auto p-0 mt-4 mb-extra'>
-       
+
             <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
               <thead className="bg-slate-100 sticky top-0 z-10">
                 <tr>
@@ -393,51 +410,51 @@ function CustomerList() {
         </div>
 
         {customerList.length > 10 && (
-        <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
-          <div className="flex items-center gap-2">
-            <select
-              value={itemsPerPage}
-              onChange={handleItemsPerPageChange}
-              className="px-1 py-1 border border-[#205DA8] rounded-md text-[#205DA8] font-bold cursor-pointer outline-none shadow-none"
-            >
-              <option value={10}>10</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
-          </div>
-          <div className="flex items-center gap-4">
-            <ul className="flex items-center list-none m-0 p-0 gap-4">
+          <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
+            <div className="flex items-center gap-2">
+              <select
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+                className="px-1 py-1 border border-[#205DA8] rounded-md text-[#205DA8] font-bold cursor-pointer outline-none shadow-none"
+              >
+                <option value={10}>10</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+            <div className="flex items-center gap-4">
+              <ul className="flex items-center list-none m-0 p-0 gap-4">
 
-              <li>
-                <button
-                  className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
-                    }`}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
-                </button>
-              </li>
-
-
-              <li className="text-sm font-bold">
-                {currentPage} of {totalPages}
-              </li>
+                <li>
+                  <button
+                    className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                      }`}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
+                  </button>
+                </li>
 
 
-              <li>
-                <button
-                  className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
-                    }`}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#1E45E1"} />
-                </button>
-              </li>
-            </ul>
-          </div>
-        </nav>
+                <li className="text-sm font-bold">
+                  {currentPage} of {totalPages}
+                </li>
+
+
+                <li>
+                  <button
+                    className={`px-2 py-1 rounded-full min-w-[30px] text-center border-none bg-transparent ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#1E45E1] cursor-pointer"
+                      }`}
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#1E45E1"} />
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </nav>
         )}
 
 

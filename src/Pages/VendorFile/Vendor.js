@@ -48,27 +48,35 @@ function VendorList() {
       key: "selection",
     },
   ]);
+  const [isStartSelected, setIsStartSelected] = useState(false);
 
   const paginatedData = vendorList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(vendorList.length / itemsPerPage);
-  const [hasSelectedBoth, setHasSelectedBoth] = useState(false);
+
 
   const handleSelect = (ranges) => {
-    setDateRange([])
-    const startDate = ranges.selection.startDate;
-    const endDate = ranges.selection.endDate;
-    const formattedStartDate = moment(startDate).format("YYYY-MM-DD");
-    const formattedEndDate = moment(endDate).format("YYYY-MM-DD");
-    setStartDate(formattedStartDate);
-    setEndDate(formattedEndDate);
-    setDateRange([ranges.selection]);
-    if (startDate && endDate && startDate !== endDate && !hasSelectedBoth) {
+    const selection = ranges.selection;
+    const selectedStart = selection.startDate;
+    const selectedEnd = selection.endDate;
+
+    if (!isStartSelected) {
+
+      setDateRange([
+        {
+          ...selection,
+          endDate: null,
+        },
+      ]);
+      setStartDate(moment(selectedStart).format("YYYY-MM-DD"));
+      setEndDate("");
+      setIsStartSelected(true);
+    } else {
+      setDateRange([selection]);
+      setEndDate(moment(selectedEnd).format("YYYY-MM-DD"));
       setShowPicker(false);
-      setHasSelectedBoth(true);
+      setIsStartSelected(false);
     }
-
   };
-
 
   const handleClose = () => {
     dispatch({ type: RESET_CODE })
@@ -201,11 +209,9 @@ function VendorList() {
     return () => clearTimeout(delayApi);
   }, [searchTerm]);
 
-
-
   useEffect(() => {
     const delayApi = setTimeout(() => {
-      if (startDate && endDate && startDate !== endDate) {
+      if (startDate && endDate) {
         dispatch({
           type: VENDOR_SAGA,
           payload: { startDate: startDate, endDate: endDate },
@@ -222,14 +228,14 @@ function VendorList() {
 
 
 
- useEffect(() => {
-        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-            setLoading(false)
-            setTimeout(() => {
-                dispatch({ type: RESET_CODE })
-            }, 5000)
-        }
-    }, [state.Common?.successCode, state.Common?.code]);
+  useEffect(() => {
+    if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+      setLoading(false)
+      setTimeout(() => {
+        dispatch({ type: RESET_CODE })
+      }, 5000)
+    }
+  }, [state.Common?.successCode, state.Common?.code]);
 
   return (
 
@@ -302,12 +308,14 @@ function VendorList() {
                       color="gray"
                       className="absolute left-3 top-1/2 transform -translate-y-1/2"
                     />
+
                     <input
                       type="text"
-                      value={`${dateRange[0].startDate.toLocaleDateString()} - ${dateRange[0].endDate.toLocaleDateString()}`}
+                      value={`${dateRange[0].startDate ? dateRange[0].startDate.toLocaleDateString() : ""} - ${dateRange[0].endDate ? dateRange[0].endDate.toLocaleDateString() : ""}`}
                       readOnly
-                      className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy  text-sm font-medium"
+                      className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
                     />
+
                   </div>
 
                   {showPicker && (
@@ -403,41 +411,41 @@ function VendorList() {
               </div>
 
               {vendorList.length > 10 && (
-              <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
-                <div className="flex items-center gap-2">
+                <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
+                  <div className="flex items-center gap-2">
 
-                  <select
-                    value={itemsPerPage}
-                    onChange={handleItemsPerPageChange}
-                    className="border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none"
-                  >
+                    <select
+                      value={itemsPerPage}
+                      onChange={handleItemsPerPageChange}
+                      className="border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none"
+                    >
 
-                    <option value={10}>10</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                  </select>
-                </div>
+                      <option value={10}>10</option>
+                      <option value={50}>50</option>
+                      <option value={100}>100</option>
+                    </select>
+                  </div>
 
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className={`p-2 rounded-full ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"}`}
-                  >
-                    <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
-                  </button>
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className={`p-2 rounded-full ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"}`}
+                    >
+                      <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
+                    </button>
 
-                  <span className="text-sm font-bold">{currentPage} of {totalPages}</span>
+                    <span className="text-sm font-bold">{currentPage} of {totalPages}</span>
 
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className={`p-2 rounded-full ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"}`}
-                  >
-                    <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#205DA8"} />
-                  </button>
-                </div>
-              </nav>
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className={`p-2 rounded-full ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"}`}
+                    >
+                      <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#205DA8"} />
+                    </button>
+                  </div>
+                </nav>
               )}
             </div>
             :

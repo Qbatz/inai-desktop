@@ -24,6 +24,8 @@ import PropTypes from 'prop-types'
                 <img src={Search} alt="Search" className="w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                     type="text"
+                    autoComplete="new"
+                    autoCorrect="off"
                     placeholder="Search"
                     className="bg-transparent outline-none ml-2 w-full text-xs sm:text-sm"
                 />

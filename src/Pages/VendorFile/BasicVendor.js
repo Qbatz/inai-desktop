@@ -1818,27 +1818,8 @@ function BasicVendor({ vendorDetails }) {
                     }
                     {activeTab === 3 && <div>
                         
-                        
-                        
-                        
-                        
-                        
                         <BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} vendorDetail={vendorDetails} addressDetails={addressDetails} contactPerson={contactPerson} addressInfo={addressInfo} />
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        
+                                               
                         
                         </div>}
                 </div>

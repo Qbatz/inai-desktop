@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA, compareData, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
+import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
 import { InfoCircle, ArrowDown2 } from "iconsax-react";
 import PropTypes from 'prop-types';

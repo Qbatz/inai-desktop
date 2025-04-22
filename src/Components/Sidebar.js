@@ -26,7 +26,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import AddCustomer from "../Pages/CustomerComponent/AddCustomer";
 import AddVendor from "../Pages/VendorFile/AddVendor";
 import VendorDetails from "../Pages/VendorFile/VendorDetails";
-import UserDetails from "../Components/UserDetails";
+import UserDetails from "../Pages/UserInfo/UserDetails";
 import { GET_USER_INFO_SAGA } from '../Utils/Constant';
 import PropTypes from 'prop-types';
 
@@ -286,12 +286,6 @@ function Sidebar({ state }) {
                 </div>
 
             </div>
-
-
-
-
-
-
 
 
         </div>

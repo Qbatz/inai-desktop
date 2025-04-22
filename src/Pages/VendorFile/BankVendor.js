@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // eslint-disable-next-line react/prop-types
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RESET_VENDOR_ID, RESET_CODE, CREATE_VENDOR_SAGA, VENDOR_SAGA, EDIT_VENDOR_SAGA } from '../../Utils/Constant'
@@ -36,9 +36,27 @@ function BankVendor(props) {
   const [rountingBankAddress, setRountingBankAddress] = useState('')
   const [initialEditData, setInitialEditData] = useState(null);
 
-  const alphaNumericRegex = /^[A-Za-z0-9]*$/; 
+  const alphaNumericRegex = /^[A-Za-z0-9]*$/;
   const alphaNumericWithSpaceRegex = /^[A-Za-z0-9\s]*$/;
   const onlyNumbersRegex = /^[0-9]*$/;
+
+
+  const beneficiaryNameRef = useRef(null);
+  const beneficiaryCurrencyRef = useRef(null);
+  const accountNumberRef = useRef(null);
+  const bankNameRef = useRef(null);
+  const ifscCodeRef = useRef(null);
+  const bankAddressRef = useRef(null);
+
+
+
+
+
+
+
+
+
+
 
   const handleBeneficiaryNameChange = (e) => {
     const value = e.target.value;
@@ -83,21 +101,21 @@ function BankVendor(props) {
 
 
 
-const handleIfscCodeChange = (e) => {
-  const value = e.target.value;
-  if (alphaNumericRegex.test(value) || value === "") { 
-    clearError("ifscCode");
-    setIfscCode(value);  
-  }
-};
+  const handleIfscCodeChange = (e) => {
+    const value = e.target.value;
+    if (alphaNumericRegex.test(value) || value === "") {
+      clearError("ifscCode");
+      setIfscCode(value);
+    }
+  };
 
-const handleSwiftChange = (e) => {
-  const value = e.target.value;
-  if (alphaNumericRegex.test(value) || value === "") {  
-    setSwift(value); 
-    clearError("swift");
-  }
-};
+  const handleSwiftChange = (e) => {
+    const value = e.target.value;
+    if (alphaNumericRegex.test(value) || value === "") {
+      setSwift(value);
+      clearError("swift");
+    }
+  };
 
 
 
@@ -136,16 +154,16 @@ const handleSwiftChange = (e) => {
 
   const handleSiftCodeChange = (e) => {
     const value = e.target.value;
-    if (alphaNumericWithSpaceRegex.test(value) || value === "") {  
-      setSiftCode(value);  
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+      setSiftCode(value);
       clearError("siftCode");
     }
   };
-  
+
   const handleIbanChange = (e) => {
     const value = e.target.value;
-    if (alphaNumericWithSpaceRegex.test(value) || value === "") {  
-      setIban(value);  
+    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+      setIban(value);
       clearError("iban");
     }
   }
@@ -157,9 +175,9 @@ const handleSwiftChange = (e) => {
       clearError("intermediaryDetails");
     }
   };
-  
 
- 
+
+
   const validateForm = () => {
     let errors = {};
 
@@ -175,6 +193,17 @@ const handleSwiftChange = (e) => {
     if (!bankAddress) errors.bankAddress = 'BankAddress is required';
 
     setFormErrors(errors);
+
+
+
+    if (Object.keys(errors).length > 0) {
+      if (errors.beneficiaryName) beneficiaryNameRef.current?.focus();
+      else if (errors.beneficiaryCurrency) beneficiaryCurrencyRef.current?.focus();
+      else if (errors.accountNumber) accountNumberRef.current?.focus();
+      else if (errors.bankName) bankNameRef.current?.focus();
+      else if (errors.ifscCode) ifscCodeRef.current?.focus();
+      else if (errors.bankAddress) bankAddressRef.current?.focus();
+    }
     return Object.keys(errors).length === 0;
   };
 
@@ -572,6 +601,7 @@ const handleSwiftChange = (e) => {
               <input
                 id='clientId'
                 type='text'
+                ref={beneficiaryNameRef}
                 value={props.vendorDetail ? beneficiaryName : props?.basicDetails?.contactPersonName}
                 onChange={handleBeneficiaryNameChange}
                 placeholder='Enter Beneficiary Name '
@@ -588,6 +618,7 @@ const handleSwiftChange = (e) => {
 
 
               <select
+                ref={beneficiaryCurrencyRef}
                 value={beneficiaryCurrency}
                 onChange={handleBeneficiaryCurrency}
                 className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
@@ -612,6 +643,7 @@ const handleSwiftChange = (e) => {
               <input
                 id='clientId'
                 type='text'
+                ref={accountNumberRef}
                 value={accountNumber}
                 onChange={handleAccountNumberChange}
                 placeholder='Enter Account Number'
@@ -638,6 +670,7 @@ const handleSwiftChange = (e) => {
               <input
                 id='clientId'
                 type='text'
+                ref={bankNameRef}
                 value={bankName}
                 onChange={handleBankNameChange}
                 placeholder='Enter Account Name'
@@ -656,6 +689,7 @@ const handleSwiftChange = (e) => {
               <input
                 id='clientId'
                 type='text'
+                ref={ifscCodeRef}
                 value={ifscCode}
                 onChange={handleIfscCodeChange}
                 placeholder='Enter IFSC Code'
@@ -689,6 +723,7 @@ const handleSwiftChange = (e) => {
               <input
                 id='clientId'
                 type='text'
+                ref={bankAddressRef}
                 value={bankAddress}
                 onChange={handleBankAddressChange}
                 placeholder='Enter Bank Address '

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import BankVendor from "./BankVendor";
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
@@ -59,11 +59,46 @@ function BasicVendor({ vendorDetails }) {
     const [addressInfo, setAddressInfo] = useState('')
 
 
+    const businessNameRef = useRef(null);
+    const surNameRef = useRef(null);
+    const contactPersonRef = useRef(null);
+    const countryCodeRef = useRef(null);
+    const contactNumberRef = useRef(null);
+    const emailRef = useRef(null);
+    const designationRef = useRef(null);
+    const gstVatRef = useRef(null);
+
+
+    const additionalRefs = useRef([]);
 
 
 
+    const officeAddress1Ref = useRef(null);
+    const cityRef = useRef(null);
+    const postalCodeRef = useRef(null);
+    const shippingAddress1Ref = useRef(null);
+    const shippingCityRef = useRef(null);
+    const shippingPostalCodeRef = useRef(null);
 
 
+
+     useEffect(() => {
+       
+        additionalRefs.current = additionalContacts.map((_, index) => {
+        
+          if (!additionalRefs.current[index]) {
+            additionalRefs.current[index] = {
+              surNameRef: React.createRef(),
+              contactNumberRef: React.createRef(),
+              countryCodeRef: React.createRef(),
+              emailRef: React.createRef(),
+              designationRef: React.createRef(),
+            };
+          }
+          return additionalRefs.current[index];
+        });
+      }, [additionalContacts]);
+      
 
     const handleBackToAddress = (value, bankDetails) => {
         setActiveTab(value)
@@ -160,7 +195,7 @@ function BasicVendor({ vendorDetails }) {
     const validateForm = () => {
         let errors = {};
 
-        if (!businessName) errors.businessName = "Business Name is required";
+        
         if (!surName) errors.surName = "Title is required";
         if (!contactPerson?.trim()) errors.contactPerson = "Contact Person is required";
         if (!countryCode) errors.countryCode = "countryCode is required";
@@ -174,7 +209,7 @@ function BasicVendor({ vendorDetails }) {
         }
         if (!designation?.trim()) errors.designation = "Designation is required";
         if (!gstVat?.trim()) errors.gstVat = "GST/VAT is required";
-
+        if (!businessName) errors.businessName = "Business Name is required";
         additionalContacts?.forEach((contact, index) => {
             const hasName = contact.name?.trim();
 
@@ -211,8 +246,58 @@ function BasicVendor({ vendorDetails }) {
 
 
         setFormErrors(errors);
+
+        if (Object.keys(errors).length > 0) {
+            
+            if (errors.surName) surNameRef.current?.focus();
+            else if (errors.contactPerson) contactPersonRef.current?.focus();
+            else if (errors.countryCode) countryCodeRef.current?.focus();
+            else if (errors.contactNumber) contactNumberRef.current?.focus();
+            else if (errors.email) emailRef.current?.focus();
+            else if (errors.designation) designationRef.current?.focus();
+            else if (errors.gstVat) gstVatRef.current?.focus();
+            else if (errors.businessName) businessNameRef.current?.focus();
+            else {
+
+                for (let index = 0; index < additionalContacts.length; index++) {
+                    if (errors[`additionalSurName${index}`] && additionalRefs.current[index]) {
+                        additionalRefs.current[index].surNameRef?.current?.focus();
+                        break;
+                      }
+                      if (errors[`additionalContactNumber${index}`] && additionalRefs.current[index]) {
+                        additionalRefs.current[index].contactNumberRef?.current?.focus();
+                        break;
+                      }
+                      if (errors[`additionalCountryCode${index}`] && additionalRefs.current[index]) {
+                        additionalRefs.current[index].countryCodeRef?.current?.focus();
+                        break;
+                      }
+                      if (errors[`additionalEmail${index}`] && additionalRefs.current[index]) {
+                        additionalRefs.current[index].emailRef?.current?.focus();
+                        break;
+                      }
+                      if (errors[`additionalDesignation${index}`] && additionalRefs.current[index]) {
+                        additionalRefs.current[index].designationRef?.current?.focus();
+                        break;
+                      }
+                }
+            }
+        }
+
+
         return Object.keys(errors).length === 0;
     };
+
+
+
+
+
+
+
+
+
+
+
 
     const handleSaveClick = () => {
         const fieldsToCompare = [
@@ -255,15 +340,24 @@ function BasicVendor({ vendorDetails }) {
         }
 
         if (validateForm()) {
-
-            const formattedAdditionalContacts = additionalContacts.map(contact => ({
-                title: contact.surName,
-                name: contact.name,
-                country_code: contact.countryCode,
-                contactNumber: Number(contact.contactNumber),
-                contactEmail: contact.email,
-                designation: contact.designation
-            }));
+            const filteredContacts = additionalContacts.filter(contact =>
+                contact.surName?.trim() !== '' ||
+                contact.name?.trim() !== '' ||
+                contact.countryCode?.toString().trim() !== '' ||
+                contact.contactNumber?.toString().trim() !== '' ||
+                contact.email?.trim() !== '' ||
+                contact.designation?.trim() !== ''
+            );
+            const formattedAdditionalContacts = filteredContacts.length > 0
+                ? filteredContacts.map(contact => ({
+                    title: contact.surName,
+                    name: contact.name,
+                    country_code: contact.countryCode,
+                    contactNumber: Number(contact.contactNumber),
+                    contactEmail: contact.email,
+                    designation: contact.designation
+                }))
+                : [];
             dispatch({
                 type: VENDOR_BASIC_INFO_SAGA,
                 payload: {
@@ -289,14 +383,24 @@ function BasicVendor({ vendorDetails }) {
         if (validateForm()) {
 
             setActiveTab(2);
-            const formattedAdditionalContacts = additionalContacts.map(contact => ({
-                title: contact.surName,
-                name: contact.name,
-                country_code: contact.countryCode,
-                contactNumber: Number(contact.contactNumber),
-                contactEmail: contact.email,
-                designation: contact.designation
-            }));
+            const filteredContacts = additionalContacts.filter(contact =>
+                contact.surName?.trim() !== '' ||
+                contact.name?.trim() !== '' ||
+                contact.countryCode?.toString().trim() !== '' ||
+                contact.contactNumber?.toString().trim() !== '' ||
+                contact.email?.trim() !== '' ||
+                contact.designation?.trim() !== ''
+            );
+            const formattedAdditionalContacts = filteredContacts.length > 0
+                ? filteredContacts.map(contact => ({
+                    title: contact.surName,
+                    name: contact.name,
+                    country_code: contact.countryCode,
+                    contactNumber: Number(contact.contactNumber),
+                    contactEmail: contact.email,
+                    designation: contact.designation
+                }))
+                : [];
 
 
             const payload = {
@@ -366,14 +470,24 @@ function BasicVendor({ vendorDetails }) {
 
     const handleTabClick = (id) => {
 
-        const formattedAdditionalContacts = additionalContacts.map(contact => ({
-            title: contact.surName,
-            name: contact.name,
-            country_code: contact.countryCode,
-            contactNumber: Number(contact.contactNumber),
-            contactEmail: contact.email,
-            designation: contact.designation
-        }));
+        const filteredContacts = additionalContacts.filter(contact =>
+            contact.surName?.trim() !== '' ||
+            contact.name?.trim() !== '' ||
+            contact.countryCode?.toString().trim() !== '' ||
+            contact.contactNumber?.toString().trim() !== '' ||
+            contact.email?.trim() !== '' ||
+            contact.designation?.trim() !== ''
+        );
+        const formattedAdditionalContacts = filteredContacts.length > 0
+            ? filteredContacts.map(contact => ({
+                title: contact.surName,
+                name: contact.name,
+                country_code: contact.countryCode,
+                contactNumber: Number(contact.contactNumber),
+                contactEmail: contact.email,
+                designation: contact.designation
+            }))
+            : [];
 
         const payload = {
             vendor_id: '',
@@ -424,15 +538,13 @@ function BasicVendor({ vendorDetails }) {
                 };
 
                 setAddressInfo(payloadData)
-
-
                 setActiveTab(3);
             }
         } else if (Number(id) === Number(2)) {
             if (validateForm()) {
                 setBasicDetails(payload);
                 setActiveTab(2);
-            }
+            } 
         } else {
             setActiveTab(id);
         }
@@ -449,47 +561,47 @@ function BasicVendor({ vendorDetails }) {
 
     // }
 
-const alphaNumericWithSpaceRegex = /^[A-Za-z0-9\s]*$/;
+    const alphaNumericWithSpaceRegex = /^[A-Za-z0-9\s]*$/;
 
-const handleOfficeAddress1Change = (e) => {
-    const value = e.target.value;
-    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
-        setOfficeAddress1(value);
-        setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress1: "" }));
-    }
-};
+    const handleOfficeAddress1Change = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setOfficeAddress1(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress1: "" }));
+        }
+    };
 
-const handleOfficeAddress2Change = (e) => {
-    const value = e.target.value;
-    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
-        setOfficeAddress2(value);
-        setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress2: "" }));
-    }
-};
+    const handleOfficeAddress2Change = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setOfficeAddress2(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress2: "" }));
+        }
+    };
 
-const handleOfficeAddress3Change = (e) => {
-    const value = e.target.value;
-    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
-        setOfficeAddress3(value);
-        setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress3: "" }));
-    }
-};
+    const handleOfficeAddress3Change = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setOfficeAddress3(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress3: "" }));
+        }
+    };
 
-const handleOfficeAddress4Change = (e) => {
-    const value = e.target.value;
-    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
-        setOfficeAddress4(value);
-        setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress4: "" }));
-    }
-};
+    const handleOfficeAddress4Change = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setOfficeAddress4(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, officeAddress4: "" }));
+        }
+    };
 
-const handleCityChange = (e) => {
-    const value = e.target.value;
-    if (alphaNumericWithSpaceRegex.test(value) || value === "") {
-        setCity(value);
-        setFormErrors((prevErrors) => ({ ...prevErrors, city: "" }));
-    }
-};
+    const handleCityChange = (e) => {
+        const value = e.target.value;
+        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+            setCity(value);
+            setFormErrors((prevErrors) => ({ ...prevErrors, city: "" }));
+        }
+    };
 
 
 
@@ -514,7 +626,7 @@ const handleCityChange = (e) => {
             setLandmark(value);
         }
     };
-    
+
     const handleGoogleMapChange = (e) => {
         const value = e.target.value;
         if (alphaNumericWithSpaceRegex.test(value) || value === "") {
@@ -531,7 +643,7 @@ const handleCityChange = (e) => {
             setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress1: "" }));
         }
     };
-    
+
     const handleShippingAddress2Change = (e) => {
         const value = e.target.value;
         if (alphaNumericWithSpaceRegex.test(value) || value === "") {
@@ -539,7 +651,7 @@ const handleCityChange = (e) => {
             setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress2: "" }));
         }
     };
-    
+
     const handleShippingAddress3Change = (e) => {
         const value = e.target.value;
         if (alphaNumericWithSpaceRegex.test(value) || value === "") {
@@ -547,7 +659,7 @@ const handleCityChange = (e) => {
             setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress3: "" }));
         }
     };
-    
+
     const handleShippingAddress4Change = (e) => {
         const value = e.target.value;
         if (alphaNumericWithSpaceRegex.test(value) || value === "") {
@@ -555,7 +667,7 @@ const handleCityChange = (e) => {
             setFormErrors((prevErrors) => ({ ...prevErrors, shippingAddress4: "" }));
         }
     };
-    
+
     const handleShippingCity = (e) => {
         const value = e.target.value;
         if (alphaNumericWithSpaceRegex.test(value) || value === "") {
@@ -563,7 +675,7 @@ const handleCityChange = (e) => {
             setFormErrors((prevErrors) => ({ ...prevErrors, shippingCity: "" }));
         }
     };
-    
+
 
 
     const handleShippingState = (e) => setShippingState(e.target.value);
@@ -584,7 +696,7 @@ const handleCityChange = (e) => {
             setFormErrors((prevErrors) => ({ ...prevErrors, shippingLandmark: "" }));
         }
     };
-    
+
     const handleShippingGoogleMapChange = (e) => {
         const value = e.target.value;
         if (alphaNumericWithSpaceRegex.test(value) || value === "") {
@@ -639,6 +751,14 @@ const handleCityChange = (e) => {
         if (!shippingCity.trim()) errors.shippingCity = "City is required";
         if (!shippingPostalCode.trim()) errors.shippingPostalCode = "Postal Code is required";
         setFormErrors(errors);
+        if (Object.keys(errors).length > 0) {
+            if (errors.officeAddress1) officeAddress1Ref.current?.focus();
+            else if (errors.city) cityRef.current?.focus();
+            else if (errors.postalCode) postalCodeRef.current?.focus();
+            else if (errors.shippingAddress1) shippingAddress1Ref.current?.focus();
+            else if (errors.shippingCity) shippingCityRef.current?.focus();
+            else if (errors.shippingPostalCode) shippingPostalCodeRef.current?.focus();
+        }
         return Object.keys(errors).length === 0;
     };
 
@@ -683,96 +803,6 @@ const handleCityChange = (e) => {
         }
 
     };
-
-
-
-
-
-
-
-
-
-    useEffect(() => {
-        if (vendorDetails) {
-            const initial = {
-                businessName: vendorDetails.businessName || '',
-                surName: vendorDetails?.title_id,
-                countryCode: vendorDetails.country_code_id,
-                contactPerson: vendorDetails.contactPersonName || '',
-                contactNumber: vendorDetails.contactNumber || '',
-                email: vendorDetails.emailId || '',
-                designation: vendorDetails.designation || '',
-                gstVat: vendorDetails.gstvat || '',
-                additionalContacts: (vendorDetails.additionalContactInfo || []).map((item) => ({
-                    surName: item.title_id || "",
-                    name: item.name || "",
-                    countryCode: item.country_codeid || '',
-                    contactNumber: item.contactNumber || "",
-                    email: item.contactEmail || "",
-                    designation: item.designation || ""
-                }))
-            };
-
-            setBusinessName(initial.businessName);
-            setContactPerson(initial.contactPerson);
-            setContactNumber(initial.contactNumber);
-            setEmail(initial.email);
-            setSurName(initial.surName)
-            setCountryCode(initial.countryCode)
-            setDesignation(initial.designation);
-            setGstVat(initial.gstVat);
-            setAdditionalContacts(initial.additionalContacts);
-            setInitialValues(initial);
-        }
-    }, [vendorDetails]);
-
-
-
-
-
-
-    useEffect(() => {
-        if (state.Common.successCode === 200) {
-            setBusinessName('');
-            setContactPerson('');
-            setContactNumber('');
-            setEmail('');
-            setDesignation('');
-            setGstVat('');
-            setAdditionalContacts([]);
-            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } })
-            setTimeout(() => {
-                dispatch({ type: RESET_VENDOR_ID })
-            }, 6000)
-        }
-
-    }, [state.Common.successCode])
-
-
-    useEffect(() => {
-        dispatch({ type: GET_MASTER_SAGA })
-    }, [])
-
-
-
-
-
-    useEffect(() => {
-        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-            setLoading(false)
-            setTimeout(() => {
-                dispatch({ type: RESET_CODE })
-            }, 5000)
-        }
-    }, [state.Common?.successCode, state.Common?.code]);
-
-
-    useEffect(() => {
-        if (state.Common?.IsVisible === 1) {
-            navigate('/vendor')
-        }
-
-    }, [state.Common?.IsVisible])
 
     const handleSaveClickAddress = () => {
         if (validateFormAddress()) {
@@ -863,6 +893,96 @@ const handleCityChange = (e) => {
 
 
 
+   
+
+
+
+
+    useEffect(() => {
+        if (vendorDetails) {
+            const initial = {
+                businessName: vendorDetails.businessName || '',
+                surName: vendorDetails?.title_id,
+                countryCode: vendorDetails.country_code_id,
+                contactPerson: vendorDetails.contactPersonName || '',
+                contactNumber: vendorDetails.contactNumber || '',
+                email: vendorDetails.emailId || '',
+                designation: vendorDetails.designation || '',
+                gstVat: vendorDetails.gstvat || '',
+                additionalContacts: (vendorDetails.additionalContactInfo || []).map((item) => ({
+                    surName: item.title_id || "",
+                    name: item.name || "",
+                    countryCode: item.country_codeid || '',
+                    contactNumber: item.contactNumber || "",
+                    email: item.contactEmail || "",
+                    designation: item.designation || ""
+                }))
+            };
+
+            setBusinessName(initial.businessName);
+            setContactPerson(initial.contactPerson);
+            setContactNumber(initial.contactNumber);
+            setEmail(initial.email);
+            setSurName(initial.surName)
+            setCountryCode(initial.countryCode)
+            setDesignation(initial.designation);
+            setGstVat(initial.gstVat);
+            setAdditionalContacts(initial.additionalContacts);
+            setInitialValues(initial);
+        }
+    }, [vendorDetails]);
+
+
+
+
+
+
+    useEffect(() => {
+        if (state.Common.successCode === 200) {
+            setBusinessName('');
+            setContactPerson('');
+            setContactNumber('');
+            setEmail('');
+            setDesignation('');
+            setGstVat('');
+            setAdditionalContacts([]);
+            dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } })
+            setTimeout(() => {
+                dispatch({ type: RESET_VENDOR_ID })
+            }, 6000)
+        }
+
+    }, [state.Common.successCode])
+
+
+    useEffect(() => {
+        dispatch({ type: GET_MASTER_SAGA })
+    }, [])
+
+
+
+
+
+    useEffect(() => {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 5000)
+        }
+    }, [state.Common?.successCode, state.Common?.code]);
+
+
+    useEffect(() => {
+        if (state.Common?.IsVisible === 1) {
+            navigate('/vendor')
+        }
+
+    }, [state.Common?.IsVisible])
+
+
+
+
 
     useEffect(() => {
         if (state.Common.successCode === 200) {
@@ -929,8 +1049,6 @@ const handleCityChange = (e) => {
 
 
 
-
-
     return (
         <div className="bg-slate-100  w-full rounded-t-2xl ">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4 relative">
@@ -944,11 +1062,11 @@ const handleCityChange = (e) => {
                 )}
 
                 <div className="sticky top-0  z-10 overflow-x-auto bg-slate-100">
-                    <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">
+                    <div className="flex flex-col sm:flex-row gap-8 mb-4   border-gray-300">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.id}
-                                className={`px-4 py-2 font-Gilroy  md:px-6 lg:px-8 text-base
+                                className={`px-0 py-2 font-Gilroy  text-base
                                  ${activeTab === tab.id
                                         ? "border-b-4 border-[#205DA8] text-[#205DA8] font-semibold text-base"
                                         : "text-gray-500 border-neutral-100 border-b-4 text-base"
@@ -993,6 +1111,7 @@ const handleCityChange = (e) => {
                                         <div className="flex">
                                             <select
                                                 value={surName}
+                                                ref={surNameRef}
                                                 onChange={handleSurNameChange}
                                                 className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                             >
@@ -1004,6 +1123,7 @@ const handleCityChange = (e) => {
                                                 ))}
                                             </select>
                                             <input
+                                                ref={contactPersonRef}
                                                 id="contactPerson"
                                                 value={contactPerson}
                                                 onChange={handleContactPersonChange}
@@ -1040,6 +1160,7 @@ const handleCityChange = (e) => {
                                         <div className="flex">
                                             <select
                                                 value={countryCode}
+                                                ref={countryCodeRef}
                                                 onChange={handleCountryCodeChange}
                                                 className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
                                             >
@@ -1054,6 +1175,7 @@ const handleCityChange = (e) => {
 
                                             <input
                                                 type='text'
+                                                ref={contactNumberRef}
                                                 value={contactNumber}
                                                 onChange={handleContactNumberChange}
                                                 placeholder='Enter Contact  Number'
@@ -1080,7 +1202,7 @@ const handleCityChange = (e) => {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID <span className='text-red-500'>*</span> </label>
                                         <input
-
+                                            ref={emailRef}
                                             type='text'
                                             value={email}
                                             onChange={handleEmailChange}
@@ -1097,6 +1219,7 @@ const handleCityChange = (e) => {
 
                                             type='text'
                                             value={designation}
+                                            ref={designationRef}
                                             onChange={handleDesignationChange}
                                             placeholder='Enter Designation'
                                             className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
@@ -1110,6 +1233,7 @@ const handleCityChange = (e) => {
                                         <input
                                             type='text'
                                             value={gstVat}
+                                            ref={gstVatRef}
                                             onChange={handleGstVatChange}
                                             placeholder='Enter GST/VAT'
 
@@ -1123,6 +1247,7 @@ const handleCityChange = (e) => {
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name <span className='text-red-500'>*</span> </label>
                                         <input
                                             id='clientId'
+                                            ref={businessNameRef}
                                             value={businessName}
                                             onChange={handleBusinessNameChange}
                                             type='text'
@@ -1154,6 +1279,7 @@ const handleCityChange = (e) => {
                                                     </label>
                                                     <div className="flex">
                                                         <select
+                                                            ref={additionalRefs.current[index]?.surNameRef}
                                                             value={contact.surName}
                                                             onChange={(e) => handleAdditionalContactChange(index, "surName", e.target.value)}
                                                             className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
@@ -1167,6 +1293,7 @@ const handleCityChange = (e) => {
                                                         </select>
                                                         <input
                                                             type="text"
+                                                          
                                                             value={contact.name}
                                                             onChange={(e) => handleAdditionalContactChange(index, "name", e.target.value)}
                                                             placeholder="Enter Contact Person Name"
@@ -1198,6 +1325,7 @@ const handleCityChange = (e) => {
                                                     </label>
                                                     <div className="flex">
                                                         <select
+                                                            ref={additionalRefs.current[index]?.countryCodeRef}
                                                             value={contact.countryCode}
                                                             onChange={(e) => handleAdditionalContactChange(index, "countryCode", e.target.value)}
                                                             className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
@@ -1213,6 +1341,7 @@ const handleCityChange = (e) => {
 
                                                         <input
                                                             type="text"
+                                                            ref={additionalRefs.current[index]?.contactNumberRef}
                                                             value={contact.contactNumber}
                                                             onChange={(e) => handleAdditionalContactChange(index, "contactNumber", e.target.value)}
                                                             placeholder="Enter Contact Number"
@@ -1242,6 +1371,7 @@ const handleCityChange = (e) => {
                                                     </label>
                                                     <input
                                                         type="text"
+                                                        ref={additionalRefs.current[index]?.emailRef}
                                                         value={contact.email}
                                                         onChange={(e) => handleAdditionalContactChange(index, "email", e.target.value)}
                                                         placeholder="Enter Email ID"
@@ -1258,6 +1388,7 @@ const handleCityChange = (e) => {
                                                     </label>
                                                     <input
                                                         type="text"
+                                                        ref={additionalRefs.current[index]?.designationRef}
                                                         value={contact.designation}
                                                         onChange={(e) => handleAdditionalContactChange(index, "designation", e.target.value)}
                                                         placeholder="Enter Designation"
@@ -1322,6 +1453,7 @@ const handleCityChange = (e) => {
                                         <div className='mb-2 items-center '>
                                             <input
                                                 type='text'
+                                                ref={officeAddress1Ref}
                                                 value={officeAddress1}
                                                 onChange={handleOfficeAddress1Change}
                                                 placeholder='Enter Address Line 1'
@@ -1384,6 +1516,7 @@ const handleCityChange = (e) => {
                                                 id='clientId'
                                                 type='text'
                                                 value={city}
+                                                ref={cityRef}
                                                 onChange={handleCityChange}
                                                 placeholder='Enter City'
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
@@ -1439,6 +1572,7 @@ const handleCityChange = (e) => {
                                             <input
                                                 id='clientId'
                                                 type='text'
+                                                ref={postalCodeRef}
                                                 value={postalCode}
                                                 onChange={handlePostalCodeChange}
                                                 placeholder='Enter Postal Code'
@@ -1490,6 +1624,7 @@ const handleCityChange = (e) => {
                                             <input
                                                 id='clientId'
                                                 type='text'
+                                                ref={shippingAddress1Ref}
                                                 value={shippingAddress1}
                                                 onChange={handleShippingAddress1Change}
                                                 placeholder='Enter Address Line '
@@ -1549,6 +1684,7 @@ const handleCityChange = (e) => {
                                             <input
                                                 id='clientId'
                                                 type='text'
+                                                ref={shippingCityRef}
                                                 value={shippingCity}
                                                 onChange={handleShippingCity}
                                                 placeholder='Enter City'
@@ -1600,6 +1736,7 @@ const handleCityChange = (e) => {
                                             <input
                                                 id='clientId'
                                                 type='text'
+                                                ref={shippingPostalCodeRef}
                                                 value={shippingPostalCode}
                                                 onChange={handleShippingPostalCodeChange}
                                                 placeholder='Enter Postal Code'
@@ -1679,7 +1816,12 @@ const handleCityChange = (e) => {
 
                     </div>
                     }
-                    {activeTab === 3 && <div><BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} vendorDetail={vendorDetails} addressDetails={addressDetails} contactPerson={contactPerson} addressInfo={addressInfo} /></div>}
+                    {activeTab === 3 && <div>
+                        
+                        <BankVendor hanldeBackToAddress={handleBackToAddress} basicDetails={basicDetails} vendorDetail={vendorDetails} addressDetails={addressDetails} contactPerson={contactPerson} addressInfo={addressInfo} />
+                                               
+                        
+                        </div>}
                 </div>
             </div>
         </div>

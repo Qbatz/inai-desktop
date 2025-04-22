@@ -49,7 +49,6 @@ function AddCustomer({ editCustomerDetails }) {
 
     const [contacts, setContacts] = useState([]);
 
-    console.log("Contacts", contacts)
 
 
     const [bankDetailsList, setBankDetailsList] = useState([
@@ -92,34 +91,9 @@ function AddCustomer({ editCustomerDetails }) {
     const shipPostalCodeRef = useRef(null);
 
 
-    useEffect(() => {
-        contactRefs.current = contacts.map((_, index) => {
-            return contactRefs.current[index] || {
-                surName: React.createRef(),
-                countryCode: React.createRef(),
-                number: React.createRef(),
-                email: React.createRef(),
-                designation: React.createRef(),
-            };
-        });
-    }, [contacts]);
-    useEffect(() => {
-        bankRefs.current = bankDetailsList.map((_, index) => {
-            return bankRefs.current[index] || {
-                beneficiaryName: React.createRef(),
-                beneficiaryCurrency: React.createRef(),
-                accountNumber: React.createRef(),
-                bankName: React.createRef(),
-                ifscCode: React.createRef(),
-                bankAddress1: React.createRef(),
-            };
-        });
-    }, [bankDetailsList]);
 
 
 
-
-    console.log("bankRef", bankRefs)
 
 
 
@@ -502,6 +476,12 @@ function AddCustomer({ editCustomerDetails }) {
             [`ship${field}`]: value.trim() ? "" : prevErrors[`ship${field}`],
         }));
     };
+
+
+
+
+
+
 
     const handleSameAsOffice = (e) => {
         setContactAddressSameAsOfficeAddress(!contactAddressSameAsOfficeAddress)
@@ -918,7 +898,6 @@ function AddCustomer({ editCustomerDetails }) {
 
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
 
-        console.log("bankErrors", bankErrors)
 
 
         if (!isValid) {
@@ -1332,6 +1311,30 @@ function AddCustomer({ editCustomerDetails }) {
         }
     };
 
+    useEffect(() => {
+        contactRefs.current = contacts.map((_, index) => {
+            return contactRefs.current[index] || {
+                surName: React.createRef(),
+                countryCode: React.createRef(),
+                number: React.createRef(),
+                email: React.createRef(),
+                designation: React.createRef(),
+            };
+        });
+    }, [contacts]);
+    useEffect(() => {
+        bankRefs.current = bankDetailsList.map((_, index) => {
+            return bankRefs.current[index] || {
+                beneficiaryName: React.createRef(),
+                beneficiaryCurrency: React.createRef(),
+                accountNumber: React.createRef(),
+                bankName: React.createRef(),
+                ifscCode: React.createRef(),
+                bankAddress1: React.createRef(),
+            };
+        });
+    }, [bankDetailsList]);
+
 
 
 
@@ -1498,13 +1501,10 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
     useEffect(() => {
-        if (compareData(officeAddress.address1, shippingAddress.address1) && compareData(officeAddress.address2, shippingAddress.address2) && compareData(officeAddress.address3, shippingAddress.address3) && compareData(officeAddress.city, shippingAddress.city) && compareData(officeAddress.postalCode, shippingAddress.postalCode)) {
-            setContactAddressSameAsOfficeAddress(true)
-        }
-        else {
-            setContactAddressSameAsOfficeAddress(false)
-        }
-    }, [officeAddress, shippingAddress])
+        const isSame = JSON.stringify(officeAddress) === JSON.stringify(shippingAddress);
+        setContactAddressSameAsOfficeAddress(isSame);
+    }, [officeAddress, shippingAddress]);
+
 
 
 
@@ -1535,10 +1535,10 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     return (
-        <div className='bg-slate-100 flex flex-1 flex-col ps-5 pt-3 pe-5 rounded-t-2xl '>
+        <div className='bg-slate-100 flex flex-1 flex-col p-2 sm:p-2 md:p-2 lg:p-2 rounded-t-2xl '>
 
 
-            <div className='bg-slate-100 rounded-2xl ps-5 pt-3 pe-5 relative'>
+            <div className='bg-slate-100 rounded-2xl ps-5 pt-2 pe-5 relative'>
                 {loading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
                         <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
@@ -1547,17 +1547,17 @@ function AddCustomer({ editCustomerDetails }) {
 
 
 
-                <div className='flex items-center justify-between pe-12 mb-4'>
-                    <h2 className="text-xl font-semibold mb-2  font-Gilroy">{editCustomerDetails ? 'Edit Customer' : "Add Customer"} </h2>
+                <div className='flex items-center justify-between pe-12 mb-1'>
+                    <h2 className="text-xl font-semibold  font-Gilroy">{editCustomerDetails ? 'Edit Customer' : "Add Customer"} </h2>
                 </div>
                 {
                     isChanged && <label className='mb-4 text-start font-Gilroy font-normal text-md text-red-600'>{isChanged}</label>
                 }
-                <div className="flex flex-col sm:flex-row gap-2 mb-4  border-gray-300">
+                <div className="flex flex-col sm:flex-row gap-8 mb-6  border-gray-300">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
-                            className={`px-4 py-2 font-Gilroy ${value === tab.id
+                            className={`px-0 py-2 font-Gilroy ${value === tab.id
                                 ? "border-b-4 border-[#205DA8] text-[#205DA8] font-semibold text-base"
                                 : "text-gray-500 border-neutral-100 border-b-4 text-base"
                                 } transition-all duration-600`}
@@ -1575,1180 +1575,1182 @@ function AddCustomer({ editCustomerDetails }) {
                 {
                     state.Common.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
                 }
-                {value === 1 &&
-                    <div className='bg-white rounded-2xl h-auto ps-5 pt-3 pe-5'>
+
+                <div className="p-2 sm:p-2 md:p-2 lg:p-4 bg-white mt-4 rounded-2xl">
+                    {value === 1 &&
+                        <div className=''>
 
 
-                        <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black">Basic Information</h2>
+                            <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black">Basic Information</h2>
 
-                        <div className='max-h-[320px] overflow-y-auto  
+                            <div className='max-h-[320px] overflow-y-auto  
                           lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3 ' >
-                            <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+                                <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
 
 
-                                <div >
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact Person   <span className='text-red-500'>*</span></label>
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact Person   <span className='text-red-500'>*</span></label>
 
 
-                                    <div className="flex">
-                                        <select
-                                            value={formData.surName}
-                                            ref={surNameRef}
-                                            onChange={(e) => handleInputChange('surName', e.target.value)}
-                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px] "
-                                        >
-                                            <option value="" >Select</option>
-                                            {state?.Common?.titles.map((title) => (
-                                                <option key={title.id} value={title.id} >
-                                                    {title.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        <input
-                                            ref={contactPersonRef}
-                                            type='text'
-                                            value={formData.contactPerson}
-                                            onChange={(e) => handleInputChange('contactPerson', e.target.value)}
-                                            placeholder='Enter Contact Person'
-                                            className='px-3 py-3 border w-full border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                    </div>
-
-                                    {errors.surName && errors.contactPerson ? (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                Title & Contact Name is required
-                                            </span>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            {errors.surName && (
-                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                    <InfoCircle size={16} color="#DC2626" />
-                                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                        {errors.surName}
-                                                    </span>
-                                                </div>
-                                            )}
-                                            {errors.contactPerson && (
-                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                    <InfoCircle size={16} color="#DC2626" />
-                                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                        {errors.contactPerson}
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-
-
-                                </div>
-                                <div >
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact  Number <span className='text-red-500'>*</span></label>
-
-
-                                    <div className="flex">
-                                        <select
-                                            ref={countryCodeRef}
-                                            value={formData.countryCode}
-                                            onChange={(e) => handleInputChange('countryCode', e.target.value)}
-                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
-                                        >
-                                            <option value="">Select</option>
-                                            {state.Common?.country?.map((item) => (
-                                                <option key={item.id} value={item.id} className='text-neutral-500'>
-                                                    {item.phone}
-                                                </option>
-                                            ))}
-
-                                        </select>
-
-                                        <input
-                                            ref={contactNumberRef}
-                                            type='text'
-                                            value={formData.contactNumber}
-                                            onChange={(e) => handleInputChange('contactNumber', e.target.value)}
-                                            placeholder='Enter Contact  Number'
-                                            maxLength={10}
-                                            inputMode="numeric"
-                                            pattern="[0-9]*"
-                                            className='w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-
-                                    </div>
-                                    {errors.countryCode && errors.contactNumber ? (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                Country Code & Contact Number is required
-                                            </span>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            {errors.countryCode && (
-                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                    <InfoCircle size={16} color="#DC2626" />
-                                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                        {errors.countryCode}
-                                                    </span>
-                                                </div>
-                                            )}
-                                            {errors.contactNumber && (
-                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                    <InfoCircle size={16} color="#DC2626" />
-                                                    <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                        {errors.contactNumber}
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-
-
-                                </div>
-                                <div >
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID  <span className='text-red-500'>*</span></label>
-                                    <input
-                                        ref={emailRef}
-                                        type='text'
-                                        value={formData.emailId}
-                                        onChange={(e) => handleInputChange('emailId', e.target.value)}
-                                        placeholder='Enter Email ID'
-                                        className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.emailId && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.emailId}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Designation  <span className='text-red-500'>*</span></label>
-                                    <input
-                                        ref={designationRef}
-                                        type='text'
-                                        value={formData.designation}
-                                        onChange={(e) => handleInputChange('designation', e.target.value)}
-                                        placeholder='Enter Designation'
-                                        className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.designation && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.designation}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div >
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>GST/VAT <span className='text-red-500'>*</span></label>
-                                    <input
-                                        ref={gstVatRef}
-                                        type='text'
-                                        value={formData.gstVat}
-                                        onChange={(e) => handleInputChange('gstVat', e.target.value)}
-                                        placeholder='Enter GST/VAT'
-                                        className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.gstVat && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.gstVat}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div >
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN </label>
-                                    <input
-
-                                        type='text'
-                                        value={formData.cin}
-                                        onChange={(e) => handleInputChange('cin', e.target.value)}
-                                        placeholder='Enter CIN'
-                                        className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.cin && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.cin}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div >
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  <span className='text-red-500'>*</span></label>
-                                    <input
-                                        ref={panRef}
-                                        type='text'
-                                        value={formData.pan}
-                                        onChange={(e) => handleInputChange('pan', e.target.value)}
-                                        placeholder='Enter PAN'
-                                        className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.pan && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.pan}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN </label>
-                                    <input
-
-                                        type='text'
-                                        value={formData.tan}
-                                        onChange={(e) => handleInputChange('tan', e.target.value)}
-                                        placeholder='Enter TAN'
-                                        className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.tan && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.tan}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className=''>
-                                    <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name  <span className='text-red-500'>*</span></label>
-                                    <input
-
-                                        type='text'
-                                        ref={businessNameRef}
-                                        value={formData.businessName}
-                                        onChange={(e) => handleInputChange('businessName', e.target.value)}
-                                        placeholder='Enter Business Name'
-                                        className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.businessName && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.businessName}
-                                            </span>
-                                        </div>
-                                    )}
-
-                                </div>
-                                <div className='mb-2 relative w-full'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                        Legal Status of firm <span className='text-red-500'>*</span>
-                                    </label>
-                                    <select
-                                        ref={legalStatusRef}
-                                        value={formData.legalStatus}
-                                        onChange={(e) => handleInputChange('legalStatus', e.target.value)}
-                                        className="cursor-pointer appearance-none w-full px-3 py-3 border rounded-xl focus:outline-none capitalize font-Gilroy font-medium text-sm text-neutral-500 pr-10"
-                                    >
-                                        <option value="">Select Legal Status of firm</option>
-                                        <option value="PRIVATE LIMITED">PRIVATE LIMITED</option>
-                                        <option value="LLT_LOW LATENCY TRANSSPORT">LLT_LOW LATENCY TRANSSPORT</option>
-                                        <option value="PARTNERSHIP">PARTNERSHIP</option>
-                                        <option value="PROPRIETORSHIP">PROPRIETORSHIP</option>
-                                    </select>
-
-                                    <div className="pointer-events-none absolute top-[54px] right-3 transform -translate-y-1/2 flex items-center text-neutral-500">
-                                        <ArrowDown2
-                                            size="16"
-                                            color="#555555"
-                                        />
-                                    </div>
-
-                                    {errors.legalStatus && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                {errors.legalStatus}
-                                            </span>
-                                        </div>
-                                    )}
-                                </div>
-
-
-
-                            </div>
-                            <div className='mb-2'>
-                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                    Nature of Business <span className='text-red-500'>*</span>
-                                </label>
-                                <div className='flex gap-6'>
-                                    {businessTypes.map((business) => (
-                                        <div key={business.id} className='flex gap-3 items-center'>
+                                        <div className="flex">
+                                            <select
+                                                value={formData.surName}
+                                                ref={surNameRef}
+                                                onChange={(e) => handleInputChange('surName', e.target.value)}
+                                                className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px] "
+                                            >
+                                                <option value="" >Select</option>
+                                                {state?.Common?.titles.map((title) => (
+                                                    <option key={title.id} value={title.id} >
+                                                        {title.name}
+                                                    </option>
+                                                ))}
+                                            </select>
                                             <input
-                                                type="checkbox"
-                                                ref={natureOfBusinessRef}
-                                                className="ml-2 accent-[#205DA8]"
-                                                checked={natureOfBusiness.includes(String(business.id))}
-                                                onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
+                                                ref={contactPersonRef}
+                                                type='text'
+                                                value={formData.contactPerson}
+                                                onChange={(e) => handleInputChange('contactPerson', e.target.value)}
+                                                placeholder='Enter Contact Person'
+                                                className='px-3 py-3 border w-full border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                             />
-                                            <label className='block text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                                {business.label}
-                                            </label>
+                                        </div>
+
+                                        {errors.surName && errors.contactPerson ? (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    Title & Contact Name is required
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {errors.surName && (
+                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                            {errors.surName}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                {errors.contactPerson && (
+                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                            {errors.contactPerson}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+
+
+                                    </div>
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact  Number <span className='text-red-500'>*</span></label>
+
+
+                                        <div className="flex">
+                                            <select
+                                                ref={countryCodeRef}
+                                                value={formData.countryCode}
+                                                onChange={(e) => handleInputChange('countryCode', e.target.value)}
+                                                className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                            >
+                                                <option value="">Select</option>
+                                                {state.Common?.country?.map((item) => (
+                                                    <option key={item.id} value={item.id} className='text-neutral-500'>
+                                                        {item.phone}
+                                                    </option>
+                                                ))}
+
+                                            </select>
+
+                                            <input
+                                                ref={contactNumberRef}
+                                                type='text'
+                                                value={formData.contactNumber}
+                                                onChange={(e) => handleInputChange('contactNumber', e.target.value)}
+                                                placeholder='Enter Contact  Number'
+                                                maxLength={10}
+                                                inputMode="numeric"
+                                                pattern="[0-9]*"
+                                                className='w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+
+                                        </div>
+                                        {errors.countryCode && errors.contactNumber ? (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    Country Code & Contact Number is required
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {errors.countryCode && (
+                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                            {errors.countryCode}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                                {errors.contactNumber && (
+                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                            {errors.contactNumber}
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+
+
+                                    </div>
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID  <span className='text-red-500'>*</span></label>
+                                        <input
+                                            ref={emailRef}
+                                            type='text'
+                                            value={formData.emailId}
+                                            onChange={(e) => handleInputChange('emailId', e.target.value)}
+                                            placeholder='Enter Email ID'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.emailId && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.emailId}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Designation  <span className='text-red-500'>*</span></label>
+                                        <input
+                                            ref={designationRef}
+                                            type='text'
+                                            value={formData.designation}
+                                            onChange={(e) => handleInputChange('designation', e.target.value)}
+                                            placeholder='Enter Designation'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.designation && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.designation}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>GST/VAT <span className='text-red-500'>*</span></label>
+                                        <input
+                                            ref={gstVatRef}
+                                            type='text'
+                                            value={formData.gstVat}
+                                            onChange={(e) => handleInputChange('gstVat', e.target.value)}
+                                            placeholder='Enter GST/VAT'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.gstVat && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.gstVat}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN </label>
+                                        <input
+
+                                            type='text'
+                                            value={formData.cin}
+                                            onChange={(e) => handleInputChange('cin', e.target.value)}
+                                            placeholder='Enter CIN'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.cin && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.cin}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  <span className='text-red-500'>*</span></label>
+                                        <input
+                                            ref={panRef}
+                                            type='text'
+                                            value={formData.pan}
+                                            onChange={(e) => handleInputChange('pan', e.target.value)}
+                                            placeholder='Enter PAN'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.pan && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.pan}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN </label>
+                                        <input
+
+                                            type='text'
+                                            value={formData.tan}
+                                            onChange={(e) => handleInputChange('tan', e.target.value)}
+                                            placeholder='Enter TAN'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.tan && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.tan}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className=''>
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name  <span className='text-red-500'>*</span></label>
+                                        <input
+
+                                            type='text'
+                                            ref={businessNameRef}
+                                            value={formData.businessName}
+                                            onChange={(e) => handleInputChange('businessName', e.target.value)}
+                                            placeholder='Enter Business Name'
+                                            className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.businessName && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.businessName}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                    </div>
+                                    <div className='mb-2 relative w-full'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                            Legal Status of firm <span className='text-red-500'>*</span>
+                                        </label>
+                                        <select
+                                            ref={legalStatusRef}
+                                            value={formData.legalStatus}
+                                            onChange={(e) => handleInputChange('legalStatus', e.target.value)}
+                                            className="cursor-pointer appearance-none w-full px-3 py-3 border rounded-xl focus:outline-none capitalize font-Gilroy font-medium text-sm text-neutral-500 pr-10"
+                                        >
+                                            <option value="">Select Legal Status of firm</option>
+                                            <option value="PRIVATE LIMITED">PRIVATE LIMITED</option>
+                                            <option value="LLT_LOW LATENCY TRANSSPORT">LLT_LOW LATENCY TRANSSPORT</option>
+                                            <option value="PARTNERSHIP">PARTNERSHIP</option>
+                                            <option value="PROPRIETORSHIP">PROPRIETORSHIP</option>
+                                        </select>
+
+                                        <div className="pointer-events-none absolute top-[54px] right-3 transform -translate-y-1/2 flex items-center text-neutral-500">
+                                            <ArrowDown2
+                                                size="16"
+                                                color="#555555"
+                                            />
+                                        </div>
+
+                                        {errors.legalStatus && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.legalStatus}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+
+
+                                </div>
+                                <div className='mb-2'>
+                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                        Nature of Business <span className='text-red-500'>*</span>
+                                    </label>
+                                    <div className='flex gap-6'>
+                                        {businessTypes.map((business) => (
+                                            <div key={business.id} className='flex gap-3 items-center'>
+                                                <input
+                                                    type="checkbox"
+                                                    ref={natureOfBusinessRef}
+                                                    className="ml-2 accent-[#205DA8]"
+                                                    checked={natureOfBusiness.includes(String(business.id))}
+                                                    onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
+                                                />
+                                                <label className='block text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                                    {business.label}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {errors.natureOfBusiness && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.natureOfBusiness}</p>
+                                        </div>
+                                    )}
+
+                                </div>
+
+
+
+                                <div className="p-4">
+                                    {contacts.map((contact, index) => (
+                                        <div key={index} className="mb-6">
+                                            <div>
+                                                <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
+                                                    {`Additional Contact ${index + 1}`}
+                                                </h2>
+
+                                            </div>
+                                            <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-3">
+                                                <div>
+                                                    <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
+                                                        Contact Person Name <span className="text-red-500">*</span>
+                                                    </label>
+                                                    <div className="flex">
+                                                        <select
+                                                            value={contact.surName}
+                                                            ref={contactRefs.current[index]?.surName}
+                                                            onChange={(e) => handleChange(index, 'surName', e.target.value)}
+                                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                                        >
+                                                            <option value="">Select</option>
+                                                            {state?.Common?.titles?.map((title) => (
+                                                                <option key={title.id} value={title.id} className='text-neutral-500'>
+                                                                    {title.name}
+                                                                </option>
+                                                            ))}
+
+                                                        </select>
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Enter Contact Person Name"
+                                                            value={contact.name}
+                                                            ref={contactRefs.current[index]?.name}
+                                                            onChange={(e) => handleChange(index, "name", e.target.value)}
+                                                            className="px-3 py-3 w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+                                                        />
+                                                    </div>
+                                                    {errors.contactErrors?.[index]?.surName && errors.contactErrors?.[index]?.name ? (
+                                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                            <InfoCircle size={16} color="#DC2626" />
+                                                            <p>Title & Name is required</p>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            {errors.contactErrors?.[index]?.surName && (
+                                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                    <InfoCircle size={16} color="#DC2626" />
+                                                                    <p>{errors.contactErrors[index].surName}</p>
+                                                                </div>
+                                                            )}
+
+                                                            {errors.contactErrors?.[index]?.name && (
+                                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                    <InfoCircle size={16} color="#DC2626" />
+                                                                    <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].name}</p>
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    )}
+
+                                                </div>
+
+                                                <div>
+                                                    <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
+                                                        Contact Number <span className="text-red-500">*</span>
+                                                    </label>
+
+                                                    <div className="flex">
+                                                        <select
+                                                            value={contact.countryCode}
+                                                            ref={contactRefs.current[index]?.countryCode}
+                                                            onChange={(e) => handleChange(index, 'countryCode', e.target.value)}
+                                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                                        >
+                                                            <option value="">Select</option>
+                                                            {state.Common?.country?.map((item) => (
+                                                                <option key={item.id} value={item.id} className='text-neutral-500'>
+                                                                    {item.phone}
+                                                                </option>
+                                                            ))}
+
+                                                        </select>
+                                                        <input
+                                                            type="text"
+                                                            ref={contactRefs.current[index]?.number}
+                                                            placeholder="Enter Contact Number"
+                                                            value={contact.number}
+                                                            maxLength={10}
+                                                            onChange={(e) => handleChange(index, "number", e.target.value)}
+                                                            className="w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+                                                        />
+                                                    </div>
+
+                                                    {errors.contactErrors?.[index]?.countryCode && errors.contactErrors?.[index]?.number ? (
+                                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                            <InfoCircle size={16} color="#DC2626" />
+                                                            <p>Country code & Number is required</p>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            {errors.contactErrors?.[index]?.countryCode && (
+                                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                    <InfoCircle size={16} color="#DC2626" />
+                                                                    <p>{errors.contactErrors[index].countryCode}</p>
+                                                                </div>
+                                                            )}
+
+                                                            {errors.contactErrors?.[index]?.number && (
+                                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                    <InfoCircle size={16} color="#DC2626" />
+                                                                    <p>{errors.contactErrors[index].number}</p>
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    )}
+
+                                                </div>
+
+                                                <div>
+                                                    <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
+                                                        Email ID <span className="text-red-500">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter Email ID"
+                                                        value={contact.email}
+                                                        ref={contactRefs.current[index]?.email}
+                                                        onChange={(e) => handleChange(index, "email", e.target.value)}
+                                                        className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+                                                    />
+                                                    {errors.contactErrors?.[index]?.email && (
+                                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                            <InfoCircle size={16} color="#DC2626" />
+                                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].email}</p>
+                                                        </div>
+
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
+                                                        Designation <span className="text-red-500">*</span>
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter Designation"
+                                                        value={contact.designation}
+                                                        ref={contactRefs.current[index]?.designation}
+                                                        onChange={(e) =>
+                                                            handleChange(index, "designation", e.target.value)
+                                                        }
+                                                        className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+                                                    />
+                                                    {errors.contactErrors?.[index]?.designation && (
+                                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                            <InfoCircle size={16} color="#DC2626" />
+                                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].designation}</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                     ))}
-                                </div>
-                                {errors.natureOfBusiness && (
-                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                        <InfoCircle size={16} color="#DC2626" />
-                                        <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.natureOfBusiness}</p>
-                                    </div>
-                                )}
 
+                                    {contacts.length < 10 && (
+                                        <label
+                                            className="rounded-lg text-[#205DA8] font-semibold font-Gilroy text-md cursor-pointer pt-3 pb-3"
+                                            onClick={handleAddAdditionalContact}
+                                        >
+                                            + Add Additional Contact {contacts.length + 1}
+                                        </label>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="flex justify-end mb-4 mt-2">
+                                <div className='gap-3 flex '>
+
+                                    <button onClick={handleSaveAndExit} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
+
+                                    <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
+                                </div>
                             </div>
 
 
+                        </div>
+                    }
 
-                            <div className="p-4">
-                                {contacts.map((contact, index) => (
-                                    <div key={index} className="mb-6">
-                                        <div>
-                                            <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
-                                                {`Additional Contact ${index + 1}`}
-                                            </h2>
+
+                    {value === 2 &&
+                        <div className=''>
+
+
+                            <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Address Information</h2>
+
+                            <div className='max-h-[300px] overflow-y-auto  lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
+
+                                <h4 className="text-base font-medium mb-4 font-Gilroy text-black">Office Address <span className='text-red-500'>*</span></h4>
+                                <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+
+
+                                    <div className='mb-2 items-center '>
+                                        <input
+                                            type='text'
+                                            ref={address1Ref}
+                                            placeholder='Enter Address Line 1'
+                                            value={officeAddress.address1}
+                                            onChange={(e) => handleOfficeChange('address1', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.address1 && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy">{errors.address1}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className='mb-2  items-center'>
+                                        <input
+
+                                            type='text'
+                                            placeholder='Enter Address Line 2'
+                                            value={officeAddress.address2}
+                                            onChange={(e) => handleOfficeChange('address2', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <input
+                                            type='text'
+                                            placeholder='Enter Address Line 3'
+                                            value={officeAddress.address3}
+                                            onChange={(e) => handleOfficeChange('address3', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <input
+
+                                            type='text'
+                                            placeholder='Enter Address Line 4'
+                                            value={officeAddress.address4}
+                                            onChange={(e) => handleOfficeChange('address4', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+                                    <div className='mb-2 items-center'>
+
+                                        <input
+                                            ref={cityRef}
+                                            type='text'
+                                            placeholder='Enter City'
+                                            value={officeAddress.city}
+                                            onChange={(e) => handleOfficeChange('city', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.city && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy">{errors.city}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+
+
+                                    <div className='mb-2 items-center cursor-pointer'>
+                                        <select
+                                            value={officeAddress.state}
+                                            onChange={(e) => handleOfficeChange('state', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                            <option value="">Select State</option>
+                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                            <option value="Assam">Assam</option>
+                                            <option value="Bihar">Bihar</option>
+                                            <option value="Chhattisgarh">Chhattisgarh</option>
+                                            <option value="Goa">Goa</option>
+                                            <option value="Gujarat">Gujarat</option>
+                                            <option value="Haryana">Haryana</option>
+
+
+                                        </select>
+                                        {errors.state && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy">{errors.state}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+
+
+
+
+
+                                </div>
+                                <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3 mt-1'>
+
+                                    <div className='mb-2 items-center'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
+
+                                        <select
+                                            value={officeAddress.country}
+                                            onChange={(e) => handleOfficeChange('country', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                            <option value="">Select Country</option>
+                                            <option value="India">India</option>
+                                            <option value="United States">United States</option>
+                                            <option value="United Kingdom">United Kingdom</option>
+                                            <option value="Australia">Australia</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="Germany">Germany</option>
+                                            <option value="France">France</option>
+                                            <option value="Italy">Italy</option>
+
+                                        </select>
+                                        {errors.country && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy">{errors.country}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500 h-fit'>*</span></label>
+                                        <input
+                                            ref={postalCodeRef}
+                                            type='text'
+                                            placeholder='Enter Postal Code'
+                                            value={officeAddress.postalCode}
+                                            onChange={(e) => handleOfficeChange('postalCode', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.postalCode && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy">{errors.postalCode}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Landmark </label>
+                                        <input
+
+                                            type='text'
+                                            placeholder='Enter Landmark'
+                                            value={officeAddress.landmark}
+                                            onChange={(e) => handleOfficeChange('landmark', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Google Map </label>
+                                        <input
+
+                                            type='text'
+                                            placeholder='Enter Google Map Link'
+                                            value={officeAddress.googleMap}
+                                            onChange={(e) => handleOfficeChange('googleMap', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+
+
+
+                                </div>
+
+
+                                <h4 className="text-base font-medium mb-4 font-Gilroy text-black" >Shipping Address  <span className='text-red-500'>*</span>
+                                    <span className='text-md accent-[#205DA8] ms-2'>
+                                        <input type="checkbox" checked={contactAddressSameAsOfficeAddress} onChange={handleSameAsOffice} /></span>
+                                    <span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
+                                <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-4'>
+
+
+                                    <div className='mb-2 items-center '>
+                                        <input
+                                            ref={shipAddress1Ref}
+                                            type='text'
+                                            placeholder='Enter Address Line 1'
+                                            value={shippingAddress.address1}
+                                            onChange={(e) => handleShippingChange('address1', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.shipaddress1 && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy">{errors.shipaddress1}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className='mb-2  items-center'>
+                                        <input
+
+                                            type='text'
+                                            placeholder='Enter Address Line 2'
+                                            value={shippingAddress.address2}
+                                            onChange={(e) => handleShippingChange('address2', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <input
+
+                                            type='text'
+                                            placeholder='Enter Address Line 3'
+                                            value={shippingAddress.address3}
+                                            onChange={(e) => handleShippingChange('address3', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <input
+
+                                            type='text'
+                                            placeholder='Enter Address Line 4'
+                                            value={shippingAddress.address4}
+                                            onChange={(e) => handleShippingChange('address4', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <input
+                                            ref={shipCityRef}
+
+                                            type='text'
+                                            placeholder='Enter City'
+                                            value={shippingAddress.city}
+                                            onChange={(e) => handleShippingChange('city', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.shipcity && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy">{errors.shipcity}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <select
+                                            value={shippingAddress.state}
+                                            onChange={(e) => handleShippingChange('state', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                            <option value="" >Select state</option>
+                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                            <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                            <option value="Assam">Assam</option>
+                                            <option value="Bihar">Bihar</option>
+                                            <option value="Chhattisgarh">Chhattisgarh</option>
+                                            <option value="Goa">Goa</option>
+                                            <option value="Gujarat">Gujarat</option>
+                                            <option value="Haryana">Haryana</option>
+
+
+                                        </select>
+                                        {errors.shipstate && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy">{errors.shipstate}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className='mb-2 items-center'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
+
+                                        <select
+                                            value={shippingAddress.country}
+                                            onChange={(e) => handleOfficeChange('country', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                            <option value="">Select Country</option>
+                                            <option value="India">India</option>
+                                            <option value="United States">United States</option>
+                                            <option value="United Kingdom">United Kingdom</option>
+                                            <option value="Australia">Australia</option>
+                                            <option value="Canada">Canada</option>
+                                            <option value="Germany">Germany</option>
+                                            <option value="France">France</option>
+                                            <option value="Italy">Italy</option>
+
+                                        </select>
+                                        {errors.shipcountry && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy">{errors.shipcountry}</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+
+
+                                    <div className='mb-2 items-center'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>
+                                        <input
+                                            ref={shipPostalCodeRef}
+
+                                            type='text'
+                                            placeholder='Enter Postal Code'
+                                            value={shippingAddress.postalCode}
+                                            onChange={(e) => handleShippingChange('postalCode', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.shippostalCode && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy"> {errors.shippostalCode}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Landmark </label>
+                                        <input
+
+                                            type='text'
+                                            placeholder='Enter Landmark'
+                                            value={shippingAddress.landmark}
+                                            onChange={(e) => handleShippingChange('landmark', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+                                    <div className='mb-2 items-center'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Google Map </label>
+                                        <input
+
+                                            type='text'
+                                            placeholder='Enter Google Map Link'
+                                            value={shippingAddress.googleMap}
+                                            onChange={(e) => handleShippingChange('googleMap', e.target.value)}
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                    </div>
+
+
+
+                                </div>
+
+                            </div>
+                            <div className="flex justify-between mb-4 mt-4">
+                                <button className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleBackToBasicInformation} >Back</button>
+                                <div className='gap-3 flex '>
+
+                                    {
+                                        editCustomerDetails &&
+                                        <button onClick={handleCustomerEditAddress} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>}
+
+                                    <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForBank} >Next</button>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    }
+
+
+
+                    {value === 3 &&
+                        <div className=''>
+
+                            <div className='max-h-[300px] overflow-y-auto  
+    lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
+                                {bankDetailsList?.map((bankDetails, index) => (
+                                    <div key={index} className='mb-4  rounded-lg'>
+
+                                        <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">
+                                            Bank Details
+                                        </h2>
+
+                                        <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+
+
+                                            <div className='mb-2 items-center '>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Name<span className='text-red-500'>*</span></label>
+                                                <input
+                                                    ref={bankRefs.current[index]?.beneficiaryName}
+                                                    type='text'
+                                                    value={bankDetails?.beneficiaryName || ''}
+                                                    onChange={(e) => handleBankingChange(index, 'beneficiaryName', e.target.value)}
+                                                    placeholder='Enter Beneficiary Name '
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+
+
+                                                {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryName && (
+                                                    <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
+                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].beneficiaryName}
+                                                    </div>
+                                                )}
+
+                                            </div>
+
+
+                                            <div className='mb-2 items-center '>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
+
+
+                                                <select
+                                                    ref={bankRefs.current[index]?.beneficiaryCurrency}
+                                                    value={bankDetails.beneficiaryCurrency || ""}
+                                                    onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
+                                                    className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                                    <option value="">Select beneficiary currency</option>
+                                                    <option value="USD">USD</option>
+                                                    <option value="INR">INR</option>
+                                                    <option value="EUR">EUR</option>
+                                                    <option value="GBP">GBP</option>
+                                                    <option value="JPY">JPY</option>
+
+                                                </select>
+
+                                                {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryCurrency && (
+                                                    <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
+                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].beneficiaryCurrency}
+                                                    </div>
+                                                )}
+
+                                            </div>
+
+
+
+
+                                            <div className='mb-2  items-center '>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Number <span className='text-red-500'>*</span></label>
+
+                                                <input
+                                                    ref={bankRefs.current[index]?.accountNumber}
+                                                    type='text'
+                                                    placeholder='Enter Account Number'
+                                                    value={bankDetails.accountNumber}
+                                                    onChange={(e) => handleBankingChange(index, 'accountNumber', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+                                                {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].accountNumber && (
+                                                    <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
+                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].accountNumber}
+                                                    </div>
+                                                )}
+
+                                            </div>
+                                            <div className='mb-2 items-center '>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Bank Name<span className='text-red-500'>*</span></label>
+
+                                                <input
+                                                    ref={bankRefs.current[index]?.bankName}
+                                                    type='text'
+                                                    placeholder='Enter Account Name'
+                                                    value={bankDetails.bankName}
+                                                    onChange={(e) => handleBankingChange(index, 'bankName', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+                                                {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].bankName && (
+                                                    <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
+                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].bankName}
+                                                    </div>
+                                                )}
+
+                                            </div>
+
+
+
+
+
+
+
+                                            <div className='mb-2 items-center'>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IFSC Code<span className='text-red-500'>*</span></label>
+
+                                                <input
+                                                    type='text'
+                                                    ref={bankRefs.current[index]?.ifscCode}
+                                                    placeholder='Enter IFSC Code'
+                                                    value={bankDetails.ifscCode}
+                                                    onChange={(e) => handleBankingChange(index, 'ifscCode', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+                                                {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].ifscCode && (
+                                                    <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
+                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].ifscCode}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className='mb-2 items-center '>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code </label>
+                                                <input
+
+                                                    type='text'
+                                                    placeholder='Enter SWIFT Code'
+                                                    value={bankDetails.swiftCode}
+                                                    onChange={(e) => handleBankingChange(index, 'swiftCode', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+                                                {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].swiftCode && (
+                                                    <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
+                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].swiftCode}
+                                                    </div>
+                                                )}
+
+                                            </div>
+
+                                            <div className='mb-2  items-center'>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 1 <span className='text-red-500'>*</span> </label>
+
+                                                <input
+                                                    ref={bankRefs.current[index]?.bankAddress1}
+                                                    type='text'
+                                                    placeholder='Enter Bank Address 1'
+                                                    value={bankDetails.bankAddress1}
+                                                    onChange={(e) => handleBankingChange(index, 'bankAddress1', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+
+                                                {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].bankAddress1 && (
+                                                    <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
+                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].bankAddress1}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className='mb-2 items-center'>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 2 </label>
+
+                                                <input
+
+                                                    type='text'
+                                                    placeholder='Enter Bank Address 2'
+                                                    value={bankDetails.bankAddress2}
+                                                    onChange={(e) => handleBankingChange(index, 'bankAddress2', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+                                            </div>
+
+                                            <div className='mb-2 items-center'>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Country </label>
+                                                <select
+                                                    value={bankDetails.bankCountry}
+                                                    onChange={(e) => handleBankingChange(index, 'bankCountry', e.target.value)}
+                                                    className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                                    <option value="">Select Bank Country</option>
+                                                    <option value="India">India</option>
+                                                    <option value="United States">United States</option>
+                                                    <option value="Canada">Canada</option>
+                                                    <option value="United Kingdom">United Kingdom</option>
+                                                    <option value="Australia">Australia</option>
+
+
+                                                </select>
+                                            </div>
+
+                                            <div className='mb-2 items-center'>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Intermediary Routing Bank </label>
+
+                                                <input
+                                                    type='text'
+                                                    placeholder='Enter Intermediary Routing Bank'
+                                                    value={bankDetails.intermediaryRoutingBank}
+                                                    onChange={(e) => handleBankingChange(index, 'intermediaryRoutingBank', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+                                            </div>
+
+                                            <div className='mb-2 items-center'>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code for intermediary Bank</label>
+
+                                                <input
+
+                                                    type='text'
+                                                    placeholder='Enter SWIFT Code for intermediary Bank'
+                                                    value={bankDetails.intermediarySiftCode}
+                                                    onChange={(e) => handleBankingChange(index, 'intermediarySiftCode', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+                                            </div>
+
+                                            <div className='mb-2 items-center '>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address </label>
+                                                <input
+
+                                                    type='text'
+                                                    placeholder='Enter Bank Address'
+                                                    value={bankDetails.bankAddress}
+                                                    onChange={(e) => handleBankingChange(index, 'bankAddress', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
+
+                                            </div>
+
 
                                         </div>
-                                        <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-3">
-                                            <div>
-                                                <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
-                                                    Contact Person Name <span className="text-red-500">*</span>
-                                                </label>
-                                                <div className="flex">
-                                                    <select
-                                                        value={contact.surName}
-                                                        ref={contactRefs.current[index]?.surName}
-                                                        onChange={(e) => handleChange(index, 'surName', e.target.value)}
-                                                        className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
-                                                    >
-                                                        <option value="">Select</option>
-                                                        {state?.Common?.titles?.map((title) => (
-                                                            <option key={title.id} value={title.id} className='text-neutral-500'>
-                                                                {title.name}
-                                                            </option>
-                                                        ))}
 
-                                                    </select>
-                                                    <input
-                                                        type="text"
-                                                        placeholder="Enter Contact Person Name"
-                                                        value={contact.name}
-                                                        ref={contactRefs.current[index]?.name}
-                                                        onChange={(e) => handleChange(index, "name", e.target.value)}
-                                                        className="px-3 py-3 w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
-                                                    />
-                                                </div>
-                                                {errors.contactErrors?.[index]?.surName && errors.contactErrors?.[index]?.name ? (
-                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={16} color="#DC2626" />
-                                                        <p>Title & Name is required</p>
-                                                    </div>
-                                                ) : (
-                                                    <>
-                                                        {errors.contactErrors?.[index]?.surName && (
-                                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                <InfoCircle size={16} color="#DC2626" />
-                                                                <p>{errors.contactErrors[index].surName}</p>
-                                                            </div>
-                                                        )}
 
-                                                        {errors.contactErrors?.[index]?.name && (
-                                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                <InfoCircle size={16} color="#DC2626" />
-                                                                <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].name}</p>
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                )}
+                                        <div className='grid md:grid-cols-2 sm:grid-cols-2 gap-3 mt-1'>
 
-                                            </div>
 
-                                            <div>
-                                                <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
-                                                    Contact Number <span className="text-red-500">*</span>
-                                                </label>
+                                            <div className='mb-2  items-center '>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Bank Account Number with Intermediary </label>
 
-                                                <div className="flex">
-                                                    <select
-                                                        value={contact.countryCode}
-                                                        ref={contactRefs.current[index]?.countryCode}
-                                                        onChange={(e) => handleChange(index, 'countryCode', e.target.value)}
-                                                        className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
-                                                    >
-                                                        <option value="">Select</option>
-                                                        {state.Common?.country?.map((item) => (
-                                                            <option key={item.id} value={item.id} className='text-neutral-500'>
-                                                                {item.phone}
-                                                            </option>
-                                                        ))}
-
-                                                    </select>
-                                                    <input
-                                                        type="text"
-                                                        ref={contactRefs.current[index]?.number}
-                                                        placeholder="Enter Contact Number"
-                                                        value={contact.number}
-                                                        maxLength={10}
-                                                        onChange={(e) => handleChange(index, "number", e.target.value)}
-                                                        className="w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
-                                                    />
-                                                </div>
-
-                                                {errors.contactErrors?.[index]?.countryCode && errors.contactErrors?.[index]?.number ? (
-                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={16} color="#DC2626" />
-                                                        <p>Country code & Number is required</p>
-                                                    </div>
-                                                ) : (
-                                                    <>
-                                                        {errors.contactErrors?.[index]?.countryCode && (
-                                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                <InfoCircle size={16} color="#DC2626" />
-                                                                <p>{errors.contactErrors[index].countryCode}</p>
-                                                            </div>
-                                                        )}
-
-                                                        {errors.contactErrors?.[index]?.number && (
-                                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                <InfoCircle size={16} color="#DC2626" />
-                                                                <p>{errors.contactErrors[index].number}</p>
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                )}
-
-                                            </div>
-
-                                            <div>
-                                                <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
-                                                    Email ID <span className="text-red-500">*</span>
-                                                </label>
                                                 <input
-                                                    type="text"
-                                                    placeholder="Enter Email ID"
-                                                    value={contact.email}
-                                                    ref={contactRefs.current[index]?.email}
-                                                    onChange={(e) => handleChange(index, "email", e.target.value)}
-                                                    className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
-                                                />
-                                                {errors.contactErrors?.[index]?.email && (
-                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={16} color="#DC2626" />
-                                                        <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].email}</p>
-                                                    </div>
 
-                                                )}
+                                                    type='text'
+                                                    placeholder='Enter Beneficiary Bank Account Number with Intermediary'
+                                                    value={bankDetails.intermediaryAccountNumber}
+                                                    onChange={(e) => handleBankingChange(index, 'intermediaryAccountNumber', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                />
                                             </div>
 
-                                            <div>
-                                                <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
-                                                    Designation <span className="text-red-500">*</span>
-                                                </label>
+
+                                            <div className='mb-2 items-center'>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IBAN (International Bank Account Number) </label>
                                                 <input
-                                                    type="text"
-                                                    placeholder="Enter Designation"
-                                                    value={contact.designation}
-                                                    ref={contactRefs.current[index]?.designation}
-                                                    onChange={(e) =>
-                                                        handleChange(index, "designation", e.target.value)
-                                                    }
-                                                    className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+
+                                                    type='text'
+                                                    placeholder='Enter IBAN (International Bank Account Number)'
+                                                    value={bankDetails.iban}
+                                                    onChange={(e) => handleBankingChange(index, 'iban', e.target.value)}
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                                 />
-                                                {errors.contactErrors?.[index]?.designation && (
-                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={16} color="#DC2626" />
-                                                        <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].designation}</p>
-                                                    </div>
-                                                )}
+
                                             </div>
+
                                         </div>
+
                                     </div>
                                 ))}
-
-                                {contacts.length < 10 && (
-                                    <label
-                                        className="rounded-lg text-[#205DA8] font-semibold font-Gilroy text-md cursor-pointer pt-3 pb-3"
-                                        onClick={handleAddAdditionalContact}
-                                    >
-                                        + Add Additional Contact {contacts.length + 1}
-                                    </label>
-                                )}
                             </div>
-                        </div>
-                        <div className="flex justify-end mb-4 mt-2">
-                            <div className='gap-3 flex '>
-
-                                <button onClick={handleSaveAndExit} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
-
-                                <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
-                            </div>
-                        </div>
 
 
-                    </div>
-                }
+                            <div className="flex justify-between mt-4 mb-4">
+                                <button className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleBackToAddress} >Back</button>
 
-
-                {value === 2 &&
-                    <div className='bg-white rounded-2xl h-auto p-5'>
-
-
-                        <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Address Information</h2>
-
-                        <div className='max-h-[300px] overflow-y-auto  lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
-
-                            <h4 className="text-base font-medium mb-4 font-Gilroy text-black">Office Address <span className='text-red-500'>*</span></h4>
-                            <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
-
-
-                                <div className='mb-2 items-center '>
-                                    <input
-                                        type='text'
-                                        ref={address1Ref}
-                                        placeholder='Enter Address Line 1'
-                                        value={officeAddress.address1}
-                                        onChange={(e) => handleOfficeChange('address1', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.address1 && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy">{errors.address1}</span>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className='mb-2  items-center'>
-                                    <input
-
-                                        type='text'
-                                        placeholder='Enter Address Line 2'
-                                        value={officeAddress.address2}
-                                        onChange={(e) => handleOfficeChange('address2', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <input
-                                        type='text'
-                                        placeholder='Enter Address Line 3'
-                                        value={officeAddress.address3}
-                                        onChange={(e) => handleOfficeChange('address3', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <input
-
-                                        type='text'
-                                        placeholder='Enter Address Line 4'
-                                        value={officeAddress.address4}
-                                        onChange={(e) => handleOfficeChange('address4', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                </div>
-                                <div className='mb-2 items-center'>
-
-                                    <input
-                                        ref={cityRef}
-                                        type='text'
-                                        placeholder='Enter City'
-                                        value={officeAddress.city}
-                                        onChange={(e) => handleOfficeChange('city', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.city && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy">{errors.city}</span>
-                                        </div>
-                                    )}
-                                </div>
-
-
-
-                                <div className='mb-2 items-center cursor-pointer'>
-                                    <select
-                                        value={officeAddress.state}
-                                        onChange={(e) => handleOfficeChange('state', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                        <option value="">Select State</option>
-                                        <option value="Tamil Nadu">Tamil Nadu</option>
-                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                        <option value="Assam">Assam</option>
-                                        <option value="Bihar">Bihar</option>
-                                        <option value="Chhattisgarh">Chhattisgarh</option>
-                                        <option value="Goa">Goa</option>
-                                        <option value="Gujarat">Gujarat</option>
-                                        <option value="Haryana">Haryana</option>
-
-
-                                    </select>
-                                    {errors.state && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy">{errors.state}</span>
-                                        </div>
-                                    )}
-                                </div>
-
-
-
-
-
-
-                            </div>
-                            <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3 mt-1'>
-
-                                <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
-
-                                    <select
-                                        value={officeAddress.country}
-                                        onChange={(e) => handleOfficeChange('country', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                        <option value="">Select Country</option>
-                                        <option value="India">India</option>
-                                        <option value="United States">United States</option>
-                                        <option value="United Kingdom">United Kingdom</option>
-                                        <option value="Australia">Australia</option>
-                                        <option value="Canada">Canada</option>
-                                        <option value="Germany">Germany</option>
-                                        <option value="France">France</option>
-                                        <option value="Italy">Italy</option>
-
-                                    </select>
-                                    {errors.country && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy">{errors.country}</span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500 h-fit'>*</span></label>
-                                    <input
-                                        ref={postalCodeRef}
-                                        type='text'
-                                        placeholder='Enter Postal Code'
-                                        value={officeAddress.postalCode}
-                                        onChange={(e) => handleOfficeChange('postalCode', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.postalCode && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy">{errors.postalCode}</span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Landmark </label>
-                                    <input
-
-                                        type='text'
-                                        placeholder='Enter Landmark'
-                                        value={officeAddress.landmark}
-                                        onChange={(e) => handleOfficeChange('landmark', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Google Map </label>
-                                    <input
-
-                                        type='text'
-                                        placeholder='Enter Google Map Link'
-                                        value={officeAddress.googleMap}
-                                        onChange={(e) => handleOfficeChange('googleMap', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                </div>
-
-
+                                <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleCustomerSubmit} >Submit</button>
 
                             </div>
 
 
-                            <h4 className="text-base font-medium mb-4 font-Gilroy text-black" >Shipping Address  <span className='text-red-500'>*</span>
-                                <span className='text-md accent-[#205DA8]'>
-                                    <input type="checkbox" checked={contactAddressSameAsOfficeAddress} onChange={handleSameAsOffice} /></span>
-                                <span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
-                            <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-4'>
-
-
-                                <div className='mb-2 items-center '>
-                                    <input
-                                        ref={shipAddress1Ref}
-                                        type='text'
-                                        placeholder='Enter Address Line 1'
-                                        value={shippingAddress.address1}
-                                        onChange={(e) => handleShippingChange('address1', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.shipaddress1 && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy">{errors.shipaddress1}</span>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className='mb-2  items-center'>
-                                    <input
-
-                                        type='text'
-                                        placeholder='Enter Address Line 2'
-                                        value={shippingAddress.address2}
-                                        onChange={(e) => handleShippingChange('address2', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <input
-
-                                        type='text'
-                                        placeholder='Enter Address Line 3'
-                                        value={shippingAddress.address3}
-                                        onChange={(e) => handleShippingChange('address3', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <input
-
-                                        type='text'
-                                        placeholder='Enter Address Line 4'
-                                        value={shippingAddress.address4}
-                                        onChange={(e) => handleShippingChange('address4', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <input
-                                        ref={shipCityRef}
-
-                                        type='text'
-                                        placeholder='Enter City'
-                                        value={shippingAddress.city}
-                                        onChange={(e) => handleShippingChange('city', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.shipcity && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy">{errors.shipcity}</span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <select
-                                        value={shippingAddress.state}
-                                        onChange={(e) => handleShippingChange('state', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                        <option value="" >Select state</option>
-                                        <option value="Tamil Nadu">Tamil Nadu</option>
-                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                        <option value="Assam">Assam</option>
-                                        <option value="Bihar">Bihar</option>
-                                        <option value="Chhattisgarh">Chhattisgarh</option>
-                                        <option value="Goa">Goa</option>
-                                        <option value="Gujarat">Gujarat</option>
-                                        <option value="Haryana">Haryana</option>
-
-
-                                    </select>
-                                    {errors.shipstate && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy">{errors.shipstate}</span>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
-
-                                    <select
-                                        value={shippingAddress.country}
-                                        onChange={(e) => handleOfficeChange('country', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                        <option value="">Select Country</option>
-                                        <option value="India">India</option>
-                                        <option value="United States">United States</option>
-                                        <option value="United Kingdom">United Kingdom</option>
-                                        <option value="Australia">Australia</option>
-                                        <option value="Canada">Canada</option>
-                                        <option value="Germany">Germany</option>
-                                        <option value="France">France</option>
-                                        <option value="Italy">Italy</option>
-
-                                    </select>
-                                    {errors.shipcountry && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy">{errors.shipcountry}</span>
-                                        </div>
-                                    )}
-                                </div>
-
-
-
-                                <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500'>*</span></label>
-                                    <input
-                                        ref={shipPostalCodeRef}
-
-                                        type='text'
-                                        placeholder='Enter Postal Code'
-                                        value={shippingAddress.postalCode}
-                                        onChange={(e) => handleShippingChange('postalCode', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.shippostalCode && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <span className="text-red-500 text-xs font-Gilroy"> {errors.shippostalCode}</span>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Landmark </label>
-                                    <input
-
-                                        type='text'
-                                        placeholder='Enter Landmark'
-                                        value={shippingAddress.landmark}
-                                        onChange={(e) => handleShippingChange('landmark', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Google Map </label>
-                                    <input
-
-                                        type='text'
-                                        placeholder='Enter Google Map Link'
-                                        value={shippingAddress.googleMap}
-                                        onChange={(e) => handleShippingChange('googleMap', e.target.value)}
-                                        className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                </div>
-
-
-
-                            </div>
-
                         </div>
-                        <div className="flex justify-between mb-4 mt-4">
-                            <button className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleBackToBasicInformation} >Back</button>
-                            <div className='gap-3 flex '>
-
-                                {
-                                    editCustomerDetails &&
-                                    <button onClick={handleCustomerEditAddress} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>}
-
-                                <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForBank} >Next</button>
-                            </div>
-                        </div>
-
-
-                    </div>
-                }
-
-
-
-                {value === 3 &&
-                    <div className='bg-white rounded-2xl h-auto p-5'>
-
-                        <h2 className="text-2xl font-semibold mb-4 font-Gilroy">Bank Detail</h2>
-                        <div className='max-h-[300px] overflow-y-auto  
-    lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
-                            {bankDetailsList?.map((bankDetails, index) => (
-                                <div key={index} className='mb-4  p-4 rounded-lg'>
-
-                                    <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black pt-3 pb-3">
-                                        Bank Details
-                                    </h2>
-
-                                    <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
-
-
-                                        <div className='mb-2 items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Name<span className='text-red-500'>*</span></label>
-                                            <input
-                                                ref={bankRefs.current[index]?.beneficiaryName}
-                                                type='text'
-                                                value={bankDetails?.beneficiaryName || ''}
-                                                onChange={(e) => handleBankingChange(index, 'beneficiaryName', e.target.value)}
-                                                placeholder='Enter Beneficiary Name '
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-
-
-                                            {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryName && (
-                                                <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].beneficiaryName}
-                                                </div>
-                                            )}
-
-                                        </div>
-
-
-                                        <div className='mb-2 items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
-
-
-                                            <select
-                                                ref={bankRefs.current[index]?.beneficiaryCurrency}
-                                                value={bankDetails.beneficiaryCurrency || ""}
-                                                onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
-                                                className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                                <option value="">Select beneficiary currency</option>
-                                                <option value="USD">USD</option>
-                                                <option value="INR">INR</option>
-                                                <option value="EUR">EUR</option>
-                                                <option value="GBP">GBP</option>
-                                                <option value="JPY">JPY</option>
-
-                                            </select>
-
-                                            {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryCurrency && (
-                                                <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].beneficiaryCurrency}
-                                                </div>
-                                            )}
-
-                                        </div>
-
-
-
-
-                                        <div className='mb-2  items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Number <span className='text-red-500'>*</span></label>
-
-                                            <input
-                                                ref={bankRefs.current[index]?.accountNumber}
-                                                type='text'
-                                                placeholder='Enter Account Number'
-                                                value={bankDetails.accountNumber}
-                                                onChange={(e) => handleBankingChange(index, 'accountNumber', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-                                            {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].accountNumber && (
-                                                <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].accountNumber}
-                                                </div>
-                                            )}
-
-                                        </div>
-                                        <div className='mb-2 items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Bank Name<span className='text-red-500'>*</span></label>
-
-                                            <input
-                                                ref={bankRefs.current[index]?.bankName}
-                                                type='text'
-                                                placeholder='Enter Account Name'
-                                                value={bankDetails.bankName}
-                                                onChange={(e) => handleBankingChange(index, 'bankName', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-                                            {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].bankName && (
-                                                <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].bankName}
-                                                </div>
-                                            )}
-
-                                        </div>
-
-
-
-
-
-
-
-                                        <div className='mb-2 items-center'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IFSC Code<span className='text-red-500'>*</span></label>
-
-                                            <input
-                                                type='text'
-                                                ref={bankRefs.current[index]?.ifscCode}
-                                                placeholder='Enter IFSC Code'
-                                                value={bankDetails.ifscCode}
-                                                onChange={(e) => handleBankingChange(index, 'ifscCode', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-                                            {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].ifscCode && (
-                                                <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].ifscCode}
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className='mb-2 items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code </label>
-                                            <input
-
-                                                type='text'
-                                                placeholder='Enter SWIFT Code'
-                                                value={bankDetails.swiftCode}
-                                                onChange={(e) => handleBankingChange(index, 'swiftCode', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-                                            {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].swiftCode && (
-                                                <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].swiftCode}
-                                                </div>
-                                            )}
-
-                                        </div>
-
-                                        <div className='mb-2  items-center'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 1 <span className='text-red-500'>*</span> </label>
-
-                                            <input
-                                                ref={bankRefs.current[index]?.bankAddress1}
-                                                type='text'
-                                                placeholder='Enter Bank Address 1'
-                                                value={bankDetails.bankAddress1}
-                                                onChange={(e) => handleBankingChange(index, 'bankAddress1', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-
-                                            {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].bankAddress1 && (
-                                                <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                    <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].bankAddress1}
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className='mb-2 items-center'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address 2 </label>
-
-                                            <input
-
-                                                type='text'
-                                                placeholder='Enter Bank Address 2'
-                                                value={bankDetails.bankAddress2}
-                                                onChange={(e) => handleBankingChange(index, 'bankAddress2', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-                                        </div>
-
-                                        <div className='mb-2 items-center'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Country </label>
-                                            <select
-                                                value={bankDetails.bankCountry}
-                                                onChange={(e) => handleBankingChange(index, 'bankCountry', e.target.value)}
-                                                className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                                <option value="">Select Bank Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Australia">Australia</option>
-
-
-                                            </select>
-                                        </div>
-
-                                        <div className='mb-2 items-center'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Intermediary Routing Bank </label>
-
-                                            <input
-                                                type='text'
-                                                placeholder='Enter Intermediary Routing Bank'
-                                                value={bankDetails.intermediaryRoutingBank}
-                                                onChange={(e) => handleBankingChange(index, 'intermediaryRoutingBank', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-                                        </div>
-
-                                        <div className='mb-2 items-center'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code for intermediary Bank</label>
-
-                                            <input
-
-                                                type='text'
-                                                placeholder='Enter SWIFT Code for intermediary Bank'
-                                                value={bankDetails.intermediarySiftCode}
-                                                onChange={(e) => handleBankingChange(index, 'intermediarySiftCode', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-                                        </div>
-
-                                        <div className='mb-2 items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Address </label>
-                                            <input
-
-                                                type='text'
-                                                placeholder='Enter Bank Address'
-                                                value={bankDetails.bankAddress}
-                                                onChange={(e) => handleBankingChange(index, 'bankAddress', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-
-                                        </div>
-
-
-                                    </div>
-
-
-                                    <div className='grid md:grid-cols-2 sm:grid-cols-2 gap-3 mt-1'>
-
-
-                                        <div className='mb-2  items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Bank Account Number with Intermediary </label>
-
-                                            <input
-
-                                                type='text'
-                                                placeholder='Enter Beneficiary Bank Account Number with Intermediary'
-                                                value={bankDetails.intermediaryAccountNumber}
-                                                onChange={(e) => handleBankingChange(index, 'intermediaryAccountNumber', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-                                        </div>
-
-
-                                        <div className='mb-2 items-center'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>IBAN (International Bank Account Number) </label>
-                                            <input
-
-                                                type='text'
-                                                placeholder='Enter IBAN (International Bank Account Number)'
-                                                value={bankDetails.iban}
-                                                onChange={(e) => handleBankingChange(index, 'iban', e.target.value)}
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                            ))}
-                        </div>
-
-
-                        <div className="flex justify-between mt-4 mb-4">
-                            <button className="px-10 py-2 bg-slate-400 rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleBackToAddress} >Back</button>
-
-                            <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleCustomerSubmit} >Submit</button>
-
-                        </div>
-
-
-                    </div>
-                }
+                    }
+                </div>
             </div>
 
         </div>

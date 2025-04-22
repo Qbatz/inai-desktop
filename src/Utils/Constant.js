@@ -90,9 +90,8 @@ export const GET_USER_INFO_SAGA = "Get_User_Info_Saga";
 
 
 
-export const compareData = (a, b) => {
-    return a.length > 0 && b.length > 0 && a === b
-}
+export const compareData = (a, b) => a === b;
+
 
 
 

@@ -64,7 +64,7 @@ function CustomerList() {
     const selectedEnd = selection.endDate;
 
     if (!isStartSelected) {
-     
+
       setDateRange([
         {
           ...selection,
@@ -165,16 +165,15 @@ function CustomerList() {
 
   }, [state.Common.successCode])
 
-
   useEffect(() => {
     const delayApi = setTimeout(() => {
-      if (searchTerm.trim() !== "") {
+      if (searchTerm.trim().length >= 3) {
         dispatch({
           type: GET_CUSTOMER_LIST_SAGA,
           payload: { searchKeyword: searchTerm.trim() },
         });
-        setLoading(true)
-      } else {
+        setLoading(true);
+      } else if (searchTerm.trim().length === 0) {
         dispatch({
           type: GET_CUSTOMER_LIST_SAGA,
           payload: { searchKeyword: "" },
@@ -184,7 +183,6 @@ function CustomerList() {
 
     return () => clearTimeout(delayApi);
   }, [searchTerm]);
-
 
   useEffect(() => {
     if (state.customer.customerList) {
@@ -311,8 +309,8 @@ function CustomerList() {
               <input
                 type="text"
                 value={`${dateRange[0].startDate
-                    ? dateRange[0].startDate.toLocaleDateString()
-                    : ""
+                  ? dateRange[0].startDate.toLocaleDateString()
+                  : ""
                   } - ${dateRange[0].endDate
                     ? dateRange[0].endDate.toLocaleDateString()
                     : ""

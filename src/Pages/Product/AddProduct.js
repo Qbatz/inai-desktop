@@ -56,7 +56,7 @@ function AddProduct() {
     const categoryRef = useRef(null);
     const brandRef = useRef(null);
     const serialNoRef = useRef(null);
-    
+
 
 
     const [formData, setFormData] = useState({
@@ -140,6 +140,15 @@ function AddProduct() {
                 newErrors.serialNo = `Please enter ${quantity} serial number(s)`;
             }
         }
+
+        if (images.length === 0) {
+            newErrors.images = "At least one product image is required";
+        }
+
+        if (techImages.length === 0) {
+            newErrors.techImages = "At least one technical image is required";
+        }
+
         setErrors(newErrors);
         setTimeout(() => {
             if (newErrors.productCode) productCodeRef.current?.focus();
@@ -150,12 +159,14 @@ function AddProduct() {
             else if (newErrors.category) categoryRef.current?.focus();
             else if (newErrors.brand) brandRef.current?.focus();
             else if (newErrors.serialNo) serialNoRef.current?.focus();
+            else if (newErrors.images) document.getElementById("imageUploadSection")?.scrollIntoView({ behavior: "smooth" });
+            else if (newErrors.techImages) document.getElementById("techImageUploadSection")?.scrollIntoView({ behavior: "smooth" });
         }, 0);
         return Object.keys(newErrors).length === 0;
     };
 
 
-    
+
 
 
     const handleSerialInputChange = (e) => {
@@ -1168,7 +1179,7 @@ function AddProduct() {
                                 </label>
 
                                 <textarea
-                                ref={descriptionRef}
+                                    ref={descriptionRef}
                                     placeholder="Enter Description"
                                     className={`mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-sm ${formData.description ? "text-slate" : "text-slate-500"} font-Gilroy`}
                                     name="description"
@@ -1185,17 +1196,11 @@ function AddProduct() {
                         </div>
 
 
-           
+
                         <div className="w-full p-2 flex flex-col h-full">
                             <label className="block font-normal text-md font-Outfit ps-2"> {editDetails ? "Edit Photos" : "Add Photos"}</label>
 
-                            {errors.imageErrors && (
-                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                    <InfoCircle size={16} color="#DC2626" />
-                                    {errors.imageErrors}
-                                </p>
-
-                            )}
+                          
 
                             <div className="flex mt-2 gap-0 relative z-10">
 
@@ -1321,7 +1326,7 @@ function AddProduct() {
                                     {
                                         editDetails ?
 
-                                            <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
+                                            <label id="imageUploadSection" className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
                                                 <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
                                                 <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">Add Image</span>
                                                 <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">Max size 10 MB</span>
@@ -1335,7 +1340,7 @@ function AddProduct() {
                                                 />
                                             </label>
                                             :
-                                            <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
+                                            <label id="imageUploadSection" className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
                                                 <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
                                                 <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">Add Image</span>
                                                 <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">Max size 10 MB</span>
@@ -1355,20 +1360,26 @@ function AddProduct() {
                             </div>
 
 
+                            {errors.imageErrors && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.imageErrors}
+                                </p>
 
+                            )}
+                            {errors.images && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.images}
+                                </p>
+
+                            )}
 
 
 
                             <label className="block font-normal text-md font-Outfit mt-2 ps-2">Technical</label>
 
-                            {errors.techImagesError && (
-                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                    <InfoCircle size={16} color="#DC2626" />
-                                    {errors.techImagesError}
-                                </p>
-
-                            )}
-
+                          
 
 
                             <div className="flex mt-2 gap-0 relative z-10">
@@ -1516,7 +1527,7 @@ function AddProduct() {
                                 {
                                     editDetails ?
 
-                                        <label className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
+                                        <label id="techImageUploadSection" className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
                                             <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
                                             <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
                                                 Add Documents
@@ -1535,7 +1546,7 @@ function AddProduct() {
                                         </label>
 
                                         :
-                                        <label className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
+                                        <label id="techImageUploadSection" className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
                                             <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
                                             <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
                                                 Add Documents
@@ -1554,7 +1565,20 @@ function AddProduct() {
                                         </label>
                                 }
                             </div>
+                            {errors.techImagesError && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.techImagesError}
+                                </p>
 
+                            )}
+                            {errors.techImages && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.techImages}
+                                </p>
+
+                            )}
                         </div>
 
                     </div>
@@ -1622,7 +1646,7 @@ function AddProduct() {
                                 </label>
                                 <div className='relative'>
                                     <select
-                                    ref={currencyRef}
+                                        ref={currencyRef}
                                         value={formData.currency}
                                         onChange={(e) => handleInputChange('currency', e.target.value)}
                                         className="cursor-pointer w-full focus:outline-none px-3 py-3 border rounded-xl  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
@@ -1740,7 +1764,7 @@ function AddProduct() {
                                 </label>
                                 <div className="relative">
                                     <select
-                                    ref={brandRef}
+                                        ref={brandRef}
                                         value={formData.brand}
                                         onChange={(e) => handleInputChange('brand', e.target.value)}
                                         className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
@@ -1778,7 +1802,7 @@ function AddProduct() {
                                 </label>
                                 <div className="relative">
                                     <select
-                                    ref={categoryRef}
+                                        ref={categoryRef}
                                         value={formData.category}
                                         onChange={(e) => handleInputChange('category', e.target.value)}
                                         className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
@@ -1958,7 +1982,7 @@ function AddProduct() {
 
 
 
-                    
+
 
                     <div className="flex flex-wrap -mx-2 mb-3">
                         {displayItems.length > 0 &&

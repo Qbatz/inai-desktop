@@ -187,7 +187,7 @@ function VendorList() {
       setTimeout(() => {
         dispatch({ type: RESET_CODE })
         dispatch({ type: RESET_VENDOR_ID })
-      }, 5000)
+      }, 1000)
 
     }
   }, [state.Common.successCode])
@@ -233,7 +233,7 @@ function VendorList() {
       setLoading(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE })
-      }, 5000)
+      }, 1000)
     }
   }, [state.Common?.successCode, state.Common?.code]);
 

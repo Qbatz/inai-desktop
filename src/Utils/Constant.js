@@ -141,9 +141,9 @@ export const ADD_IMAGE_PRODUCT_SAGA = "Add_Image_Product_Saga";
 export const ADD_TECH_IMAGE_PRODUCT_SAGA = "Add_Tech_Image_Product_Saga";
 
 
+export const GET_ACTIVITIES_REDUCER = "Get_Activities_Reducer";
 
-
-
+export const GET_ACTIVITIES_SAGA = "Get_Activities_Saga";
 
 
 

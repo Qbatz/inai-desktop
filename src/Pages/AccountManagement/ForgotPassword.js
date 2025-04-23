@@ -107,15 +107,15 @@ function ClientIDChange() {
 
 
 
-useEffect(() => {
-    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
-    
-      setTimeout(()=>{
-        dispatch({ type: RESET_CODE })
-      },5000)
-      
-    }
-  }, [state.Common.successCode, state.Common.code]);
+    useEffect(() => {
+        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
+
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 5000)
+
+        }
+    }, [state.Common.successCode, state.Common.code]);
 
 
 
@@ -156,7 +156,7 @@ useEffect(() => {
                         </div>
 
 
-                        <div className='w-full max-w-[450px]'>
+                        <div className='w-full max-w-[455px]'>
 
 
 
@@ -180,12 +180,14 @@ useEffect(() => {
 
                             <div className="mt-6 flex flex-col items-center justify-center">
 
-                                {siteKey && (
-                                    <ReCAPTCHA
-                                        sitekey={siteKey}
-                                        onChange={handleCaptchaChange}
-                                    />
-                                )}
+                                <div
+                                    className=" font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
+
+                                >
+                                    {siteKey && (
+                                        <ReCAPTCHA sitekey={siteKey} onChange={handleCaptchaChange} />
+                                    )}
+                                </div>
 
 
                                 {formError.captcha && (
@@ -217,7 +219,7 @@ useEffect(() => {
                             <div className="text-start mt-4">
                                 <p className="text-black font-Montserrat font-normal text-base">
                                     Already have an account?{' '}
-                                    <span onClick={() => { navigate("/");  dispatch({ type: RESET_CODE });}}
+                                    <span onClick={() => { navigate("/"); dispatch({ type: RESET_CODE }); }}
                                         className="cursor-pointer text-[#205DA8] hover:text-[#205DA8] font-semibold transition duration-300 font-Montserrat"
                                     >
                                         Sign In

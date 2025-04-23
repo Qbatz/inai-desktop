@@ -1958,7 +1958,7 @@ function AddProduct() {
 
 
 
-                    {/* additional field  */}
+                    
 
                     <div className="flex flex-wrap -mx-2 mb-3">
                         {displayItems.length > 0 &&
@@ -2091,14 +2091,14 @@ function AddProduct() {
 
                     </div>
 
-                    <button className='bg-blue-900 px-4 py-3 rounded-lg text-base font-bold text-white flex items-center mt-3 font-Outfit' onClick={updateShowAdditionalFields} >+ Additional Field</button>
+                    <button className='bg-[#205DA8] px-10 py-2 rounded-lg text-base font-medium text-white flex items-center mt-3 font-Montserrat' onClick={updateShowAdditionalFields} >+ Additional Field</button>
                 </div>
 
                 <div className="flex flex-col md:flex-row items-center gap-4 mt-6">
-                    <button onClick={handleClose} className="bg-white border border-rose-600 text-rose-600 font-medium py-2 px-6 rounded-lg font-Montserrat">
+                    <button onClick={handleClose} className=" w-[167px] bg-white border border-rose-600 text-rose-600 font-medium py-2 px-10 rounded-lg font-Montserrat">
                         Cancel
                     </button>
-                    <button onClick={handleSubmit} className="bg-blue-900 text-white font-medium py-2 px-6 rounded-lg font-Montserrat">
+                    <button onClick={handleSubmit} className=" w-[167px] bg-[#205DA8] text-white font-medium py-2 px-10 rounded-lg font-Montserrat">
                         Submit
                     </button>
                 </div>

@@ -75,3 +75,8 @@ export async function signIn(signIn) {
 export async function GetUserInfo(payload) {
     return await AxiosConfig.get(`/user/info`, { params: payload }); 
 }
+
+
+export async function GetActivities() {
+  return await AxiosConfig.get('/user/activities')
+}

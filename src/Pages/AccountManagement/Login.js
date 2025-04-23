@@ -204,7 +204,7 @@ function Login({ message, loginStatusCode }) {
             }
 
 
-            <div className='w-full max-w-[450px]'>
+            <div className='w-full max-w-[455px]'>
 
               <div className='mb-2'>
                 <label className='block text-black mb-2 text-start font-Gilroy font-medium text-sm' htmlFor='clientId'>Client ID <span className='text-red-500'>*</span></label>
@@ -297,15 +297,16 @@ function Login({ message, loginStatusCode }) {
                   </label>
                 </div>
               </div>
-              <div className='flex justify-center'>
-                <div className="p-0 w-fit font-Gilroy text-lg bg-white flex justify-center" style={{ transformOrigin: "0 0", border: "none", }}>
+              <div className='flex justify-center ms-1 me-1 cursor-pointer'>
+                <div
+                  className="cursor-pointer font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
+
+                >
                   {siteKey && (
-                    <ReCAPTCHA
-                      sitekey={siteKey}
-                      onChange={handleCaptchaChange}
-                    />
+                    <ReCAPTCHA sitekey={siteKey} onChange={handleCaptchaChange} />
                   )}
                 </div>
+
               </div>
 
               {captchaError &&

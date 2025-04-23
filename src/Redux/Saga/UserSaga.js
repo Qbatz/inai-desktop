@@ -1,7 +1,8 @@
 import { takeEvery, call, put } from "redux-saga/effects";
 import { refreshToken } from "../../Token_Access/Token";
-import { signIn, ForgotAction, ForgotPasswordAction, ReSetPageAction, ReSetPassword, CreateAction, Verification, OtpSend, OtpVerified, AccountRegister, GetUserInfo } from "../Action/UserAction";
+import { GetActivities, signIn, ForgotAction, ForgotPasswordAction, ReSetPageAction, ReSetPassword, CreateAction, Verification, OtpSend, OtpVerified, AccountRegister, GetUserInfo } from "../Action/UserAction";
 import {
+    GET_ACTIVITIES_SAGA,GET_ACTIVITIES_REDUCER,
     SIGN_IN_REDUCER, SIGN_IN_SAGA, FORGOT_PASSWORD_API_CALL,
     FORGOT_USER_API_CALL, RESET_PAGE_API_CALL, RESET_PASSWORD_API_CALL, ACCOUNT_REGISTER_SAGA, ACCOUNT_REGISTER_REDUCER, OTP_VERIFY_SAGA, OTP_VERIFY_REDUCER, OTP_SEND_REDUCER, OTP_SEND_SAGA, CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE, SIGN_UP_VERIFICATION_SAGA, SIGN_UP_VERIFICATION_REDUCER, GET_USER_INFO_REDUCER, GET_USER_INFO_SAGA,
 } from "../../Utils/Constant";
@@ -210,6 +211,40 @@ function* handleGetUserInfo() {
 }
 
 
+
+function* handleGetActivities(action) {
+    try {
+        const response = yield call(GetActivities, action.payload);
+
+        if (response?.status && response?.status === 200) {
+            yield put({ type: GET_ACTIVITIES_REDUCER, payload: { response: response.data.activites } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status } });
+        }
+        else {
+            yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message, statusCode: response.status } });
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.message || error?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function* UserSaga() {
 
     yield takeEvery(SIGN_IN_SAGA, handleSignIn);
@@ -223,7 +258,7 @@ function* UserSaga() {
     yield takeEvery(OTP_VERIFY_SAGA, handleOtpVerified);
     yield takeEvery(ACCOUNT_REGISTER_SAGA, handleAccountRegister);
     yield takeEvery(GET_USER_INFO_SAGA, handleGetUserInfo)
-
+    yield takeEvery(GET_ACTIVITIES_SAGA, handleGetActivities);
 
 
 

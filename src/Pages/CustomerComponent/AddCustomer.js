@@ -433,7 +433,7 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "address2" ||
                 field === "address3" ||
                 field === "address4" ||
-                field === "city" || field === "landmark" || field === "googleMap") &&
+                field === "city" || field === "landmark" ) &&
             /[^a-zA-Z0-9\s]/.test(value)
         ) return;
         if (field === "postalCode" && !/^\d*$/.test(value)) return;
@@ -453,7 +453,7 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "address2" ||
                 field === "address3" ||
                 field === "address4" ||
-                field === "city" || field === "landmark" || field === "googleMap") &&
+                field === "city" || field === "landmark") &&
             /[^a-zA-Z0-9\s]/.test(value)
         ) return;
         if (field === "postalCode" && !/^\d*$/.test(value)) return;
@@ -2078,13 +2078,13 @@ function AddCustomer({ editCustomerDetails }) {
                                     )}
                                 </div>
                             </div>
-                            <div className="flex justify-end mb-4 mt-2">
-                                <div className='gap-3 flex '>
+                            <div className="flex justify-end mb-4 mt-2 gap-3">
+                              
 
-                                    <button onClick={handleSaveAndExit} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
+                                    <button onClick={handleSaveAndExit} className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
 
-                                    <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
-                                </div>
+                                    <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
+                                
                             </div>
 
 
@@ -2448,9 +2448,9 @@ function AddCustomer({ editCustomerDetails }) {
 
                                     {
                                         editCustomerDetails &&
-                                        <button onClick={handleCustomerEditAddress} className="px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>}
+                                        <button onClick={handleCustomerEditAddress} className="w-[167px] px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>}
 
-                                    <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForBank} >Next</button>
+                                    <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForBank} >Next</button>
                                 </div>
                             </div>
 
@@ -2732,7 +2732,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                         <div className="flex justify-end mt-4 mb-4">
 
-                                <button className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleCustomerSubmit} >Submit</button>
+                                <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleCustomerSubmit} >Submit</button>
 
                             </div>
 

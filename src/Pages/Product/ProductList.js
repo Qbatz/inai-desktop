@@ -233,30 +233,25 @@ function ProductList() {
         }
     }, [state.Common?.successCode, state.Common?.code]);
 
-
-
-
-
     useEffect(() => {
         const delayApi = setTimeout(() => {
-            if (searchTerm.trim() !== "") {
-                dispatch({
-                    type: GET_PRODUCT_SAGA,
-                    payload: { searchKeyword: searchTerm.trim() },
-                });
-                setLoading(true)
-            } else {
-                dispatch({
-                    type: GET_PRODUCT_SAGA,
-                    payload: { searchKeyword: "" },
-                });
-            }
+          if (searchTerm.trim().length >= 3) {
+            dispatch({
+              type: GET_PRODUCT_SAGA,
+              payload: { searchKeyword: searchTerm.trim() },
+            });
+            setLoading(true);
+          } else if (searchTerm.trim().length === 0) {
+            dispatch({
+              type: GET_PRODUCT_SAGA,
+              payload: { searchKeyword: "" },
+            });
+          }
         }, 500);
-
+      
         return () => clearTimeout(delayApi);
-    }, [searchTerm]);
-
-
+      }, [searchTerm]);
+      
 
 
     useEffect(() => {

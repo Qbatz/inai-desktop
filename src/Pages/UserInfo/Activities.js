@@ -3,12 +3,14 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RESET_CODE, GET_ACTIVITIES_SAGA } from '../../Utils/Constant'
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
+import { useNavigate } from 'react-router-dom';
 
 function Activities() {
 
 
     const state = useSelector(state => state)
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false)
     const [activitiesList, setActivitiesList] = useState([])
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -28,6 +30,19 @@ function Activities() {
             setCurrentPage(newPage);
         }
     };
+
+
+    const handleNavigateDetailsPage = (details) => {
+        console.log("details", details)
+        const id = details.transactionId
+        if (id) {
+            navigate(`/vendor-details/${id}`)
+            navigate(`/customer-details/${id}`)
+        }
+
+       
+
+    }
 
 
 
@@ -105,7 +120,7 @@ function Activities() {
                                             ) : (
                                                 <>
                                                     {item.description.toLowerCase().charAt(0).toUpperCase() + item.description.toLowerCase().slice(1)}
-                                                    <span className="text-xs text-[#205DA8]">
+                                                    <span className="text-xs text-[#205DA8] cursor-pointer" onClick={() => handleNavigateDetailsPage(item)}>
                                                         _{item.type.toLowerCase().charAt(0).toUpperCase() + item.type.toLowerCase().slice(1)}
                                                     </span>
                                                 </>

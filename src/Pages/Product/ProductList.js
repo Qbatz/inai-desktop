@@ -194,7 +194,10 @@ function ProductList() {
 
     }
 
-
+    const handleNavigateproductDetails = (item) => {
+               navigate(`/product-details/${item.productCode}`); 
+      };
+      
 
 
 
@@ -404,7 +407,7 @@ function ProductList() {
                                     paginatedData?.map((item, index) => (
                                         <tr key={index} className="border-0 mt-4">
                                             <td className="px-4 py-3 text-center text-sm font-Gilroy">{index + 1}</td>
-                                            <td className="flex items-center px-6 py-3 font-Gilroy font-semibold text-sm text-black cursor-pointer">
+                                            <td  onClick={()=>handleNavigateproductDetails(item)} className=" text-[#205DA8] hover:underline hover:cursor-pointer flex items-center px-6 py-3 font-Gilroy font-semibold text-sm  cursor-pointer">
                                                 <img
                                                     src={item.images[0]?.url || Cloth}
                                                     alt={item.productName}

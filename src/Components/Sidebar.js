@@ -29,6 +29,7 @@ import VendorDetails from "../Pages/VendorFile/VendorDetails";
 import UserDetails from "../Pages/UserInfo/UserDetails";
 import { GET_USER_INFO_SAGA } from '../Utils/Constant';
 import PropTypes from 'prop-types';
+import ProductDetails from "../Pages/Product/ProductDetails";
 
 
 
@@ -244,6 +245,7 @@ function Sidebar({ state }) {
                         <Route path="/add-vendor" element={<AddVendor />} />
                         <Route path="/vendor-details/:vendorId" element={<VendorDetails />} />
                         <Route path="/user/details" element={<UserDetails />} />
+                        <Route path="/product-details/:productId" element={<ProductDetails />} />
                     </Routes>
 
                 </div>

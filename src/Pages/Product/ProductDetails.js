@@ -2,13 +2,7 @@ import React, { useState} from 'react';
 
 
 
-import product1 from '../../Asset/Images/Cloth.png';
-import product2 from '../../Asset/Images/Cloth.png';
-import product3 from '../../Asset/Images/Cloth.png';
-import product4 from '../../Asset/Images/Cloth.png';
-import product5 from '../../Asset/Images/Cloth.png';
-import product6 from '../../Asset/Images/Cloth.png';
-import product7 from '../../Asset/Images/Cloth.png';
+
 
 
 
@@ -24,7 +18,7 @@ function ProductDetails() {
 
     const [showAll, setShowAll] = useState(false);
     const [showTechAll, setShowTechAll] = useState(false);
-    const images = [product1, product2, product3, product4, product5, product6, product7];
+    const images = [];
 
 
     const handleSeeMoreProductImages = () => {

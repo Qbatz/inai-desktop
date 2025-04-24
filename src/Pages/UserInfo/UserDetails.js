@@ -475,9 +475,6 @@ const UserDetails = ({ state }) => {
 
                 {
                     activeTabs === 2 && <Activities />
-
-
-
                 }
 
             </div>

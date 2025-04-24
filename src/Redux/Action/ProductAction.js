@@ -220,3 +220,8 @@ export async function DeleteProductTechImage(del) {
     data: del
   });
 }
+
+
+export async function ParticularProduct(productId) {
+    return await AxiosConfig.get(`/product/${productId}`); 
+}

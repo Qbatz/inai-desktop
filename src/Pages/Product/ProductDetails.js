@@ -1,25 +1,28 @@
-import React, { useState} from 'react';
-
-
-
-
-
-
-
-
-
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { GET_PARTICULAR_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
+import moment from "moment";
 
 
 function ProductDetails() {
 
-   
 
- 
+
+
+
+    const dispatch = useDispatch()
+    const state = useSelector(state => state)
+    const { productId } = useParams()
 
     const [showAll, setShowAll] = useState(false);
     const [showTechAll, setShowTechAll] = useState(false);
-    const images = [];
+    const [loading, setLoading] = useState(false)
 
+
+
+    const productDetails = state.product.particularProductList
 
     const handleSeeMoreProductImages = () => {
         setShowAll(true);
@@ -28,42 +31,62 @@ function ProductDetails() {
     const handleSeeMoreTechImages = () => {
         setShowTechAll(true);
     };
+    const images = productDetails?.images ?? [];
     const imagesToShow = showAll ? images : images.slice(0, 6);
     const hasMoreImages = images.length > 6;
 
-
-    const imagesToShowTech = showTechAll ? images : images.slice(0, 6);
-    const hasMoreTechImages = images.length > 6;
-
-
+    const techImages = productDetails?.technicaldocs ?? [];
+    const imagesToShowTech = showTechAll ? techImages : techImages.slice(0, 6);
+    const hasMoreTechImages = techImages.length > 6;
 
 
 
 
+  
+    useEffect(() => {
+        dispatch({ type: GET_PARTICULAR_PRODUCT_SAGA, payload: productId });
+        setLoading(true)
+    }, []);
 
+    useEffect(() => {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 1000)
+        }
+    }, [state.Common?.successCode, state.Common?.code]);
 
     return (
         <div className="bg-blueGray-100 min-h-screen w-full">
             <div className="p-3  flex flex-col" >
                 <h1 className="text-xl font-semibold mb-2 font-Gilroy text-black sticky sticky top-0 bg-blueGray-100 z-10 ">Product Detail</h1>
-                          
-                
-                <div className="p-8 bg-white  min-h-screen rounded-2xl ">
+
+
+                <div className="p-8 bg-white  min-h-screen rounded-2xl relative">
+                    {loading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                            <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                        </div>
+                    )}
+
                     <div className="grid grid-cols-2 gap-4 mb-3">
-                    <div>
+                        <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Images </p>
                             <div className="grid grid-cols-3 flex items-center justify-center gap-4">
-                                {imagesToShow.map((img, index) => {
+                                {imagesToShow.length > 0 ? imagesToShow.map((img, index) => {
                                     const isLastVisible = !showAll && index === 5;
+
+
 
                                     return (
                                         <div
                                             key={index}
-                                            className="relative w-[120px] h-[120px]  cursor-pointer font-Gilroy"
+                                            className="relative  w-[120px] h-[120px]  cursor-pointer font-Gilroy border border-gray-200 rounded-md"
                                             onClick={isLastVisible ? handleSeeMoreProductImages : undefined}
                                         >
                                             <img
-                                                src={img}
+                                                src={img.url}
                                                 alt={`Product ${index}`}
                                                 className="w-[120px] h-[120px] object-cover rounded-md"
                                             />
@@ -77,7 +100,14 @@ function ProductDetails() {
                                         </div>
 
                                     );
-                                })}
+                                })
+
+                                    :
+                                    <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600">No product images available</label>
+
+
+
+                                }
                             </div>
                         </div>
 
@@ -85,17 +115,17 @@ function ProductDetails() {
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Tech Images </p>
                             <div className="grid grid-cols-3 flex items-center justify-center gap-4">
-                                {imagesToShowTech.map((img, index) => {
+                                {imagesToShowTech.length > 0 ? imagesToShowTech?.map((img, index) => {
                                     const isLastVisible = !showTechAll && index === 5;
 
                                     return (
                                         <div
                                             key={index}
-                                            className="relative  w-[120px] h-[120px] cursor-pointer font-Gilroy"
+                                            className="relative w-[120px] h-[120px]  cursor-pointer font-Gilroy border border-gray-200 rounded-md"
                                             onClick={isLastVisible ? handleSeeMoreTechImages : undefined}
                                         >
                                             <img
-                                                src={img}
+                                                src={img.url}
                                                 alt={`Product ${index}`}
                                                 className=" w-[120px] h-[120px] object-cover rounded-md"
                                             />
@@ -109,7 +139,15 @@ function ProductDetails() {
                                         </div>
 
                                     );
-                                })}
+                                })
+                                    :
+
+
+                                    <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600">No tech images available</label>
+
+
+
+                                }
                             </div>
                         </div>
                     </div>
@@ -118,11 +156,11 @@ function ProductDetails() {
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Code </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap ">{productDetails.productCode || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Name</p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">skjvhsjkvsdjk</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">{productDetails.productName || "N/A"}</p>
                         </div>
 
 
@@ -133,7 +171,7 @@ function ProductDetails() {
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Description </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">{productDetails.description || "N/A"}</p>
                         </div>
 
                     </div>
@@ -143,71 +181,85 @@ function ProductDetails() {
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Available Quantity </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.quantity || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Unit of Measurement </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.unit || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Price </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.price || "N/A"}</p>
                         </div>
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Currency </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.currency || "N/A"}</p>
                         </div>
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Weight </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.weight || "N/A"}</p>
                         </div>
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Discount </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
+                                {productDetails.discount === "" || productDetails.discount === null || productDetails.discount === undefined
+                                    ? "N/A"
+                                    : productDetails.discount === "0" || productDetails.discount === 0
+                                        ? "0"
+                                        : `${productDetails.discount}%`}
+                            </p>
                         </div>
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">HSN </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.hsnCode || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">GST </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.gst || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Serial No</p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
+                                {Array.isArray(productDetails.serialNo) && productDetails.serialNo.length > 0
+                                    ? productDetails.serialNo.join(", ")
+                                    : "N/A"}
+                            </p>
                         </div>
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Category</p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.categoryName || "N/A"}</p>
                         </div>
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Sub - Category</p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">{productDetails.subCategoryName || "N/A"}</p>
                         </div>
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Brand</p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">{productDetails.brandName || "N/A"}</p>
                         </div>
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Country of Origin</p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">{productDetails.countryOfOrigin || "N/A"}</p>
                         </div>
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Month and Year of Manufacture</p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
+                                {productDetails.manufaturingYearAndMonth
+                                    ? moment(productDetails.manufaturingYearAndMonth).format("DD-MM-YYYY")
+                                    : "N/A"}
+                            </p>
                         </div>
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">State</p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">sdhvhsv</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">{productDetails.State || "N/A"}</p>
                         </div>
 
 
@@ -221,7 +273,7 @@ function ProductDetails() {
 
 
                 </div>
-               
+
             </div>
         </div>
     )

@@ -40,6 +40,9 @@ function Activities() {
             } else if (details.module === "vendor") {
                 navigate(`/vendor-details/${id}`)
             } 
+            else if (details.module === "product") {
+                navigate(`/product-details/${id}`);
+            } 
         }
     }
 
@@ -119,7 +122,7 @@ function Activities() {
                                             ) : (
                                                 <>
                                                     {item.description.toLowerCase().charAt(0).toUpperCase() + item.description.toLowerCase().slice(1)}
-                                                    <span className="text-xs text-[#205DA8] cursor-pointer" onClick={() => handleNavigateDetailsPage(item)}>
+                                                    <span className="text-xs text-[#205DA8] cursor-pointer hover:underline" onClick={() => handleNavigateDetailsPage(item)}>
                                                         _{item.type.toLowerCase().charAt(0).toUpperCase() + item.type.toLowerCase().slice(1)}
                                                     </span>
                                                 </>

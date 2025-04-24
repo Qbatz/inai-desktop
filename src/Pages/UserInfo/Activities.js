@@ -33,15 +33,16 @@ function Activities() {
 
 
     const handleNavigateDetailsPage = (details) => {
-        console.log("details", details)
         const id = details.transactionId
         if (id) {
-            navigate(`/vendor-details/${id}`)
-            navigate(`/customer-details/${id}`)
+            if (details.module === "client") {
+                navigate(`/customer-details/${id}`)
+            } else if (details.module === "vendor") {
+                navigate(`/vendor-details/${id}`)
+            } else if (details.module === "product") {
+
+            }
         }
-
-       
-
     }
 
 
@@ -92,7 +93,7 @@ function Activities() {
                         <thead className="bg-slate-100 sticky top-0 z-10">
                             <tr>
                                 <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">S.No</th>
-                                <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Activities</th>
+                                <th className="px-4 py-2 text-left text-neutral-600 text-sm font-medium font-Gilroy">Activities</th>
                                 <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Date & Time</th>
 
                             </tr>
@@ -112,8 +113,8 @@ function Activities() {
                                             {(currentPage - 1) * itemsPerPage + index + 1}
                                         </td>
 
-                                        <td
-                                            className="text-[#222222] px-4 py-2 text-center text-md font-medium font-Gilroy overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]"
+                                        <td title={`${item.description} ${item.type}`}
+                                            className="text-[#222222] px-4 py-2 text-left text-md font-medium font-Gilroy overflow-hidden whitespace-nowrap text-ellipsis max-w-[100px]"
                                         >
                                             {item.type === "Login" ? (
                                                 item.description.toLowerCase().charAt(0).toUpperCase() + item.description.toLowerCase().slice(1)

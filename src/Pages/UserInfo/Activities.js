@@ -39,9 +39,7 @@ function Activities() {
                 navigate(`/customer-details/${id}`)
             } else if (details.module === "vendor") {
                 navigate(`/vendor-details/${id}`)
-            } else if (details.module === "product") {
-
-            }
+            } 
         }
     }
 

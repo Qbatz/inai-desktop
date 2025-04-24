@@ -1114,7 +1114,7 @@ function AddProduct() {
 
 
 
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full h-auto">
                 <h2 className="text-xl font-semibold mb-4 font-Gilroy">{editDetails ? 'Edit Product' : 'Add Product'}</h2>
 
                 {
@@ -1125,10 +1125,10 @@ function AddProduct() {
                     state.Common?.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
                 }
 
-                <div className="flex-1 mx-auto  max-w-7xl  max-h-[400px] overflow-y-auto lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
+                <div className="flex-1 mx-auto  max-w-7xl  max-h-[450px] overflow-y-auto lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
 
-                    <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] mb-2 items-start ">
-                        <div className="w-full flex flex-col h-full">
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2 items-start">
+                        <div className="col-span-5 md:col-span-2 w-full flex flex-col h-full">
                             <div>
                                 <label className="block font-normal text-md font-Outfit mb-1">
                                     Product Code (Unique) <span className="text-red-500 text-lg">*</span>
@@ -1136,7 +1136,7 @@ function AddProduct() {
                                 <input
                                     type="text"
                                     ref={productCodeRef}
-                                    className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm  font-Gilroy  ${formData.productCode ? "text-slate" : "text-slate-500"}`}
+                                    className={`mb-1 focus:outline-none w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm  font-Gilroy  ${formData.productCode ? "text-slate" : "text-slate-500"}`}
                                     placeholder="Enter Product code"
                                     name="productCode"
                                     value={formData.productCode}
@@ -1159,7 +1159,7 @@ function AddProduct() {
                                 <input
                                     type="text"
                                     ref={productNameRef}
-                                    className={`mb-1 focus:outline-none w-[290px] border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm ${formData.productN ? "text-slate" : "text-slate-500"} font-Gilroy`}
+                                    className={`mb-1 focus:outline-none w-full border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm ${formData.productN ? "text-slate" : "text-slate-500"} font-Gilroy`}
                                     placeholder="Enter Product Name"
                                     name="productName"
                                     value={formData.productName}
@@ -1181,7 +1181,7 @@ function AddProduct() {
                                 <textarea
                                     ref={descriptionRef}
                                     placeholder="Enter Description"
-                                    className={`mt-1 focus:outline-none w-[290px] p-4 border rounded-lg h-36 font-medium text-sm ${formData.description ? "text-slate" : "text-slate-500"} font-Gilroy`}
+                                    className={`mt-1 focus:outline-none w-full p-4 border rounded-lg h-36 font-medium text-sm ${formData.description ? "text-slate" : "text-slate-500"} font-Gilroy`}
                                     name="description"
                                     value={formData.description}
                                     onChange={(e) => handleInputChange('description', e.target.value)}
@@ -1197,7 +1197,7 @@ function AddProduct() {
 
 
 
-                        <div className="w-full p-2 flex flex-col h-full">
+                        <div className="col-span-5 md:col-span-3 w-full flex flex-col h-full">
                             <label className="block font-normal text-md font-Outfit ps-2"> {editDetails ? "Edit Photos" : "Add Photos"}</label>
 
                           
@@ -2116,9 +2116,8 @@ function AddProduct() {
                     </div>
 
                     <button className='bg-[#205DA8] px-10 py-2 rounded-lg text-base font-medium text-white flex items-center mt-3 font-Montserrat' onClick={updateShowAdditionalFields} >+ Additional Field</button>
-                </div>
-
-                <div className="flex flex-col md:flex-row items-center gap-4 mt-6">
+                
+                    <div className="flex flex-col md:flex-row items-center gap-4 mt-6">
                     <button onClick={handleClose} className=" w-[167px] bg-white border border-rose-600 text-rose-600 font-medium py-2 px-10 rounded-lg font-Montserrat">
                         Cancel
                     </button>
@@ -2126,6 +2125,10 @@ function AddProduct() {
                         Submit
                     </button>
                 </div>
+                
+                </div>
+
+               
 
 
 

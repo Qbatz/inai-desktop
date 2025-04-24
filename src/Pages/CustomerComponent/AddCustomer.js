@@ -433,7 +433,7 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "address2" ||
                 field === "address3" ||
                 field === "address4" ||
-                field === "city" || field === "landmark" ) &&
+                field === "city" || field === "landmark") &&
             /[^a-zA-Z0-9\s]/.test(value)
         ) return;
         if (field === "postalCode" && !/^\d*$/.test(value)) return;
@@ -661,17 +661,21 @@ function AddCustomer({ editCustomerDetails }) {
 
         setErrors({ ...tempErrors, contactErrors });
         if (!isValid) {
-            if (tempErrors.surName) surNameRef.current?.focus();
+            if (tempErrors.businessName) businessNameRef.current?.focus();
+            else if (tempErrors.legalStatus) legalStatusRef.current?.focus();
+            else if (tempErrors.gstVat) gstVatRef.current?.focus();
+            else if (tempErrors.natureOfBusiness) natureOfBusinessRef.current?.focus();
+            else if (tempErrors.pan) panRef.current?.focus();
+            else if (tempErrors.surName) surNameRef.current?.focus();
             else if (tempErrors.contactPerson) contactPersonRef.current?.focus();
             else if (tempErrors.countryCode) countryCodeRef.current?.focus();
             else if (tempErrors.contactNumber) contactNumberRef.current?.focus();
             else if (tempErrors.emailId) emailRef.current?.focus();
             else if (tempErrors.designation) designationRef.current?.focus();
-            else if (tempErrors.gstVat) gstVatRef.current?.focus();
-            else if (tempErrors.pan) panRef.current?.focus();
-            else if (tempErrors.businessName) businessNameRef.current?.focus();
-            else if (tempErrors.legalStatus) legalStatusRef.current?.focus();
-            else if (tempErrors.natureOfBusiness) natureOfBusinessRef.current?.focus();
+
+
+
+
             else {
                 for (let i = 0; i < contactErrors.length; i++) {
                     const cErr = contactErrors[i];
@@ -869,8 +873,8 @@ function AddCustomer({ editCustomerDetails }) {
             let bankError = {};
             if (!bank.beneficiaryCurrency?.trim()) bankError.beneficiaryCurrency = "Currency is required";
             let nameToValidate = !editCustomerDetails
-                ? formData?.contactPerson
-                : (initialBankDetailsList.beneficiaryName ?? formData?.contactPerson);
+                ? formData?.businessName
+                : (initialBankDetailsList.beneficiaryName ?? formData?.businessName);
 
             if (!nameToValidate?.trim()) {
                 bankError.beneficiaryName = "Name is required";
@@ -1504,12 +1508,12 @@ function AddCustomer({ editCustomerDetails }) {
             updated[0] = {
                 ...updated[0],
                 beneficiaryName: !editCustomerDetails
-                    ? (formData?.contactPerson || '')
-                    : ((initialBankDetailsList?.[0]?.beneficiaryName ?? formData?.contactPerson) || '')
+                    ? (formData?.businessName || '')
+                    : ((initialBankDetailsList?.[0]?.beneficiaryName ?? formData?.businessName) || '')
             };
             return updated;
         });
-    }, [formData?.contactPerson,
+    }, [formData?.businessName,
     initialBankDetailsList?.[0]?.beneficiaryName,
         editCustomerDetails]);
 
@@ -1578,6 +1582,182 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
 
+                                    <div className=''>
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name  <span className='text-red-500'>*</span></label>
+                                        <input
+
+                                            type='text'
+                                            ref={businessNameRef}
+                                            value={formData.businessName}
+                                            onChange={(e) => handleInputChange('businessName', e.target.value)}
+                                            placeholder='Enter Business Name'
+                                            className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.businessName && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.businessName}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                    </div>
+                                    <div className='mb-2 relative w-full'>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                            Legal Status of firm <span className='text-red-500'>*</span>
+                                        </label>
+                                        <select
+                                            ref={legalStatusRef}
+                                            value={formData.legalStatus}
+                                            onChange={(e) => handleInputChange('legalStatus', e.target.value)}
+                                            className="cursor-pointer appearance-none w-full px-3 py-3 border rounded-xl focus:outline-none capitalize font-Gilroy font-medium text-sm text-neutral-500 pr-10"
+                                        >
+                                            <option value="">Select Legal Status of firm</option>
+                                            <option value="PRIVATE LIMITED">PRIVATE LIMITED</option>
+                                            <option value="LLT_LOW LATENCY TRANSSPORT">LLT_LOW LATENCY TRANSSPORT</option>
+                                            <option value="PARTNERSHIP">PARTNERSHIP</option>
+                                            <option value="PROPRIETORSHIP">PROPRIETORSHIP</option>
+                                        </select>
+
+                                        <div className="pointer-events-none absolute top-[54px] right-3 transform -translate-y-1/2 flex items-center text-neutral-500">
+                                            <ArrowDown2
+                                                size="16"
+                                                color="#555555"
+                                            />
+                                        </div>
+
+                                        {errors.legalStatus && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.legalStatus}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>GST/VAT <span className='text-red-500'>*</span></label>
+                                        <input
+                                            ref={gstVatRef}
+                                            type='text'
+                                            value={formData.gstVat}
+                                            onChange={(e) => handleInputChange('gstVat', e.target.value)}
+                                            placeholder='Enter GST/VAT'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.gstVat && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.gstVat}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+
+                                </div>
+                                <div className='grid md:grid-cols-1 sm:grid-cols-1 gap-3 mb-2 mt-2'>
+
+                                    <div className='mb-3 '>
+                                        <label className='block mb-3 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                            Nature of Business <span className='text-red-500'>*</span>
+                                        </label>
+                                        <div className='flex gap-14'>
+                                            {businessTypes.map((business) => (
+                                                <div key={business.id} className='flex gap-3 items-center'>
+                                                    <input
+                                                        type="checkbox"
+                                                        ref={natureOfBusinessRef}
+                                                        className="ml-2 accent-[#205DA8]"
+                                                        checked={natureOfBusiness.includes(String(business.id))}
+                                                        onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
+                                                    />
+                                                    <label className='block text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                                        {business.label}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        {errors.natureOfBusiness && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.natureOfBusiness}</p>
+                                            </div>
+                                        )}
+
+                                    </div>
+
+                                </div>
+
+                                <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
+
+
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  <span className='text-red-500'>*</span></label>
+                                        <input
+                                            ref={panRef}
+                                            type='text'
+                                            value={formData.pan}
+                                            onChange={(e) => handleInputChange('pan', e.target.value)}
+                                            placeholder='Enter PAN'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.pan && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.pan}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+
+                                    <div>
+                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN </label>
+                                        <input
+
+                                            type='text'
+                                            value={formData.tan}
+                                            onChange={(e) => handleInputChange('tan', e.target.value)}
+                                            placeholder='Enter TAN'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.tan && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.tan}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+
+
+                                    <div >
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN </label>
+                                        <input
+
+                                            type='text'
+                                            value={formData.cin}
+                                            onChange={(e) => handleInputChange('cin', e.target.value)}
+                                            placeholder='Enter CIN'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                        />
+                                        {errors.cin && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                    {errors.cin}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
 
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact Person   <span className='text-red-500'>*</span></label>
@@ -1738,168 +1918,9 @@ function AddCustomer({ editCustomerDetails }) {
                                             </div>
                                         )}
                                     </div>
-                                    <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>GST/VAT <span className='text-red-500'>*</span></label>
-                                        <input
-                                            ref={gstVatRef}
-                                            type='text'
-                                            value={formData.gstVat}
-                                            onChange={(e) => handleInputChange('gstVat', e.target.value)}
-                                            placeholder='Enter GST/VAT'
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                        {errors.gstVat && (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                    {errors.gstVat}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800' >CIN </label>
-                                        <input
-
-                                            type='text'
-                                            value={formData.cin}
-                                            onChange={(e) => handleInputChange('cin', e.target.value)}
-                                            placeholder='Enter CIN'
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                        {errors.cin && (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                    {errors.cin}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  <span className='text-red-500'>*</span></label>
-                                        <input
-                                            ref={panRef}
-                                            type='text'
-                                            value={formData.pan}
-                                            onChange={(e) => handleInputChange('pan', e.target.value)}
-                                            placeholder='Enter PAN'
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                        {errors.pan && (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                    {errors.pan}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>TAN </label>
-                                        <input
-
-                                            type='text'
-                                            value={formData.tan}
-                                            onChange={(e) => handleInputChange('tan', e.target.value)}
-                                            placeholder='Enter TAN'
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                        {errors.tan && (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                    {errors.tan}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className=''>
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name  <span className='text-red-500'>*</span></label>
-                                        <input
-
-                                            type='text'
-                                            ref={businessNameRef}
-                                            value={formData.businessName}
-                                            onChange={(e) => handleInputChange('businessName', e.target.value)}
-                                            placeholder='Enter Business Name'
-                                            className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
-                                        {errors.businessName && (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                    {errors.businessName}
-                                                </span>
-                                            </div>
-                                        )}
-
-                                    </div>
-                                    <div className='mb-2 relative w-full'>
-                                        <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                            Legal Status of firm <span className='text-red-500'>*</span>
-                                        </label>
-                                        <select
-                                            ref={legalStatusRef}
-                                            value={formData.legalStatus}
-                                            onChange={(e) => handleInputChange('legalStatus', e.target.value)}
-                                            className="cursor-pointer appearance-none w-full px-3 py-3 border rounded-xl focus:outline-none capitalize font-Gilroy font-medium text-sm text-neutral-500 pr-10"
-                                        >
-                                            <option value="">Select Legal Status of firm</option>
-                                            <option value="PRIVATE LIMITED">PRIVATE LIMITED</option>
-                                            <option value="LLT_LOW LATENCY TRANSSPORT">LLT_LOW LATENCY TRANSSPORT</option>
-                                            <option value="PARTNERSHIP">PARTNERSHIP</option>
-                                            <option value="PROPRIETORSHIP">PROPRIETORSHIP</option>
-                                        </select>
-
-                                        <div className="pointer-events-none absolute top-[54px] right-3 transform -translate-y-1/2 flex items-center text-neutral-500">
-                                            <ArrowDown2
-                                                size="16"
-                                                color="#555555"
-                                            />
-                                        </div>
-
-                                        {errors.legalStatus && (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                    {errors.legalStatus}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-
-
 
                                 </div>
-                                <div className='mb-2'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                        Nature of Business <span className='text-red-500'>*</span>
-                                    </label>
-                                    <div className='flex gap-6'>
-                                        {businessTypes.map((business) => (
-                                            <div key={business.id} className='flex gap-3 items-center'>
-                                                <input
-                                                    type="checkbox"
-                                                    ref={natureOfBusinessRef}
-                                                    className="ml-2 accent-[#205DA8]"
-                                                    checked={natureOfBusiness.includes(String(business.id))}
-                                                    onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
-                                                />
-                                                <label className='block text-start font-Gilroy font-normal text-md text-neutral-800'>
-                                                    {business.label}
-                                                </label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    {errors.natureOfBusiness && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.natureOfBusiness}</p>
-                                        </div>
-                                    )}
 
-                                </div>
 
 
 
@@ -2079,12 +2100,12 @@ function AddCustomer({ editCustomerDetails }) {
                                 </div>
                             </div>
                             <div className="flex justify-end mb-4 mt-2 gap-3">
-                              
 
-                                    <button onClick={handleSaveAndExit} className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
 
-                                    <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
-                                
+                                <button onClick={handleSaveAndExit} className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
+
+                                <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
+
                             </div>
 
 
@@ -2441,10 +2462,10 @@ function AddCustomer({ editCustomerDetails }) {
 
                                 </div>
 
-                        </div>
-                        <div className="flex justify-end mb-4 mt-4">
-                          
-                            <div className='gap-3 flex '>
+                            </div>
+                            <div className="flex justify-end mb-4 mt-4">
+
+                                <div className='gap-3 flex '>
 
                                     {
                                         editCustomerDetails &&
@@ -2730,7 +2751,7 @@ function AddCustomer({ editCustomerDetails }) {
                             </div>
 
 
-                        <div className="flex justify-end mt-4 mb-4">
+                            <div className="flex justify-end mt-4 mb-4">
 
                                 <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleCustomerSubmit} >Submit</button>
 

@@ -52,7 +52,7 @@ function AddProduct() {
     const [isChanged, setIsChanged] = useState('')
     const [serialNoList, setSerialNoList] = useState([]);
     const [inputText, setInputText] = useState("");
- 
+
 
 
     const productCodeRef = useRef(null);
@@ -157,8 +157,8 @@ function AddProduct() {
 
     const handleCategoryChange = (selected) => {
 
-      
-        
+
+
 
         setSelectedCategory(selected);
         setFormData((prev) => ({
@@ -192,7 +192,7 @@ function AddProduct() {
     };
 
 
- 
+
     const handleSubCategoryChange = (selected) => {
 
         setSelectedSubCategory(selected)
@@ -320,7 +320,7 @@ function AddProduct() {
         if (!isBrandValid) {
             newErrors.brand = "Brand is required";
         }
-       
+
         const quantity = parseInt(formData.availableQuantity);
         if (quantity || quantity <= 0) {
             if (serialNoList.length !== quantity) {
@@ -1283,7 +1283,7 @@ function AddProduct() {
         }
     }, [displayItems]);
 
-   
+
 
     const selectStyles = {
         control: (base) => ({
@@ -1297,6 +1297,10 @@ function AddProduct() {
             fontFamily: 'Gilroy',
             color: '#94a3b8',
             cursor: 'pointer',
+            transition: 'border 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+            '&:hover': {
+                borderColor: '#94a3b8',
+            },
         }),
         singleValue: (base) => ({
             ...base,
@@ -1322,15 +1326,16 @@ function AddProduct() {
         option: (base, state) => ({
             ...base,
             backgroundColor: state.isSelected
-                ? "#1967d2"
+                ? "#205DA8"
                 : state.isFocused
-                    ? "oklch(54.6% 0.245 262.881)"
+                    ? "#205DA8"
                     : "#fff",
             color: state.isSelected || state.isFocused ? "white" : "black",
             fontFamily: "Gilroy",
             fontSize: "14px",
             cursor: "pointer",
             padding: "4px 10px",
+
         }),
     };
 

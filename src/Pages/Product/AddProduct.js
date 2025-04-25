@@ -63,7 +63,11 @@ function AddProduct() {
     const categoryRef = useRef(null);
     const brandRef = useRef(null);
     const serialNoRef = useRef(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedBrand, setSelectedBrand] = useState(null);
 
+
+    const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
 
     const [formData, setFormData] = useState({
@@ -93,59 +97,7 @@ function AddProduct() {
 
 
 
-    useEffect(() => {
-        let optionArray = [];
-        state?.product?.categoryList?.map((category) => {
 
-            let optionObj = {
-                label: category.name,
-                value: category.id
-            }
-            optionArray.push(optionObj)
-        })
-        setCategoryOptions(optionArray)
-
-    }, [state?.product?.categoryList])
-
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedBrand, setSelectedBrand] = useState(null);
-
-
-    const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-
-
-
-
-
-
-    useEffect(() => {
-        let optionArray = [];
-        state?.product?.subCategoryList?.map((subcategory) => {
-
-            let optionObj = {
-                label: subcategory.name,
-                value: subcategory.id
-            }
-            optionArray.push(optionObj)
-        })
-        setSubCategoryOptions(optionArray)
-
-    }, [state?.product?.subCategoryList])
-
-
-    useEffect(() => {
-        let optionArray = [];
-        state?.product?.brandList?.map((brand) => {
-
-            let optionObj = {
-                label: brand.name,
-                value: brand.id
-            }
-            optionArray.push(optionObj)
-        })
-        setBrandOptions(optionArray)
-
-    }, [state?.product?.brandList])
 
 
 
@@ -156,10 +108,6 @@ function AddProduct() {
 
 
     const handleCategoryChange = (selected) => {
-
-
-
-
         setSelectedCategory(selected);
         setFormData((prev) => ({
             ...prev,
@@ -288,13 +236,6 @@ function AddProduct() {
             [field]: value?.trim() ? "" : prevErrors[field],
         }));
     };
-
-
-
-
-
-
-
 
 
 
@@ -500,10 +441,6 @@ function AddProduct() {
 
 
 
-
-
-
-
     const handleTechDocAdd = async (e) => {
         const files = Array.from(e.target.files);
 
@@ -557,12 +494,6 @@ function AddProduct() {
             }
         });
     };
-
-
-
-
-
-
 
 
 
@@ -908,9 +839,6 @@ function AddProduct() {
 
 
     const updateFormValues = (title, newValue, type) => {
-
-
-
         const updatedItems = displayItems.map((item) => {
             if (item.title === title) {
                 return {
@@ -1081,6 +1009,117 @@ function AddProduct() {
             }
         }
     };
+
+    const selectStyles = {
+        control: (base) => ({
+            ...base,
+            backgroundColor: '#fff',
+            borderRadius: '0.5rem',
+            minHeight: '2.9rem',
+            boxShadow: 'none',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            fontFamily: 'Gilroy',
+            color: '#94a3b8',
+            cursor: 'pointer',
+            transition: 'border 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+            '&:hover': {
+                borderColor: '#94a3b8',
+            },
+        }),
+        singleValue: (base) => ({
+            ...base,
+            color: '#94a3b8',
+        }),
+        placeholder: (base) => ({
+            ...base,
+            color: '#94a3b8',
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            paddingRight: '0.75rem',
+            color: '#4B5563',
+        }),
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+        menu: (base) => ({
+            ...base,
+            borderRadius: '0.5rem',
+            zIndex: 20,
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isSelected
+                ? "#205DA8"
+                : state.isFocused
+                    ? "#205DA8"
+                    : "#fff",
+            color: state.isSelected || state.isFocused ? "white" : "black",
+            fontFamily: "Gilroy",
+            fontSize: "14px",
+            cursor: "pointer",
+            padding: "4px 10px",
+
+        }),
+    };
+
+
+    useEffect(() => {
+        let optionArray = [];
+        state?.product?.categoryList?.map((category) => {
+
+            let optionObj = {
+                label: category.name,
+                value: category.id
+            }
+            optionArray.push(optionObj)
+        })
+        setCategoryOptions(optionArray)
+
+    }, [state?.product?.categoryList])
+
+
+
+
+
+
+
+
+    useEffect(() => {
+        let optionArray = [];
+        state?.product?.subCategoryList?.map((subcategory) => {
+
+            let optionObj = {
+                label: subcategory.name,
+                value: subcategory.id
+            }
+            optionArray.push(optionObj)
+        })
+        setSubCategoryOptions(optionArray)
+
+    }, [state?.product?.subCategoryList])
+
+
+    useEffect(() => {
+        let optionArray = [];
+        state?.product?.brandList?.map((brand) => {
+
+            let optionObj = {
+                label: brand.name,
+                value: brand.id
+            }
+            optionArray.push(optionObj)
+        })
+        setBrandOptions(optionArray)
+
+    }, [state?.product?.brandList])
+
+
+
+
+
+
 
 
     useEffect(() => {
@@ -1296,59 +1335,7 @@ function AddProduct() {
 
 
 
-    const selectStyles = {
-        control: (base) => ({
-            ...base,
-            backgroundColor: '#fff',
-            borderRadius: '0.5rem',
-            minHeight: '2.9rem',
-            boxShadow: 'none',
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            fontFamily: 'Gilroy',
-            color: '#94a3b8',
-            cursor: 'pointer',
-            transition: 'border 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-            '&:hover': {
-                borderColor: '#94a3b8',
-            },
-        }),
-        singleValue: (base) => ({
-            ...base,
-            color: '#94a3b8',
-        }),
-        placeholder: (base) => ({
-            ...base,
-            color: '#94a3b8',
-        }),
-        dropdownIndicator: (base) => ({
-            ...base,
-            paddingRight: '0.75rem',
-            color: '#4B5563',
-        }),
-        indicatorSeparator: () => ({
-            display: 'none',
-        }),
-        menu: (base) => ({
-            ...base,
-            borderRadius: '0.5rem',
-            zIndex: 20,
-        }),
-        option: (base, state) => ({
-            ...base,
-            backgroundColor: state.isSelected
-                ? "#205DA8"
-                : state.isFocused
-                    ? "#205DA8"
-                    : "#fff",
-            color: state.isSelected || state.isFocused ? "white" : "black",
-            fontFamily: "Gilroy",
-            fontSize: "14px",
-            cursor: "pointer",
-            padding: "4px 10px",
 
-        }),
-    };
 
 
     return (

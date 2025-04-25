@@ -187,7 +187,7 @@ function VendorList() {
       setTimeout(() => {
         dispatch({ type: RESET_CODE })
         dispatch({ type: RESET_VENDOR_ID })
-      }, 5000)
+      }, 1000)
 
     }
   }, [state.Common.successCode])
@@ -195,20 +195,27 @@ function VendorList() {
 
   useEffect(() => {
     const delayApi = setTimeout(() => {
-      if (searchTerm.trim() !== "") {
+      const trimmedSearch = searchTerm.trim();
+         if (trimmedSearch.length >= 3) {
+        setLoading(true);
         dispatch({
           type: VENDOR_SAGA,
-          payload: { searchKeyword: searchTerm.trim() },
+          payload: { searchKeyword: trimmedSearch },
         });
-        setLoading(true)
-      } else {
-        dispatch({ type: VENDOR_SAGA, payload: { searchKeyword: "" } })
+      } else if (trimmedSearch.length === 0) {
+        dispatch({
+          type: VENDOR_SAGA,
+          payload: { searchKeyword: "" },
+        });
       }
-    }, 500);
-
-    return () => clearTimeout(delayApi);
+    }, 2000);
+  
+    return () => {
+      clearTimeout(delayApi);
+    };
   }, [searchTerm]);
-
+  
+  
   useEffect(() => {
     const delayApi = setTimeout(() => {
       if (startDate && endDate) {
@@ -233,7 +240,7 @@ function VendorList() {
       setLoading(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE })
-      }, 5000)
+      }, 1000)
     }
   }, [state.Common?.successCode, state.Common?.code]);
 

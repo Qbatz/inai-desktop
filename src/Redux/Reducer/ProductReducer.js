@@ -1,5 +1,5 @@
 
-import { GET_PRODUCT_REDUCER ,GET_CATEGORY_REDUCER,GET_SUB_CATEGORY_REDUCER,GET_BRAND_REDUCER} from "../../Utils/Constant";
+import { GET_PRODUCT_REDUCER ,GET_PARTICULAR_PRODUCT_REDUCER,GET_CATEGORY_REDUCER,GET_SUB_CATEGORY_REDUCER,GET_BRAND_REDUCER} from "../../Utils/Constant";
 
 
 export const initialState = {
@@ -7,6 +7,7 @@ export const initialState = {
     categoryList: [],
     subCategoryList: [],
     brandList: [],
+    particularProductList : [],
 }
 
 const ProductReducer = (state = initialState, action) => {
@@ -21,6 +22,8 @@ const ProductReducer = (state = initialState, action) => {
                     return {...state, subCategoryList: action.payload.response}
                     case GET_BRAND_REDUCER: 
                     return { ...state, brandList: action.payload.response }
+                    case GET_PARTICULAR_PRODUCT_REDUCER : 
+                    return { ...state, particularProductList: action.payload.response }
         default:
             return state;
     }

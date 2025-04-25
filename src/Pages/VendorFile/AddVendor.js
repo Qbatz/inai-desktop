@@ -31,7 +31,7 @@ function BasicVendor({ vendorDetails }) {
 
     ]);
     const [formErrors, setFormErrors] = useState({});
-  
+
 
     const [officeAddress1, setOfficeAddress1] = useState("");
     const [officeAddress2, setOfficeAddress2] = useState('');
@@ -440,11 +440,11 @@ function BasicVendor({ vendorDetails }) {
     ];
 
     const handleTabClick = (id) => {
-    
+
 
         if (Number(id) === Number(3)) {
             if (validateForm() && validateFormAddress()) {
-             
+
                 const payloadData = {
                     vendorId: state.vendor.vendorId,
                     address: [
@@ -565,9 +565,9 @@ function BasicVendor({ vendorDetails }) {
 
     const handleGoogleMapChange = (e) => {
         const value = e.target.value;
-        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+        
             setGoogleMap(value);
-        }
+        
     };
 
 
@@ -635,10 +635,9 @@ function BasicVendor({ vendorDetails }) {
 
     const handleShippingGoogleMapChange = (e) => {
         const value = e.target.value;
-        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
-            setShippingGoogleMap(value);
-            setFormErrors((prevErrors) => ({ ...prevErrors, shippingGoogleMap: "" }));
-        }
+        setShippingGoogleMap(value);
+        setFormErrors((prevErrors) => ({ ...prevErrors, shippingGoogleMap: "" }));
+
     };
 
     const handleCheckboxChange = (e) => {
@@ -1081,8 +1080,8 @@ function BasicVendor({ vendorDetails }) {
                     designation: contact.designation
                 }))
                 : [];
-    
-           
+
+
 
 
 
@@ -1852,14 +1851,14 @@ function BasicVendor({ vendorDetails }) {
                             <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
                                 <button
                                     type="button"
-                                    className="w-full sm:w-auto font-medium font-Montserrat px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
+                                    className="w-[167px] px-10 font-medium font-Montserrat px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
                                     onClick={handleSaveClick} >
                                     Save & Exit
                                 </button>
 
                                 <button
                                     type="button"
-                                    className="w-full sm:w-auto font-medium font-Montserrat px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
+                                    className="w-[167px] px-10 font-medium font-Montserrat px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
                                     onClick={handleNextClick}
                                 >
                                     Next
@@ -2214,14 +2213,14 @@ function BasicVendor({ vendorDetails }) {
                                         {
                                             vendorDetails && <button
                                                 type="button"
-                                                className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
+                                                className="w-[167px] px-10 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
                                                 onClick={handleSaveClickAddress} >
                                                 Save & Exit
                                             </button>
                                         }
 
                                         <button
-                                            className="px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat  text-base font-medium  font-Montserrat"
+                                            className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat  text-base font-medium  font-Montserrat"
                                             onClick={handleNext}
                                         >
                                             Next
@@ -2542,7 +2541,7 @@ function BasicVendor({ vendorDetails }) {
 
 
                                     <div className="flex flex-col xs:flex-row sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-                                        <button className="w-full sm:w-auto px-4 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
+                                        <button className="w-[167px] px-10 font-Montserrat font-medium py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md bg-[#205DA8] text-white transition"
                                             onClick={handleSubmit}>
                                             Submit
                                         </button>

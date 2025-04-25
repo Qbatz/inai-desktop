@@ -26,7 +26,14 @@ function VendorDetails() {
 
 
 
-
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
 
 
   return (
@@ -166,13 +173,31 @@ function VendorDetails() {
                         <p className="font-semibold text-sm pt-2 font-Gilroy">{vendor.address?.[0]?.landMark || 'N/A'}</p>
                       </div>
                       <div>
+
                         <p className="text-gray-500 text-xs font-medium font-Gilroy">Google Map</p>
-                        <a href={vendor.address?.[0]?.mapLink || '#'}
-                          className="text-blue-500 break-all pt-2"
-                          target="_blank"
-                          rel="noopener noreferrer">
-                          {vendor.address?.[0]?.mapLink || 'N/A'}
-                        </a>
+                        {vendor.address && vendor.address.length > 0 && vendor.address[0].mapLink ? (
+                          isValidUrl(vendor.address[0].mapLink) ? (
+                            <a
+                              href={vendor.address[0].mapLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm cursor-pointer font-semibold mb-2 font-Gilroy text-blue-500 overflow-hidden text-ellipsis whitespace-nowrap underline"
+                            >
+                              {vendor.address[0].mapLink}
+                            </a>
+                          ) : (
+                            <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
+                              {vendor.address[0].mapLink}
+                            </p>
+                          )
+                        ) : (
+                          <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
+                            N/A
+                          </p>
+                        )}
+
+
+
                       </div>
                     </div>
                   </div>
@@ -208,24 +233,43 @@ function VendorDetails() {
                         <p className="font-semibold text-sm pt-2 font-Gilroy">{vendor.address?.[1]?.landMark || 'N/A'}</p>
                       </div>
                       <div>
+
+
                         <p className="text-gray-500 text-xs font-medium font-Gilroy">Google Map</p>
-                        <a href={vendor.address?.[1]?.mapLink || '#'}
-                          className="text-blue-500 break-all pt-2"
-                          target="_blank"
-                          rel="noopener noreferrer">
-                          {vendor.address?.[1]?.mapLink || 'N/A'}
-                        </a>
+                        {vendor.address && vendor.address.length > 1 && vendor.address[1].mapLink ? (
+                          isValidUrl(vendor.address[1].mapLink) ? (
+                            <a
+                              href={vendor.address[1].mapLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm cursor-pointer font-semibold mb-2 font-Gilroy text-blue-500 overflow-hidden text-ellipsis whitespace-nowrap underline"
+                            >
+                              {vendor.address[1].mapLink}
+                            </a>
+                          ) : (
+                            <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
+                              {vendor.address[1].mapLink}
+                            </p>
+                          )
+                        ) : (
+                          <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
+                            N/A
+                          </p>
+                        )}
+
+
+
                       </div>
                     </div>
                   </div>
-                </div>
+                </div >
 
               </>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 
 

@@ -207,7 +207,7 @@ function CreateAccount() {
 
                         {state.userInfo.is_verified === null ? <>
 
-                            <div className="w-full max-w-[450px]">
+                            <div className="w-full max-w-[455px]">
                                 <div className="mb-2">
                                     <label className="block text-black mb-2 text-start font-Gilroy font-normal text-sm" htmlFor="userId">
                                         Verify Your Email
@@ -232,12 +232,15 @@ function CreateAccount() {
 
                                 <div className="mt-6 flex flex-col items-center justify-center">
 
-                                    {siteKey && (
-                                        <ReCAPTCHA
-                                            sitekey={siteKey}
-                                            onChange={handleCaptchaChange}
-                                        />
-                                    )}
+                                    <div
+                                        className="cursor-pointer font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.4)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
+
+                                    >
+                                        {siteKey && (
+                                            <ReCAPTCHA sitekey={siteKey} onChange={handleCaptchaChange} />
+                                        )}
+                                    </div>
+
 
 
                                     {formError.captcha && (

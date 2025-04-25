@@ -65,8 +65,6 @@ function AddProduct() {
     const serialNoRef = useRef(null);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedBrand, setSelectedBrand] = useState(null);
-
-
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
 
@@ -93,16 +91,6 @@ function AddProduct() {
         stateName: "",
         district: "",
     });
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1067,53 +1055,37 @@ function AddProduct() {
 
     useEffect(() => {
         let optionArray = [];
-        state?.product?.categoryList?.map((category) => {
-
-            let optionObj = {
+        state?.product?.categoryList?.forEach((category) => {
+            optionArray.push({
                 label: category.name,
                 value: category.id
-            }
-            optionArray.push(optionObj)
-        })
-        setCategoryOptions(optionArray)
-
-    }, [state?.product?.categoryList])
-
-
-
-
-
-
-
-
+            });
+        });
+        setCategoryOptions(optionArray);
+    }, [state?.product?.categoryList]);
+    
     useEffect(() => {
         let optionArray = [];
-        state?.product?.subCategoryList?.map((subcategory) => {
-
-            let optionObj = {
+        state?.product?.subCategoryList?.forEach((subcategory) => {
+            optionArray.push({
                 label: subcategory.name,
                 value: subcategory.id
-            }
-            optionArray.push(optionObj)
-        })
-        setSubCategoryOptions(optionArray)
-
-    }, [state?.product?.subCategoryList])
-
-
+            });
+        });
+        setSubCategoryOptions(optionArray);
+    }, [state?.product?.subCategoryList]);
+    
     useEffect(() => {
         let optionArray = [];
-        state?.product?.brandList?.map((brand) => {
-
-            let optionObj = {
+        state?.product?.brandList?.forEach((brand) => {
+            optionArray.push({
                 label: brand.name,
                 value: brand.id
-            }
-            optionArray.push(optionObj)
-        })
-        setBrandOptions(optionArray)
-
-    }, [state?.product?.brandList])
+            });
+        });
+        setBrandOptions(optionArray);
+    }, [state?.product?.brandList]);
+    
 
 
 

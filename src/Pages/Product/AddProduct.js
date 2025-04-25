@@ -17,7 +17,7 @@ import moment from "moment";
 import { useLocation, useNavigate } from 'react-router-dom';
 import imageCompression from 'browser-image-compression';
 import PdfImage from '../../Asset/Images/pdf.png';
-// import Select from 'react-select';
+
 import CreatableSelect from 'react-select/creatable';
 
 function AddProduct() {
@@ -42,14 +42,17 @@ function AddProduct() {
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
     const [displayItems, setDisplayItems] = useState([])
     const [formValues, setFormValues] = useState([]);
-
+    const [errors, setErrors] = useState({});
+    const [subCategoryOptions, setSubCategoryOptions] = useState()
+    const [categoryOptions, setCategoryOptions] = useState();
+    const [brandOptions, setBrandOptions] = useState();
 
 
 
     const [isChanged, setIsChanged] = useState('')
     const [serialNoList, setSerialNoList] = useState([]);
     const [inputText, setInputText] = useState("");
-    const [inputValue, setInputValue] = useState("");
+ 
 
 
     const productCodeRef = useRef(null);
@@ -76,8 +79,11 @@ function AddProduct() {
         hsn: "",
         gst: "",
         category: "",
+        categoryName: "",
         subCategory: "",
+        subCategoryName: "",
         brand: "",
+        brandName: "",
         make: "",
         country: "",
         stateName: "",
@@ -85,40 +91,80 @@ function AddProduct() {
     });
 
 
-    const [errors, setErrors] = useState({});
 
-    const [categoryOptions, setCategoryOptions] = useState(
-        state?.product?.categoryList?.map((category) => ({
-            value: category.id,
-            label: category.name,
-        })) || []
-    );
+
+    useEffect(() => {
+        let optionArray = [];
+        state?.product?.categoryList?.map((category) => {
+
+            let optionObj = {
+                label: category.name,
+                value: category.id
+            }
+            optionArray.push(optionObj)
+        })
+        setCategoryOptions(optionArray)
+
+    }, [state?.product?.categoryList])
+
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedBrand, setSelectedBrand] = useState(null);
 
 
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
-    const [subCategoryOptions, setSubCategoryOptions] = useState(
-        state?.product?.subCategoryList?.map((subcategory) => ({
-            value: subcategory.id,
-            label: subcategory.name,
-        })) || []
-    );
-    const [brandOptions, setBrandOptions] = useState(
-        state?.product?.brandList?.map((brand) => ({
-            value: brand.id,
-            label: brand.name,
-        })) || []
-    );
+
+
+
+
+
+    useEffect(() => {
+        let optionArray = [];
+        state?.product?.subCategoryList?.map((subcategory) => {
+
+            let optionObj = {
+                label: subcategory.name,
+                value: subcategory.id
+            }
+            optionArray.push(optionObj)
+        })
+        setSubCategoryOptions(optionArray)
+
+    }, [state?.product?.subCategoryList])
+
+
+    useEffect(() => {
+        let optionArray = [];
+        state?.product?.brandList?.map((brand) => {
+
+            let optionObj = {
+                label: brand.name,
+                value: brand.id
+            }
+            optionArray.push(optionObj)
+        })
+        setBrandOptions(optionArray)
+
+    }, [state?.product?.brandList])
+
+
+
+
+
+
 
 
 
     const handleCategoryChange = (selected) => {
+
+      
+        
+
         setSelectedCategory(selected);
         setFormData((prev) => ({
             ...prev,
             category: selected?.value || '',
+            categoryName: '',
         }));
     };
 
@@ -132,19 +178,86 @@ function AddProduct() {
             setFormData((prev) => ({
                 ...prev,
                 category: existingOption.value,
+                categoryName: '',
             }));
         } else {
             const tempOption = { value: inputValue, label: inputValue };
             setSelectedCategory(tempOption);
             setFormData((prev) => ({
                 ...prev,
-                category: inputValue,
+                category: '',
+                categoryName: inputValue,
             }));
         }
     };
 
 
+ 
+    const handleSubCategoryChange = (selected) => {
 
+        setSelectedSubCategory(selected)
+
+        setFormData((prev) => ({
+            ...prev,
+            subCategory: selected?.value || '',
+            subCategoryName: ""
+        }));
+    };
+
+    const handleCreateSubCategory = (inputValue) => {
+        const existingOption = subCategoryOptions.find(
+            (option) => option.label.toLowerCase() === inputValue.toLowerCase()
+        );
+
+        if (existingOption) {
+            setSelectedSubCategory(existingOption);
+            setFormData((prev) => ({
+                ...prev,
+                subCategory: existingOption.value,
+                subCategoryName: ""
+            }));
+        } else {
+            const tempOption = { value: inputValue, label: inputValue };
+            setSelectedSubCategory(tempOption);
+            setFormData((prev) => ({
+                ...prev,
+                subCategory: "",
+                subCategoryName: inputValue,
+            }));
+        }
+    };
+
+    const handleBrandChange = (selected) => {
+        setSelectedBrand(selected)
+        setFormData((prev) => ({
+            ...prev,
+            brand: selected?.value || '',
+            brandName: ""
+        }));
+    };
+
+    const handleCreateBrand = (inputValue) => {
+        const existingOption = brandOptions.find(
+            (option) => option.label.toLowerCase() === inputValue.toLowerCase()
+        );
+
+        if (existingOption) {
+            setSelectedBrand(existingOption);
+            setFormData((prev) => ({
+                ...prev,
+                brand: existingOption.value,
+                brandName: ""
+            }));
+        } else {
+            const tempOption = { value: inputValue, label: inputValue };
+            setSelectedBrand(tempOption);
+            setFormData((prev) => ({
+                ...prev,
+                brand: "",
+                brandName: inputValue,
+            }));
+        }
+    };
 
     const handleDateChange = (date) => {
         const formatted = moment(date).format("YYYY-MM-DD");
@@ -179,17 +292,9 @@ function AddProduct() {
 
 
 
-    const initialCategories = state?.product?.categoryList || [];
 
-    const [localCategories, setLocalCategories] = useState([]);
-    useEffect(() => {
 
-        const mapped = initialCategories.map((cat) => ({
-            value: cat.id,
-            label: cat.name,
-        }));
-        setLocalCategories(mapped);
-    }, [initialCategories]);
+
 
 
 
@@ -201,8 +306,21 @@ function AddProduct() {
         if (!formData.description.trim()) newErrors.description = "Description is required";
         if (!formData.currency.trim()) newErrors.currency = "Currency is required";
         if (!formData.unit) newErrors.unit = "Unit is required";
-        if (!formData.category) newErrors.category = "Category is required";
-        if (!formData.brand) newErrors.brand = "Brand is required";
+
+        const isCategoryValid = (!!formData.category && !formData.categoryName) ||
+            (!formData.category && !!formData.categoryName);
+
+        if (!isCategoryValid) {
+            newErrors.category = "Category is required";
+        }
+
+        const isBrandValid = (!!formData.brand && !formData.brandName) ||
+            (!formData.brand && !!formData.brandName);
+
+        if (!isBrandValid) {
+            newErrors.brand = "Brand is required";
+        }
+       
         const quantity = parseInt(formData.availableQuantity);
         if (quantity || quantity <= 0) {
             if (serialNoList.length !== quantity) {
@@ -870,13 +988,16 @@ function AddProduct() {
                 hsnCode: formData.hsn,
                 gst: formData.gst,
                 category: formData.category,
+                categoryName: formData.categoryName,
                 subCategory: formData.subCategory,
+                subCategoryName: formData.subCategoryName,
                 make: formData.make,
                 countryOfOrigin: formData.country,
                 manufaturingYearAndMonth: selectedDate,
                 State: formData.stateName,
                 district: formData.district,
                 brand: formData.brand,
+                brandName: formData.brandName,
                 images: images,
                 technicaldocs: techImages,
                 serialNo: serialNoList,
@@ -896,13 +1017,16 @@ function AddProduct() {
                 hsnCode: formData.hsn,
                 gst: formData.gst,
                 category: formData.category,
+                categoryName: formData.categoryName,
                 subCategory: formData.subCategory,
+                subCategoryName: formData.subCategoryName,
                 make: formData.make,
                 countryOfOrigin: formData.country,
                 manufaturingYearAndMonth: selectedDate,
                 State: formData.stateName,
                 district: formData.district,
                 brand: formData.brand,
+                brandName: formData.brandName,
                 images: images,
                 technicaldocs: techImages,
                 serialNo: serialNoList,
@@ -1159,8 +1283,56 @@ function AddProduct() {
         }
     }, [displayItems]);
 
-    const trimmedValue = (inputValue || "").trim();
+   
 
+    const selectStyles = {
+        control: (base) => ({
+            ...base,
+            backgroundColor: '#fff',
+            borderRadius: '0.5rem',
+            minHeight: '2.9rem',
+            boxShadow: 'none',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            fontFamily: 'Gilroy',
+            color: '#94a3b8',
+            cursor: 'pointer',
+        }),
+        singleValue: (base) => ({
+            ...base,
+            color: '#94a3b8',
+        }),
+        placeholder: (base) => ({
+            ...base,
+            color: '#94a3b8',
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            paddingRight: '0.75rem',
+            color: '#4B5563',
+        }),
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+        menu: (base) => ({
+            ...base,
+            borderRadius: '0.5rem',
+            zIndex: 20,
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isSelected
+                ? "#1967d2"
+                : state.isFocused
+                    ? "oklch(54.6% 0.245 262.881)"
+                    : "#fff",
+            color: state.isSelected || state.isFocused ? "white" : "black",
+            fontFamily: "Gilroy",
+            fontSize: "14px",
+            cursor: "pointer",
+            padding: "4px 10px",
+        }),
+    };
 
 
     return (
@@ -1820,53 +1992,8 @@ function AddProduct() {
                                         placeholder="Select Category"
                                         className="w-full"
                                         classNamePrefix="react-select"
-                                        styles={{
-                                            control: (base, state) => ({
-                                                ...base,
-                                                backgroundColor: '#fff',
-                                                borderRadius: '0.5rem',
-                                                minHeight: '2.9rem',
-                                                boxShadow: 'none',
-                                                fontSize: '0.875rem',
-                                                fontWeight: 500,
-                                                color: '#94a3b8',
-                                                cursor: 'pointer',
-                                            }),
-                                            singleValue: (base) => ({
-                                                ...base,
-                                                color: '#94a3b8',
-                                            }),
-                                            placeholder: (base) => ({
-                                                ...base,
-                                                color: '#94a3b8',
-                                            }),
-                                            dropdownIndicator: (base) => ({
-                                                ...base,
-                                                paddingRight: '0.75rem',
-                                                color: '#4B5563',
-                                            }),
-                                            indicatorSeparator: () => ({
-                                                display: 'none',
-                                            }),
-                                            menu: (base) => ({
-                                                ...base,
-                                                borderRadius: '0.5rem',
-                                                zIndex: 20,
-                                            }),
-                                            option: (base, state) => ({
-                                                ...base,
-                                                backgroundColor: state.isSelected
-                                                    ? "#1967d2"
-                                                    : state.isFocused
-                                                        ? "oklch(54.6% 0.245 262.881)"
-                                                        : "#fff",
-                                                color: state.isSelected || state.isFocused ? "white" : "black",
-                                                fontFamily: "Gilroy",
-                                                fontSize: "14px",
-                                                cursor: "pointer",
-                                                padding: "4px 10px",
-                                            }),
-                                        }}
+                                        styles={selectStyles}
+
                                     />
 
 
@@ -1889,76 +2016,15 @@ function AddProduct() {
 
                                 <CreatableSelect
                                     options={subCategoryOptions}
-                                    value={
-                                      
-                                        formData.subCategory
-                                            ? subCategoryOptions.find(opt => opt.value === formData.subCategory) || {
-                                                value: formData.subCategory,
-                                                label: formData.subCategory 
-                                            }
-                                            : null 
-                                    }
-                                    onChange={(selected) => {
-                                        handleInputChange('subCategory', selected?.value || '');
-                                        setSelectedSubCategory(selected);
-                                    }}
-                                    onCreateOption={(inputValue) => {
-                                        const customOption = { value: inputValue, label: inputValue };
-                                        handleInputChange('subCategory', inputValue);
-                                        setSelectedSubCategory(customOption);
-                                    }}
+                                    value={selectedSubCategory}
+                                    onChange={handleSubCategoryChange}
+                                    onCreateOption={handleCreateSubCategory}
                                     placeholder="Select Sub Category"
-                                    className="w-full h-14 text-gray-400 MultiSelect"
-                                    isSearchable
-                                    noOptionsMessage={() => "No Sub Category Found"}
-                                    styles={{
-                                        control: (base, state) => ({
-                                            ...base,
-                                            backgroundColor: '#fff',
-                                            borderRadius: '0.5rem',
-                                            minHeight: '2.9rem',
-                                            boxShadow: 'none',
-                                            fontSize: '0.875rem',
-                                            fontWeight: 500,
-                                            color: '#94a3b8',
-                                            cursor: 'pointer',
-                                        }),
-                                        singleValue: (base) => ({
-                                            ...base,
-                                            color: '#94a3b8',
-                                        }),
-                                        placeholder: (base) => ({
-                                            ...base,
-                                            color: '#94a3b8',
-                                        }),
-                                        dropdownIndicator: (base) => ({
-                                            ...base,
-                                            paddingRight: '0.75rem',
-                                            color: '#4B5563',
-                                        }),
-                                        indicatorSeparator: () => ({
-                                            display: 'none',
-                                        }),
-                                        menu: (base) => ({
-                                            ...base,
-                                            borderRadius: '0.5rem',
-                                            zIndex: 20,
-                                        }),
-                                        option: (base, state) => ({
-                                            ...base,
-                                            backgroundColor: state.isSelected
-                                                ? "#1967d2"
-                                                : state.isFocused
-                                                    ? "oklch(54.6% 0.245 262.881)"
-                                                    : "#fff",
-                                            color: state.isSelected || state.isFocused ? "white" : "black",
-                                            fontFamily: "Gilroy",
-                                            fontSize: "14px",
-                                            cursor: "pointer",
-                                            padding: "4px 10px",
-                                        }),
-                                    }}
+                                    className="w-full"
+                                    classNamePrefix="react-select"
+                                    styles={selectStyles}
                                 />
+
 
                             </div>
 
@@ -1968,81 +2034,16 @@ function AddProduct() {
                                 </label>
                                 <div className="relative">
                                     <CreatableSelect
-                                        options={state?.product?.brandList?.map(brand => ({
-                                            value: brand.id,
-                                            label: brand.name
-                                        })) || []}
-                                        value={
-                                            formData.brand
-                                                ? {
-                                                    value: formData.brand,
-                                                    label:
-                                                        state?.product?.brandList?.find(b => b.id === formData.brand)?.name ||
-                                                        formData.brand
-                                                }
-                                                : null
-                                        }
-                                        onChange={(selected) => {
-                                            handleInputChange('brand', selected?.value || '');
-                                            setSelectedBrand(selected);
-                                        }}
-                                        onCreateOption={(inputValue) => {
-                                            const customOption = { value: inputValue, label: inputValue };
-                                            handleInputChange('brand', inputValue);
-                                            setSelectedBrand(customOption);
-                                        }}
+                                        options={brandOptions}
+                                        value={selectedBrand}
+                                        onChange={handleBrandChange}
+                                        onCreateOption={handleCreateBrand}
                                         placeholder="Select Brand"
-                                        className="w-full h-14 text-gray-400 MultiSelect"
-                                        isSearchable
-                                        noOptionsMessage={() => "No Brand Found"}
-                                        styles={{
-                                            control: (base) => ({
-                                                ...base,
-                                                backgroundColor: '#fff',
-                                                borderRadius: '0.5rem',
-                                                minHeight: '2.9rem',
-                                                boxShadow: 'none',
-                                                fontSize: '0.875rem',
-                                                fontWeight: 500,
-                                                color: '#94a3b8',
-                                                cursor: 'pointer',
-                                            }),
-                                            singleValue: (base) => ({
-                                                ...base,
-                                                color: '#94a3b8',
-                                            }),
-                                            placeholder: (base) => ({
-                                                ...base,
-                                                color: '#94a3b8',
-                                            }),
-                                            dropdownIndicator: (base) => ({
-                                                ...base,
-                                                paddingRight: '0.75rem',
-                                                color: '#4B5563',
-                                            }),
-                                            indicatorSeparator: () => ({
-                                                display: 'none',
-                                            }),
-                                            menu: (base) => ({
-                                                ...base,
-                                                borderRadius: '0.5rem',
-                                                zIndex: 20,
-                                            }),
-                                            option: (base, state) => ({
-                                                ...base,
-                                                backgroundColor: state.isSelected
-                                                    ? "#1967d2"
-                                                    : state.isFocused
-                                                        ? "oklch(54.6% 0.245 262.881)"
-                                                        : "#fff",
-                                                color: state.isSelected || state.isFocused ? "white" : "black",
-                                                fontFamily: "Gilroy",
-                                                fontSize: "14px",
-                                                cursor: "pointer",
-                                                padding: "4px 10px",
-                                            }),
-                                        }}
+                                        className="w-full"
+                                        classNamePrefix="react-select"
+                                        styles={selectStyles}
                                     />
+
 
                                 </div>
                                 {errors.brand && (

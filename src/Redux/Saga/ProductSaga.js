@@ -18,13 +18,15 @@ import {
     DELETE_IMAGE_PRODUCT_SAGA,
     DELETE_TECH_IMAGE_PRODUCT_SAGA,
     ADD_IMAGE_PRODUCT_SAGA,
-    ADD_TECH_IMAGE_PRODUCT_SAGA
+    ADD_TECH_IMAGE_PRODUCT_SAGA,
+    GET_PARTICULAR_PRODUCT_SAGA,
+    GET_PARTICULAR_PRODUCT_REDUCER
 
 
 
 } from "../../Utils/Constant";
 import { refreshToken } from "../../Token_Access/Token";
-import { addTechImage,addImage,DeleteProductTechImage,DeleteProductImage,getProduct, addProduct, DeleteProduct, editProduct, GetCategory, GetSubCategory, GetBrand, editImage,editTechImage} from "../Action/ProductAction";
+import {ParticularProduct ,addTechImage,addImage,DeleteProductTechImage,DeleteProductImage,getProduct, addProduct, DeleteProduct, editProduct, GetCategory, GetSubCategory, GetBrand, editImage,editTechImage} from "../Action/ProductAction";
 import { toast } from 'react-toastify';
 
 
@@ -467,7 +469,28 @@ function* handleAddTechImage(action) {
 }
 
 
+function* handleParticularProduct(action) {
+    try {
+        const response = yield call(ParticularProduct,action.payload)
+        if (response.status === 200) {
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message} });
+            
+            yield put({ type: GET_PARTICULAR_PRODUCT_REDUCER, payload: { response: response.data } });
+        }
+        else if (response.status === 201) {
+            yield put({ type: ERROR_CODE, payload: { message: response.data.message || response.message, statusCode: response.status } })
+        }
 
+        if (response) {
+            refreshToken(response)
+        }
+    } catch (error) {
+        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+        const statusCode = error?.response?.status || error?.status;
+        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+    }
+
+}
 
 function* ProductSaga() {
     yield takeEvery(GET_PRODUCT_SAGA, handleGetProduct)
@@ -483,6 +506,8 @@ function* ProductSaga() {
     yield takeEvery(DELETE_TECH_IMAGE_PRODUCT_SAGA,handleDeleteTechImageProduct)
     yield takeEvery(ADD_IMAGE_PRODUCT_SAGA,handleAddImage)
     yield takeEvery(ADD_TECH_IMAGE_PRODUCT_SAGA,handleAddTechImage)
+    yield takeEvery(GET_PARTICULAR_PRODUCT_SAGA,handleParticularProduct)
+
   
 
 }

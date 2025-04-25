@@ -146,4 +146,6 @@ export const GET_ACTIVITIES_REDUCER = "Get_Activities_Reducer";
 export const GET_ACTIVITIES_SAGA = "Get_Activities_Saga";
 
 
+export const GET_PARTICULAR_PRODUCT_SAGA = "Get_Particular_Product_Saga";
 
+export const GET_PARTICULAR_PRODUCT_REDUCER = "Get_Particular_Product_Reducer";

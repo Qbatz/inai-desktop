@@ -16,7 +16,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from "moment";
 import { useLocation, useNavigate } from 'react-router-dom';
 import imageCompression from 'browser-image-compression';
-import PdfImage from '../../Asset/Images/pdf.png'
+import PdfImage from '../../Asset/Images/pdf.png';
+
+import CreatableSelect from 'react-select/creatable';
 
 function AddProduct() {
 
@@ -40,13 +42,18 @@ function AddProduct() {
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
     const [displayItems, setDisplayItems] = useState([])
     const [formValues, setFormValues] = useState([]);
-
+    const [errors, setErrors] = useState({});
+    const [subCategoryOptions, setSubCategoryOptions] = useState()
+    const [categoryOptions, setCategoryOptions] = useState();
+    const [brandOptions, setBrandOptions] = useState();
 
 
 
     const [isChanged, setIsChanged] = useState('')
     const [serialNoList, setSerialNoList] = useState([]);
     const [inputText, setInputText] = useState("");
+
+
 
     const productCodeRef = useRef(null);
     const productNameRef = useRef(null);
@@ -56,7 +63,9 @@ function AddProduct() {
     const categoryRef = useRef(null);
     const brandRef = useRef(null);
     const serialNoRef = useRef(null);
-
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedBrand, setSelectedBrand] = useState(null);
+    const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
 
     const [formData, setFormData] = useState({
@@ -72,8 +81,11 @@ function AddProduct() {
         hsn: "",
         gst: "",
         category: "",
+        categoryName: "",
         subCategory: "",
+        subCategoryName: "",
         brand: "",
+        brandName: "",
         make: "",
         country: "",
         stateName: "",
@@ -81,17 +93,112 @@ function AddProduct() {
     });
 
 
-    const [errors, setErrors] = useState({});
 
 
+    const handleCategoryChange = (selected) => {
+        setSelectedCategory(selected);
+        setFormData((prev) => ({
+            ...prev,
+            category: selected?.value || '',
+            categoryName: '',
+        }));
+    };
+
+    const handleCreateCategory = (inputValue) => {
+        const existingOption = categoryOptions.find(
+            (option) => option.label.toLowerCase() === inputValue.toLowerCase()
+        );
+
+        if (existingOption) {
+            setSelectedCategory(existingOption);
+            setFormData((prev) => ({
+                ...prev,
+                category: existingOption.value,
+                categoryName: '',
+            }));
+        } else {
+            const tempOption = { value: inputValue, label: inputValue };
+            setSelectedCategory(tempOption);
+            setFormData((prev) => ({
+                ...prev,
+                category: '',
+                categoryName: inputValue,
+            }));
+        }
+    };
+
+
+
+    const handleSubCategoryChange = (selected) => {
+
+        setSelectedSubCategory(selected)
+
+        setFormData((prev) => ({
+            ...prev,
+            subCategory: selected?.value || '',
+            subCategoryName: ""
+        }));
+    };
+
+    const handleCreateSubCategory = (inputValue) => {
+        const existingOption = subCategoryOptions.find(
+            (option) => option.label.toLowerCase() === inputValue.toLowerCase()
+        );
+
+        if (existingOption) {
+            setSelectedSubCategory(existingOption);
+            setFormData((prev) => ({
+                ...prev,
+                subCategory: existingOption.value,
+                subCategoryName: ""
+            }));
+        } else {
+            const tempOption = { value: inputValue, label: inputValue };
+            setSelectedSubCategory(tempOption);
+            setFormData((prev) => ({
+                ...prev,
+                subCategory: "",
+                subCategoryName: inputValue,
+            }));
+        }
+    };
+
+    const handleBrandChange = (selected) => {
+        setSelectedBrand(selected)
+        setFormData((prev) => ({
+            ...prev,
+            brand: selected?.value || '',
+            brandName: ""
+        }));
+    };
+
+    const handleCreateBrand = (inputValue) => {
+        const existingOption = brandOptions.find(
+            (option) => option.label.toLowerCase() === inputValue.toLowerCase()
+        );
+
+        if (existingOption) {
+            setSelectedBrand(existingOption);
+            setFormData((prev) => ({
+                ...prev,
+                brand: existingOption.value,
+                brandName: ""
+            }));
+        } else {
+            const tempOption = { value: inputValue, label: inputValue };
+            setSelectedBrand(tempOption);
+            setFormData((prev) => ({
+                ...prev,
+                brand: "",
+                brandName: inputValue,
+            }));
+        }
+    };
 
     const handleDateChange = (date) => {
         const formatted = moment(date).format("YYYY-MM-DD");
         setSelectedDate(formatted);
     };
-
-
-
 
 
 
@@ -114,13 +221,9 @@ function AddProduct() {
 
         setErrors((prevErrors) => ({
             ...prevErrors,
-            [field]: value.trim() ? "" : prevErrors[field],
+            [field]: value?.trim() ? "" : prevErrors[field],
         }));
     };
-
-
-
-
 
 
 
@@ -132,8 +235,21 @@ function AddProduct() {
         if (!formData.description.trim()) newErrors.description = "Description is required";
         if (!formData.currency.trim()) newErrors.currency = "Currency is required";
         if (!formData.unit) newErrors.unit = "Unit is required";
-        if (!formData.category) newErrors.category = "Category is required";
-        if (!formData.brand) newErrors.brand = "Brand is required";
+
+        const isCategoryValid = (!!formData.category && !formData.categoryName) ||
+            (!formData.category && !!formData.categoryName);
+
+        if (!isCategoryValid) {
+            newErrors.category = "Category is required";
+        }
+
+        const isBrandValid = (!!formData.brand && !formData.brandName) ||
+            (!formData.brand && !!formData.brandName);
+
+        if (!isBrandValid) {
+            newErrors.brand = "Brand is required";
+        }
+
         const quantity = parseInt(formData.availableQuantity);
         if (quantity || quantity <= 0) {
             if (serialNoList.length !== quantity) {
@@ -313,10 +429,6 @@ function AddProduct() {
 
 
 
-
-
-
-
     const handleTechDocAdd = async (e) => {
         const files = Array.from(e.target.files);
 
@@ -370,12 +482,6 @@ function AddProduct() {
             }
         });
     };
-
-
-
-
-
-
 
 
 
@@ -721,9 +827,6 @@ function AddProduct() {
 
 
     const updateFormValues = (title, newValue, type) => {
-
-
-
         const updatedItems = displayItems.map((item) => {
             if (item.title === title) {
                 return {
@@ -812,13 +915,16 @@ function AddProduct() {
                 hsnCode: formData.hsn,
                 gst: formData.gst,
                 category: formData.category,
+                categoryName: formData.categoryName,
                 subCategory: formData.subCategory,
+                subCategoryName: formData.subCategoryName,
                 make: formData.make,
                 countryOfOrigin: formData.country,
                 manufaturingYearAndMonth: selectedDate,
                 State: formData.stateName,
                 district: formData.district,
                 brand: formData.brand,
+                brandName: formData.brandName,
                 images: images,
                 technicaldocs: techImages,
                 serialNo: serialNoList,
@@ -838,13 +944,16 @@ function AddProduct() {
                 hsnCode: formData.hsn,
                 gst: formData.gst,
                 category: formData.category,
+                categoryName: formData.categoryName,
                 subCategory: formData.subCategory,
+                subCategoryName: formData.subCategoryName,
                 make: formData.make,
                 countryOfOrigin: formData.country,
                 manufaturingYearAndMonth: selectedDate,
                 State: formData.stateName,
                 district: formData.district,
                 brand: formData.brand,
+                brandName: formData.brandName,
                 images: images,
                 technicaldocs: techImages,
                 serialNo: serialNoList,
@@ -889,6 +998,101 @@ function AddProduct() {
         }
     };
 
+    const selectStyles = {
+        control: (base) => ({
+            ...base,
+            backgroundColor: '#fff',
+            borderRadius: '0.5rem',
+            minHeight: '2.9rem',
+            boxShadow: 'none',
+            fontSize: '0.875rem',
+            fontWeight: 500,
+            fontFamily: 'Gilroy',
+            color: '#94a3b8',
+            cursor: 'pointer',
+            transition: 'border 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+            '&:hover': {
+                borderColor: '#94a3b8',
+            },
+        }),
+        singleValue: (base) => ({
+            ...base,
+            color: '#94a3b8',
+        }),
+        placeholder: (base) => ({
+            ...base,
+            color: '#94a3b8',
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            paddingRight: '0.75rem',
+            color: '#4B5563',
+        }),
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+        menu: (base) => ({
+            ...base,
+            borderRadius: '0.5rem',
+            zIndex: 20,
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isSelected
+                ? "#205DA8"
+                : state.isFocused
+                    ? "#205DA8"
+                    : "#fff",
+            color: state.isSelected || state.isFocused ? "white" : "black",
+            fontFamily: "Gilroy",
+            fontSize: "14px",
+            cursor: "pointer",
+            padding: "4px 10px",
+
+        }),
+    };
+
+
+    useEffect(() => {
+        let optionArray = [];
+        state?.product?.categoryList?.forEach((category) => {
+            optionArray.push({
+                label: category.name,
+                value: category.id
+            });
+        });
+        setCategoryOptions(optionArray);
+    }, [state?.product?.categoryList]);
+    
+    useEffect(() => {
+        let optionArray = [];
+        state?.product?.subCategoryList?.forEach((subcategory) => {
+            optionArray.push({
+                label: subcategory.name,
+                value: subcategory.id
+            });
+        });
+        setSubCategoryOptions(optionArray);
+    }, [state?.product?.subCategoryList]);
+    
+    useEffect(() => {
+        let optionArray = [];
+        state?.product?.brandList?.forEach((brand) => {
+            optionArray.push({
+                label: brand.name,
+                value: brand.id
+            });
+        });
+        setBrandOptions(optionArray);
+    }, [state?.product?.brandList]);
+    
+
+
+
+
+
+
+
 
     useEffect(() => {
         dispatch({ type: GET_CATEGORY_SAGA })
@@ -899,10 +1103,13 @@ function AddProduct() {
 
 
     useEffect(() => {
-        if (formData.category) {
-            dispatch({ type: GET_SUB_CATEGORY_SAGA, payload: { catId: Number(formData.category) } })
+        if (formData.category && !isNaN(formData.category)) {
+            dispatch({
+                type: GET_SUB_CATEGORY_SAGA,
+                payload: { catId: Number(formData.category) },
+            });
         }
-    }, [formData.category])
+    }, [formData.category]);
 
 
     useEffect(() => {
@@ -1200,7 +1407,7 @@ function AddProduct() {
                         <div className="col-span-5 md:col-span-3 w-full flex flex-col h-full">
                             <label className="block font-normal text-md font-Outfit ps-2"> {editDetails ? "Edit Photos" : "Add Photos"}</label>
 
-                          
+
 
                             <div className="flex mt-2 gap-0 relative z-10">
 
@@ -1379,7 +1586,7 @@ function AddProduct() {
 
                             <label className="block font-normal text-md font-Outfit mt-2 ps-2">Technical</label>
 
-                          
+
 
 
                             <div className="flex mt-2 gap-0 relative z-10">
@@ -1758,71 +1965,27 @@ function AddProduct() {
                         </div>
 
                         <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1 ">
+
+                            <div className="flex-1">
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
-                                    Brand   <span className="text-red-500 text-sm">*</span>
+                                    Category <span className="text-red-500 text-sm">*</span>
                                 </label>
                                 <div className="relative">
-                                    <select
-                                        ref={brandRef}
-                                        value={formData.brand}
-                                        onChange={(e) => handleInputChange('brand', e.target.value)}
-                                        className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                        <option value="" disabled selected>Select Brand</option>
-                                        {state?.product?.brandList.length > 0 ? state?.product?.brandList?.map((brand, index) => (
-                                            <option key={index} value={brand.id}>
-                                                {brand.name}
-                                            </option>
-                                        ))
 
-
-                                            :
-                                            <option >
-                                                No brand available
-                                            </option>
-                                        }
-                                    </select>
-
-
-                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                                {errors.brand && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        <InfoCircle size={16} color="#DC2626" />
-                                        {errors.brand}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="flex-1 ">
-                                <label className="block font-normal text-md font-Outfit mb-1.5">
-                                    Category   <span className="text-red-500 text-sm">*</span>
-                                </label>
-                                <div className="relative">
-                                    <select
+                                    <CreatableSelect
                                         ref={categoryRef}
-                                        value={formData.category}
-                                        onChange={(e) => handleInputChange('category', e.target.value)}
-                                        className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                        <option value="" disabled selected>Select Category</option>
-                                        {state?.product?.categoryList.length > 0 ? state?.product?.categoryList?.map((category, index) => (
-                                            <option key={index} value={category.id}>
-                                                {category.name}
-                                            </option>
-                                        ))
-                                            :
-                                            <option >
-                                                No category available
-                                            </option>
-                                        }
-                                    </select>
+                                        options={categoryOptions}
+                                        value={selectedCategory}
+                                        onChange={handleCategoryChange}
+                                        onCreateOption={handleCreateCategory}
+                                        placeholder="Select Category"
+                                        className="w-full"
+                                        classNamePrefix="react-select"
+                                        styles={selectStyles}
+
+                                    />
 
 
-                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
                                 </div>
 
                                 {errors.category && (
@@ -1832,59 +1995,61 @@ function AddProduct() {
                                     </p>
                                 )}
                             </div>
+
+
+
                             <div className="flex-1">
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Sub Category
                                 </label>
-                                <div className="relative">
-                                    <select
-                                        value={formData.subCategory}
-                                        onChange={(e) => handleInputChange('subCategory', e.target.value)}
 
-                                        className="cursor-pointer w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                        <option value="" disabled selected>Select Sub Category</option>
-                                        {state?.product?.subCategoryList.length > 0 ? state?.product?.subCategoryList?.map((subcategory, index) => (
-                                            <option key={index} value={subcategory.id}>
-                                                {subcategory.name}
-                                            </option>
-                                        ))
-                                            :
-                                            <option >
-                                                No sub category available
-                                            </option>
-                                        }
-                                    </select>
+                                <CreatableSelect
+                                    options={subCategoryOptions}
+                                    value={selectedSubCategory}
+                                    onChange={handleSubCategoryChange}
+                                    onCreateOption={handleCreateSubCategory}
+                                    placeholder="Select Sub Category"
+                                    className="w-full"
+                                    classNamePrefix="react-select"
+                                    styles={selectStyles}
+                                />
 
 
-                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
                             </div>
+
+                            <div className="flex-1">
+                                <label className="block font-normal text-md font-Outfit mb-1.5">
+                                    Brand <span className="text-red-500 text-sm">*</span>
+                                </label>
+                                <div className="relative">
+                                    <CreatableSelect
+                                        ref={brandRef}
+                                        options={brandOptions}
+                                        value={selectedBrand}
+                                        onChange={handleBrandChange}
+                                        onCreateOption={handleCreateBrand}
+                                        placeholder="Select Brand"
+                                        className="w-full"
+                                        classNamePrefix="react-select"
+                                        styles={selectStyles}
+                                    />
+
+
+                                </div>
+                                {errors.brand && (
+                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                        <InfoCircle size={16} color="#DC2626" />
+                                        {errors.brand}
+                                    </p>
+                                )}
+                            </div>
+
 
                         </div>
 
                         <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1 ">
-                                <label className="block font-normal text-md font-Outfit mb-1">Make</label>
-                                <div className="relative">
-                                    <select
-                                        value={formData.make}
-                                        onChange={(e) => handleInputChange('make', e.target.value)}
-                                        className="cursor-pointer w-full p-3 focus:outline-none border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                        <option value="" disabled selected>Select Make</option>
-                                        <option value="2011">2011</option>
-                                        <option value="2012">2012</option>
-                                        <option value="2013">2013</option>
-                                        <option value="2014">2014</option>
-                                    </select>
 
-                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className="flex-1 ">
+                            <div className="flex-1 max-w-[320px]">
                                 <label className="block font-normal text-md font-Outfit mb-1">Country of Origin</label>
                                 <div className="relative">
                                     <select
@@ -2116,19 +2281,19 @@ function AddProduct() {
                     </div>
 
                     <button className='bg-[#205DA8] px-10 py-2 rounded-lg text-base font-medium text-white flex items-center mt-3 font-Montserrat' onClick={updateShowAdditionalFields} >+ Additional Field</button>
-                
+
                     <div className="flex flex-col md:flex-row items-center gap-4 mt-6">
-                    <button onClick={handleClose} className=" w-[167px] bg-white border border-rose-600 text-rose-600 font-medium py-2 px-10 rounded-lg font-Montserrat">
-                        Cancel
-                    </button>
-                    <button onClick={handleSubmit} className=" w-[167px] bg-[#205DA8] text-white font-medium py-2 px-10 rounded-lg font-Montserrat">
-                        Submit
-                    </button>
-                </div>
-                
+                        <button onClick={handleClose} className=" w-[167px] bg-white border border-rose-600 text-rose-600 font-medium py-2 px-10 rounded-lg font-Montserrat">
+                            Cancel
+                        </button>
+                        <button onClick={handleSubmit} className=" w-[167px] bg-[#205DA8] text-white font-medium py-2 px-10 rounded-lg font-Montserrat">
+                            Submit
+                        </button>
+                    </div>
+
                 </div>
 
-               
+
 
 
 

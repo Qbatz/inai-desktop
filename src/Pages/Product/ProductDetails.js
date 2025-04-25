@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { GET_PARTICULAR_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
 import moment from "moment";
-
+import { Edit} from "iconsax-react";
 
 function ProductDetails() {
 
@@ -42,7 +42,7 @@ function ProductDetails() {
 
 
 
-  
+
     useEffect(() => {
         dispatch({ type: GET_PARTICULAR_PRODUCT_SAGA, payload: productId });
         setLoading(true)
@@ -171,7 +171,7 @@ function ProductDetails() {
 
                         <div>
                             <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Description </p>
-                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">{productDetails.description || "N/A"}</p>
+                            <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222]  capitalize">{productDetails.description || "N/A"}</p>
                         </div>
 
                     </div>
@@ -180,7 +180,11 @@ function ProductDetails() {
                     <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-12 p-2 ">
 
                         <div>
-                            <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Available Quantity </p>
+                            <div className='flex items-center space-x-3'>
+                            <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B]">Available Quantity  </p>
+                            <span className='flex mb-2'> <Edit size="16" color="#205DA8" /></span>
+
+                            </div>
                             <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.quantity || "N/A"}</p>
                         </div>
                         <div>
@@ -263,9 +267,22 @@ function ProductDetails() {
                         </div>
 
 
+
                     </div>
 
+                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-12 p-2 ">
+                        {productDetails.additional_fields?.map((field, index) => (
+                            field.value && field.value.toString().trim().length > 0 && (
+                                <div key={index} className="mb-4 ">
+                                    <p className="text-md font-normal mb-2 font-Gilroy text-[#4B4B4B] capitalize">{field.title}</p>
+                                    <p className="text-lg font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
+                                        {field.value}
+                                    </p>
+                                </div>
+                            )
+                        ))}
 
+                    </div>
 
 
 

@@ -195,7 +195,7 @@ function ProductList() {
     }
 
     const handleNavigateproductDetails = (item) => {
-               navigate(`/product-details/${item.productCode}`); 
+               navigate(`/product-details/${item.uniqueProductCode}`); 
       };
       
 
@@ -461,11 +461,13 @@ function ProductList() {
                                                             }}
                                                             className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
                                                         >
-                                                            <div onClick={() => handleEditProductPopup(item)} className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy">
+                                                            <div 
+                                                            // onClick={() => handleEditProductPopup(item)}
+                                                             className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy">
                                                                 <Edit size="16" color="#205DA8" /> Edit
                                                             </div>
                                                             <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700"
-                                                                onClick={() => handleDeleteProductPopup(item.productCode)}
+                                                                onClick={() => handleDeleteProductPopup(item.uniqueProductCode)}
                                                             >
                                                                 <Trash size="16" color="#B91C1C" /> Delete
                                                             </div>

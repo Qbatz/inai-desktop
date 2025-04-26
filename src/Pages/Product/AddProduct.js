@@ -319,27 +319,26 @@ function AddProduct() {
 
 
 
+ 
     const handleImageAdd = async (e) => {
         const files = Array.from(e.target.files);
         let imageError = {};
-
+    
         const compressedImages = await Promise.all(
             files.map(async (file) => {
                 try {
-
                     const options = {
                         maxSizeMB: 1,
                         maxWidthOrHeight: 1024,
                         useWebWorker: true,
                     };
-
                     const compressedBlob = await imageCompression(file, options);
-
+    
                     const compressedFile = new File([compressedBlob], file.name, {
                         type: compressedBlob.type,
                         lastModified: Date.now(),
                     });
-
+    
                     return compressedFile;
                 } catch (error) {
                     console.error(`Compression failed for ${file.name}:`, error);
@@ -347,26 +346,42 @@ function AddProduct() {
                 }
             })
         );
-
+    
         const filteredCompressed = compressedImages.filter((img) => img !== null);
-
+    
         setImages((prev) => {
             const unique = filteredCompressed.filter(
                 (img) => !prev.some((p) => p.name === img.name && p.size === img.size)
             );
-            const totalImages = prev.length + unique.length;
-
+    
+                     
+            const imagesWithPreview = unique.map((img) => ({
+                file: img,
+                previewUrl: URL.createObjectURL(img),
+            }));
+    
+            const totalImages = prev.length + imagesWithPreview.length;
+    
             if (totalImages > 10) {
                 imageError.imageErrors = "You can only upload up to 10 images";
                 setErrors(imageError);
                 const allowedCount = 10 - prev.length;
-                return [...prev, ...unique.slice(0, allowedCount)];
+                return [...prev, ...imagesWithPreview.slice(0, allowedCount)];
             } else {
                 setErrors({});
-                return [...prev, ...unique];
+                return [...prev, ...imagesWithPreview];
             }
         });
     };
+    
+
+
+
+
+
+
+
+
 
 
     const handleClose = () => {
@@ -429,61 +444,72 @@ function AddProduct() {
 
 
 
+   
+    
+
+
+
+
     const handleTechDocAdd = async (e) => {
         const files = Array.from(e.target.files);
-
         let imageError = {};
-
+      
         const processedFiles = await Promise.all(
-            files.map(async (file) => {
-                if (file.type.startsWith("image/")) {
-                    try {
-                        const options = {
-                            maxSizeMB: 1,
-                            maxWidthOrHeight: 1024,
-                            useWebWorker: true,
-                        };
-
-                        const compressedBlob = await imageCompression(file, options);
-
-                        const compressedFile = new File([compressedBlob], file.name, {
-                            type: compressedBlob.type,
-                            lastModified: Date.now(),
-                        });
-
-                        return compressedFile;
-                    } catch (error) {
-                        console.error(`Compression failed for ${file.name}:`, error);
-                        return null;
-                    }
-                } else {
-                    return file;
-                }
-            })
-        );
-
-        const filteredCompressed = processedFiles.filter((file) => file !== null);
-
-        setTechImages((prev) => {
-            const unique = filteredCompressed.filter(
-                (file) => !prev.some((p) => p.name === file.name && p.size === file.size)
-            );
-
-            const totalFiles = prev.length + unique.length;
-
-            if (totalFiles > 10) {
-                imageError.techImagesError = "You can only upload up to 10 Technical documents";
-                setErrors(imageError);
-                const allowedCount = 10 - prev.length;
-                return [...prev, ...unique.slice(0, allowedCount)];
+          files.map(async (file) => {
+            if (file.type.startsWith("image/")) {
+              try {
+                const options = {
+                  maxSizeMB: 1,
+                  maxWidthOrHeight: 1024,
+                  useWebWorker: true,
+                };
+                const compressedBlob = await imageCompression(file, options);
+      
+                const compressedFile = new File([compressedBlob], file.name, {
+                  type: compressedBlob.type,
+                  lastModified: Date.now(),
+                });
+      
+                return compressedFile;
+              } catch (error) {
+                console.error(`Compression failed for ${file.name}:`, error);
+                return null;
+              }
             } else {
-                setErrors({});
-                return [...prev, ...unique];
+              return file;
             }
+          })
+        );
+      
+        const filteredCompressed = processedFiles.filter((file) => file !== null);
+      
+        setTechImages((prev) => {
+          const unique = filteredCompressed.filter(
+            (file) => !prev.some((p) => p.name === file.name && p.size === file.size)
+          );
+      
+          const uniqueWithPreview = unique.map((file) => ({
+            file,
+            previewUrl: URL.createObjectURL(file),
+            name: file.name,
+            type: file.type,
+          }));
+      
+          const totalFiles = prev.length + uniqueWithPreview.length;
+      
+          if (totalFiles > 10) {
+            imageError.techImagesError = "You can only upload up to 10 Technical documents";
+            setErrors(imageError);
+      
+            const allowedCount = 10 - prev.length;
+            return [...prev, ...uniqueWithPreview.slice(0, allowedCount)];
+          } else {
+            setErrors({});
+            return [...prev, ...uniqueWithPreview];
+          }
         });
-    };
-
-
+      };
+      
 
     const handleTechDocAddImageinEditMode = async (e) => {
         const files = Array.from(e.target.files);
@@ -559,6 +585,9 @@ function AddProduct() {
 
         setLoading(false);
     };
+   
+
+  
 
 
 
@@ -566,20 +595,59 @@ function AddProduct() {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
-
-        input.onchange = (e) => {
+    
+        input.onchange = async (e) => {
             const file = e.target.files[0];
             if (file) {
-                setImages((prev) => {
+                let compressedFile = file;
+    
+                if (file.type.startsWith("image/")) {
+                    try {
+                        const options = {
+                            maxSizeMB: 1,
+                            maxWidthOrHeight: 1024,
+                            useWebWorker: true,
+                        };
+                        const compressedBlob = await imageCompression(file, options);
+                        compressedFile = new File([compressedBlob], file.name, {
+                            type: compressedBlob.type,
+                            lastModified: Date.now(),
+                        });
+                    } catch (error) {
+                        console.error(`Compression failed for ${file.name}:`, error);
+                    }
+                }
+    
+                const newPreviewUrl = URL.createObjectURL(compressedFile);
+    
+                setTechImages((prev) => {
                     const updated = [...prev];
-                    updated[index] = file;
+    
+                  
+                    if (updated[index]?.previewUrl) {
+                        URL.revokeObjectURL(updated[index].previewUrl);
+                    }
+    
+                    updated[index] = {
+                        ...updated[index],
+                        url: compressedFile,          
+                        previewUrl: newPreviewUrl,    
+                        name: compressedFile.name,
+                    };
+    
                     return updated;
                 });
             }
         };
-
+    
         input.click();
     };
+    
+    
+
+
+
+
 
 
     const handleImageDeleteLocally = (index) => {
@@ -1063,7 +1131,7 @@ function AddProduct() {
         });
         setCategoryOptions(optionArray);
     }, [state?.product?.categoryList]);
-    
+
     useEffect(() => {
         let optionArray = [];
         state?.product?.subCategoryList?.forEach((subcategory) => {
@@ -1074,7 +1142,7 @@ function AddProduct() {
         });
         setSubCategoryOptions(optionArray);
     }, [state?.product?.subCategoryList]);
-    
+
     useEffect(() => {
         let optionArray = [];
         state?.product?.brandList?.forEach((brand) => {
@@ -1085,7 +1153,7 @@ function AddProduct() {
         });
         setBrandOptions(optionArray);
     }, [state?.product?.brandList]);
-    
+
 
 
 
@@ -1270,15 +1338,19 @@ function AddProduct() {
 
 
 
+
+
     useEffect(() => {
         return () => {
             images.forEach(img => {
-                if (img instanceof File) {
-                    URL.revokeObjectURL(img);
+                if (typeof img !== 'string' && img instanceof File) {
+                    URL.revokeObjectURL(URL.createObjectURL(img));
                 }
             });
         };
     }, [images]);
+
+
 
     useEffect(() => {
         return () => {
@@ -1431,15 +1503,15 @@ function AddProduct() {
                                 <div ref={scrollRef} className="flex flex-row items-center max-w-[500px] ml-[10px] overflow-x-scroll">
                                     {images?.length > 0 && (
                                         <div className="bg-white flex flex-row">
-                                            {images.map((img, index) => {
+                                            {images.map((imgObj, index) => {
                                                 let imageSrc = "";
 
-                                                if (typeof img === "string") {
-                                                    imageSrc = img;
-                                                } else if (img instanceof File) {
-                                                    imageSrc = URL.createObjectURL(img);
-                                                } else if (img.url) {
-                                                    imageSrc = img.url;
+                                                if (typeof imgObj === "string") {
+                                                    imageSrc = imgObj;
+                                                } else if (imgObj?.previewUrl) {
+                                                    imageSrc = imgObj.previewUrl;
+                                                } else if (imgObj?.url) {
+                                                    imageSrc = imgObj.url;
                                                 }
 
 
@@ -1450,7 +1522,7 @@ function AddProduct() {
                                                             <img
                                                                 src={imageSrc}
                                                                 alt={`uploaded-${index}`}
-                                                                className={` cursor-pointer w-full h-full ${img.type === 'image/svg+xml' ? '' : 'object-cover'}`}
+                                                                className={` cursor-pointer w-full h-full ${imgObj.type === 'image/svg+xml' ? '' : 'object-cover'}`}
                                                             />
                                                             <div className="absolute inset-0 hidden group-hover:flex items-center justify-center bg-black bg-opacity-50 transition duration-300 ">
 
@@ -1462,7 +1534,7 @@ function AddProduct() {
 
                                                                                 <div
                                                                                     className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
-                                                                                    onClick={() => handleEditChangeImage(index, img.id)}
+                                                                                    onClick={() => handleEditChangeImage(index, imgObj.id)}
                                                                                 >
                                                                                     <Gallery
                                                                                         size="16"
@@ -1476,7 +1548,7 @@ function AddProduct() {
                                                                                 <div className="w-px h-6 bg-white opacity-60" />
                                                                                 <div
                                                                                     className="flex items-center space-x-3 px-4 py-2 rounded-full bg-white bg-opacity-50 cursor-pointer"
-                                                                                    onClick={() => handleImageDelete(img.id)}
+                                                                                    onClick={() => handleImageDelete(imgObj.id)}
                                                                                 >
                                                                                     <Trash
                                                                                         size="16"
@@ -1617,17 +1689,13 @@ function AddProduct() {
 
                                                 if (typeof img.url === "string") {
                                                     imageSrc = img.url;
-                                                    isImage = img.url.startsWith("https://") && img.url.match(/\.(jpeg|jpg|png|gif)$/i);
+                                                    isImage = img.url.match(/\.(jpeg|jpg|png|gif)$/i);
                                                     isPdf = img.url.endsWith(".pdf");
-                                                } else if (img instanceof File) {
-                                                    imageSrc = URL.createObjectURL(img);
+                                                  } else if (img.file instanceof File) {
+                                                    imageSrc = img.previewUrl; 
                                                     isImage = img.type.startsWith("image/");
-                                                } else if (img.url instanceof File) {
-                                                    imageSrc = URL.createObjectURL(img.url);
-                                                    isImage = img.url.type.startsWith("image/");
-                                                }
-
-
+                                                    isPdf = img.type === "application/pdf";
+                                                  }
 
                                                 return (
                                                     <div key={index} className="px-1">

@@ -228,3 +228,26 @@ export async function DeleteProductTechImage(del) {
 export async function ParticularProduct(productId) {
     return await AxiosConfig.get(`/product/${productId}`); 
 }
+
+
+
+
+export async function EditParticularProduct(product) {
+
+console.log("product",product)
+
+  return await AxiosConfig.patch(`/product/${product.uniqueProductCode}`,product,{
+  data: product
+ })
+}
+
+
+
+
+
+
+
+
+
+
+

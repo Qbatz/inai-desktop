@@ -19,6 +19,7 @@ function ProductDetails() {
     const [showAll, setShowAll] = useState(false);
     const [showTechAll, setShowTechAll] = useState(false);
     const [loading, setLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState("");
 
     const images = productDetails?.images ?? [];
     const imagesToShow = showAll ? images : images.slice(0, 6);
@@ -34,7 +35,7 @@ function ProductDetails() {
     const editableRef = useRef(null);
 
 
-   
+
 
     const handleSeeMoreProductImages = () => {
         setShowAll(true);
@@ -75,20 +76,54 @@ function ProductDetails() {
     const handleOutsideClick = (e) => {
         if (editableRef.current && !editableRef.current.contains(e.target)) {
             setEditingField(null);
+            setErrorMessage({});
         }
     };
 
     const handleEditClick = (fieldKey, currentValue) => {
         setEditingField(fieldKey);
         setEditedValue(currentValue || "");
+        setErrorMessage("");
     };
 
     const handleValueChange = (e) => {
-        setEditedValue(e.target.value);
+        const value = e.target.value;
+        setEditedValue(value);
+        let tempError = {};
+    
+        if (editingField === "price") {
+            if (isNaN(value) || value.trim() === "") {
+                tempError.price = "Only numbers are allowed";
+                setErrorMessage(tempError);
+                return;
+            }
+        } else if (editingField === "discount") {
+            if (isNaN(value) || value.trim() === "") {
+                tempError.discount = "Only numbers are allowed";
+                setErrorMessage(tempError);
+                return;
+            }
+        }
+    
+       
+        setErrorMessage({});
+        if (editingField === "manufacturing_year") {
+            dispatch({
+                type: EDIT_PARTICULAR_PRODUCT_SAGA,
+                payload: {
+                    field: "manufacturing_year",
+                    value: value,
+                    uniqueProductCode: productDetails.uniqueProductCode
+                }
+            });
+            setEditingField(null);
+        }
     };
+    
 
     const handleKeyDown = (e, fieldKey) => {
         if (e.key === "Enter") {
+            if (errorMessage) return;
             dispatch({
                 type: EDIT_PARTICULAR_PRODUCT_SAGA,
                 payload: {
@@ -115,7 +150,7 @@ function ProductDetails() {
                         </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-4 mb-3">
+                    <div className="grid grid-cols-2 gap-4 mb-3 p-2">
                         <div>
                             <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Images </p>
                             <div className="grid grid-cols-3 flex items-center justify-center ">
@@ -284,7 +319,11 @@ function ProductDetails() {
                                 <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
                                     {productDetails.price || "N/A"}
                                 </p>
-                            )}                        </div>
+                            )}
+
+                            {errorMessage.price && <div className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600">{errorMessage.price}</div>}
+
+                        </div>
 
                         <div>
                             <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Currency </p>
@@ -320,6 +359,9 @@ function ProductDetails() {
                                             : `${productDetails.discount}%`}
                                 </p>
                             )}
+
+                            {errorMessage.discount && <div className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600">{errorMessage.discount}</div>}
+
                         </div>
 
                         <div>

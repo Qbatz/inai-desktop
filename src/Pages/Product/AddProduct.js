@@ -632,10 +632,10 @@ function AddProduct() {
 
     const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
         <div
-            className="flex  font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-md text-gray-700 cursor-pointer"
+            className="flex  sm:w-[280px] md:w-[280px] lg:w-[240px] xl:w-[320px]   font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-md text-gray-700 cursor-pointer"
             onClick={onClick}
             ref={ref}
-            style={{ width: "320px" }}
+            
         >
             <input
                 type="text"
@@ -649,6 +649,7 @@ function AddProduct() {
     ));
 
     CustomInput.displayName = "CustomInput";
+      
 
     const PrevArrow = () => {
         return (
@@ -1584,9 +1585,9 @@ function AddProduct() {
                     </div>
 
 
-                    <div>
-                        <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1">
+                    <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-4 mb-2 ">
+                        
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Available Quantity
                                 </label>
@@ -1598,7 +1599,7 @@ function AddProduct() {
                                     placeholder="Enter Available Quantity"
                                 />
                             </div>
-                            <div className="flex-1">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1.5">Unit of measurement <span className="text-red-500 text-sm">*</span></label>
                                 <div className="relative">
                                     <select
@@ -1625,7 +1626,7 @@ function AddProduct() {
                                     </p>
                                 )}
                             </div>
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1">Price</label>
                                 <input
                                     type="text"
@@ -1635,11 +1636,11 @@ function AddProduct() {
                                     placeholder="Enter Price"
                                 />
                             </div>
-                        </div>
+                        
 
-                        <div className="flex flex-wrap gap-3 mb-3">
+                       
 
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1 flex items-center gap-1">
                                     Currency
                                     <span className="text-red-500 text-sm">*</span>
@@ -1649,7 +1650,7 @@ function AddProduct() {
                                         ref={currencyRef}
                                         value={formData.currency}
                                         onChange={(e) => handleInputChange('currency', e.target.value)}
-                                        className="cursor-pointer w-full focus:outline-none px-3 py-3 border rounded-xl  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                        className="cursor-pointer w-full focus:outline-none px-3 py-3 border rounded-lg  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
                                         <option value="">Select beneficiary currency</option>
                                         <option value="USD">USD</option>
                                         <option value="INR">INR</option>
@@ -1673,7 +1674,7 @@ function AddProduct() {
                                 )}
                             </div>
 
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1">Weight</label>
 
 
@@ -1689,7 +1690,7 @@ function AddProduct() {
 
                             </div>
 
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1">Discount</label>
                                 <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
                                     <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
@@ -1703,10 +1704,9 @@ function AddProduct() {
                                 </div>
                             </div>
 
-                        </div>
 
-                        <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1">
+                       
+                            <div >
                                 <label className="block font-normal text-sm font-Outfit mb-1.5">
                                     HSN
                                 </label>
@@ -1718,7 +1718,7 @@ function AddProduct() {
                                     placeholder="Enter hsn"
                                 />
                             </div>
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1">Gst</label>
                                 <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
                                     <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
@@ -1731,7 +1731,7 @@ function AddProduct() {
                                     />
                                 </div>
                             </div>
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1">Serial No</label>
                                 <input
                                     type="text"
@@ -1750,15 +1750,10 @@ function AddProduct() {
                                 )}
 
                             </div>
+                    
 
-
-
-
-
-                        </div>
-
-                        <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1 ">
+                       
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Brand   <span className="text-red-500 text-sm">*</span>
                                 </label>
@@ -1796,7 +1791,7 @@ function AddProduct() {
                                 )}
                             </div>
 
-                            <div className="flex-1 ">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Category   <span className="text-red-500 text-sm">*</span>
                                 </label>
@@ -1832,7 +1827,7 @@ function AddProduct() {
                                     </p>
                                 )}
                             </div>
-                            <div className="flex-1">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Sub Category
                                 </label>
@@ -1862,10 +1857,10 @@ function AddProduct() {
                                 </div>
                             </div>
 
-                        </div>
+                   
 
-                        <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1 ">
+                       
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1">Make</label>
                                 <div className="relative">
                                     <select
@@ -1884,7 +1879,7 @@ function AddProduct() {
                                     </svg>
                                 </div>
                             </div>
-                            <div className="flex-1 ">
+                            <div>
                                 <label className="block font-normal text-md font-Outfit mb-1">Country of Origin</label>
                                 <div className="relative">
                                     <select
@@ -1908,24 +1903,28 @@ function AddProduct() {
                                 </div>
                             </div>
 
-                            <div className="flex-1">
+                            <div >
                                 <label className="block text-md font-Outfit font-medium text-[#1F2937] mb-1">
                                     Month and Year of Manufacture
                                 </label>
+                                <div className=' w-full '>
+
+                             
                                 <DatePicker
                                     selected={selectedDate}
                                     onChange={handleDateChange}
                                     dateFormat="dd/MM/yyyy"
-                                    className='cursor-pointer font-Gilroy font-medium text-sm text-slate-400'
+                                    className='cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full'
                                     placeholderText="Month and Year of Manufacture"
                                     customInput={<CustomInput />}
                                 />
+                                   </div>
                             </div>
 
-                        </div>
+                        
 
-                        <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1 max-w-[320px]">
+                        
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1">State</label>
                                 <div className="relative">
                                     <select
@@ -1961,7 +1960,7 @@ function AddProduct() {
                             </div>
 
 
-                            <div className="flex-1 max-w-[320px]">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1">
                                     District
                                 </label>
@@ -1976,7 +1975,7 @@ function AddProduct() {
 
 
 
-                        </div>
+                         
                     </div>
 
 

@@ -738,23 +738,24 @@ function AddProduct() {
 
     const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
         <div
-            className="flex  font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-md text-gray-700 cursor-pointer"
+            className="flex w-full font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-md text-gray-700 cursor-pointer"
             onClick={onClick}
             ref={ref}
-            style={{ width: "320px" }}
         >
             <input
                 type="text"
-                className="flex-1 w-full font-Gilroy bg-transparent outline-none py-0.5  font-medium text-sm text-slate-500 placeholder-gray-400"
+                className="flex-1 font-Gilroy bg-transparent outline-none py-0.5 font-medium text-sm text-slate-500 placeholder-gray-400"
                 value={value}
                 placeholder={placeholder}
                 readOnly
             />
-            <CalendarDays className="text-gray-400 ml-2" size={18} />
+            <CalendarDays className="text-gray-400 ml-2 shrink-0" size={18} />
         </div>
     ));
 
     CustomInput.displayName = "CustomInput";
+
+
 
     const PrevArrow = () => {
         return (
@@ -1791,182 +1792,181 @@ function AddProduct() {
                     </div>
 
 
-                    <div>
-                        <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1">
-                                <label className="block font-normal text-md font-Outfit mb-1.5">
-                                    Available Quantity
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.availableQuantity}
-                                    onChange={(e) => handleInputChange('availableQuantity', e.target.value)}
-                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
-                                    placeholder="Enter Available Quantity"
-                                />
-                            </div>
-                            <div className="flex-1">
-                                <label className="block font-normal text-md font-Outfit mb-1.5">Unit of measurement <span className="text-red-500 text-sm">*</span></label>
-                                <div className="relative">
-                                    <select
-                                        value={formData.unit}
-                                        ref={unitRef}
-                                        onChange={(e) => handleInputChange('unit', e.target.value)}
-                                        className="w-full cursor-pointer focus:outline-none p-3 border rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                        <option className='cursor-pointer' value="" disabled selected>Select Unit of measurement</option>
-                                        <option value="kg">Kilogram (kg)</option>
-                                        <option value="g">Gram (g)</option>
-                                        <option value="l">Litre (l)</option>
-                                        <option value="ml">Millilitre (ml)</option>
-                                        <option value="pcs">Pieces (pcs)</option>
-                                    </select>
-                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-2 ">
 
-                                {errors.unit && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                        <InfoCircle size={16} color="#DC2626" />
-                                        {errors.unit}
-                                    </p>
-                                )}
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1.5">
+                                Available Quantity
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.availableQuantity}
+                                onChange={(e) => handleInputChange('availableQuantity', e.target.value)}
+                                className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                                placeholder="Enter Available Quantity"
+                            />
+                        </div>
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1.5">Unit of measurement <span className="text-red-500 text-sm">*</span></label>
+                            <div className="relative">
+                                <select
+                                    value={formData.unit}
+                                    ref={unitRef}
+                                    onChange={(e) => handleInputChange('unit', e.target.value)}
+                                    className="w-full cursor-pointer focus:outline-none p-3 border rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
+                                    <option className='cursor-pointer' value="" disabled selected>Select Unit of measurement</option>
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="g">Gram (g)</option>
+                                    <option value="l">Litre (l)</option>
+                                    <option value="ml">Millilitre (ml)</option>
+                                    <option value="pcs">Pieces (pcs)</option>
+                                </select>
+                                <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                    <path d="M19 9l-7 7-7-7" />
+                                </svg>
                             </div>
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-md font-Outfit mb-1">Price</label>
-                                <input
-                                    type="text"
-                                    value={formData.price}
-                                    onChange={(e) => handleInputChange('price', e.target.value)}
-                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
-                                    placeholder="Enter Price"
-                                />
-                            </div>
+
+                            {errors.unit && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.unit}
+                                </p>
+                            )}
+                        </div>
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1">Price</label>
+                            <input
+                                type="text"
+                                value={formData.price}
+                                onChange={(e) => handleInputChange('price', e.target.value)}
+                                className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                                placeholder="Enter Price"
+                            />
                         </div>
 
-                        <div className="flex flex-wrap gap-3 mb-3">
-
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-md font-Outfit mb-1 flex items-center gap-1">
-                                    Currency
-                                    <span className="text-red-500 text-sm">*</span>
-                                </label>
-                                <div className='relative'>
-                                    <select
-                                        ref={currencyRef}
-                                        value={formData.currency}
-                                        onChange={(e) => handleInputChange('currency', e.target.value)}
-                                        className="cursor-pointer w-full focus:outline-none px-3 py-3 border rounded-xl  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                        <option value="">Select beneficiary currency</option>
-                                        <option value="USD">USD</option>
-                                        <option value="INR">INR</option>
-                                        <option value="EUR">EUR</option>
-                                        <option value="GBP">GBP</option>
-                                        <option value="JPY">JPY</option>
-
-                                    </select>
-
-                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-
-                                </div>
-
-                                {errors.currency && (
-                                    <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
-                                        <InfoCircle size={16} color="#DC2626" />
-                                        {errors.currency}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-md font-Outfit mb-1">Weight</label>
 
 
-                                <input
-                                    type="text"
-                                    value={formData.weight}
-                                    onChange={(e) => handleInputChange('weight', e.target.value)}
-                                    placeholder="Enter Weight"
-                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
-                                />
 
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1 flex items-center gap-1">
+                                Currency
+                                <span className="text-red-500 text-sm">*</span>
+                            </label>
+                            <div className='relative'>
+                                <select
+                                    ref={currencyRef}
+                                    value={formData.currency}
+                                    onChange={(e) => handleInputChange('currency', e.target.value)}
+                                    className="cursor-pointer w-full focus:outline-none px-3 py-3 border rounded-lg  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
+                                    <option value="">Select beneficiary currency</option>
+                                    <option value="USD">USD</option>
+                                    <option value="INR">INR</option>
+                                    <option value="EUR">EUR</option>
+                                    <option value="GBP">GBP</option>
+                                    <option value="JPY">JPY</option>
 
+                                </select>
+
+                                <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                    <path d="M19 9l-7 7-7-7" />
+                                </svg>
 
                             </div>
 
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-md font-Outfit mb-1">Discount</label>
-                                <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
-                                    <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
-                                    <input
-                                        type="text"
-                                        value={formData.discount}
-                                        onChange={(e) => handleInputChange('discount', e.target.value)}
-                                        placeholder="Enter Discount"
-                                        className="w-full focus:outline-none px-3 py-3 font-medium text-sm text-slate-400 focus:outline-none font-Gilroy"
-                                    />
-                                </div>
-                            </div>
-
+                            {errors.currency && (
+                                <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.currency}
+                                </p>
+                            )}
                         </div>
 
-                        <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1">
-                                <label className="block font-normal text-sm font-Outfit mb-1.5">
-                                    HSN
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.hsn}
-                                    onChange={(e) => handleInputChange('hsn', e.target.value)}
-                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
-                                    placeholder="Enter hsn"
-                                />
-                            </div>
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-md font-Outfit mb-1">Gst</label>
-                                <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
-                                    <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
-                                    <input
-                                        type="text"
-                                        value={formData.gst}
-                                        onChange={(e) => handleInputChange('gst', e.target.value)}
-                                        placeholder="Enter GST"
-                                        className="w-full focus:outline-none px-3 py-3 font-medium text-sm text-slate-400 focus:outline-none font-Gilroy"
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex-1 min-w-[250px] max-w-[340px]">
-                                <label className="block font-normal text-md font-Outfit mb-1">Serial No</label>
-                                <input
-                                    type="text"
-                                    ref={serialNoRef}
-                                    value={inputText}
-                                    onChange={handleSerialInputChange}
-                                    disabled={!formData.availableQuantity}
-                                    placeholder="Enter Serial No"
-                                    className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
-                                />
-                                {errors.serialNo && (
-                                    <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
-                                        <InfoCircle size={16} color="#DC2626" />
-                                        {errors.serialNo}
-                                    </p>
-                                )}
-
-                            </div>
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1">Weight</label>
 
 
+                            <input
+                                type="text"
+                                value={formData.weight}
+                                onChange={(e) => handleInputChange('weight', e.target.value)}
+                                placeholder="Enter Weight"
+                                className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                            />
 
 
 
                         </div>
 
-                        <div className="flex flex-wrap gap-3 mb-3">
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1">Discount</label>
+                            <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
+                                <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
+                                <input
+                                    type="text"
+                                    value={formData.discount}
+                                    onChange={(e) => handleInputChange('discount', e.target.value)}
+                                    placeholder="Enter Discount"
+                                    className="w-full focus:outline-none px-3 py-3 font-medium text-sm text-slate-400 focus:outline-none font-Gilroy"
+                                />
+                            </div>
+                        </div>
 
-                            <div className="flex-1">
+
+
+                        <div >
+                            <label className="block font-normal text-sm font-Outfit mb-1.5">
+                                HSN
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.hsn}
+                                onChange={(e) => handleInputChange('hsn', e.target.value)}
+                                className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                                placeholder="Enter hsn"
+                            />
+                        </div>
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1">Gst</label>
+                            <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
+                                <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
+                                <input
+                                    type="text"
+                                    value={formData.gst}
+                                    onChange={(e) => handleInputChange('gst', e.target.value)}
+                                    placeholder="Enter GST"
+                                    className="w-full focus:outline-none px-3 py-3 font-medium text-sm text-slate-400 focus:outline-none font-Gilroy"
+                                />
+                            </div>
+                        </div>
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1">Serial No</label>
+                            <input
+                                type="text"
+                                ref={serialNoRef}
+                                value={inputText}
+                                onChange={handleSerialInputChange}
+                                disabled={!formData.availableQuantity}
+                                placeholder="Enter Serial No"
+                                className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                            />
+                            {errors.serialNo && (
+                                <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.serialNo}
+                                </p>
+                            )}
+
+                        </div>
+
+
+
+
+
+                       
+
+                       
+
+                            <div className="">
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Category <span className="text-red-500 text-sm">*</span>
                                 </label>
@@ -1998,7 +1998,7 @@ function AddProduct() {
 
 
 
-                            <div className="flex-1">
+                            <div className="">
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Sub Category
                                 </label>
@@ -2017,7 +2017,7 @@ function AddProduct() {
 
                             </div>
 
-                            <div className="flex-1">
+                            <div className="">
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Brand <span className="text-red-500 text-sm">*</span>
                                 </label>
@@ -2045,11 +2045,11 @@ function AddProduct() {
                             </div>
 
 
-                        </div>
+                    
 
-                        <div className="flex flex-wrap gap-3 mb-3">
+                      
 
-                            <div className="flex-1 max-w-[320px]">
+                            <div >
                                 <label className="block font-normal text-md font-Outfit mb-1">Country of Origin</label>
                                 <div className="relative">
                                     <select
@@ -2067,81 +2067,86 @@ function AddProduct() {
                                         <option value="uk">United Kingdom</option>
                                     </select>
 
-                                    <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
+                                <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                    <path d="M19 9l-7 7-7-7" />
+                                </svg>
                             </div>
+                        </div>
 
-                            <div className="flex-1">
-                                <label className="block text-md font-Outfit font-medium text-[#1F2937] mb-1">
-                                    Month and Year of Manufacture
-                                </label>
+                        <div >
+                            <label className="block text-md font-Outfit font-medium text-[#1F2937] mb-1">
+                                Month and Year of Manufacture
+                            </label>
+                            <div className=' w-full '>
+
+
                                 <DatePicker
                                     selected={selectedDate}
                                     onChange={handleDateChange}
                                     dateFormat="dd/MM/yyyy"
-                                    className='cursor-pointer font-Gilroy font-medium text-sm text-slate-400'
+                                    className='cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full'
                                     placeholderText="Month and Year of Manufacture"
                                     customInput={<CustomInput />}
+                                    wrapperClassName="w-full"
                                 />
                             </div>
-
                         </div>
 
-                        <div className="flex flex-wrap gap-3 mb-3">
-                            <div className="flex-1 max-w-[320px]">
-                                <label className="block font-normal text-md font-Outfit mb-1">State</label>
-                                <div className="relative">
-                                    <select
-                                        value={formData.stateName}
-                                        onChange={(e) => handleInputChange('stateName', e.target.value)}
 
-                                        className="cursor-pointer focus:outline-none w-full p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                        <option value="" disabled selected>
-                                            Enter State
-                                        </option>
-                                        <option value="tamil-nadu">Tamil Nadu</option>
-                                        <option value="maharashtra">Maharashtra</option>
-                                        <option value="karnataka">Karnataka</option>
-                                        <option value="delhi">Delhi</option>
-                                        <option value="kerala">Kerala</option>
-                                        <option value="gujarat">Gujarat</option>
-                                        <option value="rajasthan">Rajasthan</option>
-                                        <option value="west-bengal">West Bengal</option>
-                                        <option value="uttar-pradesh">Uttar Pradesh</option>
-                                        <option value="andhra-pradesh">Andhra Pradesh</option>
-                                    </select>
 
-                                    <svg
-                                        className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
+
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1">State</label>
+                            <div className="relative">
+                                <select
+                                    value={formData.stateName}
+                                    onChange={(e) => handleInputChange('stateName', e.target.value)}
+
+                                    className="cursor-pointer focus:outline-none w-full p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
+                                    <option value="" disabled selected>
+                                        Enter State
+                                    </option>
+                                    <option value="tamil-nadu">Tamil Nadu</option>
+                                    <option value="maharashtra">Maharashtra</option>
+                                    <option value="karnataka">Karnataka</option>
+                                    <option value="delhi">Delhi</option>
+                                    <option value="kerala">Kerala</option>
+                                    <option value="gujarat">Gujarat</option>
+                                    <option value="rajasthan">Rajasthan</option>
+                                    <option value="west-bengal">West Bengal</option>
+                                    <option value="uttar-pradesh">Uttar Pradesh</option>
+                                    <option value="andhra-pradesh">Andhra Pradesh</option>
+                                </select>
+
+                                <svg
+                                    className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path d="M19 9l-7 7-7-7" />
+                                </svg>
                             </div>
-
-
-                            <div className="flex-1 max-w-[320px]">
-                                <label className="block font-normal text-md font-Outfit mb-1">
-                                    District
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.district}
-                                    onChange={(e) => handleInputChange('district', e.target.value)}
-                                    className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
-                                    placeholder="Enter District"
-                                />
-                            </div>
-
-
-
                         </div>
+
+
+                        <div >
+                            <label className="block font-normal text-md font-Outfit mb-1">
+                                District
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.district}
+                                onChange={(e) => handleInputChange('district', e.target.value)}
+                                className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
+                                placeholder="Enter District"
+                            />
+                        </div>
+
+
+
+
                     </div>
 
 

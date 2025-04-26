@@ -45,13 +45,16 @@ export async function addProduct(product) {
   formData.append("gst", product.gst || "");
   formData.append("serialNo", JSON.stringify(product.serialNo || []));
   formData.append("category", product.category);
-  formData.append("subCategory", product.subCategory || "0");
+  formData.append("categoryName", product.categoryName);
+  formData.append("subCategory", product.subCategory || "");
+  formData.append("subCategoryName", product.subCategoryName || "");
   formData.append("make", product.make || "");
   formData.append("countryOfOrigin", product.countryOfOrigin || "");
   formData.append("manufaturingYearAndMonth", product.manufaturingYearAndMonth || "");
   formData.append("State", product.State || "");
   formData.append("district", product.district || "");
   formData.append("brand", product.brand);
+  formData.append("brandName", product.brandName);
 
 
   if (product?.images?.length) {
@@ -220,3 +223,31 @@ export async function DeleteProductTechImage(del) {
     data: del
   });
 }
+
+
+export async function ParticularProduct(productId) {
+    return await AxiosConfig.get(`/product/${productId}`); 
+}
+
+
+
+
+export async function EditParticularProduct(product) {
+
+console.log("product",product)
+
+  return await AxiosConfig.patch(`/product/${product.uniqueProductCode}`,product,{
+  data: product
+ })
+}
+
+
+
+
+
+
+
+
+
+
+

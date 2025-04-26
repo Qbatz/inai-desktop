@@ -189,12 +189,11 @@ function ProductList() {
         setShowDeleteProduct(false);
     };
 
-    const handleEditProductPopup = (editDetails) => {
-        navigate('/add-products', { state: { editDetails } });
 
-    }
-
-
+    const handleNavigateproductDetails = (item) => {
+               navigate(`/product-details/${item.uniqueProductCode}`); 
+      };
+      
 
 
 
@@ -404,7 +403,7 @@ function ProductList() {
                                     paginatedData?.map((item, index) => (
                                         <tr key={index} className="border-0 mt-4">
                                             <td className="px-4 py-3 text-center text-sm font-Gilroy">{index + 1}</td>
-                                            <td className="flex items-center px-6 py-3 font-Gilroy font-semibold text-sm text-black cursor-pointer">
+                                            <td  onClick={()=>handleNavigateproductDetails(item)} className=" text-[#205DA8] hover:underline hover:cursor-pointer flex items-center px-6 py-3 font-Gilroy font-semibold text-sm  cursor-pointer">
                                                 <img
                                                     src={item.images[0]?.url || Cloth}
                                                     alt={item.productName}
@@ -458,11 +457,13 @@ function ProductList() {
                                                             }}
                                                             className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
                                                         >
-                                                            <div onClick={() => handleEditProductPopup(item)} className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy">
+                                                            <div  
+                                                            
+                                                             className="px-4 py-2  flex items-center gap-2 font-Gilroy">
                                                                 <Edit size="16" color="#205DA8" /> Edit
                                                             </div>
                                                             <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700"
-                                                                onClick={() => handleDeleteProductPopup(item.productCode)}
+                                                                onClick={() => handleDeleteProductPopup(item.uniqueProductCode)}
                                                             >
                                                                 <Trash size="16" color="#B91C1C" /> Delete
                                                             </div>

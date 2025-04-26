@@ -3,12 +3,14 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { RESET_CODE, GET_ACTIVITIES_SAGA } from '../../Utils/Constant'
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
+import { useNavigate } from 'react-router-dom';
 
 function Activities() {
 
 
     const state = useSelector(state => state)
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false)
     const [activitiesList, setActivitiesList] = useState([])
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -28,6 +30,21 @@ function Activities() {
             setCurrentPage(newPage);
         }
     };
+
+
+    const handleNavigateDetailsPage = (details) => {
+        const id = details.transactionId
+        if (id) {
+            if (details.module === "client") {
+                navigate(`/customer-details/${id}`)
+            } else if (details.module === "vendor") {
+                navigate(`/vendor-details/${id}`)
+            } 
+            else if (details.module === "product") {
+                navigate(`/product-details/${id}`);
+            } 
+        }
+    }
 
 
 
@@ -77,7 +94,7 @@ function Activities() {
                         <thead className="bg-slate-100 sticky top-0 z-10">
                             <tr>
                                 <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">S.No</th>
-                                <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Activities</th>
+                                <th className="px-4 py-2 text-left text-neutral-600 text-sm font-medium font-Gilroy">Activities</th>
                                 <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">Date & Time</th>
 
                             </tr>
@@ -97,15 +114,15 @@ function Activities() {
                                             {(currentPage - 1) * itemsPerPage + index + 1}
                                         </td>
 
-                                        <td
-                                            className="text-[#222222] px-4 py-2 text-center text-md font-medium font-Gilroy overflow-hidden whitespace-nowrap text-ellipsis max-w-[200px]"
+                                        <td title={`${item.description} ${item.type}`}
+                                            className="text-[#222222] px-4 py-2 text-left text-md font-medium font-Gilroy overflow-hidden whitespace-nowrap text-ellipsis max-w-[100px]"
                                         >
                                             {item.type === "Login" ? (
                                                 item.description.toLowerCase().charAt(0).toUpperCase() + item.description.toLowerCase().slice(1)
                                             ) : (
                                                 <>
                                                     {item.description.toLowerCase().charAt(0).toUpperCase() + item.description.toLowerCase().slice(1)}
-                                                    <span className="text-xs text-[#205DA8]">
+                                                    <span className="text-xs text-[#205DA8] cursor-pointer hover:underline" onClick={() => handleNavigateDetailsPage(item)}>
                                                         _{item.type.toLowerCase().charAt(0).toUpperCase() + item.type.toLowerCase().slice(1)}
                                                     </span>
                                                 </>

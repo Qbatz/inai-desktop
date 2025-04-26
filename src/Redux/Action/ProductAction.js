@@ -31,7 +31,8 @@ export async function getProduct(product) {
 
 
 export async function addProduct(product) {
-  const formData = new FormData();
+
+ const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("productName", product.productName);
   formData.append("description", product.description);
@@ -58,14 +59,22 @@ export async function addProduct(product) {
 
 
   if (product?.images?.length) {
-    product.images.forEach((img) => {
-      formData.append("images", img);
+      product.images.forEach((img) => {
+      if (img?.file) {
+        formData.append("images", img.file);
+      }
     });
   }
 
+
   product?.technicaldocs?.forEach((doc) => {
-    formData.append("technicaldocs", doc);
+    if (doc.file) {
+      formData.append("technicaldocs", doc.file);
+    }
   });
+
+
+
   if (
     product?.additional_fields &&
     Array.isArray(product.additional_fields) &&
@@ -140,7 +149,7 @@ export async function editImage(product) {
 
 export async function editTechImage(product) {
 
- const formData = new FormData();
+  const formData = new FormData();
   formData.append("productCode", product?.productCode);
   formData.append("id", product?.id);
   formData.append("technicaldoc", product.image || product.file);
@@ -226,7 +235,7 @@ export async function DeleteProductTechImage(del) {
 
 
 export async function ParticularProduct(productId) {
-    return await AxiosConfig.get(`/product/${productId}`); 
+  return await AxiosConfig.get(`/product/${productId}`);
 }
 
 
@@ -234,11 +243,9 @@ export async function ParticularProduct(productId) {
 
 export async function EditParticularProduct(product) {
 
-console.log("product",product)
-
-  return await AxiosConfig.patch(`/product/${product.uniqueProductCode}`,product,{
-  data: product
- })
+  return await AxiosConfig.patch(`/product/${product.uniqueProductCode}`, product, {
+    data: product
+  })
 }
 
 

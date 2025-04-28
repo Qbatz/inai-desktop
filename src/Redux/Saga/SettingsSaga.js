@@ -31,9 +31,13 @@ function* handleMaster() {
 
 
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }

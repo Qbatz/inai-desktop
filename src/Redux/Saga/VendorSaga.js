@@ -38,9 +38,13 @@ function* handleVendorAction(action) {
 
 
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -77,9 +81,13 @@ function* handleVendorBasicInfo(action) {
         }
 
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 }
 
@@ -112,9 +120,13 @@ function* handleVendorAddressInfo(action) {
         }
 
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -146,9 +158,13 @@ function* handleVendorBankInfo(action) {
         }
 
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -185,9 +201,13 @@ function* handleAddVendor(action) {
         }
 
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -221,9 +241,13 @@ function* handleEditVendor(action) {
         }
 
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -256,9 +280,13 @@ function* handleDeleteVendor(action) {
         }
 
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -268,7 +296,7 @@ function* handleDeleteVendor(action) {
 function* handleViewVendor(action) {
     try {
         const response = yield call(ParticularVendor, action.payload)
-             if (response.status === 200 || response.data.statusCode === 200) {
+        if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: VIEW_VENDOR_REDUCER, payload: { Vendor: response.data } });
         }
         else if (response.status === 201 || response.data.statusCode === 201) {
@@ -279,9 +307,13 @@ function* handleViewVendor(action) {
         }
 
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }

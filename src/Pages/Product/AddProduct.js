@@ -324,37 +324,43 @@ function AddProduct() {
         const files = Array.from(e.target.files);
         let imageError = {};
     
-        const compressedImages = await Promise.all(
+        const processedImages = await Promise.all(
             files.map(async (file) => {
                 try {
-                    const options = {
-                        maxSizeMB: 1,
-                        maxWidthOrHeight: 1024,
-                        useWebWorker: true,
-                    };
-                    const compressedBlob = await imageCompression(file, options);
+                    const fileSizeInMB = file.size / (1024 * 1024); 
     
-                    const compressedFile = new File([compressedBlob], file.name, {
-                        type: compressedBlob.type,
-                        lastModified: Date.now(),
-                    });
+                 
+                    if (fileSizeInMB > 50) {
+                        const options = {
+                            maxSizeMB: 50, 
+                            useWebWorker: true,
+                        };
+                        const compressedBlob = await imageCompression(file, options);
     
-                    return compressedFile;
+                        const compressedFile = new File([compressedBlob], file.name, {
+                            type: compressedBlob.type,
+                            lastModified: Date.now(),
+                        });
+    
+                        return compressedFile;
+                    } else {
+                       
+                        return file;
+                    }
                 } catch (error) {
-                    console.error(`Compression failed for ${file.name}:`, error);
+                    console.error(`Processing failed for ${file.name}:`, error);
                     return null;
                 }
             })
         );
     
-        const filteredCompressed = compressedImages.filter((img) => img !== null);
+        const filteredProcessed = processedImages.filter((img) => img !== null);
     
         setImages((prev) => {
-            const unique = filteredCompressed.filter(
+            const unique = filteredProcessed.filter(
                 (img) => !prev.some((p) => p.name === img.name && p.size === img.size)
             );
     
-                     
             const imagesWithPreview = unique.map((img) => ({
                 file: img,
                 previewUrl: URL.createObjectURL(img),
@@ -374,13 +380,6 @@ function AddProduct() {
         });
     };
     
-
-
-
-
-
-
-
 
 
 

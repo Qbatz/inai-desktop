@@ -160,11 +160,20 @@ function AddCustomer({ editCustomerDetails }) {
         if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
 
-        setFormData((prevData) => ({
-            ...prevData,
-            [field]: value
-        }));
 
+
+
+
+        let updatedFormData = { ...formData, [field]: value };
+
+
+        if (field === "gstVat" && value.length >= 12) {
+            const panFromGst = value.substring(2, 12);
+            updatedFormData.pan = panFromGst;
+        }
+
+        setFormData(updatedFormData);
+       
         setErrors((prevErrors) => ({
             ...prevErrors,
             [field]: value.trim() ? "" : prevErrors[field],
@@ -172,7 +181,6 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     };
-
 
 
 
@@ -406,8 +414,7 @@ function AddCustomer({ editCustomerDetails }) {
     const handleChange = (index, field, value) => {
 
         if (field === "designation" && /[^a-zA-Z0-9]/.test(value)) return;
-
-        if (field === "name" && /[^a-zA-Z\s]/.test(value)) return;
+            if (field === "name" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "number" && !/^\d*$/.test(value)) return;
         setContacts((prev) => {
             const updatedContacts = [...prev];
@@ -593,6 +600,9 @@ function AddCustomer({ editCustomerDetails }) {
         }
         if (!formData.gstVat?.trim()) {
             tempErrors.gstVat = "GST/VAT is required";
+            isValid = false;
+        } else if (formData.gstVat.trim().length !== 15) {
+            tempErrors.gstVat = "GST/VAT must be exactly 15 characters";
             isValid = false;
         }
 
@@ -822,7 +832,13 @@ function AddCustomer({ editCustomerDetails }) {
             isValid = false;
         }
         if (!formData.designation?.trim()) tempErrors.designation = "Designation is required";
-        if (!formData.gstVat?.trim()) tempErrors.gstVat = "GST/VAT is required";
+        if (!formData.gstVat?.trim()) {
+            tempErrors.gstVat = "GST/VAT is required";
+            isValid = false;
+        } else if (formData.gstVat.trim().length !== 15) {
+            tempErrors.gstVat = "GST/VAT must be exactly 15 characters";
+            isValid = false;
+        }
         if (!formData.pan?.trim()) tempErrors.pan = "PAN is required";
         if (!formData.legalStatus?.trim()) tempErrors.legalStatus = "Legal Status is required";
 
@@ -1144,7 +1160,13 @@ function AddCustomer({ editCustomerDetails }) {
             isValid = false;
         }
         if (!formData.designation?.trim()) tempErrors.designation = "Designation is required";
-        if (!formData.gstVat?.trim()) tempErrors.gstVat = "GST/VAT is required";
+        if (!formData.gstVat?.trim()) {
+            tempErrors.gstVat = "GST/VAT is required";
+            isValid = false;
+        } else if (formData.gstVat.trim().length !== 15) {
+            tempErrors.gstVat = "GST/VAT must be exactly 15 characters";
+            isValid = false;
+        }
         if (!formData.pan?.trim()) tempErrors.pan = "PAN is required";
         if (!formData.legalStatus?.trim()) tempErrors.legalStatus = "Legal Status is required";
 
@@ -1699,6 +1721,7 @@ function AddCustomer({ editCustomerDetails }) {
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  <span className='text-red-500'>*</span></label>
                                         <input
+                                            readOnly
                                             ref={panRef}
                                             type='text'
                                             value={formData.pan}

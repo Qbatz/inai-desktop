@@ -6,6 +6,10 @@ import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA, GET
 import { useNavigate } from 'react-router-dom';
 import { InfoCircle, ArrowDown2 } from "iconsax-react";
 import PropTypes from 'prop-types';
+import Select from "react-select";
+
+
+
 
 
 
@@ -18,9 +22,6 @@ function AddCustomer({ editCustomerDetails }) {
     const [loading, setLoading] = useState(false)
     const [isInitialSet, setIsInitialSet] = useState(false);
     const [contactAddressSameAsOfficeAddress, setContactAddressSameAsOfficeAddress] = useState(false)
-
-
-
 
 
     const navigate = useNavigate()
@@ -153,10 +154,11 @@ function AddCustomer({ editCustomerDetails }) {
             (
                 field === "gstVat" ||
                 field === "pan" ||
-                field === "designation" ||
                 field === "cin"
             ) && /[^a-zA-Z0-9]/.test(value)
         ) return;
+        if (field === "businessName" && /[^a-zA-Z\s]/.test(value)) return;
+        if (field === "designation" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
 
@@ -436,6 +438,7 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "city" || field === "landmark") &&
             /[^a-zA-Z0-9\s]/.test(value)
         ) return;
+        if (field === "city" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "postalCode" && !/^\d*$/.test(value)) return;
 
         setOfficeAddress((prev) => ({ ...prev, [field]: value }));
@@ -447,6 +450,7 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
 
+
     const handleShippingChange = (field, value) => {
         if (
             (field === "address1" ||
@@ -456,14 +460,31 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "city" || field === "landmark") &&
             /[^a-zA-Z0-9\s]/.test(value)
         ) return;
-        if (field === "postalCode" && !/^\d*$/.test(value)) return;
+        if (field === "postalCode") {
+            if (!/^\d*$/.test(value)) {
+                setErrors((prev) => ({
+                    ...prev,
+                    shippostalCode: "Only digits are allowed",
+                }));
+                return;
+            }
+            if (value.length > 6) {
+                setErrors((prev) => ({
+                    ...prev,
+                    shippostalCode: "Postal code cannot exceed 6 digits",
+                }));
+                return;
+            }
+        }
 
+        setShippingAddress((prev) => ({
+            ...prev,
+            [field]: value,
+        }));
 
-
-        setShippingAddress((prev) => ({ ...prev, [field]: value }));
-        setErrors((prevErrors) => ({
-            ...prevErrors,
-            [`ship${field}`]: value.trim() ? "" : prevErrors[`ship${field}`],
+        setErrors((prev) => ({
+            ...prev,
+            [`ship${field}`]: "",
         }));
     };
 
@@ -1526,6 +1547,78 @@ function AddCustomer({ editCustomerDetails }) {
         }
     }, [state.customer.successCode]);
 
+    const options = [
+        { value: "", label: "Select Country" },
+        { value: "India", label: "India" },
+        { value: "United States", label: "United States" },
+        { value: "United Kingdom", label: "United Kingdom" },
+        { value: "Australia", label: "Australia" },
+        { value: "Canada", label: "Canada" },
+        { value: "Germany", label: "Germany" },
+        { value: "France", label: "France" },
+        { value: "Italy", label: "Italy" },
+        { value: "Singapore", label: "Singapore" },
+        { value: "Japan", label: "Japan" },
+        { value: "China", label: "China" },
+    ];
+    const statesList = [
+        { value: "", label: "Select State" },
+        { value: "Tamil Nadu", label: "Tamil Nadu" },
+        { value: "Andhra Pradesh", label: "Andhra Pradesh" },
+        { value: "Arunachal Pradesh", label: "Arunachal Pradesh" },
+        { value: "Assam", label: "Assam" },
+        { value: "Bihar", label: "Bihar" },
+        { value: "Chhattisgarh", label: "Chhattisgarh" },
+        { value: "Goa", label: "Goa" },
+        { value: "Gujarat", label: "Gujarat" },
+        { value: "Haryana", label: "Haryana" },
+    ];
+    const customSelectStyles = {
+        control: (base, state) => ({
+            ...base,
+            height: "44px",
+            border: "1px solid #ced4da",
+            padding: "0 10px",
+            borderRadius: "10px",
+            boxShadow: "none",
+            backgroundColor: state.isFocused ? "#fff" : "#f8f9fa",
+            borderColor: state.isFocused ? "#ced4da" : "#ced4da",
+            "&:hover": {
+                borderColor: "#ced4da",
+                backgroundColor: "#f8f9fa",
+            },
+        }),
+
+        menu: (base) => ({
+            ...base,
+            backgroundColor: "#f8f9fa",
+            border: "1px solid #ced4da",
+        }),
+        menuList: (base) => ({
+            ...base,
+            backgroundColor: "#f8f9fa",
+            maxHeight: "120px",
+            overflowY: "auto",
+            padding: 0,
+            scrollbarWidth: "thin",
+        }),
+        placeholder: (base) => ({
+            ...base,
+            color: "#555",
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            color: "#555",
+            display: "inline-block",
+            fill: "currentColor",
+            lineHeight: 1,
+            stroke: "currentColor",
+            strokeWidth: 0,
+        }),
+        indicatorSeparator: () => ({
+            display: "none",
+        }),
+    };
 
 
     return (
@@ -2192,22 +2285,13 @@ function AddCustomer({ editCustomerDetails }) {
 
 
                                     <div className='mb-2 items-center cursor-pointer'>
-                                        <select
-                                            value={officeAddress.state}
-                                            onChange={(e) => handleOfficeChange('state', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                            <option value="">Select State</option>
-                                            <option value="Tamil Nadu">Tamil Nadu</option>
-                                            <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                            <option value="Assam">Assam</option>
-                                            <option value="Bihar">Bihar</option>
-                                            <option value="Chhattisgarh">Chhattisgarh</option>
-                                            <option value="Goa">Goa</option>
-                                            <option value="Gujarat">Gujarat</option>
-                                            <option value="Haryana">Haryana</option>
-
-
-                                        </select>
+                                        <Select
+                                            options={statesList}
+                                            value={statesList.find((item) => item.value === officeAddress.state) || null}
+                                            onChange={(selectedOption) => handleOfficeChange('state', selectedOption?.value || "")}
+                                            styles={customSelectStyles}
+                                            placeholder="Select State"
+                                        />
                                         {errors.state && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2216,31 +2300,20 @@ function AddCustomer({ editCustomerDetails }) {
                                         )}
                                     </div>
 
-
-
-
-
-
                                 </div>
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3 mt-1'>
 
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
-
-                                        <select
-                                            value={officeAddress.country}
-                                            onChange={(e) => handleOfficeChange('country', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                            <option value="">Select Country</option>
-                                            <option value="India">India</option>
-                                            <option value="United States">United States</option>
-                                            <option value="United Kingdom">United Kingdom</option>
-                                            <option value="Australia">Australia</option>
-                                            <option value="Canada">Canada</option>
-                                            <option value="Germany">Germany</option>
-                                            <option value="France">France</option>
-                                            <option value="Italy">Italy</option>
-
-                                        </select>
+                                        <Select
+                                            options={options}
+                                            value={officeAddress.country ? { label: officeAddress.country, value: officeAddress.country } : null}
+                                            onChange={(selectedOption) => handleOfficeChange('country', selectedOption.value)}
+                                            placeholder="Select"
+                                            classNamePrefix="custom"
+                                            menuPlacement="auto"
+                                            styles={customSelectStyles}
+                                        />
                                         {errors.country && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2251,12 +2324,13 @@ function AddCustomer({ editCustomerDetails }) {
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500 h-fit'>*</span></label>
                                         <input
-                                            ref={postalCodeRef}
-                                            type='text'
-                                            placeholder='Enter Postal Code'
-                                            value={officeAddress.postalCode}
-                                            onChange={(e) => handleOfficeChange('postalCode', e.target.value)}
-                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            ref={shipPostalCodeRef}
+                                            type="text"
+                                            placeholder="Enter Postal Code"
+                                            value={shippingAddress.postalCode}
+                                            onChange={(e) => handleShippingChange("postalCode", e.target.value)}
+                                            maxLength={6}
+                                            className="px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                         />
                                         {errors.postalCode && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
@@ -2366,22 +2440,13 @@ function AddCustomer({ editCustomerDetails }) {
                                         )}
                                     </div>
                                     <div className='mb-2 items-center'>
-                                        <select
-                                            value={shippingAddress.state}
-                                            onChange={(e) => handleShippingChange('state', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                            <option value="" >Select state</option>
-                                            <option value="Tamil Nadu">Tamil Nadu</option>
-                                            <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                            <option value="Assam">Assam</option>
-                                            <option value="Bihar">Bihar</option>
-                                            <option value="Chhattisgarh">Chhattisgarh</option>
-                                            <option value="Goa">Goa</option>
-                                            <option value="Gujarat">Gujarat</option>
-                                            <option value="Haryana">Haryana</option>
-
-
-                                        </select>
+                                        <Select
+                                            options={statesList}
+                                            value={statesList.find((item) => item.value === shippingAddress.state) || null}
+                                            onChange={(selectedOption) => handleOfficeChange('state', selectedOption?.value || "")}
+                                            styles={customSelectStyles}
+                                            placeholder="Select State"
+                                        />
                                         {errors.shipstate && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2393,20 +2458,15 @@ function AddCustomer({ editCustomerDetails }) {
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
 
-                                        <select
-                                            value={shippingAddress.country}
-                                            onChange={(e) => handleOfficeChange('country', e.target.value)} className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                            <option value="">Select Country</option>
-                                            <option value="India">India</option>
-                                            <option value="United States">United States</option>
-                                            <option value="United Kingdom">United Kingdom</option>
-                                            <option value="Australia">Australia</option>
-                                            <option value="Canada">Canada</option>
-                                            <option value="Germany">Germany</option>
-                                            <option value="France">France</option>
-                                            <option value="Italy">Italy</option>
-
-                                        </select>
+                                        <Select
+                                            options={options}
+                                            value={shippingAddress.country ? { label: shippingAddress.country, value: shippingAddress.country } : null}
+                                            onChange={(selectedOption) => handleOfficeChange('country', selectedOption.value)}
+                                            placeholder="Select"
+                                            classNamePrefix="custom"
+                                            menuPlacement="auto"
+                                            styles={customSelectStyles}
+                                        />
                                         {errors.shipcountry && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2435,6 +2495,8 @@ function AddCustomer({ editCustomerDetails }) {
                                             </div>
                                         )}
                                     </div>
+
+
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Landmark </label>
                                         <input

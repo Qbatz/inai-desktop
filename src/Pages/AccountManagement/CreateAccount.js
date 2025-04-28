@@ -172,7 +172,7 @@ function CreateAccount() {
                         <img src={LoginImage} className='w-full h-auto max-w-md object-contain' alt='Login' />
                         <div className="text-center ">
                             <div className="mx-auto w-full max-w-[340px]">
-                                <label className="block text-black text-3xl font-bold font-Montserrat mb-3">
+                                <label className="block text-black text-2xl font-bold font-Montserrat mb-3">
                                     Communication is the heart of Business.
                                 </label>
                                 <label className="block text-neutral-600 font-Montserrat text-base font-normal">
@@ -209,7 +209,7 @@ function CreateAccount() {
 
                             <div className="w-full max-w-[455px]">
                                 <div className="mb-2">
-                                    <label className="block text-black mb-2 text-start font-Gilroy font-normal text-sm" htmlFor="userId">
+                                    <label className="block text-slate-700 mb-2 text-start font-Gilroy font-normal text-sm" htmlFor="userId">
                                         Verify Your Email
                                     </label>
                                     <input

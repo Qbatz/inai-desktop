@@ -200,14 +200,16 @@ function AddProduct() {
         setSelectedDate(formatted);
     };
 
-
-
     const handleInputChange = (field, value) => {
-
         const numericFields = ["availableQuantity", "price", "weight", "discount", "gst"];
         const percentageFields = ["discount", "gst"];
+        const letterFields = ["district"]; 
         const isNumeric = /^[0-9]*\.?[0-9]*$/;
-
+        const isLetter = /^[a-zA-Z\s]*$/; 
+    
+        if (letterFields.includes(field) && value !== "" && !isLetter.test(value)) {
+            return;
+        }
         if (numericFields.includes(field) && value !== "" && !isNumeric.test(value)) {
             return;
         }
@@ -218,14 +220,11 @@ function AddProduct() {
             ...prevData,
             [field]: value,
         }));
-
         setErrors((prevErrors) => ({
             ...prevErrors,
             [field]: value?.trim() ? "" : prevErrors[field],
         }));
     };
-
-
 
     const validate = () => {
         let newErrors = {};

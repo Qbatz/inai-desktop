@@ -123,7 +123,7 @@ function ProductDetails() {
 
     const handleKeyDown = (e, fieldKey) => {
         if (e.key === "Enter") {
-            if (errorMessage) return;
+            if (Object.keys(errorMessage).length > 0) return;
             dispatch({
                 type: EDIT_PARTICULAR_PRODUCT_SAGA,
                 payload: {

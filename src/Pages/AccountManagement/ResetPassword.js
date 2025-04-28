@@ -180,7 +180,7 @@ const ReSetPassword = () => {
                             className="absolute right-3 top-3 text-gray-500"
                             onClick={() => setShowPassword(!showPassword)}
                         >
-                            {showPassword ?   <EyeOff size={20} /> : <Eye size={20} />}
+                            {showPassword ?     <Eye size={20} /> : <EyeOff size={20} />}
                         </button>
                         {error.password && (
                             <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2 font-Gilroy">
@@ -202,7 +202,7 @@ const ReSetPassword = () => {
                             className="absolute right-3 top-3 text-gray-500"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
-                            {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            {showConfirmPassword ?<Eye size={20} /> : <EyeOff size={20} />  }
                         </button>
                         {error.confirmPassword && (
                             <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2 font-Gilroy">

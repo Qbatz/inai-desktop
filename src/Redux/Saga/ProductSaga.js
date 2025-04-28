@@ -64,9 +64,13 @@ function* handleCategory() {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -87,9 +91,13 @@ function* handleSubCategory(category) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -113,9 +121,13 @@ function* handleGetBrand() {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -137,9 +149,13 @@ function* handleGetProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -147,7 +163,6 @@ function* handleGetProduct(action) {
 function* handleAddProduct(action) {
     try {
         const response = yield call(addProduct, action.payload)
-
 
         if (response.status === 200) {
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
@@ -172,9 +187,14 @@ function* handleAddProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
+
     }
 
 }
@@ -210,9 +230,13 @@ function* handleDeleteProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -246,9 +270,13 @@ function* handleEditProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -280,9 +308,13 @@ function* handleEditImageProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -314,9 +346,13 @@ function* handleEditTechImageProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -350,9 +386,13 @@ function* handleDeleteImageProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -386,9 +426,13 @@ function* handleDeleteTechImageProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -425,9 +469,13 @@ function* handleAddImage(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -459,9 +507,13 @@ function* handleAddTechImage(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -483,9 +535,13 @@ function* handleParticularProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }
@@ -519,9 +575,13 @@ function* handleEditParticularProduct(action) {
             refreshToken(response)
         }
     } catch (error) {
-        const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
-        const statusCode = error?.response?.status || error?.status;
-        yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        if (error.code === "ERR_NETWORK") {
+            yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
+        } else {
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message;
+            const statusCode = error?.response?.status || error?.status;
+            yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
+        }
     }
 
 }

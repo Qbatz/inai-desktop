@@ -618,13 +618,15 @@ function BasicVendor({ vendorDetails }) {
     const handleShippingCountry = (e) => setShippingCountry(e.target.value);
     const handleShippingPostalCodeChange = (e) => {
         const value = e.target.value;
-        if (/^\d{0,10}$/.test(value)) {
+        if (/^\d{0,6}$/.test(value)) {
             setShippingPostalCode(value);
             if (formErrors.shippingPostalCode && /^\d+$/.test(value)) {
                 setFormErrors((prevErrors) => ({ ...prevErrors, shippingPostalCode: "" }));
             }
         }
     };
+    
+ 
     const handleShippingLandmarkChange = (e) => {
         const value = e.target.value;
         if (alphaNumericWithSpaceRegex.test(value) || value === "") {

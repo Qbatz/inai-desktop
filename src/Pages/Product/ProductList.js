@@ -376,7 +376,7 @@ function ProductList() {
 
 
                 <div className="flex-1 flex flex-col">
-                    <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[380px] overflow-y-auto p-0 mt-4 mb-extra'>
+                    <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[320px] overflow-y-auto p-0 mt-4'>
                         <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                             <thead className="bg-slate-100 sticky top-0 z-10">
                                 <tr>
@@ -401,7 +401,7 @@ function ProductList() {
                                     </tr>
                                 ) : (
                                     paginatedData?.map((item, index) => (
-                                        <tr key={index} className="border-0 mt-4">
+                                        <tr key={index} className="border-0 ">
                                             <td className="px-4 py-3 text-center text-sm font-Gilroy">{index + 1}</td>
                                             <td  onClick={()=>handleNavigateproductDetails(item)} className=" text-[#205DA8] hover:underline hover:cursor-pointer flex items-center px-6 py-3 font-Gilroy font-semibold text-sm  cursor-pointer">
                                                 <img
@@ -488,7 +488,7 @@ function ProductList() {
                     productList.length > 10 &&
 
 
-                    <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
+                    <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center bg-white p-4 rounded-lg">
                         <div className="flex items-center gap-2">
                             <select
                                 value={itemsPerPage}

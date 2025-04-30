@@ -133,7 +133,7 @@ function FormBuilder(props) {
     useEffect(() => {
         function handleClickOutside(event) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setHide(false); // Hide if clicked outside
+                setHide(false);
             }
         }
 

@@ -154,8 +154,8 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "cin"
             ) && /[^a-zA-Z0-9]/.test(value)
         ) return;
-        if (field === "businessName" && /[^a-zA-Z\s]/.test(value)) return;
-        if (field === "designation" && /[^a-zA-Z\s]/.test(value)) return;
+        if (field === "businessName" && /[^a-zA-Z0-9\s&@]/.test(value)) return;
+        if (field === "designation" && /[^a-zA-Z0-9\s]/.test(value)) return;
         if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
         if (field === "gstVat" && value.length > 15) return;
@@ -1576,6 +1576,7 @@ function AddCustomer({ editCustomerDetails }) {
             borderRadius: "10px",
             boxShadow: "none",
             fontFamily:"Gilroy",
+            cursor:"pointer",
             borderColor: state.isFocused ? "#ced4da" : "#ced4da",
             "&:hover": {
                 borderColor: "#ced4da",
@@ -1597,6 +1598,7 @@ function AddCustomer({ editCustomerDetails }) {
             padding: 0,
             fontFamily:"Gilroy",
             scrollbarWidth: "thin",
+            cursor:"pointer",
 
         }),
         placeholder: (base) => ({
@@ -1650,6 +1652,7 @@ function AddCustomer({ editCustomerDetails }) {
             borderRadius: "10px",
             boxShadow: "none",
             color:"#222222",
+            cursor:"pointer",
             borderColor: state.isFocused ? "#ced4da" : "#ced4da",
             "&:hover": {
                 borderColor: "#ced4da",
@@ -1858,7 +1861,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     <input
                                                         type="checkbox"
                                                         ref={natureOfBusinessRef}
-                                                        className="ml-2 accent-[#205DA8]"
+                                                        className="ml-2 accent-[#205DA8] cursor-pointer"
                                                         checked={natureOfBusiness.includes(String(business.id))}
                                                         onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
                                                     />

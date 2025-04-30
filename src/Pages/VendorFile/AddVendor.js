@@ -113,7 +113,8 @@ function BasicVendor({ vendorDetails }) {
 
     const handleBusinessNameChange = (e) => {
         const value = e.target.value;
-        const alphanumericRegex = /^[a-zA-Z0-9\s]*$/;
+        const alphanumericRegex = /^[a-zA-Z0-9\s@&]*$/;
+
 
         if (alphanumericRegex.test(value)) {
             setBusinessName(value);

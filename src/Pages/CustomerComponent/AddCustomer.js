@@ -154,8 +154,8 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "cin"
             ) && /[^a-zA-Z0-9]/.test(value)
         ) return;
-        if (field === "businessName" && /[^a-zA-Z\s]/.test(value)) return;
-        if (field === "designation" && /[^a-zA-Z\s]/.test(value)) return;
+        if (field === "businessName" && /[^a-zA-Z0-9\s&@]/.test(value)) return;
+        if (field === "designation" && /[^a-zA-Z0-9\s]/.test(value)) return;
         if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
         if (field === "gstVat" && value.length > 15) return;
@@ -1565,6 +1565,7 @@ function AddCustomer({ editCustomerDetails }) {
         { value: "Gujarat", label: "Gujarat" },
         { value: "Haryana", label: "Haryana" },
     ];
+
  
     const customSelectStateStyles = {
         control: (base, state) => ({
@@ -1574,6 +1575,8 @@ function AddCustomer({ editCustomerDetails }) {
             padding: "0 10px",
             borderRadius: "10px",
             boxShadow: "none",
+            fontFamily:"Gilroy",
+            cursor:"pointer",
             borderColor: state.isFocused ? "#ced4da" : "#ced4da",
             "&:hover": {
                 borderColor: "#ced4da",
@@ -1593,7 +1596,9 @@ function AddCustomer({ editCustomerDetails }) {
             maxHeight: "120px",
             overflowY: "auto",
             padding: 0,
+            fontFamily:"Gilroy",
             scrollbarWidth: "thin",
+            cursor:"pointer",
 
         }),
         placeholder: (base) => ({
@@ -1601,7 +1606,7 @@ function AddCustomer({ editCustomerDetails }) {
             color: "#a2b1c1",
             fontSize:"14px",
             fontWeight: 500,
-            fontFamily:"Gilroy, sans-serif"
+            fontFamily:"Gilroy"
         }),
         input: (base) => ({
             ...base,
@@ -1629,12 +1634,14 @@ function AddCustomer({ editCustomerDetails }) {
             ...base,
             fontFamily: "Gilroy",
             fontWeight: 500,
-            fontSize: "14px", 
+            fontSize: "0.875rem", 
             textTransform: "capitalize",
-            color:"#a2b1c1"
+            color:"#262626"
         }),
         
     };
+
+
 
     const customSelectStyles = {
         control: (base, state) => ({
@@ -1644,6 +1651,8 @@ function AddCustomer({ editCustomerDetails }) {
             padding: "0 10px",
             borderRadius: "10px",
             boxShadow: "none",
+            color:"#222222",
+            cursor:"pointer",
             borderColor: state.isFocused ? "#ced4da" : "#ced4da",
             "&:hover": {
                 borderColor: "#ced4da",
@@ -1663,12 +1672,13 @@ function AddCustomer({ editCustomerDetails }) {
             maxHeight: "120px",
             overflowY: "auto",
             padding: 0,
+            fontFamily:"Gilroy",
             scrollbarWidth: "thin",
 
         }),
         placeholder: (base) => ({
             ...base,
-            color: "#a2b1c1",
+            color: "#a2b1c",
             fontSize:"14px",
             fontWeight: 500,
             fontFamily:"Gilroy, sans-serif"
@@ -1681,6 +1691,7 @@ function AddCustomer({ editCustomerDetails }) {
             fontSize: "0.75rem",
             textTransform: "capitalize",
             outline: "none",
+            color:"black"
         }),
         dropdownIndicator: (base) => ({
             ...base,
@@ -1697,9 +1708,10 @@ function AddCustomer({ editCustomerDetails }) {
             ...base,
             fontFamily: "Gilroy",
             fontWeight: 500,
-            fontSize: "14px", 
+            fontSize: "0.875rem", 
             textTransform: "capitalize",
-            color:"#a2b1c1"
+            color:"#262626"
+
         }),
         
     };
@@ -1849,7 +1861,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     <input
                                                         type="checkbox"
                                                         ref={natureOfBusinessRef}
-                                                        className="ml-2 accent-[#205DA8]"
+                                                        className="ml-2 accent-[#205DA8] cursor-pointer"
                                                         checked={natureOfBusiness.includes(String(business.id))}
                                                         onChange={(e) => handleNatureOfBusinessChange(business.id, e.target.checked)}
                                                     />

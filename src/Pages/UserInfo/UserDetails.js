@@ -353,7 +353,7 @@ const UserDetails = ({ state }) => {
                                         <div>
                                             <label className="block font-Gilroy text-sm mb-2">Mobile number</label>
                                             <div className="relative w-full max-w-sm">
-                                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-500">
+                                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-500 font-Gilroy">
                                                     +91
                                                 </span>
                                                 <input
@@ -366,7 +366,7 @@ const UserDetails = ({ state }) => {
                                                             handleChange({ target: { name: "mobileNo", value } });
                                                         }
                                                     }}
-                                                    className="pl-14 pr-4 py-[10px] border border-gray-300 rounded-full w-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none"
+                                                    className="pl-14 pr-4 py-[10px] border border-gray-300 rounded-xl w-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none font-Gilroy"
                                                     placeholder="Enter mobile number"
                                                 />
                                             </div>

@@ -66,8 +66,6 @@ function ProductDetails() {
 
     useEffect(() => {
         document.addEventListener('mousedown', handleOutsideClick);
-
-
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
@@ -108,6 +106,17 @@ function ProductDetails() {
 
         setEditedValue(sanitizedValue);
         setErrorMessage({});
+
+        if (editingField === "manufacturing_year") {
+            dispatch({
+                type: EDIT_PARTICULAR_PRODUCT_SAGA,
+                payload: {
+                    field: editingField,
+                    value: inputValue,
+                    uniqueProductCode: productDetails.uniqueProductCode
+                }
+            });
+        }
     };
 
 
@@ -264,7 +273,7 @@ function ProductDetails() {
                             </div>
                             {editingField === "description" ? (
                                 <input ref={editableRef}
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-full"
+                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-[500px]"
                                     value={editedValue}
                                     onChange={handleValueChange}
                                     onKeyDown={(e) => handleKeyDown(e, "description")}

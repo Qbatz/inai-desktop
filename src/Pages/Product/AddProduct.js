@@ -1424,7 +1424,7 @@ function AddProduct() {
                                     onChange={(e) => handleInputChange('productCode', e.target.value)}
                                 />
                                 {errors.productCode && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy">
+                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.productCode}
                                     </p>
@@ -1447,7 +1447,7 @@ function AddProduct() {
                                     onChange={(e) => handleInputChange('productName', e.target.value)}
                                 />
                                 {errors.productName && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy">
+                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.productName}
                                     </p>
@@ -1468,7 +1468,7 @@ function AddProduct() {
                                     onChange={(e) => handleInputChange('description', e.target.value)}
                                 />
                                 {errors.description && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy">
+                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
                                         <InfoCircle size={16} color="#DC2626" />
                                         {errors.description}
                                     </p>
@@ -1642,14 +1642,14 @@ function AddProduct() {
 
 
                             {errors.imageErrors && (
-                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2 mb-2 font-Gilroy ">
                                     <InfoCircle size={16} color="#DC2626" />
                                     {errors.imageErrors}
                                 </p>
 
                             )}
                             {errors.images && (
-                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                <p className="text-red-500 text-xs flex items-center gap-1  font-Gilroy mt-2 mb-2">
                                     <InfoCircle size={16} color="#DC2626" />
                                     {errors.images}
                                 </p>
@@ -1843,14 +1843,14 @@ function AddProduct() {
                                 }
                             </div>
                             {errors.techImagesError && (
-                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                <p className="text-red-500 text-xs flex items-center gap-1  font-Gilroy mt-2 mb-2">
                                     <InfoCircle size={16} color="#DC2626" />
                                     {errors.techImagesError}
                                 </p>
 
                             )}
                             {errors.techImages && (
-                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2 mb-2 font-Gilroy">
                                     <InfoCircle size={16} color="#DC2626" />
                                     {errors.techImages}
                                 </p>
@@ -1896,7 +1896,7 @@ function AddProduct() {
                             </div>
 
                             {errors.unit && (
-                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2  font-Gilroy">
                                     <InfoCircle size={16} color="#DC2626" />
                                     {errors.unit}
                                 </p>
@@ -1943,7 +1943,7 @@ function AddProduct() {
                             </div>
 
                             {errors.currency && (
-                                <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
+                                <p className="text-red-500 mt-2 text-xs flex items-center gap-1 font-Gilroy">
                                     <InfoCircle size={16} color="#DC2626" />
                                     {errors.currency}
                                 </p>
@@ -2019,7 +2019,7 @@ function AddProduct() {
                                 className="w-full focus:outline-none border border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
                             />
                             {errors.serialNo && (
-                                <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
+                                <p className="text-red-500 mt-2 mb-2 text-xs flex items-center gap-1 font-Gilroy">
                                     <InfoCircle size={16} color="#DC2626" />
                                     {errors.serialNo}
                                 </p>
@@ -2120,13 +2120,13 @@ function AddProduct() {
                                 />
                             </div>
 
-                            {errors.category && (
-                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                    <InfoCircle size={16} color="#DC2626" />
-                                    {errors.category}
-                                </p>
-                            )}
-                        </div>
+                                {errors.category && (
+                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
+                                        <InfoCircle size={16} color="#DC2626" />
+                                        {errors.category}
+                                    </p>
+                                )}
+                            </div>
 
 
 
@@ -2167,14 +2167,14 @@ function AddProduct() {
                                 />
 
 
+                                </div>
+                                {errors.brand && (
+                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
+                                        <InfoCircle size={16} color="#DC2626" />
+                                        {errors.brand}
+                                    </p>
+                                )}
                             </div>
-                            {errors.brand && (
-                                <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                    <InfoCircle size={16} color="#DC2626" />
-                                    {errors.brand}
-                                </p>
-                            )}
-                        </div>
 
 
 

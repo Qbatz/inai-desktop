@@ -73,9 +73,12 @@ function CreateAccount() {
     };
 
 
+   
+
 
     useEffect(() => {
         if (emailid) {
+
             setLoading(false)
             setErrorMessage('')
             setCaptchaValue(null);
@@ -92,7 +95,7 @@ function CreateAccount() {
     useEffect(() => {
         if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
             setLoading(false)
-
+            setEmail('')
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })
             }, 8000)
@@ -155,9 +158,11 @@ function CreateAccount() {
 
 
 
-                {emailid && (
+
+
+                {state.Common?.isTriggerMessage === 1 && (
                     <div className="p-6 text-center font-Gilroy">
-                        <h2 className="text-[#0AEB7A] font-Gilroy"> <span className="text-[#77DAA9] text-lg font-semibold font-Gilroy">Success!</span>
+                        <h2 className="text-[#0AEB7A] font-Gilroy"> <span className="text-[#77DAA9] text-lg font-semibold font-Gilroy me-1">Success!</span>
 
                             Check your email <span className="font-bold font-Gilroy">{emailid}</span> to complete the registration
                             Check your Junk/Spam folder
@@ -165,6 +170,21 @@ function CreateAccount() {
                         </h2>
 
                     </div>)}
+
+                {message &&
+                    <div className="my-4 text-start flex flex-col mx-4 justify-start">
+                        <p className="text-green-600 font-Gilroy font-semibold text-base mb-2">
+                            Mail Verified
+                        </p>
+                        <p className="text-green-600 font-Gilroy font-medium text-sm ">
+                            Successfully, we have created a unique Client ID.
+
+                            Please check your registered email and log in to proceed with registration.
+                        </p>
+                    </div>
+
+                }
+
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-4 px-6 py-2'>
 
 
@@ -185,14 +205,12 @@ function CreateAccount() {
                     <div className="flex flex-col items-center justify-center m-3">
 
 
-                        {message && <div className='mb-3'>
-                            <label className="text-green-600 font-Gilroy font-medium text-sm flex text-start gap-1 mb-3" ><b>Mail Verified</b>
-                            </label>
-                            <label className="text-green-600 font-Gilroy font-medium text-sm flex items-center gap-1 mb-3">Successfully, We have created a unique Client ID.<br />Please check your registered email and log in to proceed with registration</label>
-                        </div>}
+
 
 
                         <div className="flex flex-col items-start">
+
+
                             <div className="flex justify-start items-start mb-2">
                                 <img src={InaiLogo} alt="INAI Logo" className="h-auto w-auto" />
                             </div>
@@ -203,89 +221,93 @@ function CreateAccount() {
                                     Enter your details below to get onto your INAI account.
                                 </label>
                             </div>
-                        </div>
-
-                        {state.userInfo.is_verified === null ? <>
-
-                            <div className="w-full max-w-[455px]">
-                                <div className="mb-2">
-                                    <label className="block text-slate-700 mb-2 text-start font-Gilroy font-normal text-sm" htmlFor="userId">
-                                        Verify Your Email
-                                    </label>
-                                    <input
-                                        id="userId"
-                                        type="text"
-                                        name="username"
-                                        value={email}
-                                        onChange={handleEmailChange}
-                                        autoComplete="username"
-                                        autoCorrect="off"
-                                        placeholder="Enter Verify Your Email"
-                                        className="w-full h-14 px-3 py-2 border rounded-xl focus:outline-none text-sm font-Gilroy font-medium text-neutral-600"
-                                    />
-                                    {formError.email && (
-                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formError.email} </p>)}
-                                </div>
 
 
+                            {state.userInfo.is_verified === null ? <>
 
-                                <div className="mt-6 flex flex-col items-center justify-center">
+                                <div className="w-full max-w-[455px]">
+                                    <div className="mb-2">
+                                        <label className="block text-slate-700 mb-2 text-start font-Gilroy font-normal text-sm" htmlFor="userId">
+                                            Verify Your Email
+                                        </label>
+                                        <input
+                                            id="userId"
+                                            type="text"
+                                            name="username"
+                                            value={email}
+                                            onChange={handleEmailChange}
+                                            autoComplete="username"
+                                            autoCorrect="off"
+                                            placeholder="Enter Verify Your Email"
+                                            className="w-full h-14 px-3 py-2 border rounded-xl focus:outline-none text-sm font-Gilroy font-medium text-neutral-600"
+                                        />
+                                        {formError.email && (
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formError.email} </p>)}
+                                    </div>
 
-                                    <div
-                                        className="cursor-pointer font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.4)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
 
-                                    >
-                                        {siteKey && (
-                                            <ReCAPTCHA sitekey={siteKey} onChange={handleCaptchaChange} />
+
+                                    <div className="mt-6 flex flex-col items-center justify-center">
+
+                                        <div
+                                            className="cursor-pointer font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.3)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
+
+                                        >
+                                            {siteKey && (
+                                                <ReCAPTCHA sitekey={siteKey} onChange={handleCaptchaChange} />
+                                            )}
+                                        </div>
+
+
+
+                                        {formError.captcha && (
+                                            <div className="mt-2 w-full text-start">
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center  gap-1">
+                                                    <InfoCircle size="14" color="#DC2626" /> {formError.captcha}
+                                                </p>
+                                            </div>
                                         )}
                                     </div>
 
-
-
-                                    {formError.captcha && (
-                                        <div className="mt-2 w-full text-center">
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
-                                                <InfoCircle size="14" color="#DC2626" /> {formError.captcha}
-                                            </p>
+                                    {errorMessage && (
+                                        <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center  gap-1">
+                                            <InfoCircle size="14" color="#DC2626" />
+                                            {errorMessage}
                                         </div>
                                     )}
-                                </div>
+                                    <button
+                                        type="submit"
+                                        className="mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl  transition duration-300 sm:text-lg"
+                                        onClick={handleSubmit}>
+                                        Submit
+                                    </button>
 
-                                {errorMessage && (
-                                    <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
-                                        <InfoCircle size="14" color="#DC2626" />
-                                        {errorMessage}
+
+
+
+
+                                    <div className="text-start mt-4">
+                                        <p className="text-black font-Montserrat font-normal text-base">
+                                            Already have an account?{' '}
+                                            <span onClick={() => navigate("/")} className="cursor-pointer  text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
+                                                Sign In
+                                            </span>
+                                        </p>
                                     </div>
-                                )}
-                                <button
-                                    type="submit"
-                                    className="mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl  transition duration-300 sm:text-lg"
-                                    onClick={handleSubmit}>
-                                    Submit
-                                </button>
-
-
-
-
-
-                                <div className="text-start mt-4">
-                                    <p className="text-black font-Montserrat font-normal text-base">
-                                        Already have an account?{' '}
-                                        <span onClick={() => navigate("/")} className="cursor-pointer  text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
-                                            Sign In
-                                        </span>
-                                    </p>
                                 </div>
-                            </div>
-                        </>
-                            : state.userInfo.is_verified === 0 ?
-                                <>
-                                    <SignUp />
-                                </>
-                                :
-                                <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.signUp.is_verified === 1 && "Email is already Verified"}</label>
-                        }
+                            </>
+                                : state.userInfo?.is_verified === 0 ?
+                                    <>
+                                        <SignUp />
+                                    </>
+                                    :
+                                    <label className="text-red-600 font-Gilroy font-medium text-md text-start gap-1 pt-2">{state.userInfo.is_verified === 1 && "Email is already Verified"}</label>
+                            }
+
+
+
+                        </div>
                     </div>
 
                 </div>

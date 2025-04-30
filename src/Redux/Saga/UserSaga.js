@@ -32,7 +32,7 @@ function* handleForgotPassword(forgot) {
     try {
         const response = yield call(ForgotAction, forgot.payload);
         if (response?.success || response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { response } });
+            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status, message: response.data.message} });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });
@@ -53,7 +53,7 @@ function* handleForgotUser(user) {
     try {
         const response = yield call(ForgotPasswordAction, user.payload);
         if (response?.success || response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { response } });
+            yield put({ type: SUCCESS_CODE, payload: { response ,statusCode: response.status , message: response.data.message || response.message} });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });
@@ -74,7 +74,7 @@ function* handleResetPage(reset) {
 
         const response = yield call(ReSetPageAction, reset.payload);
         if (response?.success || response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { response , statusCode: response.status  } });
+            yield put({ type: SUCCESS_CODE, payload: { response , statusCode: response.status , message: response.data.message || response.message } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });
@@ -94,7 +94,7 @@ function* handleResetPassword(verify) {
     try {
         const response = yield call(ReSetPassword, verify.payload);
         if (response?.success || response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { response } });
+            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status , message: response.data.message || response.message ,IsVisible: 1 } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });
@@ -116,7 +116,7 @@ function* handleCreateAccount(action) {
         const response = yield call(CreateAction, action.payload);
 
         if (response?.status && response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status ,message: response.data.message || response.message, response, isTriggerMessage: 1} });
         }
         else if (response?.status === 400) {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Invalid request", statusCode: response.status } });

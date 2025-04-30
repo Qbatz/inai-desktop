@@ -7,10 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { InfoCircle, ArrowDown2 } from "iconsax-react";
 import PropTypes from 'prop-types';
 import Select from "react-select";
-import { color } from 'framer-motion';
-
-
-
 
 
 

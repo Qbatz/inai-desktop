@@ -39,10 +39,10 @@ function Activities() {
                 navigate(`/customer-details/${id}`)
             } else if (details.module === "vendor") {
                 navigate(`/vendor-details/${id}`)
-            } 
+            }
             else if (details.module === "product") {
                 navigate(`/product-details/${id}`);
-            } 
+            }
         }
     }
 
@@ -115,10 +115,10 @@ function Activities() {
                                         </td>
 
                                         <td title={`${item.description} ${item.type}`}
-                                            className="text-[#222222] px-4 py-2 text-left text-md font-medium font-Gilroy overflow-hidden whitespace-nowrap text-ellipsis max-w-[100px]"
+                                            className="text-[#222222] px-4 py-2 text-left text-md font-medium font-Gilroy "
                                         >
                                             {item.type === "Login" ? (
-                                                item.description.toLowerCase().charAt(0).toUpperCase() + item.description.toLowerCase().slice(1)
+                                                <span className='overflow-hidden whitespace-nowrap text-ellipsis max-w-[50px]'> {item.description.toLowerCase().charAt(0).toUpperCase() + item.description.toLowerCase().slice(1)}</span>
                                             ) : (
                                                 <>
                                                     {item.description.toLowerCase().charAt(0).toUpperCase() + item.description.toLowerCase().slice(1)}

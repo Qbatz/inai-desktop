@@ -111,16 +111,6 @@ function BasicVendor({ vendorDetails }) {
 
 
 
-
-
-
-
-
-
-
-
-
-
     const handleBusinessNameChange = (e) => {
         const value = e.target.value;
         const alphanumericRegex = /^[a-zA-Z0-9\s]*$/;
@@ -1476,7 +1466,7 @@ function BasicVendor({ vendorDetails }) {
         } else {
             setBeneficiaryName(businessName || "");
         }
-    }, [vendorDetails, contactPerson]);
+    }, [vendorDetails, businessName]);
 
 
 

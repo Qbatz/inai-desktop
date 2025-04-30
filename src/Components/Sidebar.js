@@ -67,10 +67,23 @@ function Sidebar({ state }) {
 
     const handleUserDetails = () => {
         navigate('/user/details');
+        setActiveItem("")
     };
 
 
+    useEffect(() => {
+        const path = window.location.pathname;
+        if (path === "/product") {
+            setActiveItem("product");
+        } else if (path === "/vendor") {
+            setActiveItem("vendor");
+        } else if (path === "/client") {
+            setActiveItem("client");
+        } else if (path === "/") {
+            setActiveItem("dashboard");
+        }
 
+    }, [window.location.pathname]);
 
 
 
@@ -177,13 +190,13 @@ function Sidebar({ state }) {
 
                     <div className="hidden sm:hidden md:hidden lg:flex flex-col w-[150px] overflow-hidden">
                         <p
-                            className="text-sm font-semibold font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer"
+                            className={`text-sm font-semibold font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer ${activeItem === "" ? "text-[#205DA8]" : "text-black"} `}
                             title={state.firstName + state.lastName}
                         >
                             {state.firstName + state.lastName}
                         </p>
                         <p
-                            className="text-xs text-gray-500 font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer"
+                            className={`text-xs  font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer  ${activeItem === "" ? "text-[#205DA8]" : "text-gray-500"} `}
                             title={state.email}
                         >
                             {state.email}

@@ -1565,6 +1565,7 @@ function AddCustomer({ editCustomerDetails }) {
         { value: "Gujarat", label: "Gujarat" },
         { value: "Haryana", label: "Haryana" },
     ];
+
  
     const customSelectStateStyles = {
         control: (base, state) => ({
@@ -1574,6 +1575,7 @@ function AddCustomer({ editCustomerDetails }) {
             padding: "0 10px",
             borderRadius: "10px",
             boxShadow: "none",
+            fontFamily:"Gilroy",
             borderColor: state.isFocused ? "#ced4da" : "#ced4da",
             "&:hover": {
                 borderColor: "#ced4da",
@@ -1593,6 +1595,7 @@ function AddCustomer({ editCustomerDetails }) {
             maxHeight: "120px",
             overflowY: "auto",
             padding: 0,
+            fontFamily:"Gilroy",
             scrollbarWidth: "thin",
 
         }),
@@ -1601,7 +1604,7 @@ function AddCustomer({ editCustomerDetails }) {
             color: "#a2b1c1",
             fontSize:"14px",
             fontWeight: 500,
-            fontFamily:"Gilroy, sans-serif"
+            fontFamily:"Gilroy"
         }),
         input: (base) => ({
             ...base,
@@ -1629,12 +1632,14 @@ function AddCustomer({ editCustomerDetails }) {
             ...base,
             fontFamily: "Gilroy",
             fontWeight: 500,
-            fontSize: "14px", 
+            fontSize: "0.875rem", 
             textTransform: "capitalize",
-            color:"#a2b1c1"
+            color:"#262626"
         }),
         
     };
+
+
 
     const customSelectStyles = {
         control: (base, state) => ({
@@ -1644,6 +1649,7 @@ function AddCustomer({ editCustomerDetails }) {
             padding: "0 10px",
             borderRadius: "10px",
             boxShadow: "none",
+            color:"#222222",
             borderColor: state.isFocused ? "#ced4da" : "#ced4da",
             "&:hover": {
                 borderColor: "#ced4da",
@@ -1663,12 +1669,13 @@ function AddCustomer({ editCustomerDetails }) {
             maxHeight: "120px",
             overflowY: "auto",
             padding: 0,
+            fontFamily:"Gilroy",
             scrollbarWidth: "thin",
 
         }),
         placeholder: (base) => ({
             ...base,
-            color: "#a2b1c1",
+            color: "#a2b1c",
             fontSize:"14px",
             fontWeight: 500,
             fontFamily:"Gilroy, sans-serif"
@@ -1681,6 +1688,7 @@ function AddCustomer({ editCustomerDetails }) {
             fontSize: "0.75rem",
             textTransform: "capitalize",
             outline: "none",
+            color:"black"
         }),
         dropdownIndicator: (base) => ({
             ...base,
@@ -1697,9 +1705,10 @@ function AddCustomer({ editCustomerDetails }) {
             ...base,
             fontFamily: "Gilroy",
             fontWeight: 500,
-            fontSize: "14px", 
+            fontSize: "0.875rem", 
             textTransform: "capitalize",
-            color:"#a2b1c1"
+            color:"#262626"
+
         }),
         
     };

@@ -161,7 +161,7 @@ function AddCustomer({ editCustomerDetails }) {
         if (field === "designation" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
-
+        if (field === "gstVat" && value.length > 15) return;
 
 
 
@@ -175,7 +175,7 @@ function AddCustomer({ editCustomerDetails }) {
         }
 
         setFormData(updatedFormData);
-       
+
         setErrors((prevErrors) => ({
             ...prevErrors,
             [field]: value.trim() ? "" : prevErrors[field],
@@ -416,7 +416,7 @@ function AddCustomer({ editCustomerDetails }) {
     const handleChange = (index, field, value) => {
 
         if (field === "designation" && /[^a-zA-Z0-9]/.test(value)) return;
-            if (field === "name" && /[^a-zA-Z\s]/.test(value)) return;
+        if (field === "name" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "number" && !/^\d*$/.test(value)) return;
         setContacts((prev) => {
             const updatedContacts = [...prev];

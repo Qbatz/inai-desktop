@@ -79,7 +79,7 @@ function BasicVendor({ vendorDetails }) {
     const shippingCityRef = useRef(null);
     const shippingPostalCodeRef = useRef(null);
 
-    const [beneficiaryName, setBeneficiaryName] = useState(contactPerson);
+    const [beneficiaryName, setBeneficiaryName] = useState(businessName);
     const [beneficiaryCurrency, setBeneficiaryCurrency] = useState('');
     const [accountNumber, setAccountNumber] = useState("");
     const [bankName, setBankName] = useState("");
@@ -192,11 +192,13 @@ function BasicVendor({ vendorDetails }) {
     const handleGstVatChange = (e) => {
         const value = e.target.value;
 
-        if (/^[A-Za-z0-9]*$/.test(value) || value === "") {
+
+        if ((/^[A-Za-z0-9]*$/.test(value) || value === "") && value.length <= 15) {
             setGstVat(value);
             setFormErrors((prevErrors) => ({ ...prevErrors, gstVat: "" }));
         }
     };
+
 
 
 
@@ -565,9 +567,9 @@ function BasicVendor({ vendorDetails }) {
 
     const handleGoogleMapChange = (e) => {
         const value = e.target.value;
-        
-            setGoogleMap(value);
-        
+
+        setGoogleMap(value);
+
     };
 
 
@@ -625,8 +627,8 @@ function BasicVendor({ vendorDetails }) {
             }
         }
     };
-    
- 
+
+
     const handleShippingLandmarkChange = (e) => {
         const value = e.target.value;
         if (alphaNumericWithSpaceRegex.test(value) || value === "") {
@@ -1469,7 +1471,7 @@ function BasicVendor({ vendorDetails }) {
                 }
             });
         } else {
-            setBeneficiaryName(contactPerson || "");
+            setBeneficiaryName(businessName || "");
         }
     }, [vendorDetails, contactPerson]);
 
@@ -1565,23 +1567,22 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                         </div>
                                         {formErrors.surName && formErrors.contactPerson ? (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2"><span><InfoCircle size="14" color="#DC2626" /></span>{formErrors.surName}
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                <span><InfoCircle size="14" color="#DC2626" /></span>
                                                 Title and Name are required
                                             </p>
-                                        ) : (
-                                            <>
-                                                {formErrors.surName && (
-                                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.surName}
-                                                    </p>
-                                                )}
-                                                {formErrors.contactPerson && (
-                                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.contactPerson}
-                                                    </p>
-                                                )}
-                                            </>
-                                        )}
+                                        ) : formErrors.surName ? (
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                <span><InfoCircle size="14" color="#DC2626" /></span>
+                                                {formErrors.surName}
+                                            </p>
+                                        ) : formErrors.contactPerson ? (
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                <span><InfoCircle size="14" color="#DC2626" /></span>
+                                                {formErrors.contactPerson}
+                                            </p>
+                                        ) : null}
+
 
                                     </div>
 

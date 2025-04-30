@@ -535,12 +535,12 @@ function BasicVendor({ vendorDetails }) {
 
     const handleCityChange = (e) => {
         const value = e.target.value;
-        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+        const alphaWithSpaceRegex = /^[A-Za-z\s]*$/;
+        if (alphaWithSpaceRegex.test(value) || value === "") {
             setCity(value);
             setFormErrors((prevErrors) => ({ ...prevErrors, city: "" }));
         }
     };
-
 
 
 
@@ -606,9 +606,12 @@ function BasicVendor({ vendorDetails }) {
         }
     };
 
+
     const handleShippingCity = (e) => {
         const value = e.target.value;
-        if (alphaNumericWithSpaceRegex.test(value) || value === "") {
+        const alphaWithSpaceRegex = /^[A-Za-z\s]*$/;
+
+        if (alphaWithSpaceRegex.test(value) || value === "") {
             setShippingCity(value);
             setFormErrors((prevErrors) => ({ ...prevErrors, shippingCity: "" }));
         }
@@ -1880,7 +1883,9 @@ function BasicVendor({ vendorDetails }) {
                                 <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Address Information</h2>
                                 <div className='max-h-[250px] overflow-y-auto  
                                                   lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3'>
-                                    <h4 className="text-base font-medium mb-4 font-Gilroy text-black">Office Address </h4>
+                                    <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
+                                        Office Address<span className='text-red-500'>*</span>
+                                    </label>
                                     <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
                                         <div className='mb-2 items-center '>
@@ -1945,15 +1950,24 @@ function BasicVendor({ vendorDetails }) {
 
 
                                         <div className='mb-2  items-center'>
-                                            <input
-                                                id='clientId'
-                                                type='text'
-                                                value={city}
-                                                ref={cityRef}
-                                                onChange={handleCityChange}
-                                                placeholder='Enter City'
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
+
+                                            <div className="relative w-full">
+                                                <input
+                                                    id="clientId"
+                                                    type="text"
+                                                    value={city}
+                                                    ref={cityRef}
+                                                    onChange={handleCityChange}
+                                                    className="px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent"
+                                                    placeholder="Enter City"
+                                                />
+                                                {!city && (
+                                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                        Enter City<span className="text-red-500 text-lg ml-0.5">*</span>
+                                                    </span>
+                                                )}
+                                            </div>
+
                                             {formErrors.city && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                     <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.city} </p>)}
@@ -2113,7 +2127,8 @@ function BasicVendor({ vendorDetails }) {
                                                 </p>
                                             )}
                                         </div>
-                                        <div className='mb-2  items-center'>
+                                     
+                                        <div className='mb-2 relative items-center'>
                                             <input
                                                 id='clientId'
                                                 type='text'
@@ -2121,12 +2136,20 @@ function BasicVendor({ vendorDetails }) {
                                                 value={shippingCity}
                                                 onChange={handleShippingCity}
                                                 placeholder='Enter City'
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent'
                                             />
+                                            {!shippingCity && (
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                    Enter City<span className="text-red-500 text-lg ml-0.5">*</span>
+                                                </span>
+                                            )}
                                             {formErrors.shippingCity && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingCity} </p>)}
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingCity}
+                                                </p>
+                                            )}
                                         </div>
+
                                         <div className='mb-2 items-center'>
                                             <select
                                                 id='shippingState'

@@ -11,9 +11,6 @@ import Select from "react-select";
 
 
 
-
-
-
 function AddCustomer({ editCustomerDetails }) {
 
 
@@ -433,79 +430,52 @@ function AddCustomer({ editCustomerDetails }) {
             return { ...prevErrors, contactErrors: updatedErrors };
         });
     };
-
-
-
+  
     const handleOfficeChange = (field, value) => {
+        if (field === "city" && /[^a-zA-Z\s]/.test(value)) return; 
+    
         if (
             (field === "address1" ||
-                field === "address2" ||
-                field === "address3" ||
-                field === "address4" ||
-                field === "city" || field === "landmark") &&
-            /[^a-zA-Z0-9\s]/.test(value)
+             field === "address2" ||
+             field === "address3" ||
+             field === "address4" ||
+             field === "landmark") &&
+            /[^a-zA-Z0-9\s]/.test(value) 
         ) return;
-        if (field === "city" && /[^a-zA-Z\s]/.test(value)) return;
-        if (field === "postalCode" && !/^\d*$/.test(value)) return;
-
+    
+        if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
+    
         setOfficeAddress((prev) => ({ ...prev, [field]: value }));
         setErrors((prevErrors) => ({
             ...prevErrors,
             [field]: value.trim() ? "" : prevErrors[field],
         }));
-
     };
-
-
-
+    
     const handleShippingChange = (field, value) => {
+        if (field === "city" && /[^a-zA-Z\s]/.test(value)) return; 
+    
         if (
             (field === "address1" ||
-                field === "address2" ||
-                field === "address3" ||
-                field === "address4" ||
-                field === "city" || field === "landmark") &&
-            /[^a-zA-Z0-9\s]/.test(value)
+             field === "address2" ||
+             field === "address3" ||
+             field === "address4" ||
+             field === "landmark") &&
+            /[^a-zA-Z0-9\s]/.test(value) 
         ) return;
-        if (field === "postalCode") {
-            if (!/^\d*$/.test(value)) {
-                setErrors((prev) => ({
-                    ...prev,
-                    shippostalCode: "Only digits are allowed",
-                }));
-                return;
-            }
-            if (value.length > 6) {
-                setErrors((prev) => ({
-                    ...prev,
-                    shippostalCode: "Postal code cannot exceed 6 digits",
-                }));
-                return;
-            }
-        }
-
-        setShippingAddress((prev) => ({
-            ...prev,
-            [field]: value,
-        }));
-
-        setErrors((prev) => ({
-            ...prev,
-            [`ship${field}`]: "",
+    
+        if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
+    
+        setShippingAddress((prev) => ({ ...prev, [field]: value }));
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [`ship${field}`]: value.trim() ? "" : prevErrors[`ship${field}`],
         }));
     };
-
-
-
-
-
-
-
+    
     const handleSameAsOffice = (e) => {
         setContactAddressSameAsOfficeAddress(!contactAddressSameAsOfficeAddress)
         const checked = e.target.checked;
-
-
         if (checked) {
             setShippingAddress(prev => ({
                 ...prev,
@@ -1570,7 +1540,7 @@ function AddCustomer({ editCustomerDetails }) {
     }, [state.customer.successCode]);
 
     const options = [
-        { value: "", label: "Select Country" },
+        { value: "Select Country", label: "Select Country" },
         { value: "India", label: "India" },
         { value: "United States", label: "United States" },
         { value: "United Kingdom", label: "United Kingdom" },
@@ -1584,7 +1554,7 @@ function AddCustomer({ editCustomerDetails }) {
         { value: "China", label: "China" },
     ];
     const statesList = [
-        { value: "", label: "Select State" },
+        { value: "Select State", label: "Select State" },
         { value: "Tamil Nadu", label: "Tamil Nadu" },
         { value: "Andhra Pradesh", label: "Andhra Pradesh" },
         { value: "Arunachal Pradesh", label: "Arunachal Pradesh" },
@@ -1595,7 +1565,8 @@ function AddCustomer({ editCustomerDetails }) {
         { value: "Gujarat", label: "Gujarat" },
         { value: "Haryana", label: "Haryana" },
     ];
-    const customSelectStyles = {
+ 
+    const customSelectStateStyles = {
         control: (base, state) => ({
             ...base,
             height: "44px",
@@ -1603,18 +1574,18 @@ function AddCustomer({ editCustomerDetails }) {
             padding: "0 10px",
             borderRadius: "10px",
             boxShadow: "none",
-            backgroundColor: state.isFocused ? "#fff" : "#f8f9fa",
             borderColor: state.isFocused ? "#ced4da" : "#ced4da",
             "&:hover": {
                 borderColor: "#ced4da",
-                backgroundColor: "#f8f9fa",
+                backgroundColor: "transparent",
             },
         }),
-
         menu: (base) => ({
             ...base,
             backgroundColor: "#f8f9fa",
             border: "1px solid #ced4da",
+           fontSize:"12px",
+           fontWeight:400,
         }),
         menuList: (base) => ({
             ...base,
@@ -1623,10 +1594,24 @@ function AddCustomer({ editCustomerDetails }) {
             overflowY: "auto",
             padding: 0,
             scrollbarWidth: "thin",
+
         }),
         placeholder: (base) => ({
             ...base,
-            color: "#555",
+            color: "#a2b1c1",
+            fontSize:"14px",
+            fontWeight: 500,
+            fontFamily:"Gilroy, sans-serif"
+        }),
+        input: (base) => ({
+            ...base,
+            backgroundColor: "transparent", 
+            color: "#000",
+            fontFamily: "Gilroy",
+            fontWeight: 500,
+            fontSize: "0.75rem",
+            textTransform: "capitalize",
+            outline: "none",
         }),
         dropdownIndicator: (base) => ({
             ...base,
@@ -1640,6 +1625,83 @@ function AddCustomer({ editCustomerDetails }) {
         indicatorSeparator: () => ({
             display: "none",
         }),
+        singleValue: (base) => ({
+            ...base,
+            fontFamily: "Gilroy",
+            fontWeight: 500,
+            fontSize: "14px", 
+            textTransform: "capitalize",
+            color:"#a2b1c1"
+        }),
+        
+    };
+
+    const customSelectStyles = {
+        control: (base, state) => ({
+            ...base,
+            height: "44px",
+            border: "1px solid #ced4da",
+            padding: "0 10px",
+            borderRadius: "10px",
+            boxShadow: "none",
+            borderColor: state.isFocused ? "#ced4da" : "#ced4da",
+            "&:hover": {
+                borderColor: "#ced4da",
+                backgroundColor: "transparent",
+            },
+        }),
+        menu: (base) => ({
+            ...base,
+            backgroundColor: "#f8f9fa",
+            border: "1px solid #ced4da",
+           fontSize:"12px",
+           fontWeight:400,
+        }),
+        menuList: (base) => ({
+            ...base,
+            backgroundColor: "#f8f9fa",
+            maxHeight: "120px",
+            overflowY: "auto",
+            padding: 0,
+            scrollbarWidth: "thin",
+
+        }),
+        placeholder: (base) => ({
+            ...base,
+            color: "#a2b1c1",
+            fontSize:"14px",
+            fontWeight: 500,
+            fontFamily:"Gilroy, sans-serif"
+        }),
+        input: (base) => ({
+            ...base,
+            backgroundColor: "transparent", 
+            fontFamily: "Gilroy",
+            fontWeight: 500,
+            fontSize: "0.75rem",
+            textTransform: "capitalize",
+            outline: "none",
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            display: "inline-block",
+            fill: "currentColor",
+            lineHeight: 1,
+            stroke: "currentColor",
+            strokeWidth: 0,
+        }),
+        indicatorSeparator: () => ({
+            display: "none",
+        }),
+        singleValue: (base) => ({
+            ...base,
+            fontFamily: "Gilroy",
+            fontWeight: 500,
+            fontSize: "14px", 
+            textTransform: "capitalize",
+            color:"#a2b1c1"
+        }),
+        
     };
 
 
@@ -2312,7 +2374,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             options={statesList}
                                             value={statesList.find((item) => item.value === officeAddress.state) || null}
                                             onChange={(selectedOption) => handleOfficeChange('state', selectedOption?.value || "")}
-                                            styles={customSelectStyles}
+                                            styles={customSelectStateStyles}
                                             placeholder="Select State"
                                         />
                                         {errors.state && (
@@ -2347,11 +2409,11 @@ function AddCustomer({ editCustomerDetails }) {
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Postal Code <span className='text-red-500 h-fit'>*</span></label>
                                         <input
-                                            ref={shipPostalCodeRef}
+                                            ref={postalCodeRef}
                                             type="text"
                                             placeholder="Enter Postal Code"
-                                            value={shippingAddress.postalCode}
-                                            onChange={(e) => handleShippingChange("postalCode", e.target.value)}
+                                            value={officeAddress.postalCode}
+                                            onChange={(e) => handleOfficeChange("postalCode", e.target.value)}
                                             maxLength={6}
                                             className="px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                         />
@@ -2466,8 +2528,8 @@ function AddCustomer({ editCustomerDetails }) {
                                         <Select
                                             options={statesList}
                                             value={statesList.find((item) => item.value === shippingAddress.state) || null}
-                                            onChange={(selectedOption) => handleOfficeChange('state', selectedOption?.value || "")}
-                                            styles={customSelectStyles}
+                                            onChange={(selectedOption) => handleShippingChange('state', selectedOption?.value || "")}
+                                            styles={customSelectStateStyles}
                                             placeholder="Select State"
                                         />
                                         {errors.shipstate && (

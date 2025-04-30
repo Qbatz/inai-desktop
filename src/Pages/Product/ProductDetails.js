@@ -87,39 +87,29 @@ function ProductDetails() {
     };
 
     const handleValueChange = (e) => {
-        const value = e.target.value;
-        setEditedValue(value);
+        const inputValue = e.target.value;
+        let sanitizedValue = inputValue;
         let tempError = {};
-    
-        if (editingField === "price") {
-            if (isNaN(value) || value.trim() === "") {
-                tempError.price = "Only numbers are allowed";
+
+        if (editingField === "price" || editingField === "discount" || editingField === "manufacturing_year") {
+            sanitizedValue = inputValue.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+            const trimmedValue = sanitizedValue.trim();
+
+            if (trimmedValue === "" || isNaN(parseFloat(trimmedValue)) || !/^\d*\.?\d*$/.test(trimmedValue)) {
+                tempError[editingField] = "Price  is required";
                 setErrorMessage(tempError);
-                return;
-            }
-        } else if (editingField === "discount") {
-            if (isNaN(value) || value.trim() === "") {
-                tempError.discount = "Only numbers are allowed";
-                setErrorMessage(tempError);
+                setEditedValue(trimmedValue);
                 return;
             }
         }
-    
-       
+        if (editingField === "origin_country") {
+            sanitizedValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
+        }
+
+        setEditedValue(sanitizedValue);
         setErrorMessage({});
-        if (editingField === "manufacturing_year") {
-            dispatch({
-                type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                payload: {
-                    field: "manufacturing_year",
-                    value: value,
-                    uniqueProductCode: productDetails.uniqueProductCode
-                }
-            });
-            setEditingField(null);
-        }
     };
-    
+
 
     const handleKeyDown = (e, fieldKey) => {
         if (e.key === "Enter") {
@@ -268,7 +258,8 @@ function ProductDetails() {
                         <div>
                             <div className='flex items-center space-x-3'>
                                 <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Description </p>
-                                <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("description", productDetails.description)} /></span>
+                                <span className='flex mb-2 cursor-pointer'> 
+                                <Edit size="16" color="#205DA8" onClick={() => handleEditClick("description", productDetails.description)} /></span>
 
                             </div>
                             {editingField === "description" ? (
@@ -283,7 +274,8 @@ function ProductDetails() {
                                 <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222]  capitalize">
                                     {productDetails.description || "N/A"}
                                 </p>
-                            )}                        </div>
+                            )}                        
+                        </div>
 
                     </div>
 
@@ -309,10 +301,11 @@ function ProductDetails() {
                             </div>
                             {editingField === "price" ? (
                                 <input ref={editableRef}
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-full"
+                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-full placeholder:text-xs"
                                     value={editedValue}
                                     onChange={handleValueChange}
                                     onKeyDown={(e) => handleKeyDown(e, "price")}
+                                    placeholder='Enter Price'
                                     autoFocus
                                 />
                             ) : (
@@ -384,9 +377,12 @@ function ProductDetails() {
                                 </p>
                             )}                        </div>
                         <div>
-                            <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">GST </p>
-                            <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.gst || "N/A"}</p>
+                            <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">GST</p>
+                            <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
+                                {productDetails.gst ? `${productDetails.gst}%` : "N/A"}
+                            </p>
                         </div>
+
                         <div>
                             <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Serial No</p>
                             <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">

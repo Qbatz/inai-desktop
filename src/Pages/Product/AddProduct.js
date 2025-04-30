@@ -1070,7 +1070,7 @@ function AddProduct() {
             ...base,
             backgroundColor: '#fff',
             borderRadius: '0.5rem',
-            minHeight: '2.9rem',
+            minHeight: '50px',
             boxShadow: 'none',
             fontSize: '0.875rem',
             fontWeight: 500,
@@ -1086,6 +1086,11 @@ function AddProduct() {
             ...base,
             color: '#94a3b8',
         }),
+        menu: (provided) => ({
+            ...provided,
+            maxHeight: '150px',
+            overflowY: 'auto',
+          }),
         placeholder: (base) => ({
             ...base,
             color: '#94a3b8',
@@ -2032,7 +2037,7 @@ function AddProduct() {
 
                        
 
-                            <div className="">
+                            {/* <div className="">
                                 <label className="block font-normal text-md font-Outfit mb-1.5">
                                     Category <span className="text-red-500 text-sm">*</span>
                                 </label>
@@ -2060,7 +2065,131 @@ function AddProduct() {
                                         {errors.category}
                                     </p>
                                 )}
-                            </div>
+                            </div> */}
+
+{/* <div className="">
+  <label className="block font-normal text-md font-Outfit mb-1.5">
+    Category <span className="text-red-500 text-sm">*</span>
+  </label>
+  <div className="relative max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+    <CreatableSelect
+      ref={categoryRef}
+      options={categoryOptions}
+      value={selectedCategory}
+      onChange={handleCategoryChange}
+      onCreateOption={handleCreateCategory}
+      placeholder="Select Category"
+      className="w-full"
+      classNamePrefix="react-select"
+      styles={selectStyles}
+    />
+  </div>
+
+  {errors.category && (
+    <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+      <InfoCircle size={16} color="#DC2626" />
+      {errors.category}
+    </p>
+  )}
+</div> */}
+
+<div className="">
+  <label className="block font-normal text-md font-Outfit mb-1.5">
+    Category <span className="text-red-500 text-sm">*</span>
+  </label>
+  <div className="relative max-h-40">
+    <CreatableSelect
+      ref={categoryRef}
+      options={categoryOptions}
+      value={selectedCategory}
+      onChange={handleCategoryChange}
+      onCreateOption={handleCreateCategory}
+      placeholder="Select Category"
+      className="w-full"
+      classNamePrefix="react-select"
+      styles={{
+        control: (provided) => ({
+          ...provided,
+          borderColor: '#d1d5db',
+          borderRadius: '0.375rem',
+          boxShadow: 'none',
+          minHeight: '50px',
+          '&:hover': {
+            borderColor: '#9ca3af',
+          },
+        }),
+        menu: (provided) => ({
+          ...provided,
+          borderRadius: '0.375rem',
+          marginTop: '0.25rem',
+          zIndex: 10,
+        }),
+        option: (provided, state) => ({
+          ...provided,
+          backgroundColor: state.isFocused ? '#3b82f6' : 'transparent',
+          color: state.isFocused ? '#ffffff' : '#000000',
+          padding: '0.125rem 0.25rem', 
+          cursor: 'pointer',
+          '&:active': {
+            backgroundColor: '#2563eb',
+          },
+        }),
+        placeholder: (provided) => ({
+          ...provided,
+          color: '#9ca3af',
+        }),
+        singleValue: (provided) => ({
+          ...provided,
+          color: '#1f2937',
+        }),
+        menuList: (provided) => ({
+          ...provided,
+          maxHeight: '150px',
+          padding: 0,
+          overflowY: 'auto', 
+          scrollbarWidth: 'thin', 
+          scrollbarColor: '#6b7280 #ffffff', 
+          '::-webkit-scrollbar': {
+            width: '10px',
+          },
+          '::-webkit-scrollbar-track': {
+            background: '#ffffff',
+            borderRadius: '0.375rem',
+          },
+          '::-webkit-scrollbar-thumb': {
+            background: '#6b7280', 
+            borderRadius: '0.375rem',
+            border: '2px solid #ffffff',
+          },
+          '::-webkit-scrollbar-thumb:hover': {
+            background: '#4b5563', 
+          },
+          '::-webkit-scrollbar-button': {
+            background: '#ffffff',
+            height: '12px',
+            display: 'block',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '8px',
+            backgroundPosition: 'center',
+          },
+          '::-webkit-scrollbar-button:decrement': {
+            backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiAxNSA5IDE4IDE4IDkiLz48L3N2Zz4=")',
+          },
+          '::-webkit-scrollbar-button:increment': {
+            backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBsdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiA5IDkgNiAxOCA5Ii8+PC9zdmc+")',
+          },
+        }),
+      }}
+    />
+  </div>
+
+  {errors.category && (
+    <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+      <InfoCircle size={16} color="#DC2626" />
+      {errors.category}
+    </p>
+  )}
+</div>
 
 
 

@@ -424,7 +424,7 @@ function VendorList() {
                     <select
                       value={itemsPerPage}
                       onChange={handleItemsPerPageChange}
-                      className="border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none"
+                      className="cursor-pointer border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none"
                     >
 
                       <option value={10}>10</option>

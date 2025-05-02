@@ -156,7 +156,7 @@ function UserName() {
 
                         {
                             state.Common.successMessage && <div className='flex space-x-1 items-center mb-2'>
-                                <span className="text-green-700 mb-2 text-lg font-semibold font-Gilroy me-1">Success!</span> <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
+                                 <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
                             </div>
                         }
 
@@ -198,7 +198,7 @@ function UserName() {
                             <div className="mt-6 flex flex-col items-center justify-center">
 
                                 <div
-                                    className=" font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
+                                    className=" font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(1.1)] sm:[transform:scaleX(1)_scaleY(1)] md:[transform:scaleX(1)_scaleY(1)] xs:[transform:scaleX(1.5)_scaleY(1.1)] "
 
                                 >
                                     {siteKey && (

@@ -162,7 +162,7 @@ function CreateAccount() {
 
                 {state.Common?.isTriggerMessage === 1 && (
                     <div className="p-6 text-center font-Gilroy">
-                        <h2 className="text-[#0AEB7A] font-Gilroy"> <span className="text-[#77DAA9] text-lg font-semibold font-Gilroy me-1">Success!</span>
+                        <h2 className="text-[#0AEB7A] font-Gilroy"> 
 
                             Check your email <span className="font-bold font-Gilroy">{emailid}</span> to complete the registration
                             Check your Junk/Spam folder
@@ -251,7 +251,7 @@ function CreateAccount() {
                                     <div className="mt-6 flex flex-col items-center justify-center">
 
                                         <div
-                                            className="cursor-pointer font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.3)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
+                                            className="cursor-pointer font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.3)_scaleY(1.1)] sm:[transform:scaleX(1)_scaleY(1)] md:[transform:scaleX(1)_scaleY(1)] xs:[transform:scaleX(1.3)_scaleY(1.1)]"
 
                                         >
                                             {siteKey && (

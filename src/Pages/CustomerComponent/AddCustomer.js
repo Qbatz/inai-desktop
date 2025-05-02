@@ -11,6 +11,7 @@ import Select from "react-select";
 
 
 
+
 function AddCustomer({ editCustomerDetails }) {
 
 
@@ -172,7 +173,7 @@ function AddCustomer({ editCustomerDetails }) {
         }
 
         setFormData(updatedFormData);
-       
+
         setErrors((prevErrors) => ({
             ...prevErrors,
             [field]: value.trim() ? "" : prevErrors[field],
@@ -413,7 +414,7 @@ function AddCustomer({ editCustomerDetails }) {
     const handleChange = (index, field, value) => {
 
         if (field === "designation" && /[^a-zA-Z0-9]/.test(value)) return;
-            if (field === "name" && /[^a-zA-Z\s]/.test(value)) return;
+        if (field === "name" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "number" && !/^\d*$/.test(value)) return;
         setContacts((prev) => {
             const updatedContacts = [...prev];
@@ -430,49 +431,49 @@ function AddCustomer({ editCustomerDetails }) {
             return { ...prevErrors, contactErrors: updatedErrors };
         });
     };
-  
+
     const handleOfficeChange = (field, value) => {
-        if (field === "city" && /[^a-zA-Z\s]/.test(value)) return; 
-    
+        if (field === "city" && /[^a-zA-Z\s]/.test(value)) return;
+
         if (
             (field === "address1" ||
-             field === "address2" ||
-             field === "address3" ||
-             field === "address4" ||
-             field === "landmark") &&
-            /[^a-zA-Z0-9\s]/.test(value) 
+                field === "address2" ||
+                field === "address3" ||
+                field === "address4" ||
+                field === "landmark") &&
+            /[^a-zA-Z0-9\s]/.test(value)
         ) return;
-    
+
         if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
-    
+
         setOfficeAddress((prev) => ({ ...prev, [field]: value }));
         setErrors((prevErrors) => ({
             ...prevErrors,
             [field]: value.trim() ? "" : prevErrors[field],
         }));
     };
-    
+
     const handleShippingChange = (field, value) => {
-        if (field === "city" && /[^a-zA-Z\s]/.test(value)) return; 
-    
+        if (field === "city" && /[^a-zA-Z\s]/.test(value)) return;
+
         if (
             (field === "address1" ||
-             field === "address2" ||
-             field === "address3" ||
-             field === "address4" ||
-             field === "landmark") &&
-            /[^a-zA-Z0-9\s]/.test(value) 
+                field === "address2" ||
+                field === "address3" ||
+                field === "address4" ||
+                field === "landmark") &&
+            /[^a-zA-Z0-9\s]/.test(value)
         ) return;
-    
+
         if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
-    
+
         setShippingAddress((prev) => ({ ...prev, [field]: value }));
         setErrors((prevErrors) => ({
             ...prevErrors,
             [`ship${field}`]: value.trim() ? "" : prevErrors[`ship${field}`],
         }));
     };
-    
+
     const handleSameAsOffice = (e) => {
         setContactAddressSameAsOfficeAddress(!contactAddressSameAsOfficeAddress)
         const checked = e.target.checked;
@@ -1565,77 +1566,61 @@ function AddCustomer({ editCustomerDetails }) {
         { value: "Gujarat", label: "Gujarat" },
         { value: "Haryana", label: "Haryana" },
     ];
- 
+
     const customSelectStateStyles = {
-        control: (base, state) => ({
+        control: (base) => ({
             ...base,
-            height: "44px",
-            border: "1px solid #ced4da",
-            padding: "0 10px",
-            borderRadius: "10px",
-            boxShadow: "none",
-            borderColor: state.isFocused ? "#ced4da" : "#ced4da",
-            "&:hover": {
-                borderColor: "#ced4da",
-                backgroundColor: "transparent",
+            borderColor: '#E5E7EB',
+            borderRadius: '0.6rem',
+            boxShadow: 'none',
+            cursor: 'pointer',
+            padding: '4px 1px',
+            minHeight: '40px',
+            '&:hover': {
+                borderColor: '#E5E7EB',
             },
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isFocused ? 'blue' : 'white',
+            color: state.isFocused ? 'white' : 'black',
+            fontWeight: 500,
+            padding: '4px 10px',
+            cursor: 'pointer',
+            fontSize: "14px",
+            fontFamily: 'Gilroy'
         }),
         menu: (base) => ({
             ...base,
-            backgroundColor: "#f8f9fa",
-            border: "1px solid #ced4da",
-           fontSize:"12px",
-           fontWeight:400,
-        }),
-        menuList: (base) => ({
-            ...base,
-            backgroundColor: "#f8f9fa",
-            maxHeight: "120px",
-            overflowY: "auto",
-            padding: 0,
-            scrollbarWidth: "thin",
-
-        }),
-        placeholder: (base) => ({
-            ...base,
-            color: "#a2b1c1",
-            fontSize:"14px",
-            fontWeight: 500,
-            fontFamily:"Gilroy, sans-serif"
-        }),
-        input: (base) => ({
-            ...base,
-            backgroundColor: "transparent", 
-            color: "#000",
-            fontFamily: "Gilroy",
-            fontWeight: 500,
-            fontSize: "0.75rem",
-            textTransform: "capitalize",
-            outline: "none",
-        }),
-        dropdownIndicator: (base) => ({
-            ...base,
-            color: "#555",
-            display: "inline-block",
-            fill: "currentColor",
-            lineHeight: 1,
-            stroke: "currentColor",
-            strokeWidth: 0,
-        }),
-        indicatorSeparator: () => ({
-            display: "none",
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollbarWidth: 'thin',
+            msOverflowStyle: 'auto',
         }),
         singleValue: (base) => ({
             ...base,
-            fontFamily: "Gilroy",
-            fontWeight: 500,
-            fontSize: "14px", 
-            textTransform: "capitalize",
-            color:"#a2b1c1"
+            color: '#64748B',
+            fontSize: '14px',
+            fontFamily: 'Gilroy'
         }),
-        
-    };
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            color: '#94A3B8',
+            padding: '0 8px',
+        }),
+        placeholder: (base) => ({
+            ...base,
+            color: '#262626',
+            fontSize: "14px",
+            fontWeight: 500,
+            fontFamily: "Gilroy, sans-serif"
+        }),
 
+
+    };
     const customSelectStyles = {
         control: (base, state) => ({
             ...base,
@@ -1652,14 +1637,12 @@ function AddCustomer({ editCustomerDetails }) {
         }),
         menu: (base) => ({
             ...base,
-            backgroundColor: "#f8f9fa",
             border: "1px solid #ced4da",
-           fontSize:"12px",
-           fontWeight:400,
+            fontSize: "12px",
+            fontWeight: 500,
         }),
         menuList: (base) => ({
             ...base,
-            backgroundColor: "#f8f9fa",
             maxHeight: "120px",
             overflowY: "auto",
             padding: 0,
@@ -1668,19 +1651,20 @@ function AddCustomer({ editCustomerDetails }) {
         }),
         placeholder: (base) => ({
             ...base,
-            color: "#a2b1c1",
-            fontSize:"14px",
+            color: ' #64748B',
+            fontSize: "14px",
             fontWeight: 500,
-            fontFamily:"Gilroy, sans-serif"
+            fontFamily: "Gilroy"
         }),
         input: (base) => ({
             ...base,
-            backgroundColor: "transparent", 
+            backgroundColor: "transparent",
             fontFamily: "Gilroy",
             fontWeight: 500,
             fontSize: "0.75rem",
             textTransform: "capitalize",
             outline: "none",
+            color: 'black',
         }),
         dropdownIndicator: (base) => ({
             ...base,
@@ -1697,18 +1681,16 @@ function AddCustomer({ editCustomerDetails }) {
             ...base,
             fontFamily: "Gilroy",
             fontWeight: 500,
-            fontSize: "14px", 
+            fontSize: "14px",
             textTransform: "capitalize",
-            color:"#a2b1c1"
+            color: 'black',
         }),
-        
+
     };
 
 
     return (
-        <div className='bg-slate-100 flex flex-1 flex-col p-2 sm:p-2 md:p-2 lg:p-2 rounded-t-2xl '>
-
-
+        <div className='bg-slate-100 flex flex-1 flex-col p-2 sm:p-2 md:p-2 lg:p-2 rounded-t-2xl'>
             <div className='bg-slate-100 rounded-2xl ps-5 pt-2 pe-5 relative'>
                 {loading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
@@ -2349,16 +2331,21 @@ function AddCustomer({ editCustomerDetails }) {
                                             className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                         />
                                     </div>
-                                    <div className='mb-2 items-center'>
 
+                                    <div className='mb-2 relative items-center'>
                                         <input
                                             ref={cityRef}
                                             type='text'
                                             placeholder='Enter City'
                                             value={officeAddress.city}
                                             onChange={(e) => handleOfficeChange('city', e.target.value)}
-                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent'
                                         />
+                                        {!officeAddress.city && (
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                Enter City<span className="text-red-500 text-lg ml-0.5">*</span>
+                                            </span>
+                                        )}
                                         {errors.city && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2366,6 +2353,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             </div>
                                         )}
                                     </div>
+
 
 
 
@@ -2397,7 +2385,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             placeholder="Select"
                                             classNamePrefix="custom"
                                             menuPlacement="auto"
-                                            styles={customSelectStyles}
+                                            styles={customSelectStateStyles}
                                         />
                                         {errors.country && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
@@ -2663,33 +2651,40 @@ function AddCustomer({ editCustomerDetails }) {
 
                                             </div>
 
+                                            <div className='mb-2 items-center'>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                                    Beneficiary Currency<span className='text-red-500'>*</span>
+                                                </label>
 
-                                            <div className='mb-2 items-center '>
-                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
-
-
-                                                <select
+                                                <Select
                                                     ref={bankRefs.current[index]?.beneficiaryCurrency}
-                                                    value={bankDetails.beneficiaryCurrency || ""}
-                                                    onChange={(e) => handleBankingChange(index, 'beneficiaryCurrency', e.target.value)}
-                                                    className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                                    <option value="">Select beneficiary currency</option>
-                                                    <option value="USD">USD</option>
-                                                    <option value="INR">INR</option>
-                                                    <option value="EUR">EUR</option>
-                                                    <option value="GBP">GBP</option>
-                                                    <option value="JPY">JPY</option>
-
-                                                </select>
+                                                    value={
+                                                        bankDetails.beneficiaryCurrency
+                                                            ? { label: bankDetails.beneficiaryCurrency, value: bankDetails.beneficiaryCurrency }
+                                                            : null
+                                                    }
+                                                    onChange={(selectedOption) =>
+                                                        handleBankingChange(index, 'beneficiaryCurrency', selectedOption?.value || '')
+                                                    }
+                                                    options={[
+                                                        { value: 'USD', label: 'USD' },
+                                                        { value: 'INR', label: 'INR' },
+                                                        { value: 'EUR', label: 'EUR' },
+                                                        { value: 'GBP', label: 'GBP' },
+                                                        { value: 'JPY', label: 'JPY' },
+                                                    ]}
+                                                    placeholder="Select beneficiary currency"
+                                                    styles={customSelectStateStyles}
+                                                    className="capitalize font-Gilroy font-medium text-sm text-neutral-800"
+                                                />
 
                                                 {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryCurrency && (
                                                     <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].beneficiaryCurrency}
+                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        {errors.bankErrors[index].beneficiaryCurrency}
                                                     </div>
                                                 )}
-
                                             </div>
-
 
 
 
@@ -2802,21 +2797,32 @@ function AddCustomer({ editCustomerDetails }) {
                                                 />
                                             </div>
 
+
                                             <div className='mb-2 items-center'>
-                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bank Country </label>
-                                                <select
-                                                    value={bankDetails.bankCountry}
-                                                    onChange={(e) => handleBankingChange(index, 'bankCountry', e.target.value)}
-                                                    className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                                    <option value="">Select Bank Country</option>
-                                                    <option value="India">India</option>
-                                                    <option value="United States">United States</option>
-                                                    <option value="Canada">Canada</option>
-                                                    <option value="United Kingdom">United Kingdom</option>
-                                                    <option value="Australia">Australia</option>
+                                                <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                                    Bank Country
+                                                </label>
 
-
-                                                </select>
+                                                <Select
+                                                    value={
+                                                        bankDetails.bankCountry
+                                                            ? { label: bankDetails.bankCountry, value: bankDetails.bankCountry }
+                                                            : null
+                                                    }
+                                                    onChange={(selectedOption) =>
+                                                        handleBankingChange(index, 'bankCountry', selectedOption?.value || '')
+                                                    }
+                                                    options={[
+                                                        { value: 'India', label: 'India' },
+                                                        { value: 'United States', label: 'United States' },
+                                                        { value: 'Canada', label: 'Canada' },
+                                                        { value: 'United Kingdom', label: 'United Kingdom' },
+                                                        { value: 'Australia', label: 'Australia' },
+                                                    ]}
+                                                    placeholder="Select Bank Country"
+                                                    styles={customSelectStateStyles}
+                                                    className="capitalize font-Gilroy font-medium text-sm text-neutral-800"
+                                                />
                                             </div>
 
                                             <div className='mb-2 items-center'>

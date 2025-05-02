@@ -17,8 +17,9 @@ import moment from "moment";
 import { useLocation, useNavigate } from 'react-router-dom';
 import imageCompression from 'browser-image-compression';
 import PdfImage from '../../Asset/Images/pdf.png';
-
+import Select from "react-select";
 import CreatableSelect from 'react-select/creatable';
+
 
 function AddProduct() {
 
@@ -1065,63 +1066,6 @@ function AddProduct() {
         }
     };
 
-    const selectStyles = {
-        control: (base) => ({
-            ...base,
-            backgroundColor: '#fff',
-            borderRadius: '0.5rem',
-            minHeight: '50px',
-            boxShadow: 'none',
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            fontFamily: 'Gilroy',
-            color: '#94a3b8',
-            cursor: 'pointer',
-            transition: 'border 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-            '&:hover': {
-                borderColor: '#94a3b8',
-            },
-        }),
-        singleValue: (base) => ({
-            ...base,
-            color: '#94a3b8',
-        }),
-        menu: (provided) => ({
-            ...provided,
-            maxHeight: '150px',
-            overflowY: 'auto',
-            borderRadius: '0.5rem',
-            zIndex: 20,
-        }),
-        placeholder: (base) => ({
-            ...base,
-            color: '#94a3b8',
-        }),
-        dropdownIndicator: (base) => ({
-            ...base,
-            paddingRight: '0.75rem',
-            color: '#4B5563',
-        }),
-        indicatorSeparator: () => ({
-            display: 'none',
-        }),
-       
-        option: (base, state) => ({
-            ...base,
-            backgroundColor: state.isSelected
-                ? "#205DA8"
-                : state.isFocused
-                    ? "#205DA8"
-                    : "#fff",
-            color: state.isSelected || state.isFocused ? "white" : "black",
-            fontFamily: "Gilroy",
-            fontSize: "14px",
-            cursor: "pointer",
-            padding: "4px 10px",
-
-        }),
-    };
-
 
     useEffect(() => {
         let optionArray = [];
@@ -1379,9 +1323,188 @@ function AddProduct() {
         }
     }, [displayItems]);
 
+    const stateOptions = [
+        { value: '', label: 'Enter State', isDisabled: true },
+        { value: 'tamil-nadu', label: 'Tamil Nadu' },
+        { value: 'maharashtra', label: 'Maharashtra' },
+        { value: 'karnataka', label: 'Karnataka' },
+        { value: 'delhi', label: 'Delhi' },
+        { value: 'kerala', label: 'Kerala' },
+        { value: 'gujarat', label: 'Gujarat' },
+        { value: 'rajasthan', label: 'Rajasthan' },
+        { value: 'west-bengal', label: 'West Bengal' },
+        { value: 'uttar-pradesh', label: 'Uttar Pradesh' },
+        { value: 'andhra-pradesh', label: 'Andhra Pradesh' },
+        { value: 'madhya-pradesh', label: 'Madhya Pradesh' },
+        { value: 'bihar', label: 'Bihar' },
+        { value: 'assam', label: 'Assam' },
+        { value: 'odisha', label: 'Odisha' },
+        { value: 'punjab', label: 'Punjab' }
+    ];
+    const currencyOptions = [
+        { value: '', label: 'Select beneficiary currency', isDisabled: true },
+        { value: 'USD', label: 'USD' },
+        { value: 'INR', label: 'INR' },
+        { value: 'EUR', label: 'EUR' },
+        { value: 'GBP', label: 'GBP' },
+        { value: 'JPY', label: 'JPY' }
+    ];
+    const countryOptions = [
+        { value: 'india', label: 'India' },
+        { value: 'usa', label: 'United States' },
+        { value: 'china', label: 'China' },
+        { value: 'germany', label: 'Germany' },
+        { value: 'japan', label: 'Japan' },
+        { value: 'uk', label: 'United Kingdom' },
+    ];
+    const unitOptions = [
+        { value: '', label: 'Select Unit of measurement', isDisabled: true },
+        { value: 'kg', label: 'Kilogram (kg)' },
+        { value: 'g', label: 'Gram (g)' },
+        { value: 'l', label: 'Litre (l)' },
+        { value: 'ml', label: 'Millilitre (ml)' },
+        { value: 'pcs', label: 'Pieces (pcs)' }
+    ];
+
+    const selectCustomStyles = {
+        control: (provided) => ({
+            ...provided,
+            borderColor: '#D1D5DB',
+            borderRadius: '0.375rem',
+            boxShadow: 'none',
+            minHeight: '48px',
+            fontSize: '14px',
+            fontFamily: 'Gilroy',
+            padding: '6px 1px',
+            '&:hover': {
+                borderColor: '#9ca3af',
+            },
+        }),
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+        indicatorsContainer: (base) => ({
+            ...base,
+            cursor: 'pointer',
+            fontFamily: 'Gilroy',
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            cursor: 'pointer',
+            fontFamily: 'Gilroy',
+            color: '#94A3B8',
+        }),
+        menu: (provided) => ({
+            ...provided,
+            borderRadius: '0.375rem',
+            marginTop: '0.25rem',
+            zIndex: 10,
+            fontFamily: 'Gilroy',
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isFocused ? 'blue' : 'white',
+            color: state.isFocused ? '#ffffff' : '#000000',
+            padding: '2px 10px',
+            cursor: 'pointer',
+            fontFamily: 'Gilroy',
+            marginBottom: '4px',
+            '&:active': {
+                backgroundColor: '#2563eb',
+            },
 
 
+        }),
 
+        placeholder: (provided) => ({
+            ...provided,
+            color: "#64748B",
+            fontWeight: '500',
+            fontFamily: 'Gilroy',
+        }),
+        menuList: (provided) => ({
+            ...provided,
+            maxHeight: '150px',
+            fontWeight: 400,
+            padding: 0,
+            overflowY: 'auto',
+            fontFamily: 'Gilroy',
+            fontSize: '15px',
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#6b7280 #ffffff',
+            '::-webkit-scrollbar': {
+                width: '10px',
+            },
+            '::-webkit-scrollbar-track': {
+                background: '#ffffff',
+                borderRadius: '0.375rem',
+            },
+            '::-webkit-scrollbar-thumb': {
+                background: '#6b7280',
+                borderRadius: '0.375rem',
+                border: '2px solid #ffffff',
+                cursor: 'pointer',
+            },
+            '::-webkit-scrollbar-thumb:hover': {
+                background: '#4b5563',
+            },
+            '::-webkit-scrollbar-button': {
+                background: '#ffffff',
+                height: '12px',
+                display: 'block',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '8px',
+                backgroundPosition: 'center',
+            },
+            '::-webkit-scrollbar-button:decrement': {
+                backgroundImage:
+                    'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiAxNSA5IDE4IDE4IDkiLz48L3N2Zz4=")',
+            },
+            '::-webkit-scrollbar-button:increment': {
+                backgroundImage:
+                    'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBsdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiA5IDkgNiAxOCA5Ii8+PC9zdmc+")',
+            },
+        }),
+    };
+
+    const customSelectStyles = {
+        control: (base) => ({
+            ...base,
+            borderColor: '#D1D5DB',
+            borderRadius: '0.5rem',
+            boxShadow: 'none',
+            cursor: 'pointer',
+            padding: '6px 1px',
+            minHeight: '44px',
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isFocused ? 'blue' : 'white',
+            color: state.isFocused ? 'white' : 'black',
+            fontWeight: 500,
+            padding: '4px 10px',
+            cursor: 'pointer'
+        }),
+        menu: (base) => ({
+            ...base,
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollbarWidth: 'thin',
+            msOverflowStyle: 'auto',
+        }),
+        singleValue: (base) => ({
+            ...base,
+            color: '#64748B',
+        }),
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            color: '#94A3B8',
+            padding: '0 8px',
+        }),
+    };
 
 
     return (
@@ -1875,24 +1998,18 @@ function AddProduct() {
                                 placeholder="Enter Available Quantity"
                             />
                         </div>
-                        <div >
+                        <div>
                             <label className="block font-normal text-md font-Outfit mb-1.5">Unit of measurement <span className="text-red-500 text-sm">*</span></label>
                             <div className="relative">
-                                <select
-                                    value={formData.unit}
-                                    ref={unitRef}
-                                    onChange={(e) => handleInputChange('unit', e.target.value)}
-                                    className="w-full cursor-pointer focus:outline-none p-3 border rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                    <option className='cursor-pointer' value="" disabled selected>Select Unit of measurement</option>
-                                    <option value="kg">Kilogram (kg)</option>
-                                    <option value="g">Gram (g)</option>
-                                    <option value="l">Litre (l)</option>
-                                    <option value="ml">Millilitre (ml)</option>
-                                    <option value="pcs">Pieces (pcs)</option>
-                                </select>
-                                <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path d="M19 9l-7 7-7-7" />
-                                </svg>
+                                <Select
+                                    value={unitOptions.find(option => option.value === formData.unit)}
+                                    onChange={(selectedOption) => handleInputChange('unit', selectedOption?.value)}
+                                    options={unitOptions}
+                                    styles={customSelectStyles}
+                                    className="capitalize font-Gilroy font-medium text-sm text-neutral-600"
+                                    isSearchable={false}
+                                    placeholder="Select Unit of measurement"
+                                />
                             </div>
 
                             {errors.unit && (
@@ -1916,30 +2033,20 @@ function AddProduct() {
 
 
 
-                        <div >
+                        <div>
                             <label className="block font-normal text-md font-Outfit mb-1 flex items-center gap-1">
                                 Currency
                                 <span className="text-red-500 text-sm">*</span>
                             </label>
                             <div className='relative'>
-                                <select
-                                    ref={currencyRef}
-                                    value={formData.currency}
-                                    onChange={(e) => handleInputChange('currency', e.target.value)}
-                                    className="cursor-pointer w-full focus:outline-none px-3 py-3 border rounded-lg  appearance-none focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                    <option value="">Select beneficiary currency</option>
-                                    <option value="USD">USD</option>
-                                    <option value="INR">INR</option>
-                                    <option value="EUR">EUR</option>
-                                    <option value="GBP">GBP</option>
-                                    <option value="JPY">JPY</option>
-
-                                </select>
-
-                                <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path d="M19 9l-7 7-7-7" />
-                                </svg>
-
+                                <Select
+                                    value={currencyOptions.find(option => option.value === formData.currency)}
+                                    onChange={(selectedOption) => handleInputChange('currency', selectedOption?.value)}
+                                    options={currencyOptions}
+                                    styles={customSelectStyles}
+                                    className="capitalize font-Gilroy font-medium text-sm text-neutral-600"
+                                    placeholder="Select beneficiary currency"
+                                />
                             </div>
 
                             {errors.currency && (
@@ -2034,7 +2141,7 @@ function AddProduct() {
                             <label className="block font-normal text-md font-Outfit mb-1.5">
                                 Category <span className="text-red-500 text-sm">*</span>
                             </label>
-                            <div className="relative max-h-40">
+                            <div className="relative max-h-40 cursor-pointer">
                                 <CreatableSelect
                                     ref={categoryRef}
                                     options={categoryOptions}
@@ -2042,81 +2149,10 @@ function AddProduct() {
                                     onChange={handleCategoryChange}
                                     onCreateOption={handleCreateCategory}
                                     placeholder="Select Category"
-                                    className="w-full"
+                                    className="w-full cursor-pointer"
                                     classNamePrefix="react-select"
-                                    styles={{
-                                        control: (provided) => ({
-                                            ...provided,
-                                            borderColor: '#d1d5db',
-                                            borderRadius: '0.375rem',
-                                            boxShadow: 'none',
-                                            minHeight: '50px',
-                                            '&:hover': {
-                                                borderColor: '#9ca3af',
-                                            },
-                                        }),
-                                        menu: (provided) => ({
-                                            ...provided,
-                                            borderRadius: '0.375rem',
-                                            marginTop: '0.25rem',
-                                            zIndex: 10,
-                                        }),
-                                        option: (provided, state) => ({
-                                            ...provided,
-                                            backgroundColor: state.isFocused ? '#3b82f6' : 'transparent',
-                                            color: state.isFocused ? '#ffffff' : '#000000',
-                                            padding: '0.125rem 0.25rem',
-                                            cursor: 'pointer',
-                                            '&:active': {
-                                                backgroundColor: '#2563eb',
-                                            },
-                                        }),
-                                        placeholder: (provided) => ({
-                                            ...provided,
-                                            color: '#9ca3af',
-                                        }),
-                                        singleValue: (provided) => ({
-                                            ...provided,
-                                            color: '#1f2937',
-                                        }),
-                                        menuList: (provided) => ({
-                                            ...provided,
-                                            maxHeight: '150px',
-                                            padding: 0,
-                                            overflowY: 'auto',
-                                            scrollbarWidth: 'thin',
-                                            scrollbarColor: '#6b7280 #ffffff',
-                                            '::-webkit-scrollbar': {
-                                                width: '10px',
-                                            },
-                                            '::-webkit-scrollbar-track': {
-                                                background: '#ffffff',
-                                                borderRadius: '0.375rem',
-                                            },
-                                            '::-webkit-scrollbar-thumb': {
-                                                background: '#6b7280',
-                                                borderRadius: '0.375rem',
-                                                border: '2px solid #ffffff',
-                                            },
-                                            '::-webkit-scrollbar-thumb:hover': {
-                                                background: '#4b5563',
-                                            },
-                                            '::-webkit-scrollbar-button': {
-                                                background: '#ffffff',
-                                                height: '12px',
-                                                display: 'block',
-                                                backgroundRepeat: 'no-repeat',
-                                                backgroundSize: '8px',
-                                                backgroundPosition: 'center',
-                                            },
-                                            '::-webkit-scrollbar-button:decrement': {
-                                                backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiAxNSA5IDE4IDE4IDkiLz48L3N2Zz4=")',
-                                            },
-                                            '::-webkit-scrollbar-button:increment': {
-                                                backgroundImage: 'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBsdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiA5IDkgNiAxOCA5Ii8+PC9zdmc+")',
-                                            },
-                                        }),
-                                    }}
+                                    styles={selectCustomStyles}
+
                                 />
                             </div>
 
@@ -2143,7 +2179,7 @@ function AddProduct() {
                                 placeholder="Select Sub Category"
                                 className="w-full"
                                 classNamePrefix="react-select"
-                                styles={selectStyles}
+                                styles={selectCustomStyles}
                             />
 
 
@@ -2163,7 +2199,7 @@ function AddProduct() {
                                     placeholder="Select Brand"
                                     className="w-full"
                                     classNamePrefix="react-select"
-                                    styles={selectStyles}
+                                    styles={selectCustomStyles}
                                 />
 
 
@@ -2181,27 +2217,19 @@ function AddProduct() {
 
 
 
-                        <div >
+
+                        <div>
                             <label className="block font-normal text-md font-Outfit mb-1">Country of Origin</label>
                             <div className="relative">
-                                <select
-                                    value={formData.country}
-                                    onChange={(e) => handleInputChange('country', e.target.value)}
-                                    className="cursor-pointer w-full focus:outline-none p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                    <option value="" disabled>
-                                        Enter Country of Origin
-                                    </option>
-                                    <option value="india">India</option>
-                                    <option value="usa">United States</option>
-                                    <option value="china">China</option>
-                                    <option value="germany">Germany</option>
-                                    <option value="japan">Japan</option>
-                                    <option value="uk">United Kingdom</option>
-                                </select>
-
-                                <svg className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path d="M19 9l-7 7-7-7" />
-                                </svg>
+                                <Select
+                                    options={countryOptions}
+                                    value={countryOptions.find(option => option.value === formData.country)}
+                                    onChange={(selectedOption) => handleInputChange('country', selectedOption.value)}
+                                    className="font-Gilroy text-sm"
+                                    classNamePrefix="react-select"
+                                    placeholder="Enter Country of Origin"
+                                    styles={customSelectStyles}
+                                />
                             </div>
                         </div>
 
@@ -2224,41 +2252,18 @@ function AddProduct() {
                             </div>
                         </div>
 
-
-
-
-                        <div >
+                        <div>
                             <label className="block font-normal text-md font-Outfit mb-1">State</label>
                             <div className="relative">
-                                <select
-                                    value={formData.stateName}
-                                    onChange={(e) => handleInputChange('stateName', e.target.value)}
 
-                                    className="cursor-pointer focus:outline-none w-full p-3 border border-gray-300 rounded-lg font-medium text-sm text-slate-400 appearance-none font-Gilroy">
-                                    <option value="" disabled selected>
-                                        Enter State
-                                    </option>
-                                    <option value="tamil-nadu">Tamil Nadu</option>
-                                    <option value="maharashtra">Maharashtra</option>
-                                    <option value="karnataka">Karnataka</option>
-                                    <option value="delhi">Delhi</option>
-                                    <option value="kerala">Kerala</option>
-                                    <option value="gujarat">Gujarat</option>
-                                    <option value="rajasthan">Rajasthan</option>
-                                    <option value="west-bengal">West Bengal</option>
-                                    <option value="uttar-pradesh">Uttar Pradesh</option>
-                                    <option value="andhra-pradesh">Andhra Pradesh</option>
-                                </select>
-
-                                <svg
-                                    className="w-4 h-4 text-[#4B5563] absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M19 9l-7 7-7-7" />
-                                </svg>
+                                <Select
+                                    options={stateOptions}
+                                    value={stateOptions.find(option => option.value === formData.stateName)}
+                                    onChange={(selectedOption) => handleInputChange('stateName', selectedOption.value)}
+                                    className="font-Gilroy text-sm"
+                                    classNamePrefix="react-select"
+                                    styles={customSelectStyles}
+                                />
                             </div>
                         </div>
 

@@ -299,9 +299,9 @@ function Login({ message, loginStatusCode }) {
                   </label>
                 </div>
               </div>
-              <div className='flex justify-center ms-1 me-1 cursor-pointer'>
+              <div className='flex justify-center ms-1 me-1 cursor-pointer mt-2 mb-2'>
                 <div
-                  className="cursor-pointer font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
+                  className="cursor-pointer font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(1.1)] sm:[transform:scaleX(1)_scaleY(1)] md:[transform:scaleX(1)_scaleY(1)] xs:[transform:scaleX(1.5)_scaleY(1.1)] "
 
                 >
                   {siteKey && (

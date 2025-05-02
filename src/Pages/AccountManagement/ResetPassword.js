@@ -5,8 +5,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RESET_PAGE_API_CALL, RESET_CODE, RESET_PASSWORD_API_CALL } from "../../Utils/Constant";
 import { useDispatch, useSelector } from 'react-redux';
-
-
+import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
+import LoginImage from '../../Asset/Images/Login_Image.svg';
 
 const ReSetPassword = () => {
 
@@ -14,8 +14,7 @@ const ReSetPassword = () => {
     const navigate = useNavigate()
     const state = useSelector(state => state)
 
-    const [errorResetMessage, setErrorResetMessage] = useState(state?.Common?.errorMessage)
-      const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
+    const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
 
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,26 +28,19 @@ const ReSetPassword = () => {
     const location = useLocation();
     const [hash, setHash] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [hasherror, sethashError] = useState("");
+
 
 
 
     useEffect(() => {
+        if (state.Common.errorMessage !== "") {
+            setErrorMessage(state?.Common?.errorMessage)
+        }
 
-        setErrorMessage(state?.Common?.errorMessage)
-        setTimeout(() => {
-            dispatch({ type: RESET_CODE });
-        }, 1000);
 
     }, [state.Common.errorMessage])
 
-    useEffect(() => {
 
-        setErrorResetMessage(state?.Common?.errorMessage)
-        setTimeout(() => {
-            dispatch({ type: RESET_CODE });
-        }, 3000);
-    }, [state.Common.errorMessage])
 
 
 
@@ -56,25 +48,24 @@ const ReSetPassword = () => {
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const hashValue = queryParams.get("hash");
-
+    
         if (hashValue) {
             setHash(hashValue);
-
-            sethashError("");
-
+    
             try {
                 dispatch({ type: RESET_PAGE_API_CALL, payload: { verify_code: hashValue } });
             } catch (error) {
-                sethashError("Error verifying link. Please try again");
+                console.error("Error during dispatch:", error);
             } finally {
                 setLoading(false);
             }
         }
     }, [location.search]);
+    
 
     useEffect(() => {
-        if (state.Common.IsVisible === 1) {
-            navigate('/password')
+        if (state.Common.IsVisible === 1 && !state.userInfo.isLoggedIn) {
+            navigate('/')
         }
 
     }, [state.Common.IsVisible])
@@ -161,18 +152,60 @@ const ReSetPassword = () => {
         <div className="flex items-center justify-center min-h-screen bg-gray-100 p-8 relative">
 
 
-{loading && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
-                            <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
-                        </div>
-                    )}
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                    <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                </div>
+            )}
 
-            {hasherror && <p className="text-red-600 text-center">{errorMessage}</p>}
+            {errorMessage ?
+                <div className="bg-white  h-full   max-w-3xl w-full rounded-3xl shadow-lg">
+
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-4 p-3'>
+
+                        <div className='flex flex-col items-center justify-center'>
+                            <img src={LoginImage} className='w-full h-auto max-w-md object-contain' alt='Login' />
+                            <div className="text-center ">
+                                <div className="mx-auto w-full max-w-[340px]">
+                                    <label className="block text-black text-3xl font-bold font-Montserrat mb-3">
+                                        Communication is the heart of Business.
+                                    </label>
+                                    <label className="block text-neutral-600 font-Montserrat text-base font-normal">
+                                        Stay connected with a Right Supplier and Buyer!!
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="flex flex-col justify-center items-center relative">
+
+                            <div className='flex justify-start mb-2'>
+                                <img src={InaiLogo} alt='INAI Logo' className='h-<fraction> w-<fraction>' />
+                            </div>
+
+                            <div className='text-start mb-2'>
+                                <label className='block text-28px font-semibold font-Gilroy pt-4'>Reset Password </label>
+                            </div>
+                            <div className='mt-4'>
+
+                                <p className="text-red-600  font-Gilroy text-lg ">{errorMessage}</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+                :
+
 
                 <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md relative">
 
 
-                   
+
                     <h2 className="text-2xl font-semibold text-center text-black mb-6 font-Gilroy">
                         Reset Password
                     </h2>
@@ -184,9 +217,7 @@ const ReSetPassword = () => {
                     )}
 
 
-                    {
-                        state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
-                    }
+
 
 
                     <div className="mb-4 relative">
@@ -232,13 +263,8 @@ const ReSetPassword = () => {
                             </p>
                         )}
                     </div>
-                  
-                    {errorResetMessage && (
-                        <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center  gap-1 font-Gilroy">
-                            <InfoCircle size="14" color="#DC2626" />
-                            {errorResetMessage}
-                        </div>
-                    )}
+
+
 
                     <button
                         type="submit"
@@ -252,7 +278,8 @@ const ReSetPassword = () => {
 
 
                 </div>
-           
+            }
+
 
         </div>
     );

@@ -3,10 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RESET_PAGE_API_CALL, RESET_CODE, RESET_PASSWORD_API_CALL } from "../../Utils/Constant";
+import { RESET_PAGE_API_CALL, RESET_CODE, RESET_PASSWORD_API_CALL, LOG_OUT } from "../../Utils/Constant";
 import { useDispatch, useSelector } from 'react-redux';
 import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
 import LoginImage from '../../Asset/Images/Login_Image.svg';
+import { encryptData } from "../../Crypto/crypto";
+
+
 
 const ReSetPassword = () => {
 
@@ -48,10 +51,10 @@ const ReSetPassword = () => {
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
         const hashValue = queryParams.get("hash");
-    
+
         if (hashValue) {
             setHash(hashValue);
-    
+
             try {
                 dispatch({ type: RESET_PAGE_API_CALL, payload: { verify_code: hashValue } });
             } catch (error) {
@@ -61,10 +64,13 @@ const ReSetPassword = () => {
             }
         }
     }, [location.search]);
-    
+
 
     useEffect(() => {
-        if (state.Common.IsVisible === 1 && !state.userInfo.isLoggedIn) {
+        if (state.Common.IsVisible === 1) {
+            dispatch({ type: LOG_OUT });
+            const encryptDataLogin = encryptData(JSON.stringify(false));
+            localStorage.setItem("inai_login", encryptDataLogin.toString());
             navigate('/')
         }
 

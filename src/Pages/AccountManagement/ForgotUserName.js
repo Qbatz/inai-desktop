@@ -1,3 +1,5 @@
+
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import LoginImage from '../../Asset/Images/Login_Image.svg';
 import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
@@ -11,7 +13,7 @@ function UserName() {
 
     const dispatch = useDispatch();
     const state = useSelector(state => state)
-
+    const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState(state?.Common?.errorMessage)
     const [siteKey, setSiteKey] = useState('')
     const resetUser = useSelector(state => state?.Common?.resetUser);
@@ -19,13 +21,20 @@ function UserName() {
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
 
+    const [successMessage, setSuccessMessage] = useState(state.Common?.successMessage);
+
+
+
     useEffect(() => {
-
         setErrorMessage(state?.Common?.errorMessage)
-
-
     }, [state.Common.errorMessage])
 
+    useEffect(() => {
+        if (state.Common?.successMessage !== "") {
+            setSuccessMessage(state.Common?.successMessage)
+        }
+
+    }, [state.Common?.successMessage])
     const handleEmailChange = (e) => {
         const value = e.target.value.toLowerCase();
         setEmail(value);
@@ -53,6 +62,7 @@ function UserName() {
         let errors = { email: "", captcha: "" };
         if (email && captchaValue) {
             dispatch({ type: FORGOT_USER_API_CALL, payload: { email: email, captcha: captchaValue } })
+            setLoading(true)
 
         }
 
@@ -100,6 +110,24 @@ function UserName() {
         setSiteKey(selectedKey)
 
     }, [])
+
+
+    useEffect(() => {
+        if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 5000)
+
+        }
+    }, [state.Common.successCode, state.Common.code]);
+
+
+
+
+
+
+
     return (
         <div className='bg-slate-100 w-screen  min-h-screen flex items-center justify-center '>
 
@@ -123,7 +151,21 @@ function UserName() {
                     </div>
 
 
-                    <div className='Right_Side m-3 flex flex-col justify-center'>
+                    <div className='Right_Side m-3 flex flex-col justify-center relative'>
+
+                        {loading && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                                <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                            </div>
+                        )}
+
+
+                        {
+                            successMessage && <label className="block  mb-4 text-start font-Gilroy font-normal text-md text-green-600"> {successMessage} </label>
+                        }
+
+
+
                         <div className='flex justify-start mb-2'>
                             <img src={InaiLogo} alt='INAI Logo' className='h-<fraction> w-<fraction>' />
                         </div>
@@ -161,7 +203,7 @@ function UserName() {
                             <div className="mt-6 flex flex-col items-center justify-center">
 
                                 <div
-                                    className=" font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
+                                    className=" font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(1.1)] sm:[transform:scaleX(1)_scaleY(1)] md:[transform:scaleX(1)_scaleY(1)] xs:[transform:scaleX(1.5)_scaleY(1.1)] "
 
                                 >
                                     {siteKey && (
@@ -171,27 +213,27 @@ function UserName() {
 
 
                                 {formError.captcha && (
-                                    <div className="mt-2 w-full text-center">
-                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                    <div className="mt-2 w-full text-start">
+                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center  gap-1">
                                             <InfoCircle size="14" color="#DC2626" /> {formError.captcha}
                                         </p>
                                     </div>
                                 )}
                             </div>
                             {resetUser && (
-                                <div className="mt-4 text-green-800 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                <div className="mt-4 text-green-800 font-Gilroy font-medium text-sm flex items-center  gap-1">
 
                                     {resetUser}
                                 </div>
                             )}
                             {errorMessage && (
-                                <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center justify-center gap-1">
+                                <div className="mt-4 text-red-600 font-Gilroy font-medium text-sm flex items-center  gap-1">
                                     <InfoCircle size="14" color="#DC2626" />
                                     {errorMessage}
                                 </div>
                             )}
 
-                            <button type='submit' className='mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl hover:bg-blue-700 transition duration-300 sm:text-lg'
+                            <button type='submit' className='mt-6 font-Montserrat font-semibold text-base w-full bg-[#205DA8] text-white p-[14px] rounded-xl  transition duration-300 sm:text-lg'
                                 onClick={handleSubmit}>
                                 Submit
                             </button>

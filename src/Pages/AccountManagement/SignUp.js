@@ -58,6 +58,7 @@ export default function SignUp() {
 
 
   const handleMobile = (e) => {
+    setMobileError("")
     const value = e.target.value;
     if (/^\d{0,10}$/.test(value) || value === "") {
       setMobile(value);
@@ -88,9 +89,10 @@ export default function SignUp() {
   const handleSENDOTP = () => {
     if (!mobile.match(/^[0-9]{10}$/)) {
       setMobileError("Mobile number must be 10 digits")
+      return;
     }
     if (mobile) {
-      dispatch({ type: OTP_SEND_SAGA, payload: { mobile: mobile } })
+      dispatch({ type: OTP_SEND_SAGA, payload: { mobile: mobile , email: state?.userInfo?.emailId} })
       setLoading(true)
     }
 
@@ -387,12 +389,12 @@ export default function SignUp() {
                 className="absolute right-3 top-3 text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showPassword ?   <Eye size={20} /> : <EyeOff size={20} />}
               </button>
 
 
               {error.password && (
-                <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2">
+                <p className="text-red-600 font-medium text-sm flex items-center gap-1 pt-2 font-Gilroy">
                   <span><InfoCircle size="14" color="#DC2626" /></span> {error.password}
                 </p>
               )}
@@ -411,7 +413,7 @@ export default function SignUp() {
                 className="absolute right-3 top-3 text-gray-500"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showConfirmPassword ?   <Eye size={20} /> : <EyeOff size={20} />}
               </button>
               {error.confirmPassword && (
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">

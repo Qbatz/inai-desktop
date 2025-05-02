@@ -1,5 +1,5 @@
 
-import { GET_ACTIVITIES_REDUCER, GET_USER_INFO_REDUCER, SIGN_IN_REDUCER, LOG_OUT, LOG_IN, SIGN_UP_VERIFICATION_REDUCER, OTP_SEND_REDUCER, STORE_VERIFY_CODE, ACCOUNT_REGISTER_REDUCER } from "../../Utils/Constant";
+import { REMOVE_ACCOUNT_REDUCER,GET_ACTIVITIES_REDUCER, GET_USER_INFO_REDUCER, SIGN_IN_REDUCER, LOG_OUT, LOG_IN, SIGN_UP_VERIFICATION_REDUCER, OTP_SEND_REDUCER, STORE_VERIFY_CODE, ACCOUNT_REGISTER_REDUCER } from "../../Utils/Constant";
 
 export const initialState = {
 
@@ -38,6 +38,9 @@ const UserReducer = (state = initialState, action) => {
 
         case ACCOUNT_REGISTER_REDUCER:
             return { ...state, isTrue: true, is_verified: null }
+
+        case REMOVE_ACCOUNT_REDUCER:
+            return { ...state, isTrue: false, is_verified: null }
 
         case GET_USER_INFO_REDUCER:
             return { ...state, userDetails: action.payload.users };

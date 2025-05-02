@@ -167,34 +167,39 @@ function VendorDetails() {
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.city || 'N/A'}</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-2">
-                      <div>
+                    <div className="grid grid-cols-12 gap-4 p-2 w-full">
+                      <div className="col-span-12 md:col-span-4">
                         <p className="text-gray-500 text-xs font-medium font-Gilroy">Landmark</p>
                         <p className="font-semibold text-sm pt-2 font-Gilroy">{vendor.address?.[0]?.landMark || 'N/A'}</p>
                       </div>
-                      <div>
+                      <div className="col-span-12 md:col-span-8 w-full">
 
                         <p className="text-gray-500 text-xs font-medium font-Gilroy">Google Map</p>
-                        {vendor.address && vendor.address.length > 0 && vendor.address[0].mapLink ? (
-                          isValidUrl(vendor.address[0].mapLink) ? (
-                            <a
-                              href={vendor.address[0].mapLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-sm cursor-pointer font-semibold mb-2 font-Gilroy text-blue-500 overflow-hidden text-ellipsis whitespace-nowrap underline"
-                            >
-                              {vendor.address[0].mapLink}
-                            </a>
+                        <div className="max-w-full sm:max-w-[500px] md:max-w-[900px] overflow-hidden">
+                          {vendor.address && vendor.address.length > 0 && vendor.address[0].mapLink ? (
+                            isValidUrl(vendor.address[0].mapLink) ? (
+                              <a
+                                href={vendor.address[0].mapLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm cursor-pointer font-semibold mb-2 font-Gilroy text-blue-500 underline block truncate"
+                                title={vendor.address[0].mapLink}
+                              >
+                                {vendor.address[0].mapLink}
+                              </a>
+                            ) : (
+                              <p
+                                className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] truncate"
+                                title={vendor.address[0].mapLink}
+                              >
+                                {vendor.address[0].mapLink}
+                              </p>
+                            )
                           ) : (
-                            <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
-                              {vendor.address[0].mapLink}
-                            </p>
-                          )
-                        ) : (
-                          <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
-                            N/A
-                          </p>
-                        )}
+                            <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222]">N/A</p>
+                          )}
+                        </div>
+
 
 
 
@@ -227,35 +232,36 @@ function VendorDetails() {
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.city || 'N/A'}</p>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-2">
-                      <div>
+                    <div className="grid grid-cols-12 gap-4 p-2 w-full">
+                      <div className='col-span-12 md:col-span-4'>
                         <p className="text-gray-500 text-xs font-medium font-Gilroy">Landmark</p>
                         <p className="font-semibold text-sm pt-2 font-Gilroy">{vendor.address?.[1]?.landMark || 'N/A'}</p>
                       </div>
-                      <div>
+                      <div  className='col-span-12 md:col-span-8 w-full'>
 
 
                         <p className="text-gray-500 text-xs font-medium font-Gilroy">Google Map</p>
-                        {vendor.address && vendor.address.length > 1 && vendor.address[1].mapLink ? (
-                          isValidUrl(vendor.address[1].mapLink) ? (
-                            <a
-                              href={vendor.address[1].mapLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-sm cursor-pointer font-semibold mb-2 font-Gilroy text-blue-500 overflow-hidden text-ellipsis whitespace-nowrap underline"
-                            >
-                              {vendor.address[1].mapLink}
-                            </a>
+                        <div className="max-w-full sm:max-w-[600px] md:max-w-[600px] overflow-hidden">
+                          {vendor.address && vendor.address.length > 1 && vendor.address[1].mapLink ? (
+                            isValidUrl(vendor.address[1].mapLink) ? (
+                              <a
+                                href={vendor.address[1].mapLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm cursor-pointer font-semibold mb-2 font-Gilroy text-blue-500 underline block truncate"
+                                title={vendor.address[1].mapLink}
+                              >
+                                {vendor.address[1].mapLink}
+                              </a>
+                            ) : (
+                              <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] truncate" title={vendor.address[1].mapLink}>
+                                {vendor.address[1].mapLink}
+                              </p>
+                            )
                           ) : (
-                            <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
-                              {vendor.address[1].mapLink}
-                            </p>
-                          )
-                        ) : (
-                          <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
-                            N/A
-                          </p>
-                        )}
+                            <p className="text-sm font-semibold mb-2 mt-1 font-Gilroy text-[#222222]">N/A</p>
+                          )}
+                        </div>
 
 
 

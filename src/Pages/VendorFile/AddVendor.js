@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { VENDOR_BASIC_INFO_SAGA, VENDOR_SAGA, RESET_CODE, GET_MASTER_SAGA, RESET_VENDOR_ID, VENDOR_ADDRESS_INFO_SAGA, compareData, CREATE_VENDOR_SAGA, EDIT_VENDOR_SAGA } from "../../Utils/Constant";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import Select from "react-select";
 
 
 function BasicVendor({ vendorDetails }) {
@@ -534,10 +535,14 @@ function BasicVendor({ vendorDetails }) {
     };
 
 
+    const handleCountryChange = (selectedOption) => {
+        setCountry(selectedOption ? selectedOption.value : '');
+    };
 
-    const handleStateChange = (e) => setOfficeState(e.target.value);
+    const handleStateChange = (selectedOption) => {
+        setOfficeState(selectedOption ? selectedOption.value : '');
+    };
 
-    const handleCountryChange = (e) => setCountry(e.target.value);
 
     const handlePostalCodeChange = (e) => {
         const value = e.target.value;
@@ -609,9 +614,14 @@ function BasicVendor({ vendorDetails }) {
     };
 
 
+    const handleShippingState = (selectedOption) => {
+        setShippingState(selectedOption.value);
+    };
 
-    const handleShippingState = (e) => setShippingState(e.target.value);
-    const handleShippingCountry = (e) => setShippingCountry(e.target.value);
+    const handleShippingCountry = (selectedOption) => {
+        setShippingCountry(selectedOption.value);
+    };
+
     const handleShippingPostalCodeChange = (e) => {
         const value = e.target.value;
         if (/^\d{0,6}$/.test(value)) {
@@ -1469,11 +1479,80 @@ function BasicVendor({ vendorDetails }) {
         }
     }, [vendorDetails, businessName]);
 
+    const stateOptions = [
+        { value: '', label: 'Select State', isDisabled: true },
+        { value: 'Tamil Nadu', label: 'Tamil Nadu' },
+        { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
+        { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
+        { value: 'Assam', label: 'Assam' },
+        { value: 'Bihar', label: 'Bihar' },
+        { value: 'Chhattisgarh', label: 'Chhattisgarh' }
+    ];
 
+    const countryOptions = [
+        { value: 'India', label: 'India' },
+        { value: 'United States', label: 'United States' },
+        { value: 'Canada', label: 'Canada' },
+        { value: 'United Kingdom', label: 'United Kingdom' },
+        { value: 'Australia', label: 'Australia' }
+    ];
 
+    const customSelectStyles = {
+        control: (base) => ({
+            ...base,
+            borderColor: '#E5E7EB',
+            borderRadius: '0.6rem',
+            boxShadow: 'none',
+            cursor: 'pointer',
+            padding: '6px 1px',
+            minHeight: '46px',
+            '&:hover': {
+                borderColor: '#E5E7EB',
+            },
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isFocused ? 'blue' : 'white',
+            color: state.isFocused ? 'white' : 'black',
+            fontWeight: 500,
+            padding: '4px 10px',
+            cursor: 'pointer'
+        }),
+        menu: (base) => ({
+            ...base,
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollbarWidth: 'thin',
+            msOverflowStyle: 'auto',
+        }),
+        singleValue: (base) => ({
+            ...base,
+            color: '#64748B',
+        }),
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            color: '#94A3B8',
+            padding: '0 8px',
+        }),
+    };
 
-
-
+    const beneficiaryCurrencyOptions = [
+        { value: "USD", label: "USD" },
+        { value: "INR", label: "INR" },
+        { value: "EUR", label: "EUR" },
+        { value: "GBP", label: "GBP" },
+        { value: "JPY", label: "JPY" }
+    ];
+    const bankCountryOptions = [
+        { value: "India", label: "India" },
+        { value: "United States", label: "United States" },
+        { value: "Canada", label: "Canada" },
+        { value: "United Kingdom", label: "United Kingdom" },
+        { value: "Australia", label: "Australia" }
+    ];
 
 
 
@@ -1964,42 +2043,31 @@ function BasicVendor({ vendorDetails }) {
                                                     <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.city} </p>)}
                                         </div>
                                         <div className='mb-2 items-center'>
-
-                                            <select
-                                                id='state'
-                                                value={officeState}
-                                                onChange={handleStateChange}
-                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            >
-                                                <option value="">Select State</option>
-                                                <option value="Tamil Nadu">Tamil Nadu</option>
-                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                                <option value="Assam">Assam</option>
-                                                <option value="Bihar">Bihar</option>
-                                                <option value="Chhattisgarh">Chhattisgarh</option>
-
-                                            </select>
+                                            <Select
+                                                id="state"
+                                                value={stateOptions.find(option => option.value === officeState) || null}
+                                                onChange={(selectedOption) => handleStateChange(selectedOption)}
+                                                options={stateOptions}
+                                                placeholder="Select State"
+                                                styles={customSelectStyles}
+                                                className="placeholder-transparent font-Gilroy text-sm font-medium text-neutral-800"
+                                            />
 
                                         </div>
 
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
+                                            <Select
+                                                id="country"
+                                                value={countryOptions.find(option => option.value === country) || null}
+                                                onChange={(selectedOption) => handleCountryChange(selectedOption)}
+                                                options={countryOptions}
+                                                placeholder="Select Country"
+                                                styles={customSelectStyles}
+                                                className="placeholder-transparent font-Gilroy text-sm font-medium text-neutral-800"
+                                            />
 
-                                            <select
-                                                id='country'
-                                                value={country}
-                                                onChange={handleCountryChange}
-                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            >
-                                                <option value="">Select Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Australia">Australia</option>
 
-                                            </select>
 
                                         </div>
 
@@ -2118,7 +2186,7 @@ function BasicVendor({ vendorDetails }) {
                                                 </p>
                                             )}
                                         </div>
-                                     
+
                                         <div className='mb-2 relative items-center'>
                                             <input
                                                 id='clientId'
@@ -2142,40 +2210,33 @@ function BasicVendor({ vendorDetails }) {
                                         </div>
 
                                         <div className='mb-2 items-center'>
-                                            <select
-                                                id='shippingState'
-                                                value={shippingState}
+
+                                            <Select
+                                                id="shippingState"
+                                                value={shippingState ? { value: shippingState, label: shippingState } : null}
                                                 onChange={handleShippingState}
-                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            >
-                                                <option value="">Select State</option>
-                                                <option value="Tamil Nadu">Tamil Nadu</option>
-                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-                                                <option value="Assam">Assam</option>
-                                                <option value="Bihar">Bihar</option>
-                                                <option value="Chhattisgarh">Chhattisgarh</option>
-                                            </select>
+                                                options={stateOptions}
+                                                placeholder="Select State"
+                                                styles={customSelectStyles}
+                                                className="font-Gilroy text-sm font-medium text-neutral-800"
+                                                isSearchable={false}
+                                            />
 
                                         </div>
 
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country </label>
 
-                                            <select
-                                                id='shippingCountry'
-                                                value={shippingCountry}
+                                            <Select
+                                                id="shippingCountry"
+                                                value={shippingCountry ? { value: shippingCountry, label: shippingCountry } : null}
                                                 onChange={handleShippingCountry}
-                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            >
-                                                <option value="">Select Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Australia">Australia</option>
-
-                                            </select>
+                                                options={countryOptions}
+                                                placeholder="Select Country"
+                                                styles={customSelectStyles}
+                                                className="font-Gilroy text-sm font-medium text-neutral-800"
+                                                isSearchable={false}
+                                            />
 
                                         </div>
                                         <div className='mb-2 items-center'>
@@ -2296,7 +2357,7 @@ function BasicVendor({ vendorDetails }) {
                                                     <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryName} </p>)}
                                         </div>
 
-                                        <div className='mb-2 items-center '>
+                                        {/* <div className='mb-2 items-center '>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
 
 
@@ -2318,6 +2379,28 @@ function BasicVendor({ vendorDetails }) {
                                                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
                                                     <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryCurrency} </p>)}
 
+                                        </div> */}
+                                        <div className='mb-2 items-center'>
+                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                                Beneficiary Currency<span className='text-red-500'>*</span>
+                                            </label>
+
+                                            <Select
+                                                ref={beneficiaryCurrencyRef}
+                                                value={beneficiaryCurrency ? { value: beneficiaryCurrency, label: beneficiaryCurrency } : null}
+                                                onChange={(selectedOption) => handleBeneficiaryCurrency({ target: { value: selectedOption.value } })}
+                                                options={beneficiaryCurrencyOptions}
+                                                placeholder="Select beneficiary currency"
+                                                styles={customSelectStyles}
+                                                className="capitalize font-Gilroy font-medium text-sm text-neutral-800"
+                                                isSearchable={false}
+                                            />
+
+                                            {formErrors.beneficiaryCurrency && (
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryCurrency}
+                                                </p>
+                                            )}
                                         </div>
                                         <div className='mb-2  items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Account Number
@@ -2456,24 +2539,22 @@ function BasicVendor({ vendorDetails }) {
                                             )}
                                         </div>
 
-                                        <div className='mb-2 items-center'>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                        <div className="mb-2 items-center">
+                                            <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
                                                 Bank Country
                                             </label>
-                                            <select
-                                                id='bankCountry'
-                                                value={bankCountry}
-                                                onChange={handleBankCountryChange}
-                                                className='cursor-pointer px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            >
-                                                <option value="">Select Bank Country</option>
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Australia">Australia</option>
-
-                                            </select>
+                                            <Select
+                                                id="bankCountry"
+                                                value={bankCountryOptions.find(option => option.value === bankCountry) || null}
+                                                onChange={(selectedOption) =>
+                                                    handleBankCountryChange({ target: { value: selectedOption.value } })
+                                                }
+                                                options={bankCountryOptions}
+                                                placeholder="Select Bank Country"
+                                                styles={customSelectStyles}
+                                                className="font-Gilroy text-sm font-medium text-neutral-800"
+                                                isSearchable={false}
+                                            />
                                         </div>
 
 

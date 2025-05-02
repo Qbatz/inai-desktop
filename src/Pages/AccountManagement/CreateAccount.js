@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import { InfoCircle } from "iconsax-react";
 import { useDispatch, useSelector } from 'react-redux';
-import { CREATE_ACCOUNT_API_CALL, RESET_CODE, SIGN_UP_VERIFICATION_SAGA, STORE_VERIFY_CODE } from "../../Utils/Constant";
+import { CREATE_ACCOUNT_API_CALL, RESET_CODE, SIGN_UP_VERIFICATION_SAGA, STORE_VERIFY_CODE, REMOVE_ACCOUNT_REDUCER } from "../../Utils/Constant";
 import SignUp from './SignUp';
 
 
@@ -24,6 +24,7 @@ function CreateAccount() {
     const [loading, setLoading] = useState(false)
     const [siteKey, setSiteKey] = useState('')
     const [message, setMessage] = useState(false);
+    const [emailVerifyMessage, setEmailVerifyMessage] = useState(false)
 
     const handleEmailChange = (e) => {
         setErrorMessage('')
@@ -73,7 +74,7 @@ function CreateAccount() {
     };
 
 
-   
+
 
 
     useEffect(() => {
@@ -103,11 +104,17 @@ function CreateAccount() {
     }, [state.Common.successCode, state.Common.code]);
 
 
+
+
     useEffect(() => {
-        setErrorMessage(state?.Common?.errorMessage)
-    }, [state.Common.errorMessage])
+        if (state.Common?.isTriggerMessage === 1) {
+            setEmailVerifyMessage(true)
+        } else if (state.Common.errorMessage) {
+            setErrorMessage(state?.Common?.errorMessage)
+            setEmailVerifyMessage(false)
+        }
 
-
+    }, [state.Common?.isTriggerMessage, state.Common?.errorMessage])
 
 
     useEffect(() => {
@@ -134,9 +141,7 @@ function CreateAccount() {
     useEffect(() => {
         if (state.userInfo.isTrue) {
             setMessage(true);
-            setTimeout(() => {
-                setMessage(false);
-            }, 8000)
+
 
         }
     }, [state.userInfo.isTrue])
@@ -160,7 +165,7 @@ function CreateAccount() {
 
 
 
-                {state.Common?.isTriggerMessage === 1 && (
+                {emailVerifyMessage && (
                     <div className="p-6 text-center font-Gilroy">
                         <h2 className="text-[#0AEB7A] font-Gilroy"> 
 
@@ -290,7 +295,7 @@ function CreateAccount() {
                                     <div className="text-start mt-4">
                                         <p className="text-black font-Montserrat font-normal text-base">
                                             Already have an account?{' '}
-                                            <span onClick={() => navigate("/")} className="cursor-pointer  text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
+                                            <span onClick={() => { navigate("/"); dispatch({ type: REMOVE_ACCOUNT_REDUCER }) }} className="cursor-pointer  text-[#205DA8] font-semibold transition duration-300 font-Montserrat">
                                                 Sign In
                                             </span>
                                         </p>

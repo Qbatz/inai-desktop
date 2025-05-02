@@ -21,13 +21,20 @@ function UserName() {
     const [formError, setFormError] = useState({ email: "", captcha: "" });
     const [captchaValue, setCaptchaValue] = useState(null);
 
+    const [successMessage, setSuccessMessage] = useState(state.Common?.successMessage);
+
+
+
     useEffect(() => {
-
         setErrorMessage(state?.Common?.errorMessage)
-
-
     }, [state.Common.errorMessage])
 
+    useEffect(() => {
+        if (state.Common?.successMessage !== "") {
+            setSuccessMessage(state.Common?.successMessage)
+        }
+
+    }, [state.Common?.successMessage])
     const handleEmailChange = (e) => {
         const value = e.target.value.toLowerCase();
         setEmail(value);
@@ -153,12 +160,10 @@ function UserName() {
                         )}
 
 
-
                         {
-                            state.Common.successMessage && <div className='flex space-x-1 items-center mb-2'>
-                                 <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage} </label>
-                            </div>
+                            successMessage && <label className="block  mb-4 text-start font-Gilroy font-normal text-md text-green-600"> {successMessage} </label>
                         }
+
 
 
                         <div className='flex justify-start mb-2'>

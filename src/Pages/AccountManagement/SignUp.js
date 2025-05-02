@@ -58,6 +58,7 @@ export default function SignUp() {
 
 
   const handleMobile = (e) => {
+    setMobileError("")
     const value = e.target.value;
     if (/^\d{0,10}$/.test(value) || value === "") {
       setMobile(value);
@@ -88,6 +89,7 @@ export default function SignUp() {
   const handleSENDOTP = () => {
     if (!mobile.match(/^[0-9]{10}$/)) {
       setMobileError("Mobile number must be 10 digits")
+      return;
     }
     if (mobile) {
       dispatch({ type: OTP_SEND_SAGA, payload: { mobile: mobile , email: state?.userInfo?.emailId} })

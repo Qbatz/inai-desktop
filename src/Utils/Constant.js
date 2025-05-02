@@ -153,3 +153,10 @@ export const GET_PARTICULAR_PRODUCT_REDUCER = "Get_Particular_Product_Reducer";
 
 
 export const EDIT_PARTICULAR_PRODUCT_SAGA = "Edit_Particular_Product_Saga";
+
+
+
+
+export const REMOVE_ACCOUNT_REDUCER = "Remove_Account_Reducer";
+
+

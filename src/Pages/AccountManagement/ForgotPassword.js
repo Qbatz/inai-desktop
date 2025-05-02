@@ -203,7 +203,7 @@ function ClientIDChange() {
                             <div className="mt-6 flex flex-col items-center justify-center">
 
                                 <div
-                                    className=" font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(0.9)] sm:[transform:scaleX(1)_scaleY(1)] "
+                                    className=" font-Gilroy text-lg bg-white flex justify-center lg:[transform:scaleX(1.5)_scaleY(1.1)] sm:[transform:scaleX(1)_scaleY(1)] md:[transform:scaleX(1)_scaleY(1)] xs:[transform:scaleX(1.5)_scaleY(1.1)] "
 
                                 >
                                     {siteKey && (

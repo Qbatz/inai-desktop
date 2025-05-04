@@ -13,7 +13,7 @@ import ProductIcon from '../Asset/Icon/Product_S.svg';
 import ProductBlue from '../Asset/Icon/Product_blue.svg';
 import InvoiceIcon from '../Asset/Icon/Invoice_S.svg';
 import InvoiceBlue from '../Asset/Icon/Invoice_blue.svg';
-import Profile from "../Asset/Images/Profile_S.svg"
+import Profile from "../Asset/Icon/profile-picture.png";
 import Dot from '../Asset/Icon/Dot_s.svg'
 import Topbar from './Topbar'
 import CustomerDetails from "../Pages/CustomerComponent/CustomerDetails";
@@ -185,7 +185,7 @@ function Sidebar({ state }) {
                 </nav>
                 <div className=" mx-4   flex  space-x-3" onClick={handleUserDetails}>
 
-                    <img src={Profile} alt="Profile" className="h-10 w-10 rounded-full object-cover" />
+                    <img src={Profile} alt="Profile" className="h-11 w-11 rounded-full object-cover" />
 
 
                     <div className="hidden sm:hidden md:hidden lg:flex flex-col w-[150px] overflow-hidden">

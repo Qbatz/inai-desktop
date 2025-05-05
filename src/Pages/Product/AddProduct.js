@@ -480,7 +480,7 @@ function AddProduct() {
 
         if (skippedTooLarge.length) {
             setErrors({
-                imageErrors: `Some files couldn't be compressed: ${skippedTooLarge.join(", ")}`
+                imageErrors: `Some files couldn't  compressed: ${skippedTooLarge.join(", ")}`
             });
         }
 

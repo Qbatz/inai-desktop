@@ -1,10 +1,9 @@
-
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_CUSTOMER_SAGA, EDIT_CUSTOMER_SAGA, RESET_CODE, GET_MASTER_SAGA, GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
 import { useNavigate } from 'react-router-dom';
-import { InfoCircle, ArrowDown2 } from "iconsax-react";
+import { InfoCircle } from "iconsax-react";
 import PropTypes from 'prop-types';
 import Select from "react-select";
 
@@ -143,29 +142,21 @@ function AddCustomer({ editCustomerDetails }) {
 
 
 
-
-
-
-
     const handleInputChange = (field, value) => {
-        if (
-            (
-                field === "gstVat" ||
-                field === "pan" ||
-                field === "cin"
-            ) && /[^a-zA-Z0-9]/.test(value)
-        ) return;
+        if (field === "gstVat" || field === "pan") {
+            value = value.toUpperCase();
+            if (/[^A-Z0-9]/.test(value)) return;
+        }
+
+        if (field === "cin" && /[^a-zA-Z0-9]/.test(value)) return;
+
         if (field === "businessName" && /[^a-zA-Z0-9\s&@]/.test(value)) return;
         if (field === "designation" && /[^a-zA-Z0-9\s]/.test(value)) return;
         if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
         if (field === "gstVat" && value.length > 15) return;
 
-
-
-
         let updatedFormData = { ...formData, [field]: value };
-
 
         if (field === "gstVat" && value.length >= 12) {
             const panFromGst = value.substring(2, 12);
@@ -174,15 +165,11 @@ function AddCustomer({ editCustomerDetails }) {
 
         setFormData(updatedFormData);
 
-
         setErrors((prevErrors) => ({
             ...prevErrors,
             [field]: value.trim() ? "" : prevErrors[field],
         }));
-
-
     };
-
 
 
 
@@ -307,13 +294,8 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
 
-
-
-
-
-
     const handleNextForAddress = () => {
-        setIsChanged('')
+        setIsChanged('');
         const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
         setErrors({ ...tempErrors, contactErrors });
         if (!isValid) {
@@ -321,7 +303,6 @@ function AddCustomer({ editCustomerDetails }) {
             else if (tempErrors.contactPerson) contactPersonRef.current?.focus();
             else if (tempErrors.countryCode) countryCodeRef.current?.focus();
             else if (tempErrors.contactNumber) contactNumberRef.current?.focus();
-            else if (tempErrors.emailId) emailRef.current?.focus();
             else if (tempErrors.designation) designationRef.current?.focus();
             else if (tempErrors.gstVat) gstVatRef.current?.focus();
             else if (tempErrors.pan) panRef.current?.focus();
@@ -334,18 +315,15 @@ function AddCustomer({ editCustomerDetails }) {
                     if (cErr.surName) return contactRefs.current[i]?.surName?.current?.focus();
                     if (cErr.countryCode) return contactRefs.current[i]?.countryCode?.current?.focus();
                     if (cErr.number) return contactRefs.current[i]?.number?.current?.focus();
-                    if (cErr.email) return contactRefs.current[i]?.email?.current?.focus();
                     if (cErr.designation) return contactRefs.current[i]?.designation?.current?.focus();
                 }
             }
-
             return;
         }
         if (isValid) {
-            setValue(2)
+            setValue(2);
         }
-    }
-
+    };
 
     const handleNextForBank = () => {
         setIsChanged('')
@@ -410,14 +388,11 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
 
-
-
     const handleChange = (index, field, value) => {
-
-        if (field === "designation" && /[^a-zA-Z0-9]/.test(value)) return;
-        if (field === "name" && /[^a-zA-Z\s]/.test(value)) return;
+        if (field === "designation" && /[^a-zA-Z0-9\s]/.test(value)) return;
         if (field === "name" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "number" && !/^\d*$/.test(value)) return;
+
         setContacts((prev) => {
             const updatedContacts = [...prev];
             updatedContacts[index][field] = value;
@@ -429,11 +404,12 @@ function AddCustomer({ editCustomerDetails }) {
             if (!updatedErrors[index]) {
                 updatedErrors[index] = {};
             }
-            updatedErrors[index][field] = value?.trim() === "" ? "This field is required" : "";
+            if (field === "surName" || field === "name" || field === "countryCode" || field === "number" || field === "designation") {
+                updatedErrors[index][field] = value?.trim() === "" ? "This field is required" : "";
+            }
             return { ...prevErrors, contactErrors: updatedErrors };
         });
     };
-
     const handleOfficeChange = (field, value) => {
         if (field === "city" && /[^a-zA-Z\s]/.test(value)) return;
 
@@ -443,7 +419,7 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "address3" ||
                 field === "address4" ||
                 field === "landmark") &&
-            /[^a-zA-Z0-9\s]/.test(value)
+            /[^a-zA-Z0-9\s,./]/.test(value)
         ) return;
 
         if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
@@ -464,7 +440,7 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "address3" ||
                 field === "address4" ||
                 field === "landmark") &&
-            /[^a-zA-Z0-9\s]/.test(value)
+            /[^a-zA-Z0-9\s,./]/.test(value)
         ) return;
 
         if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
@@ -501,14 +477,6 @@ function AddCustomer({ editCustomerDetails }) {
         }
     };
 
-
-
-
-
-
-
-
-
     const handleBankingChange = (index, field, value) => {
 
 
@@ -541,14 +509,10 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
 
-
-
-
     const validateForm = (formData, contacts, natureOfBusiness) => {
         let tempErrors = {};
         let contactErrors = contacts.map(() => ({ surName: "", name: "", countryCode: "", number: "", email: "", designation: "" }));
         let isValid = true;
-
 
         if (!formData.businessName?.trim()) {
             tempErrors.businessName = "Business Name is required";
@@ -563,10 +527,8 @@ function AddCustomer({ editCustomerDetails }) {
             tempErrors.contactPerson = "Contact Person is required";
             isValid = false;
         }
-        if (!formData.emailId?.trim()) {
-            tempErrors.emailId = "Email ID is required";
-            isValid = false;
-        } else if (!/^\S+@\S+\.\S+$/.test(formData.emailId)) {
+
+        if (formData.emailId?.trim() && !/^\S+@\S+\.\S+$/.test(formData.emailId)) {
             tempErrors.emailId = "Invalid Email format";
             isValid = false;
         }
@@ -575,8 +537,6 @@ function AddCustomer({ editCustomerDetails }) {
             tempErrors.countryCode = "CountryCode is required";
             isValid = false;
         }
-
-
 
         if (!formData.contactNumber?.trim()) {
             tempErrors.contactNumber = "Contact Number is required";
@@ -615,10 +575,8 @@ function AddCustomer({ editCustomerDetails }) {
             isValid = false;
         }
 
-
         contacts.forEach((contact, index) => {
             if (contact.name?.trim()) {
-
                 if (!contact?.surName) {
                     contactErrors[index].surName = "Title is required";
                     isValid = false;
@@ -638,17 +596,10 @@ function AddCustomer({ editCustomerDetails }) {
                     contactErrors[index].number = "Contact Number must be Numbers";
                     isValid = false;
                 }
-                if (!contact.email) {
-                    contactErrors[index].email = "Contact Email is required";
-                    isValid = false;
-                } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
+                if (contact.email?.trim() && !/^\S+@\S+\.\S+$/.test(contact.email)) {
                     contactErrors[index].email = "Invalid Email format";
                     isValid = false;
                 }
-
-
-
-
                 if (!contact.designation?.trim()) {
                     contactErrors[index].designation = "Contact Designation is required";
                     isValid = false;
@@ -656,12 +607,12 @@ function AddCustomer({ editCustomerDetails }) {
             }
         });
         return { tempErrors, contactErrors, isValid };
-
     };
+
 
     const handleSaveAndExit = () => {
         const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
-        setIsChanged('')
+        setIsChanged('');
 
         setErrors({ ...tempErrors, contactErrors });
         if (!isValid) {
@@ -674,26 +625,18 @@ function AddCustomer({ editCustomerDetails }) {
             else if (tempErrors.contactPerson) contactPersonRef.current?.focus();
             else if (tempErrors.countryCode) countryCodeRef.current?.focus();
             else if (tempErrors.contactNumber) contactNumberRef.current?.focus();
-            else if (tempErrors.emailId) emailRef.current?.focus();
             else if (tempErrors.designation) designationRef.current?.focus();
-
-
-
-
             else {
                 for (let i = 0; i < contactErrors.length; i++) {
                     const cErr = contactErrors[i];
                     if (cErr.surName) return contactRefs.current[i]?.surName?.current?.focus();
                     if (cErr.countryCode) return contactRefs.current[i]?.countryCode?.current?.focus();
                     if (cErr.number) return contactRefs.current[i]?.number?.current?.focus();
-                    if (cErr.email) return contactRefs.current[i]?.email?.current?.focus();
                     if (cErr.designation) return contactRefs.current[i]?.designation?.current?.focus();
                 }
             }
-
             return;
-        }
-        else {
+        } else {
             const filteredContacts = contacts.filter(contact =>
                 contact.surName.trim() !== '' ||
                 contact.name.trim() !== '' ||
@@ -726,9 +669,7 @@ function AddCustomer({ editCustomerDetails }) {
                         designation: contact.designation
                     }))
                     : []
-
-
-            }
+            };
 
             const EditPayload = {
                 clientId: editCustomerDetails?.clientId || "",
@@ -755,26 +696,19 @@ function AddCustomer({ editCustomerDetails }) {
                         designation: contact.designation
                     }))
                     : []
-
-
-            }
-
+            };
 
             if (editCustomerDetails) {
-
                 if (!isChangedCheck()) {
-                    setIsChanged('No changes detected')
+                    setIsChanged('No changes detected');
                     return;
                 }
-                setLoading(true)
-                dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload })
-
+                setLoading(true);
+                dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload });
             } else {
-                setLoading(true)
-                dispatch({ type: ADD_CUSTOMER_SAGA, payload: AddPayload })
-
+                setLoading(true);
+                dispatch({ type: ADD_CUSTOMER_SAGA, payload: AddPayload });
             }
-
         }
     };
 
@@ -785,10 +719,7 @@ function AddCustomer({ editCustomerDetails }) {
         let addressErrors = {};
         let bankErrors = {};
         let contactErrors = {};
-        setIsChanged('')
-
-
-
+        setIsChanged('');
 
         if (!formData.businessName?.trim()) {
             tempErrors.businessName = "Business Name is required";
@@ -800,15 +731,11 @@ function AddCustomer({ editCustomerDetails }) {
             isValid = false;
         }
 
-
         if (!formData.contactPerson?.trim()) {
             tempErrors.contactPerson = "Contact Person is required";
             isValid = false;
         }
-        if (!formData.emailId?.trim()) {
-            tempErrors.emailId = "Email ID is required";
-            isValid = false;
-        } else if (!/^\S+@\S+\.\S+$/.test(formData.emailId)) {
+        if (formData.emailId?.trim() && !/^\S+@\S+\.\S+$/.test(formData.emailId)) {
             tempErrors.emailId = "Invalid Email format";
             isValid = false;
         }
@@ -836,11 +763,9 @@ function AddCustomer({ editCustomerDetails }) {
         if (!formData.pan?.trim()) tempErrors.pan = "PAN is required";
         if (!formData.legalStatus?.trim()) tempErrors.legalStatus = "Legal Status is required";
 
-
         contacts?.forEach((contact, index) => {
             let contactError = {};
             if (contact.name?.trim()) {
-
                 if (!contact?.surName) {
                     contactError.surName = "Title is required";
                     isValid = false;
@@ -850,16 +775,16 @@ function AddCustomer({ editCustomerDetails }) {
                     contactError.countryCode = "Country Code is required";
                     isValid = false;
                 }
-                if (!contact.name?.trim()) contactError.name = "Contact Name is required";
                 if (!contact.number?.trim()) {
                     contactError.number = "Contact Number is required";
+                    isValid = false;
                 } else if (contact.number.length !== 10 || !/^[0-9]*$/.test(contact.number)) {
                     contactError.number = "Contact Number must be 10 digits and contain only numbers";
+                    isValid = false;
                 }
-                if (!contact.email?.trim()) {
-                    contactError.email = "Contact Email is required";
-                } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
+                if (contact.email?.trim() && !/^\S+@\S+\.\S+$/.test(contact.email)) {
                     contactError.email = "Invalid Email format";
+                    isValid = false;
                 }
                 if (!contact.designation?.trim()) contactError.designation = "Contact Designation is required";
 
@@ -870,14 +795,12 @@ function AddCustomer({ editCustomerDetails }) {
             }
         });
 
-
         if (!officeAddress.address1?.trim()) addressErrors.address1 = "Address Line 1 is required";
         if (!officeAddress.city?.trim()) addressErrors.city = "City is required";
         if (!officeAddress.postalCode?.trim()) addressErrors.postalCode = "Postal Code is required";
         if (!shippingAddress.address1?.trim()) addressErrors.shipaddress1 = "Shipping Address Line 1 is required";
         if (!shippingAddress.city?.trim()) addressErrors.shipcity = "Shipping City is required";
         if (!shippingAddress.postalCode?.trim()) addressErrors.shippostalCode = "Shipping Postal Code is required";
-
 
         bankDetailsList.forEach((bank, index) => {
             let bankError = {};
@@ -893,16 +816,14 @@ function AddCustomer({ editCustomerDetails }) {
             if (!bank.accountNumber) bankError.accountNumber = "Account Number is required";
             if (!bank.bankName?.trim()) bankError.bankName = "Bank Name is required";
             if (!bank.ifscCode?.trim()) bankError.ifscCode = "IFSC Code is required";
-            if (!bank.bankAddress1?.trim()) bankError.bankAddress1 = "Bank Address1 is required"
+            if (!bank.bankAddress1?.trim()) bankError.bankAddress1 = "Bank Address1 is required";
             if (Object.keys(bankError).length > 0) {
                 bankErrors[index] = bankError;
                 isValid = false;
             }
-        })
+        });
 
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
-
-
 
         if (!isValid) {
             const firstErrorBank = Object.keys(bankErrors)[0];
@@ -928,18 +849,11 @@ function AddCustomer({ editCustomerDetails }) {
             return;
         }
 
-
-
-
-
         if (editCustomerDetails && !isChangedCheck()) {
-
-            setIsChanged('No changes detected')
+            setIsChanged('No changes detected');
             isValid = false;
         }
         if (isValid) {
-
-
             const filteredContacts = contacts.filter(contact =>
                 contact.surName.trim() !== '' ||
                 contact.name.trim() !== '' ||
@@ -950,7 +864,6 @@ function AddCustomer({ editCustomerDetails }) {
             );
 
             const AddPayload = {
-
                 businessName: formData.businessName,
                 title: formData.surName,
                 country_code: formData.countryCode,
@@ -1002,9 +915,6 @@ function AddCustomer({ editCustomerDetails }) {
                         addressType: 2,
                     },
                 ],
-
-
-
                 bankDetails: bankDetailsList.map(bank => ({
                     name: bank.beneficiaryName,
                     currency: bank.beneficiaryCurrency,
@@ -1021,7 +931,6 @@ function AddCustomer({ editCustomerDetails }) {
                     iban: bank.iban || "",
                     intermediary_swift_code: bank.intermediarySiftCode
                 }))
-
             };
 
             const EditPayload = {
@@ -1093,21 +1002,15 @@ function AddCustomer({ editCustomerDetails }) {
                     iban: bank.iban || "",
                     intermediary_swift_code: bank.intermediarySiftCode
                 }))
-
             };
 
             if (editCustomerDetails) {
-
-
-                dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload })
-                setLoading(true)
-
+                dispatch({ type: EDIT_CUSTOMER_SAGA, payload: EditPayload });
+                setLoading(true);
             } else {
                 dispatch({ type: ADD_CUSTOMER_SAGA, payload: AddPayload });
-                setLoading(true)
+                setLoading(true);
             }
-
-
         }
     };
 
@@ -1584,7 +1487,7 @@ function AddCustomer({ editCustomerDetails }) {
         }),
         option: (base, state) => ({
             ...base,
-            backgroundColor: state.isFocused ? 'blue' : 'white',
+            backgroundColor: state.isFocused ? '#205DA8' : 'white',
             color: state.isFocused ? 'white' : 'black',
             fontWeight: 500,
             padding: '4px 10px',
@@ -1626,13 +1529,13 @@ function AddCustomer({ editCustomerDetails }) {
     const customSelectStyles = {
         control: (base, state) => ({
             ...base,
-            height: "44px",
+            height: "50px",
             border: "1px solid #ced4da",
             padding: "0 10px",
             borderRadius: "10px",
             boxShadow: "none",
-            color:"#222222",
-            cursor:"pointer",
+            color: "#222222",
+            cursor: "pointer",
             borderColor: state.isFocused ? "#ced4da" : "#ced4da",
             "&:hover": {
                 borderColor: "#ced4da",
@@ -1650,7 +1553,7 @@ function AddCustomer({ editCustomerDetails }) {
             maxHeight: "120px",
             overflowY: "auto",
             padding: 0,
-            fontFamily:"Gilroy",
+            fontFamily: "Gilroy",
             scrollbarWidth: "thin",
 
         }),
@@ -1767,39 +1670,45 @@ function AddCustomer({ editCustomerDetails }) {
                                         )}
 
                                     </div>
+
                                     <div className='mb-2 relative w-full'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
                                             Legal Status of firm <span className='text-red-500'>*</span>
                                         </label>
-                                        <select
+                                        <Select
                                             ref={legalStatusRef}
-                                            value={formData.legalStatus}
-                                            onChange={(e) => handleInputChange('legalStatus', e.target.value)}
-                                            className="cursor-pointer appearance-none w-full px-3 py-3 border rounded-xl focus:outline-none capitalize font-Gilroy font-medium text-sm text-neutral-500 pr-10"
-                                        >
-                                            <option value="">Select Legal Status of firm</option>
-                                            <option value="PRIVATE LIMITED">PRIVATE LIMITED</option>
-                                            <option value="LLT_LOW LATENCY TRANSSPORT">LLT_LOW LATENCY TRANSSPORT</option>
-                                            <option value="PARTNERSHIP">PARTNERSHIP</option>
-                                            <option value="PROPRIETORSHIP">PROPRIETORSHIP</option>
-                                        </select>
-
-                                        <div className="pointer-events-none absolute top-[54px] right-3 transform -translate-y-1/2 flex items-center text-neutral-500">
-                                            <ArrowDown2
-                                                size="16"
-                                                color="#555555"
-                                            />
-                                        </div>
-
+                                            options={[
+                                                { value: '', label: 'Select Legal Status of firm' },
+                                                { value: 'PRIVATE LIMITED', label: 'PRIVATE LIMITED' },
+                                                { value: 'LLT_LOW LATENCY TRANSSPORT', label: 'LLT_LOW LATENCY TRANSSPORT' },
+                                                { value: 'PARTNERSHIP', label: 'PARTNERSHIP' },
+                                                { value: 'PROPRIETORSHIP', label: 'PROPRIETORSHIP' }
+                                            ]}
+                                            value={
+                                                formData.legalStatus
+                                                    ? { label: formData.legalStatus, value: formData.legalStatus }
+                                                    : { label: 'Select Legal Status of firm', value: '' }
+                                            }
+                                            onChange={(selectedOption) =>
+                                                handleInputChange('legalStatus', selectedOption.value)
+                                            }
+                                            placeholder="Select Legal Status of firm"
+                                            classNamePrefix="custom"
+                                            menuPlacement="auto"
+                                            styles={customSelectStateStyles}
+                                        />
                                         {errors.legalStatus && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                <span className="text-red-500 text-xs font-Gilroy">
                                                     {errors.legalStatus}
                                                 </span>
                                             </div>
                                         )}
                                     </div>
+
+
+
 
 
                                     <div >
@@ -1860,7 +1769,7 @@ function AddCustomer({ editCustomerDetails }) {
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
 
-                                    <div >
+                                    <div>
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>PAN  <span className='text-red-500'>*</span></label>
                                         <input
                                             readOnly
@@ -2046,7 +1955,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                     </div>
                                     <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID  <span className='text-red-500'>*</span></label>
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID </label>
                                         <input
                                             ref={emailRef}
                                             type='text'
@@ -2210,7 +2119,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                                 <div>
                                                     <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
-                                                        Email ID <span className="text-red-500">*</span>
+                                                        Email ID
                                                     </label>
                                                     <input
                                                         type="text"
@@ -2220,14 +2129,8 @@ function AddCustomer({ editCustomerDetails }) {
                                                         onChange={(e) => handleChange(index, "email", e.target.value)}
                                                         className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                                     />
-                                                    {errors.contactErrors?.[index]?.email && (
-                                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                            <InfoCircle size={16} color="#DC2626" />
-                                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].email}</p>
-                                                        </div>
-
-                                                    )}
                                                 </div>
+
 
                                                 <div>
                                                     <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
@@ -2541,7 +2444,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             value={shippingAddress.country ? { label: shippingAddress.country, value: shippingAddress.country } : null}
                                             onChange={(selectedOption) => handleOfficeChange('country', selectedOption.value)}
                                             placeholder="Select"
-                                            classNamePrefix="custom"
+                                            classNamePrefix="customs"
                                             menuPlacement="auto"
                                             styles={customSelectStyles}
                                         />
@@ -2662,6 +2565,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                 </label>
 
                                                 <Select
+                                                    classNamePrefix="custom"
                                                     ref={bankRefs.current[index]?.beneficiaryCurrency}
                                                     value={
                                                         bankDetails.beneficiaryCurrency
@@ -2827,6 +2731,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     placeholder="Select Bank Country"
                                                     styles={customSelectStateStyles}
                                                     className="capitalize font-Gilroy font-medium text-sm text-neutral-800"
+                                                    classNamePrefix="custom"
                                                 />
                                             </div>
 
@@ -2929,3 +2834,15 @@ AddCustomer.propTypes = {
     editCustomerDetails: PropTypes.object
 }
 export default AddCustomer
+
+
+
+
+
+
+
+
+
+
+
+

@@ -2167,12 +2167,12 @@ function AddCustomer({ editCustomerDetails }) {
                                     )}
                                 </div>
                             </div>
-                            <div className="flex justify-end mb-4 mt-2 gap-3">
+                            <div className="flex justify-end gap-3 h-fit items-center mt-3">
 
 
-                                <button onClick={handleSaveAndExit} className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>
+                                <button onClick={handleSaveAndExit} className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold"  >Save & Exit</button>
 
-                                <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForAddress}>Next</button>
+                                <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleNextForAddress}>Next</button>
 
                             </div>
 
@@ -2187,7 +2187,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                             <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Address Information</h2>
 
-                            <div className='max-h-[300px] overflow-y-auto  lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
+                            <div className='max-h-[320px] overflow-y-auto  lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
 
                                 <h4 className="text-base font-medium mb-4 font-Gilroy text-black">Office Address <span className='text-red-500'>*</span></h4>
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
@@ -2506,15 +2506,15 @@ function AddCustomer({ editCustomerDetails }) {
                                 </div>
 
                             </div>
-                            <div className="flex justify-end mb-4 mt-4">
+                            <div className="flex justify-end mt-3">
 
                                 <div className='gap-3 flex '>
 
                                     {
                                         editCustomerDetails &&
-                                        <button onClick={handleCustomerEditAddress} className="w-[167px] px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat mb-4 text-base font-semibold"  >Save & Exit</button>}
+                                        <button onClick={handleCustomerEditAddress} className="w-[167px] px-10 py-2 border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat  text-base font-semibold"  >Save & Exit</button>}
 
-                                    <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleNextForBank} >Next</button>
+                                    <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat  text-base font-semibold" onClick={handleNextForBank} >Next</button>
                                 </div>
                             </div>
 
@@ -2527,7 +2527,7 @@ function AddCustomer({ editCustomerDetails }) {
                     {value === 3 &&
                         <div className=''>
 
-                            <div className='max-h-[300px] overflow-y-auto  
+                            <div className='max-h-[350px] overflow-y-auto  
     lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3' >
                                 {bankDetailsList?.map((bankDetails, index) => (
                                     <div key={index} className='mb-4  rounded-lg'>
@@ -2814,9 +2814,9 @@ function AddCustomer({ editCustomerDetails }) {
                             </div>
 
 
-                            <div className="flex justify-end mt-4 mb-4">
+                            <div className="flex justify-end mt-3">
 
-                                <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat mb-4 text-base font-semibold" onClick={handleCustomerSubmit} >Submit</button>
+                                <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleCustomerSubmit} >Submit</button>
 
                             </div>
 

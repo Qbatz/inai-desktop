@@ -1605,7 +1605,7 @@ function BasicVendor({ vendorDetails }) {
                     {activeTab === 1 &&
                         <div>
                             <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Basic Information</h2>
-                            <div className="max-h-[250px] overflow-y-auto  
+                            <div className="max-h-[300px] overflow-y-auto  
                           lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
@@ -1924,7 +1924,7 @@ function BasicVendor({ vendorDetails }) {
                                     }
                                 </div>
                             </div>
-                            <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
+                            <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4 mt-2">
                                 <button
                                     type="button"
                                     className="w-[167px] px-10 font-medium font-Montserrat px-4 py-2 border border-[#205DA8] text-[#205DA8] rounded-lg shadow-md hover:bg-[#205DA8] hover:text-white transition"
@@ -1951,7 +1951,7 @@ function BasicVendor({ vendorDetails }) {
 
 
                                 <h2 className="text-xl font-semibold mb-4 font-Gilroy text-black">Address Information</h2>
-                                <div className='max-h-[250px] overflow-y-auto  
+                                <div className='max-h-[300px] overflow-y-auto  
                                                   lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3'>
                                     <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
                                         Office Address<span className='text-red-500'>*</span>
@@ -2284,7 +2284,7 @@ function BasicVendor({ vendorDetails }) {
                                     </div>
 
                                 </div>
-                                <div className="flex flex-col xs:flex-row sm:flex-row  justify-end mb-2 mt-4">
+                                <div className="flex flex-col xs:flex-row sm:flex-row  justify-end  mt-2">
 
                                     <div className="flex flex-col xs:flex-row sm:flex-row justify-end gap-2 sm:gap-4">
 
@@ -2332,7 +2332,7 @@ function BasicVendor({ vendorDetails }) {
                                     </p>
                                 )}
 
-                                <div className='max-h-[250px] overflow-y-auto  
+                                <div className='max-h-[280px] overflow-y-auto  
                           lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3'>
                                     <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-2'>
 
@@ -2357,29 +2357,7 @@ function BasicVendor({ vendorDetails }) {
                                                     <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryName} </p>)}
                                         </div>
 
-                                        {/* <div className='mb-2 items-center '>
-                                            <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Beneficiary Currency<span className='text-red-500'>*</span></label>
-
-
-                                            <select
-                                                ref={beneficiaryCurrencyRef}
-                                                value={beneficiaryCurrency}
-                                                onChange={handleBeneficiaryCurrency}
-                                                className="cursor-pointer w-full px-3 py-3 border rounded-xl focus:outline-none  capitalize font-Gilroy font-medium text-sm text-neutral-800" >
-                                                <option value="">Select beneficiary currency</option>
-                                                <option value="USD">USD</option>
-                                                <option value="INR">INR</option>
-                                                <option value="EUR">EUR</option>
-                                                <option value="GBP">GBP</option>
-                                                <option value="JPY">JPY</option>
-
-                                            </select>
-
-                                            {formErrors.beneficiaryCurrency && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryCurrency} </p>)}
-
-                                        </div> */}
+                                      
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
                                                 Beneficiary Currency<span className='text-red-500'>*</span>
@@ -2634,7 +2612,7 @@ function BasicVendor({ vendorDetails }) {
                                     </div>
 
                                 </div>
-                                <div className="flex flex-col xs:flex-row sm:flex-row justify-end items-center mt-4 gap-3 sm:gap-0">
+                                <div className="flex flex-col xs:flex-row sm:flex-row justify-end items-center mt-2 gap-3 sm:gap-0">
 
 
 

@@ -40,6 +40,7 @@ function AddProduct() {
 
 
 
+
     const [initialEditData, setInitialEditData] = useState(null);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
     const [displayItems, setDisplayItems] = useState([])
@@ -48,14 +49,13 @@ function AddProduct() {
     const [subCategoryOptions, setSubCategoryOptions] = useState()
     const [categoryOptions, setCategoryOptions] = useState();
     const [brandOptions, setBrandOptions] = useState();
-
-
+    const categoryInputRef = useRef('');
+    const subCategoryInputRef = useRef('');
+    const brandInputRef = useRef('');
 
     const [isChanged, setIsChanged] = useState('')
     const [serialNoList, setSerialNoList] = useState([]);
     const [inputText, setInputText] = useState("");
-
-
 
     const productCodeRef = useRef(null);
     const productNameRef = useRef(null);
@@ -71,25 +71,9 @@ function AddProduct() {
     const stateRef = useRef(null);
     const yearRef = useRef(null);
 
-
-
-
-
-
-
-
-
-
-
-
-
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedBrand, setSelectedBrand] = useState(null);
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-
-
-
-
 
 
     const [formData, setFormData] = useState({
@@ -139,6 +123,7 @@ function AddProduct() {
 
     const handleCreateCategory = (inputValue) => {
         clearError('category');
+
         const existingOption = categoryOptions.find(
             (option) => option.label.toLowerCase() === inputValue.toLowerCase()
         );
@@ -654,55 +639,54 @@ function AddProduct() {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.pdf,.doc,.docx,.txt,image/*';
-
-
+      
         input.onchange = async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                let compressedFile = file;
-
-                if (file.type.startsWith("image/")) {
-                    try {
-                        const options = {
-                            maxSizeMB: 1,
-                            maxWidthOrHeight: 1024,
-                            useWebWorker: true,
-                        };
-                        const compressedBlob = await imageCompression(file, options);
-                        compressedFile = new File([compressedBlob], file.name, {
-                            type: compressedBlob.type,
-                            lastModified: Date.now(),
-                        });
-                    } catch (error) {
-                        console.error(`Compression failed for ${file.name}:`, error);
-                    }
-                }
-
-                const newPreviewUrl = URL.createObjectURL(compressedFile);
-
-                setTechImages((prev) => {
-                    const updated = [...prev];
-
-
-                    if (updated[index]?.previewUrl) {
-                        URL.revokeObjectURL(updated[index].previewUrl);
-                    }
-
-                    updated[index] = {
-                        ...updated[index],
-                        url: compressedFile,
-                        previewUrl: newPreviewUrl,
-                        name: compressedFile.name,
-                    };
-
-                    return updated;
+          const file = e.target.files[0];
+          if (file) {
+            let compressedFile = file;
+      
+            if (file.type.startsWith("image/")) {
+              try {
+                const options = {
+                  maxSizeMB: 1,
+                  maxWidthOrHeight: 1024,
+                  useWebWorker: true,
+                };
+                const compressedBlob = await imageCompression(file, options);
+                compressedFile = new File([compressedBlob], file.name, {
+                  type: compressedBlob.type,
+                  lastModified: Date.now(),
                 });
+              } catch (error) {
+                console.error(`Compression failed for ${file.name}:`, error);
+              }
             }
+      
+            const newPreviewUrl = URL.createObjectURL(compressedFile);
+      
+            setTechImages((prev) => {
+              const updated = [...prev];
+      
+              if (updated[index]?.previewUrl) {
+                URL.revokeObjectURL(updated[index].previewUrl);
+              }
+      
+              updated[index] = {
+                ...updated[index],
+                file: compressedFile,
+                previewUrl: newPreviewUrl,
+                name: compressedFile.name,
+                type: compressedFile.type,
+              };
+      
+              return updated;
+            });
+          }
         };
-
+      
         input.click();
-    };
-
+      };
+      
 
 
 
@@ -1114,7 +1098,6 @@ function AddProduct() {
                 const isEqual = deepEqual(currentData, initialData);
 
 
-
                 if (isEqual) {
                     setIsChanged("No changes detected");
                     return;
@@ -1318,7 +1301,7 @@ function AddProduct() {
 
     }, [state.Common.IsVisible])
 
- 
+
 
 
 
@@ -2232,7 +2215,27 @@ function AddProduct() {
                                     className="w-full cursor-pointer"
                                     classNamePrefix="react-select"
                                     styles={selectCustomStyles}
+                                    onInputChange={(inputValue) => {
+                                        categoryInputRef.current = inputValue;
+                                    }}
+                                    onBlur={() => {
+                                        const typed = categoryInputRef.current.trim();
 
+                                        if (
+                                            typed &&
+                                            (!selectedCategory || selectedCategory.label.toLowerCase() !== typed.toLowerCase())
+                                        ) {
+                                            const existingOption = categoryOptions.find(
+                                                (option) => option.label.toLowerCase() === typed.toLowerCase()
+                                            );
+
+                                            if (existingOption) {
+                                                handleCategoryChange(existingOption);
+                                            } else {
+                                                handleCreateCategory(typed);
+                                            }
+                                        }
+                                    }}
                                 />
                             </div>
 
@@ -2261,6 +2264,27 @@ function AddProduct() {
                                 className="w-full"
                                 classNamePrefix="react-select"
                                 styles={selectCustomStyles}
+                                onInputChange={(inputValue) => {
+                                    subCategoryInputRef.current = inputValue;
+                                }}
+                                onBlur={() => {
+                                    const typed = subCategoryInputRef.current.trim();
+
+                                    if (
+                                        typed &&
+                                        (!selectedSubCategory || selectedSubCategory.label.toLowerCase() !== typed.toLowerCase())
+                                    ) {
+                                        const existingOption = subCategoryOptions.find(
+                                            (option) => option.label.toLowerCase() === typed.toLowerCase()
+                                        );
+
+                                        if (existingOption) {
+                                            handleSubCategoryChange(existingOption);
+                                        } else {
+                                            handleCreateSubCategory(typed);
+                                        }
+                                    }
+                                }}
                             />
 
                             {errors.subCategory && (
@@ -2286,6 +2310,27 @@ function AddProduct() {
                                     className="w-full"
                                     classNamePrefix="react-select"
                                     styles={selectCustomStyles}
+                                    onInputChange={(inputValue) => {
+                                        brandInputRef.current = inputValue;
+                                    }}
+                                    onBlur={() => {
+                                        const typed = brandInputRef.current.trim();
+
+                                        if (
+                                            typed &&
+                                            (!selectedBrand || selectedBrand.label.toLowerCase() !== typed.toLowerCase())
+                                        ) {
+                                            const existingOption = brandOptions.find(
+                                                (option) => option.label.toLowerCase() === typed.toLowerCase()
+                                            );
+
+                                            if (existingOption) {
+                                                handleBrandChange(existingOption);
+                                            } else {
+                                                handleCreateBrand(typed);
+                                            }
+                                        }
+                                    }}
                                 />
 
 

@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { GET_PARTICULAR_PRODUCT_SAGA, RESET_CODE, EDIT_PARTICULAR_PRODUCT_SAGA } from '../../Utils/Constant'
 import moment from "moment";
-import { Edit } from "iconsax-react";
+import { Edit, DocumentDownload } from "iconsax-react";
+import Pdf from '../../Asset/Images/pdf.png'
+import WordIcon from '../../Asset/Images/doc.png';
+
 
 function ProductDetails() {
 
@@ -35,6 +38,16 @@ function ProductDetails() {
     const editableRef = useRef(null);
 
 
+
+    const [containStates, setContainStates] = useState({});
+
+    const handleImageLoad = (e, index) => {
+        const { naturalWidth, naturalHeight } = e.target;
+        setContainStates(prev => ({
+            ...prev,
+            [index]: naturalHeight > naturalWidth
+        }));
+    };
 
 
     const handleSeeMoreProductImages = () => {
@@ -69,14 +82,31 @@ function ProductDetails() {
         return () => {
             document.removeEventListener('mousedown', handleOutsideClick);
         };
-    }, []);
+    }, [editingField, editedValue, errorMessage]);
 
     const handleOutsideClick = (e) => {
         if (editableRef.current && !editableRef.current.contains(e.target)) {
+            triggerUpdate();
             setEditingField(null);
             setErrorMessage({});
         }
     };
+
+
+    const triggerUpdate = () => {
+        if (editingField && editedValue !== "" && Object.keys(errorMessage).length === 0) {
+            dispatch({
+                type: EDIT_PARTICULAR_PRODUCT_SAGA,
+                payload: {
+                    field: editingField,
+                    value: editedValue,
+                    uniqueProductCode: productDetails.uniqueProductCode
+                }
+            });
+            setLoading(true)
+        }
+    };
+
 
     const handleEditClick = (fieldKey, currentValue) => {
         setEditingField(fieldKey);
@@ -116,6 +146,7 @@ function ProductDetails() {
                     uniqueProductCode: productDetails.uniqueProductCode
                 }
             });
+            setLoading(true)
         }
     };
 
@@ -131,6 +162,7 @@ function ProductDetails() {
                     uniqueProductCode: productDetails.uniqueProductCode
                 }
             });
+            setLoading(true)
             setEditingField(null);
         }
     };
@@ -152,7 +184,7 @@ function ProductDetails() {
                     <div className="grid grid-cols-2 gap-4 mb-3 p-2">
                         <div>
                             <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Images </p>
-                            <div className="grid grid-cols-3 flex items-center justify-center ">
+                            <div className="grid grid-cols-3 flex items-center justify-center  gap-2">
                                 {imagesToShow.length > 0 ? imagesToShow.map((img, index) => {
                                     const isLastVisible = !showAll && index === 5;
 
@@ -161,13 +193,14 @@ function ProductDetails() {
                                     return (
                                         <div
                                             key={index}
-                                            className="relative  w-[120px] h-[120px]  cursor-pointer font-Gilroy border border-gray-200 rounded-md"
+                                            className="relative   w-[120px] h-[120px] cursor-pointer font-Gilroy border border-gray-200 rounded-md"
                                             onClick={isLastVisible ? handleSeeMoreProductImages : undefined}
                                         >
                                             <img
                                                 src={img.url}
                                                 alt={`Product ${index}`}
-                                                className="w-[120px] h-[120px] object-cover rounded-md"
+                                                onLoad={(e) => handleImageLoad(e, index)}
+                                                className={`rounded-md w-full h-full ${containStates[index] ? 'object-contain' : 'object-cover'}`}
                                             />
 
 
@@ -196,18 +229,74 @@ function ProductDetails() {
                             <div className="grid grid-cols-3 flex items-center justify-center gap-4">
                                 {imagesToShowTech.length > 0 ? imagesToShowTech?.map((img, index) => {
                                     const isLastVisible = !showTechAll && index === 5;
-
+                                    const isPDF = img.url.endsWith(".pdf");
+                                    const isDoc = img.url.endsWith(".doc") || img.url.endsWith(".docx") || img.url.endsWith(".txt");
                                     return (
                                         <div
                                             key={index}
-                                            className="relative w-[120px] h-[120px]  cursor-pointer font-Gilroy border border-gray-200 rounded-md"
+                                            className="relative w-[120px] h-[120px] cursor-pointer font-Gilroy border border-gray-200 rounded-md group hover:bg-gray-800 hover:bg-opacity-30"
                                             onClick={isLastVisible ? handleSeeMoreTechImages : undefined}
                                         >
-                                            <img
-                                                src={img.url}
-                                                alt={`Product ${index}`}
-                                                className=" w-[120px] h-[120px] object-cover rounded-md"
-                                            />
+                                            {isPDF ? (
+                                                <a
+                                                    href={img.url}
+                                                    rel="noopener noreferrer"
+                                                    download
+                                                    className="w-full h-full flex flex-col items-center justify-center p-2 relative"
+                                                >
+                                                    <img
+                                                        src={Pdf}
+                                                        alt="PDF"
+                                                        className="w-[120px] h-[120px] object-cover rounded-md"
+                                                    />
+                                                    <span className="hidden group-hover:flex items-center justify-center p-2 rounded-full bg-white bg-opacity-70 absolute top-2 right-2">
+                                                        <DocumentDownload
+                                                            size="24"
+                                                            color="#205DA8"
+                                                            variant="Bold"
+                                                            className='cursor-pointer'
+                                                        />
+                                                    </span>
+                                                </a>
+                                            ) : isDoc ? (
+                                                <a
+                                                    href={img.url}
+                                                    rel="noopener noreferrer"
+                                                    download
+                                                    className="w-full h-full flex flex-col items-center justify-center p-2 relative"
+                                                >
+                                                    <img
+                                                        src={WordIcon}
+                                                        alt="DOC File"
+                                                        className="w-[120px] h-[120px] object-contain rounded-md "
+                                                    />
+                                                    <p className="absolute bottom-1 text-xs text-black text-center truncate w-[90%] bg-white bg-opacity-80 px-1 rounded">{img.name}</p>
+                                                    <span className="hidden group-hover:flex items-center justify-center p-2 rounded-full bg-white bg-opacity-70 absolute top-2 right-2">
+                                                        <DocumentDownload
+                                                            size="24"
+                                                            color="#205DA8"
+                                                            variant="Bold"
+                                                            className='cursor-pointer'
+                                                        />
+                                                    </span>
+                                                </a>
+                                            ) : (
+                                                <div className="relative w-full h-full">
+                                                    <img
+                                                        src={img.url}
+                                                        alt={`Product ${index}`}
+                                                        className="w-[120px] h-[120px] object-cover rounded-md"
+                                                    />
+                                                    <span className="hidden group-hover:flex items-center justify-center p-2 rounded-full bg-white bg-opacity-70 absolute top-2 right-2">
+                                                        <DocumentDownload
+                                                            size="24"
+                                                            color="#205DA8"
+                                                            variant="Bold"
+                                                            className='cursor-pointer'
+                                                        />
+                                                    </span>
+                                                </div>
+                                            )}
 
 
                                             {isLastVisible && hasMoreTechImages && (
@@ -216,6 +305,7 @@ function ProductDetails() {
                                                 </div>
                                             )}
                                         </div>
+
 
                                     );
                                 })
@@ -267,8 +357,8 @@ function ProductDetails() {
                         <div>
                             <div className='flex items-center space-x-3'>
                                 <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Description </p>
-                                <span className='flex mb-2 cursor-pointer'> 
-                                <Edit size="16" color="#205DA8" onClick={() => handleEditClick("description", productDetails.description)} /></span>
+                                <span className='flex mb-2 cursor-pointer'>
+                                    <Edit size="16" color="#205DA8" onClick={() => handleEditClick("description", productDetails.description)} /></span>
 
                             </div>
                             {editingField === "description" ? (
@@ -283,7 +373,7 @@ function ProductDetails() {
                                 <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222]  capitalize">
                                     {productDetails.description || "N/A"}
                                 </p>
-                            )}                        
+                            )}
                         </div>
 
                     </div>

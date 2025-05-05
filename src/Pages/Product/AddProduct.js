@@ -19,6 +19,7 @@ import imageCompression from 'browser-image-compression';
 import PdfImage from '../../Asset/Images/pdf.png';
 import Select from "react-select";
 import CreatableSelect from 'react-select/creatable';
+import WordIcon from '../../Asset/Images/doc.png';
 
 
 function AddProduct() {
@@ -37,7 +38,7 @@ function AddProduct() {
     const [techImages, setTechImages] = useState([
     ]);
 
-
+   
 
     const [initialEditData, setInitialEditData] = useState(null);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
@@ -593,7 +594,8 @@ function AddProduct() {
     const handleChangeImage = (index) => {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = 'image/*';
+        input.accept = '.pdf,.doc,.docx,.txt,image/*';
+
 
         input.onchange = async (e) => {
             const file = e.target.files[0];
@@ -653,6 +655,10 @@ function AddProduct() {
         const updatedImages = images.filter((_, i) => i !== index);
         setImages(updatedImages);
     };
+
+
+
+    
 
 
 
@@ -1812,15 +1818,22 @@ function AddProduct() {
                                                 let isPdf = false;
 
 
+                                                let isDoc = false;
                                                 if (typeof img.url === "string") {
                                                     imageSrc = img.url;
                                                     isImage = img.url.match(/\.(jpeg|jpg|png|gif)$/i);
                                                     isPdf = img.url.endsWith(".pdf");
+                                                    isDoc = img.url.match(/\.(doc|docx|txt)$/i);
                                                 } else if (img.file instanceof File) {
                                                     imageSrc = img.previewUrl;
                                                     isImage = img.type.startsWith("image/");
                                                     isPdf = img.type === "application/pdf";
+                                                    isDoc =
+                                                        img.type === "application/msword" ||
+                                                        img.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+                                                        img.type === "text/plain";
                                                 }
+                                                
 
                                                 return (
                                                     <div key={index} className="px-1">
@@ -1831,12 +1844,19 @@ function AddProduct() {
                                                                     alt={`uploaded-${index}`}
                                                                     className="w-full h-full object-cover"
                                                                 />
-                                                            ) : isPdf && (
+                                                            ) : isPdf ? (
                                                                 <div className="flex flex-col items-center justify-center text-center px-2">
                                                                     <img src={PdfImage} alt="PDF" className="w-full h-full object-cover" />
                                                                     <p className="text-xs text-zinc-700 truncate w-full">{img.name}</p>
                                                                 </div>
-                                                            )}
+                                                            )
+                                                            : isDoc ? (
+                                                                <div className="flex flex-col items-center justify-center text-center px-2 w-full h-full bg-zinc-100">
+                                                                    <img src={WordIcon} alt="DOC File" className="w-12 h-12 object-contain" />
+                                                                    <p className="text-xs text-zinc-700 truncate mt-1 w-full text-center">{img.name}</p>
+                                                                </div>
+                                                            ) : null}
+                                                            
                                                             <div className="absolute inset-0 hidden group-hover:flex items-center justify-center bg-black bg-opacity-50 transition duration-300 ">
 
                                                                 <div className="flex  items-center space-x-2">

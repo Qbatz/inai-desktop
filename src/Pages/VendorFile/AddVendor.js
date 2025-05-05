@@ -192,75 +192,71 @@ function BasicVendor({ vendorDetails }) {
     };
 
 
-
-
     const validateForm = () => {
         let errors = {};
-
-
+    
         if (!surName) errors.surName = "Title is required";
         if (!contactPerson?.trim()) errors.contactPerson = "Contact Person is required";
         if (!countryCode) errors.countryCode = "countryCode is required";
         if (!contactNumber?.trim() || !/^\d{10}$/.test(contactNumber))
             errors.contactNumber = "Enter a valid 10-digit Contact Number";
-        if (!email?.trim()) {
-            errors.email = "Email is required";
-        } else {
+    
+        if (email?.trim()) {
             const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
             if (!emailRegex.test(email)) errors.email = "Invalid Email format";
         }
+    
         if (!designation?.trim()) errors.designation = "Designation is required";
         if (!gstVat?.trim()) errors.gstVat = "GST/VAT is required";
         if (!businessName) errors.businessName = "Business Name is required";
+    
+
         additionalContacts?.forEach((contact, index) => {
-            const hasName = contact.name?.trim();
-
+            const hasName = typeof contact.name === "string" && contact.name.trim();
             if (hasName) {
-
-                if (!contact.surName) {
+                if (!String(contact.surName || "").trim()) {
                     errors[`additionalSurName${index}`] = `Title is required`;
                 }
-
-                if (!contact.contactNumber?.trim() || !/^\d{10}$/.test(contact.contactNumber)) {
+        
+                if (
+                    typeof contact.contactNumber !== "string" ||
+                    !contact.contactNumber.trim() ||
+                    !/^\d{10}$/.test(contact.contactNumber)
+                ) {
                     errors[`additionalContactNumber${index}`] = `Enter a valid 10-digit Contact Number`;
                 }
-
-
+        
                 if (!contact.countryCode) {
                     errors[`additionalCountryCode${index}`] = `Country code is required`;
                 }
-
-                if (!contact.email?.trim()) {
-                    errors[`additionalEmail${index}`] = `Email is required`;
-                } else {
+        
+                if (typeof contact.email === "string" && contact.email.trim()) {
                     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
                     if (!emailRegex.test(contact.email)) {
                         errors[`additionalEmail${index}`] = `Invalid Email format`;
                     }
                 }
-
-
-                if (!contact.designation?.trim()) {
+        
+                if (
+                    typeof contact.designation !== "string" ||
+                    !contact.designation.trim()
+                ) {
                     errors[`additionalDesignation${index}`] = `Designation is required`;
                 }
             }
         });
-
-
+        
         setFormErrors(errors);
-
+    
         if (Object.keys(errors).length > 0) {
-
             if (errors.surName) surNameRef.current?.focus();
             else if (errors.contactPerson) contactPersonRef.current?.focus();
             else if (errors.countryCode) countryCodeRef.current?.focus();
             else if (errors.contactNumber) contactNumberRef.current?.focus();
-            else if (errors.email) emailRef.current?.focus();
             else if (errors.designation) designationRef.current?.focus();
             else if (errors.gstVat) gstVatRef.current?.focus();
             else if (errors.businessName) businessNameRef.current?.focus();
             else {
-
                 for (let index = 0; index < additionalContacts.length; index++) {
                     if (errors[`additionalSurName${index}`] && additionalRefs.current[index]) {
                         additionalRefs.current[index].surNameRef?.current?.focus();
@@ -274,10 +270,7 @@ function BasicVendor({ vendorDetails }) {
                         additionalRefs.current[index].countryCodeRef?.current?.focus();
                         break;
                     }
-                    if (errors[`additionalEmail${index}`] && additionalRefs.current[index]) {
-                        additionalRefs.current[index].emailRef?.current?.focus();
-                        break;
-                    }
+                  
                     if (errors[`additionalDesignation${index}`] && additionalRefs.current[index]) {
                         additionalRefs.current[index].designationRef?.current?.focus();
                         break;
@@ -285,21 +278,10 @@ function BasicVendor({ vendorDetails }) {
                 }
             }
         }
-
-
+    
         return Object.keys(errors).length === 0;
     };
-
-
-
-
-
-
-
-
-
-
-
+ 
 
     const handleSaveClick = () => {
         const fieldsToCompare = [
@@ -342,14 +324,16 @@ function BasicVendor({ vendorDetails }) {
         }
 
         if (validateForm()) {
+         
             const filteredContacts = additionalContacts.filter(contact =>
-                contact.surName?.trim() !== '' ||
-                contact.name?.trim() !== '' ||
-                contact.countryCode?.toString().trim() !== '' ||
-                contact.contactNumber?.toString().trim() !== '' ||
-                contact.email?.trim() !== '' ||
-                contact.designation?.trim() !== ''
+                String(contact.surName || '').trim() !== '' ||
+                String(contact.name || '').trim() !== '' ||
+                String(contact.countryCode || '').trim() !== '' ||
+                String(contact.contactNumber || '').trim() !== '' ||
+                String(contact.email || '').trim() !== '' ||
+                String(contact.designation || '').trim() !== ''
             );
+            
             const formattedAdditionalContacts = filteredContacts.length > 0
                 ? filteredContacts.map(contact => ({
                     title: contact.surName,
@@ -395,9 +379,6 @@ function BasicVendor({ vendorDetails }) {
         ]);
 
     };
-
-
-
 
     const handleAdditionalContactChange = (index, field, value) => {
         const updatedContacts = [...additionalContacts];
@@ -1070,14 +1051,16 @@ function BasicVendor({ vendorDetails }) {
             }
 
 
+          
             const filteredContacts = additionalContacts.filter(contact =>
-                contact.surName?.trim() !== '' ||
-                contact.name?.trim() !== '' ||
-                contact.countryCode?.toString().trim() !== '' ||
-                contact.contactNumber?.toString().trim() !== '' ||
-                contact.email?.trim() !== '' ||
-                contact.designation?.trim() !== ''
+                String(contact.surName || '').trim() !== '' ||
+                String(contact.name || '').trim() !== '' ||
+                String(contact.countryCode || '').trim() !== '' ||
+                String(contact.contactNumber || '').trim() !== '' ||
+                String(contact.email || '').trim() !== '' ||
+                String(contact.designation || '').trim() !== ''
             );
+            
             const formattedAdditionalContacts = filteredContacts.length > 0
                 ? filteredContacts.map(contact => ({
                     title: contact.surName,
@@ -1706,7 +1689,7 @@ function BasicVendor({ vendorDetails }) {
 
                                     </div>
                                     <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID <span className='text-red-500'>*</span> </label>
+                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID </label>
                                         <input
                                             ref={emailRef}
                                             type='text'
@@ -1873,7 +1856,7 @@ function BasicVendor({ vendorDetails }) {
                                                 </div>
                                                 <div>
                                                     <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
-                                                        Email ID <span className="text-red-500">*</span>
+                                                        Email ID 
                                                     </label>
                                                     <input
                                                         type="text"

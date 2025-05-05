@@ -1318,35 +1318,7 @@ function AddProduct() {
 
     }, [state.Common.IsVisible])
 
-    // useEffect(() => {
-    //     if (errors.imageErrors) {
-    //         const timer = setTimeout(() => {
-    //             setErrors(prev => ({ ...prev, imageErrors: "" }));
-
-    //         }, 3000);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [errors.imageErrors]);
-
-
-    // useEffect(() => {
-    //     if (errors.techImagesErrorr) {
-    //         const timer = setTimeout(() => {
-    //             setErrors(prev => ({ ...prev, techImagesError: "" }));
-    //         }, 3000);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [errors.techImagesError]);
-
-
-    // useEffect(() => {
-    //     if (errors.serialNo) {
-    //         const timer = setTimeout(() => {
-    //             setErrors(prev => ({ ...prev, serialNo: "" }));
-    //         }, 3000);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [errors.serialNo]);
+ 
 
 
 

@@ -5,7 +5,7 @@ import DownArrow from '../Asset/Icon/arrow-down.svg';
 import Notification from '../Asset/Icon/notification.svg';
 import Search from '../Asset/Icon/search-normal.svg';
 import { GET_USER_INFO_SAGA } from '../Utils/Constant';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
  function Navbar({state}) {
 

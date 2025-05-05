@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect} from "react";
 import { useDispatch, connect } from 'react-redux';
-import Profile from "../Asset/Images/Profile_S.svg";
 import DownArrow from '../Asset/Icon/arrow-down.svg';
 import Notification from '../Asset/Icon/notification.svg';
 import Search from '../Asset/Icon/search-normal.svg';
 import { GET_USER_INFO_SAGA } from '../Utils/Constant';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
  function Navbar({state}) {
 
@@ -42,7 +41,7 @@ import PropTypes from 'prop-types'
 
                 
                 <div className="flex items-center space-x-2">
-                    <img src={Profile} alt="Profile" className="w-6 h-6 sm:w-8 sm:h-8" />
+                  
                     <div className="hidden sm:hidden md:hidden lg:flex flex-col">
                         <p className="text-sm font-semibold font-Gilroy">{state.firstName + state.lastName}</p>
                         <p className="text-xs text-gray-500 font-Gilroy">{state.email

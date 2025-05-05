@@ -287,15 +287,7 @@ function ProductDetails() {
                                                         alt={`Product ${index}`}
                                                         className="w-[120px] h-[120px] object-cover rounded-md"
                                                     />
-                                                    <span className="hidden group-hover:flex items-center justify-center p-2 rounded-full bg-white bg-opacity-70 absolute top-2 right-2">
-                                                        <DocumentDownload
-                                                            size="24"
-                                                            color="#205DA8"
-                                                            variant="Bold"
-                                                            className='cursor-pointer'
-                                                        />
-                                                    </span>
-                                                </div>
+                                                                                                  </div>
                                             )}
 
 

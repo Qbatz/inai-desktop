@@ -11,6 +11,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.custom__control {
+  min-height: 40px !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+.customs__control {
+  min-height: 47px !important;
+  height: auto !important;
+  padding-top: 0.375rem !important;
+  padding-bottom: 0.375rem !important;
+  font-size: 0.875rem !important;
+}
+
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

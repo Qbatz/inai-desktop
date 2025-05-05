@@ -1530,7 +1530,7 @@ function AddProduct() {
 
 
     return (
-        <div className="bg-gray-100 p-6 min-h-screen flex w-full justify-center relative">
+        <div className="bg-gray-100 p-6  flex w-full justify-center relative">
 
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
@@ -1540,7 +1540,7 @@ function AddProduct() {
 
 
 
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full h-auto">
+            <div className="bg-white p-6  rounded-2xl shadow-lg w-full h-fit">
                 <h2 className="text-xl font-semibold mb-4 font-Gilroy">{editDetails ? 'Edit Product' : 'Add Product'}</h2>
 
                 {
@@ -1551,7 +1551,7 @@ function AddProduct() {
                     state.Common?.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
                 }
 
-                <div className="flex-1 mx-auto  max-w-7xl  max-h-[450px] overflow-y-auto lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
+                <div className="flex-1 mx-auto  max-w-7xl  max-h-[440px] overflow-y-auto lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3">
 
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-2 items-start">
                         <div className="col-span-5 md:col-span-2 w-full flex flex-col h-full">

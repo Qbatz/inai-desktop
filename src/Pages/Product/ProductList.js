@@ -309,7 +309,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
             )}
 
 
-            <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative'>
+            <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative h-fit'>
 
                 <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
                     <div>
@@ -383,8 +383,8 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                 </div>
 
 
-                <div className="flex-1 flex flex-col">
-                    <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[320px] overflow-y-auto p-0 mt-4'>
+                <div className="">
+                    <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[350px] overflow-y-auto p-0 mt-4'>
                         <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                             <thead className="bg-slate-100 sticky top-0 z-10">
                                 <tr>
@@ -410,7 +410,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                                 ) : (
                                     paginatedData?.map((item, index) => (
                                         <tr key={index} className="border-0 ">
-                                            <td className="px-4 py-3 text-center text-sm font-Gilroy">{index + 1}</td>
+                                            <td className="px-4 py-2 text-center text-sm font-Gilroy">{index + 1}</td>
                                             <td  onClick={()=>handleNavigateproductDetails(item)} className=" text-[#205DA8] hover:underline hover:cursor-pointer flex items-center px-6 py-3 font-Gilroy font-semibold text-sm  cursor-pointer">
                                                     <img
                                                         src={item.images[0]?.url || Cloth}
@@ -422,23 +422,23 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                                                 {item.productName}
                                             </td>
 
-                                            <td className="py-3 pl-8 text-start text-black text-sm font-medium font-Gilroy mr-2">
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy mr-2">
                                                 {item.quantity}
                                             </td>
 
-                                            <td className="pl-6 text-start py-2 text-center text-black text-sm font-medium font-Gilroy">
+                                            <td className="px-4 py-2 text-center text-center text-black text-sm font-medium font-Gilroy">
                                                 {item.make}
                                             </td>
-                                            <td className="pl-4 text-start py-2 text-black text-sm font-medium font-Gilroy">
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">
                                                 {item.price}
                                             </td>
 
-                                            <td className="pl-7 text-start py-2 text-black text-sm font-medium font-Gilroy">
+                                            <td className="px-4 py-2 text-center  text-black text-sm font-medium font-Gilroy">
                                                 {item.currency}
                                             </td>
 
                                             <td
-                                                className={`pl-6 text-start py-2 text-sm font-semibold font-Gilroy ${item.status === "Pending"
+                                                className={`px-4 py-2 text-center  text-sm font-semibold font-Gilroy ${item.status === "Pending"
                                                     ? "text-orange-500"
                                                     : item.status === "Completed"
                                                         ? "text-green-500"

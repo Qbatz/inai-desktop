@@ -183,7 +183,8 @@ function Sidebar({ state }) {
 
 
                 </nav>
-                <div className=" mx-4   flex  space-x-3" onClick={handleUserDetails}>
+                <div className=" mx-4   flex  space-x-3" onClick={handleUserDetails}> 
+                    
 
                     <img src={Profile} alt="Profile" className="h-11 w-11 rounded-full object-cover" />
 

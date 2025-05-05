@@ -38,7 +38,7 @@ function AddProduct() {
     const [techImages, setTechImages] = useState([
     ]);
 
-   
+
 
     const [initialEditData, setInitialEditData] = useState(null);
     const [showAdditionalFields, setShowAdditionalFields] = useState(false)
@@ -65,9 +65,31 @@ function AddProduct() {
     const categoryRef = useRef(null);
     const brandRef = useRef(null);
     const serialNoRef = useRef(null);
+    const gstRef = useRef(null);
+    const subCategoryRef = useRef(null);
+    const countryRef = useRef(null);
+    const stateRef = useRef(null);
+    const yearRef = useRef(null);
+
+
+
+
+
+
+
+
+
+
+
+
+
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedBrand, setSelectedBrand] = useState(null);
     const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+
+
+
+
 
 
     const [formData, setFormData] = useState({
@@ -95,9 +117,18 @@ function AddProduct() {
     });
 
 
+    const clearError = (field) => {
+        setErrors((prevErrors) => {
+            const updatedErrors = { ...prevErrors };
+            delete updatedErrors[field];
+            return updatedErrors;
+        });
+    };
 
 
     const handleCategoryChange = (selected) => {
+        clearError('category');
+
         setSelectedCategory(selected);
         setFormData((prev) => ({
             ...prev,
@@ -107,6 +138,7 @@ function AddProduct() {
     };
 
     const handleCreateCategory = (inputValue) => {
+        clearError('category');
         const existingOption = categoryOptions.find(
             (option) => option.label.toLowerCase() === inputValue.toLowerCase()
         );
@@ -132,6 +164,7 @@ function AddProduct() {
 
 
     const handleSubCategoryChange = (selected) => {
+        clearError('subCategory');
 
         setSelectedSubCategory(selected)
 
@@ -143,6 +176,7 @@ function AddProduct() {
     };
 
     const handleCreateSubCategory = (inputValue) => {
+        clearError('subCategory');
         const existingOption = subCategoryOptions.find(
             (option) => option.label.toLowerCase() === inputValue.toLowerCase()
         );
@@ -166,6 +200,7 @@ function AddProduct() {
     };
 
     const handleBrandChange = (selected) => {
+        clearError('brand');
         setSelectedBrand(selected)
         setFormData((prev) => ({
             ...prev,
@@ -175,6 +210,8 @@ function AddProduct() {
     };
 
     const handleCreateBrand = (inputValue) => {
+        clearError('brand');
+
         const existingOption = brandOptions.find(
             (option) => option.label.toLowerCase() === inputValue.toLowerCase()
         );
@@ -198,6 +235,7 @@ function AddProduct() {
     };
 
     const handleDateChange = (date) => {
+        clearError('year');
         const formatted = moment(date).format("YYYY-MM-DD");
         setSelectedDate(formatted);
     };
@@ -236,17 +274,28 @@ function AddProduct() {
         if (!formData.description.trim()) newErrors.description = "Description is required";
         if (!formData.currency.trim()) newErrors.currency = "Currency is required";
         if (!formData.unit) newErrors.unit = "Unit is required";
+        if (!formData.gst) newErrors.gst = "GST is required";
+
+        if (!formData.country) newErrors.country = "Country is required";
+        if (!formData.stateName) newErrors.stateName = "State is required";
+        if (!selectedDate) newErrors.year = "Year is required";
 
         const isCategoryValid = (!!formData.category && !formData.categoryName) ||
             (!formData.category && !!formData.categoryName);
-
         if (!isCategoryValid) {
             newErrors.category = "Category is required";
         }
 
+
+
+
+        const isSubCategoryValid = (!!formData.subCategory && !formData.subCategoryName) ||
+            (!formData.subCategory && !!formData.subCategoryName);
+        if (!isSubCategoryValid) {
+            newErrors.subCategory = "Sub category is required";
+        }
         const isBrandValid = (!!formData.brand && !formData.brandName) ||
             (!formData.brand && !!formData.brandName);
-
         if (!isBrandValid) {
             newErrors.brand = "Brand is required";
         }
@@ -267,18 +316,25 @@ function AddProduct() {
         }
 
         setErrors(newErrors);
-        setTimeout(() => {
+
+        requestAnimationFrame(() => {
             if (newErrors.productCode) productCodeRef.current?.focus();
             else if (newErrors.productName) productNameRef.current?.focus();
             else if (newErrors.description) descriptionRef.current?.focus();
-            else if (newErrors.currency) currencyRef.current?.focus();
-            else if (newErrors.unit) unitRef.current?.focus();
-            else if (newErrors.category) categoryRef.current?.focus();
-            else if (newErrors.brand) brandRef.current?.focus();
-            else if (newErrors.serialNo) serialNoRef.current?.focus();
             else if (newErrors.images) document.getElementById("imageUploadSection")?.scrollIntoView({ behavior: "smooth" });
             else if (newErrors.techImages) document.getElementById("techImageUploadSection")?.scrollIntoView({ behavior: "smooth" });
-        }, 0);
+            else if (newErrors.unit) unitRef.current?.focus();
+            else if (newErrors.currency) currencyRef.current?.focus();
+            else if (newErrors.gst) gstRef.current?.focus();
+            else if (newErrors.serialNo) serialNoRef.current?.focus();
+            else if (newErrors.category) categoryRef.current?.focus();
+            else if (newErrors.subCategory) subCategoryRef.current?.focus();
+            else if (newErrors.brand) brandRef.current?.focus();
+            else if (newErrors.country) countryRef.current?.focus();
+            else if (newErrors.year) yearRef.current?.focus();
+            else if (newErrors.stateName) stateRef.current?.focus();
+        });
+
         return Object.keys(newErrors).length === 0;
     };
 
@@ -286,7 +342,9 @@ function AddProduct() {
 
 
 
+
     const handleSerialInputChange = (e) => {
+        clearError('serialNo');
         const input = e.target.value;
         setInputText(input);
 
@@ -322,6 +380,7 @@ function AddProduct() {
 
 
     const handleImageAdd = async (e) => {
+        clearError("images")
         const files = Array.from(e.target.files);
         let imageError = {};
 
@@ -375,7 +434,7 @@ function AddProduct() {
                 const allowedCount = 10 - prev.length;
                 return [...prev, ...imagesWithPreview.slice(0, allowedCount)];
             } else {
-                setErrors({});
+
                 return [...prev, ...imagesWithPreview];
             }
         });
@@ -451,6 +510,7 @@ function AddProduct() {
 
 
     const handleTechDocAdd = async (e) => {
+        clearError("techImages")
         const files = Array.from(e.target.files);
         let imageError = {};
 
@@ -504,7 +564,6 @@ function AddProduct() {
                 const allowedCount = 10 - prev.length;
                 return [...prev, ...uniqueWithPreview.slice(0, allowedCount)];
             } else {
-                setErrors({});
                 return [...prev, ...uniqueWithPreview];
             }
         });
@@ -658,7 +717,7 @@ function AddProduct() {
 
 
 
-    
+
 
 
 
@@ -1259,34 +1318,35 @@ function AddProduct() {
 
     }, [state.Common.IsVisible])
 
-    useEffect(() => {
-        if (errors.imageErrors) {
-            const timer = setTimeout(() => {
-                setErrors({});
-            }, 3000);
-            return () => clearTimeout(timer);
-        }
-    }, [errors.imageErrors]);
+    // useEffect(() => {
+    //     if (errors.imageErrors) {
+    //         const timer = setTimeout(() => {
+    //             setErrors(prev => ({ ...prev, imageErrors: "" }));
+
+    //         }, 3000);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [errors.imageErrors]);
 
 
-    useEffect(() => {
-        if (errors.techImagesErrorr) {
-            const timer = setTimeout(() => {
-                setErrors(prev => ({ ...prev, techImagesError: "" }));
-            }, 3000);
-            return () => clearTimeout(timer);
-        }
-    }, [errors.techImagesError]);
+    // useEffect(() => {
+    //     if (errors.techImagesErrorr) {
+    //         const timer = setTimeout(() => {
+    //             setErrors(prev => ({ ...prev, techImagesError: "" }));
+    //         }, 3000);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [errors.techImagesError]);
 
 
-    useEffect(() => {
-        if (errors.serialNo) {
-            const timer = setTimeout(() => {
-                setErrors(prev => ({ ...prev, serialNo: "" }));
-            }, 3000);
-            return () => clearTimeout(timer);
-        }
-    }, [errors.serialNo]);
+    // useEffect(() => {
+    //     if (errors.serialNo) {
+    //         const timer = setTimeout(() => {
+    //             setErrors(prev => ({ ...prev, serialNo: "" }));
+    //         }, 3000);
+    //         return () => clearTimeout(timer);
+    //     }
+    // }, [errors.serialNo]);
 
 
 
@@ -1409,7 +1469,7 @@ function AddProduct() {
         }),
         option: (provided, state) => ({
             ...provided,
-            backgroundColor: state.isFocused ? 'blue' : 'white',
+            backgroundColor: state.isFocused ? '#205DA8' : 'white',
             color: state.isFocused ? '#ffffff' : '#000000',
             padding: '2px 10px',
             cursor: 'pointer',
@@ -1485,7 +1545,7 @@ function AddProduct() {
         }),
         option: (base, state) => ({
             ...base,
-            backgroundColor: state.isFocused ? 'blue' : 'white',
+            backgroundColor: state.isFocused ? '#205DA8' : 'white',
             color: state.isFocused ? 'white' : 'black',
             fontWeight: 500,
             padding: '4px 10px',
@@ -1495,6 +1555,7 @@ function AddProduct() {
             ...base,
             maxHeight: '120px',
             overflowY: 'auto',
+
             scrollbarWidth: 'thin',
             msOverflowStyle: 'auto',
         }),
@@ -1623,13 +1684,6 @@ function AddProduct() {
                                     </div>
                                 }
 
-                                {
-                                    images.length > 3 && <div className='absolute right-[150px] top-1/2 -translate-y-1/2 z-20'>
-                                        <NextArrow />
-
-                                    </div>
-                                }
-
 
                                 <div ref={scrollRef} className="flex flex-row items-center max-w-[500px] ml-[10px] overflow-x-scroll">
                                     {images?.length > 0 && (
@@ -1729,10 +1783,15 @@ function AddProduct() {
                                             })}
                                         </div>
                                     )}
+
+
+
+
+
                                 </div>
 
 
-                                <div className="w-32 h-32 border-dashed border flex items-center justify-center rounded-md cursor-pointer bg-white">
+                                <div className="min-w-32 min-h-32 border-dashed border flex items-center justify-center rounded-md cursor-pointer bg-white">
                                     {
                                         editDetails ?
 
@@ -1750,19 +1809,30 @@ function AddProduct() {
                                                 />
                                             </label>
                                             :
-                                            <label id="imageUploadSection" className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
-                                                <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
-                                                <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">Add Image</span>
-                                                <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">Max size 10 MB</span>
-                                                <input
-                                                    type="file"
-                                                    name="image"
-                                                    accept="image/*"
-                                                    className="hidden"
-                                                    disabled={images.length > 10}
-                                                    onChange={handleImageAdd}
-                                                />
-                                            </label>
+                                            <div className='relative'>
+                                                {
+                                                    images.length > 3 && <div className='absolute left-[-40px] top-1/2 -translate-y-1/2 z-20'>
+                                                        <NextArrow />
+
+                                                    </div>
+                                                }
+                                                <label id="imageUploadSection" className="w-full h-full flex flex-col items-center justify-center cursor-pointer ">
+
+
+
+                                                    <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
+                                                    <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">Add Image</span>
+                                                    <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">Max size 10 MB</span>
+                                                    <input
+                                                        type="file"
+                                                        name="image"
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        disabled={images.length > 10}
+                                                        onChange={handleImageAdd}
+                                                    />
+                                                </label>
+                                            </div>
                                     }
 
                                 </div>
@@ -1801,12 +1871,7 @@ function AddProduct() {
                                     </div>
                                 }
 
-                                {
-                                    techImages.length > 3 && <div className='absolute right-[150px] top-1/2 -translate-y-1/2 z-20'>
-                                        <NextArrowTech />
 
-                                    </div>
-                                }
                                 <div ref={scrollTechRef} className=' flex flex-row   items-center max-w-[500px] ml-[10px] overflow-x-scroll'>
                                     {techImages?.length > 0 && (
                                         <div className="bg-white flex flex-row">
@@ -1833,7 +1898,7 @@ function AddProduct() {
                                                         img.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
                                                         img.type === "text/plain";
                                                 }
-                                                
+
 
                                                 return (
                                                     <div key={index} className="px-1">
@@ -1850,13 +1915,13 @@ function AddProduct() {
                                                                     <p className="text-xs text-zinc-700 truncate w-full">{img.name}</p>
                                                                 </div>
                                                             )
-                                                            : isDoc ? (
-                                                                <div className="flex flex-col items-center justify-center text-center px-2 w-full h-full bg-zinc-100">
-                                                                    <img src={WordIcon} alt="DOC File" className="w-12 h-12 object-contain" />
-                                                                    <p className="text-xs text-zinc-700 truncate mt-1 w-full text-center">{img.name}</p>
-                                                                </div>
-                                                            ) : null}
-                                                            
+                                                                : isDoc ? (
+                                                                    <div className="flex flex-col items-center justify-center text-center px-2 w-full h-full bg-zinc-100">
+                                                                        <img src={WordIcon} alt="DOC File" className="w-12 h-12 object-contain" />
+                                                                        <p className="text-xs text-zinc-700 truncate mt-1 w-full text-center">{img.name}</p>
+                                                                    </div>
+                                                                ) : null}
+
                                                             <div className="absolute inset-0 hidden group-hover:flex items-center justify-center bg-black bg-opacity-50 transition duration-300 ">
 
                                                                 <div className="flex  items-center space-x-2">
@@ -1966,23 +2031,33 @@ function AddProduct() {
                                         </label>
 
                                         :
-                                        <label id="techImageUploadSection" className="w-32 h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
-                                            <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
-                                            <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
-                                                Add Documents
-                                            </span>
-                                            <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">
-                                                Max size 10 MB
-                                            </span>
-                                            <input
-                                                type="file"
-                                                name="tech"
-                                                accept=".pdf,.doc,.docx,.txt,image/*"
-                                                className="hidden"
-                                                disabled={techImages.length > 10}
-                                                onChange={handleTechDocAdd}
-                                            />
-                                        </label>
+
+                                        <div className='relative'>
+                                            {
+                                                techImages.length > 3 && <div className='absolute left-[-18px] top-1/2 -translate-y-1/2 z-20'>
+                                                    <NextArrowTech />
+
+                                                </div>
+                                            }
+
+                                            <label id="techImageUploadSection" className="min-w-32 min-h-32 border-dashed border flex flex-col items-center justify-center rounded-md cursor-pointer">
+                                                <img src={addcircle} alt="addcircle" className="w-6 h-6 mb-1" />
+                                                <span className="font-Gilroy font-semibold text-xs text-blue-700 text-center font-Outfit">
+                                                    Add Documents
+                                                </span>
+                                                <span className="font-Gilroy font-medium text-xs text-[#4B4B4B] text-center">
+                                                    Max size 10 MB
+                                                </span>
+                                                <input
+                                                    type="file"
+                                                    name="tech"
+                                                    accept=".pdf,.doc,.docx,.txt,image/*"
+                                                    className="hidden"
+                                                    disabled={techImages.length > 10}
+                                                    onChange={handleTechDocAdd}
+                                                />
+                                            </label>
+                                        </div>
                                 }
                             </div>
                             {errors.techImagesError && (
@@ -2022,6 +2097,7 @@ function AddProduct() {
                             <label className="block font-normal text-md font-Outfit mb-1.5">Unit of measurement <span className="text-red-500 text-sm">*</span></label>
                             <div className="relative">
                                 <Select
+                                    ref={unitRef}
                                     value={unitOptions.find(option => option.value === formData.unit)}
                                     onChange={(selectedOption) => handleInputChange('unit', selectedOption?.value)}
                                     options={unitOptions}
@@ -2060,6 +2136,7 @@ function AddProduct() {
                             </label>
                             <div className='relative'>
                                 <Select
+                                    ref={currencyRef}
                                     value={currencyOptions.find(option => option.value === formData.currency)}
                                     onChange={(selectedOption) => handleInputChange('currency', selectedOption?.value)}
                                     options={currencyOptions}
@@ -2122,17 +2199,28 @@ function AddProduct() {
                             />
                         </div>
                         <div >
-                            <label className="block font-normal text-md font-Outfit mb-1">Gst</label>
+                            <label className="block font-normal text-md font-Outfit mb-1">Gst <span className="text-red-500 text-sm">*</span></label>
                             <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
                                 <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
                                 <input
                                     type="text"
+                                    ref={gstRef}
                                     value={formData.gst}
                                     onChange={(e) => handleInputChange('gst', e.target.value)}
                                     placeholder="Enter GST"
                                     className="w-full focus:outline-none px-3 py-3 font-medium text-sm text-slate-400 focus:outline-none font-Gilroy"
                                 />
+
+
+
+
                             </div>
+                            {errors.gst && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.gst}
+                                </p>
+                            )}
                         </div>
                         <div >
                             <label className="block font-normal text-md font-Outfit mb-1">Serial No</label>
@@ -2176,22 +2264,23 @@ function AddProduct() {
                                 />
                             </div>
 
-                                {errors.category && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
-                                        <InfoCircle size={16} color="#DC2626" />
-                                        {errors.category}
-                                    </p>
-                                )}
-                            </div>
+                            {errors.category && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.category}
+                                </p>
+                            )}
+                        </div>
 
 
 
                         <div className="">
                             <label className="block font-normal text-md font-Outfit mb-1.5">
-                                Sub Category
+                                Sub Category  <span className="text-red-500 text-sm">*</span>
                             </label>
 
                             <CreatableSelect
+                                ref={subCategoryRef}
                                 options={subCategoryOptions}
                                 value={selectedSubCategory}
                                 onChange={handleSubCategoryChange}
@@ -2202,7 +2291,12 @@ function AddProduct() {
                                 styles={selectCustomStyles}
                             />
 
-
+                            {errors.subCategory && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.subCategory}
+                                </p>
+                            )}
                         </div>
 
                         <div className="">
@@ -2223,14 +2317,14 @@ function AddProduct() {
                                 />
 
 
-                                </div>
-                                {errors.brand && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
-                                        <InfoCircle size={16} color="#DC2626" />
-                                        {errors.brand}
-                                    </p>
-                                )}
                             </div>
+                            {errors.brand && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.brand}
+                                </p>
+                            )}
+                        </div>
 
 
 
@@ -2239,10 +2333,11 @@ function AddProduct() {
 
 
                         <div>
-                            <label className="block font-normal text-md font-Outfit mb-1">Country of Origin</label>
+                            <label className="block font-normal text-md font-Outfit mb-1">Country of Origin <span className="text-red-500 text-sm">*</span></label>
                             <div className="relative">
                                 <Select
                                     options={countryOptions}
+                                    ref={countryRef}
                                     value={countryOptions.find(option => option.value === formData.country)}
                                     onChange={(selectedOption) => handleInputChange('country', selectedOption.value)}
                                     className="font-Gilroy text-sm"
@@ -2251,16 +2346,23 @@ function AddProduct() {
                                     styles={customSelectStyles}
                                 />
                             </div>
+                            {errors.country && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.country}
+                                </p>
+                            )}
                         </div>
 
                         <div >
                             <label className="block text-md font-Outfit font-medium text-[#1F2937] mb-1">
-                                Month and Year of Manufacture
+                                Month and Year of Manufacture <span className="text-red-500 text-sm">*</span>
                             </label>
                             <div className=' w-full '>
 
 
                                 <DatePicker
+                                    ref={yearRef}
                                     selected={selectedDate}
                                     onChange={handleDateChange}
                                     dateFormat="dd/MM/yyyy"
@@ -2270,13 +2372,20 @@ function AddProduct() {
                                     wrapperClassName="w-full"
                                 />
                             </div>
+                            {errors.year && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.year}
+                                </p>
+                            )}
                         </div>
 
                         <div>
-                            <label className="block font-normal text-md font-Outfit mb-1">State</label>
+                            <label className="block font-normal text-md font-Outfit mb-1">State <span className="text-red-500 text-sm">*</span></label>
                             <div className="relative">
 
                                 <Select
+                                    ref={stateRef}
                                     options={stateOptions}
                                     value={stateOptions.find(option => option.value === formData.stateName)}
                                     onChange={(selectedOption) => handleInputChange('stateName', selectedOption.value)}
@@ -2285,6 +2394,12 @@ function AddProduct() {
                                     styles={customSelectStyles}
                                 />
                             </div>
+                            {errors.stateName && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 mt-2 font-Gilroy">
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    {errors.stateName}
+                                </p>
+                            )}
                         </div>
 
 

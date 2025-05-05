@@ -183,26 +183,32 @@ function Sidebar({ state }) {
 
 
                 </nav>
-                <div className=" mx-4   flex  space-x-3" onClick={handleUserDetails}> 
-                    
+                <div className=" mx-4   flex  space-x-3" onClick={handleUserDetails}>
+
 
                     <img src={Profile} alt="Profile" className="h-11 w-11 rounded-full object-cover" />
-
 
                     <div className="hidden sm:hidden md:hidden lg:flex flex-col w-[150px] overflow-hidden">
                         <p
                             className={`text-sm font-semibold font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer ${activeItem === "" ? "text-[#205DA8]" : "text-black"} `}
-                            title={state.firstName + state.lastName}
+                            title={
+                                state.firstName || state.lastName
+                                    ? `${state.firstName || ""}${state.lastName || ""}`
+                                    : "Admin"
+                            }
                         >
-                            {state.firstName + state.lastName}
+                            {(state.firstName || state.lastName)
+                                ? `${state.firstName || ""}${state.lastName || ""}`
+                                : "Admin"}
                         </p>
                         <p
-                            className={`text-xs  font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer  ${activeItem === "" ? "text-[#205DA8]" : "text-gray-500"} `}
-                            title={state.email}
+                            className={`text-xs font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer ${activeItem === "" ? "text-[#205DA8]" : "text-gray-500"} `}
+                            title={state.email || ""}
                         >
-                            {state.email}
+                            {state.email || ""}
                         </p>
                     </div>
+
 
 
 

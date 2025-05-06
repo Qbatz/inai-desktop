@@ -637,14 +637,16 @@ function AddCustomer({ editCustomerDetails }) {
             }
             return;
         } else {
+           
             const filteredContacts = contacts.filter(contact =>
-                contact.surName.trim() !== '' ||
-                contact.name.trim() !== '' ||
-                contact.countryCode !== '' ||
-                contact.number !== '' ||
-                contact.email.trim() !== '' ||
-                contact.designation.trim() !== ''
+                (typeof contact.surName === 'string' && contact.surName.trim() !== '') ||
+                (typeof contact.name === 'string' && contact.name.trim() !== '') ||
+                (typeof contact.countryCode === 'string' && contact.countryCode !== '') ||
+                (typeof contact.number === 'string' && contact.number !== '') ||
+                (typeof contact.email === 'string' && contact.email.trim() !== '') ||
+                (typeof contact.designation === 'string' && contact.designation.trim() !== '')
             );
+            
             const AddPayload = {
                 businessName: formData.businessName,
                 title: formData.surName,
@@ -854,15 +856,16 @@ function AddCustomer({ editCustomerDetails }) {
             isValid = false;
         }
         if (isValid) {
+       
             const filteredContacts = contacts.filter(contact =>
-                contact.surName.trim() !== '' ||
-                contact.name.trim() !== '' ||
-                contact.countryCode !== '' ||
-                contact.number !== '' ||
-                contact.email.trim() !== '' ||
-                contact.designation.trim() !== ''
+                (typeof contact.surName === 'string' && contact.surName.trim() !== '') ||
+                (typeof contact.name === 'string' && contact.name.trim() !== '') ||
+                (typeof contact.countryCode === 'string' && contact.countryCode !== '') ||
+                (typeof contact.number === 'string' && contact.number !== '') ||
+                (typeof contact.email === 'string' && contact.email.trim() !== '') ||
+                (typeof contact.designation === 'string' && contact.designation.trim() !== '')
             );
-
+            
             const AddPayload = {
                 businessName: formData.businessName,
                 title: formData.surName,
@@ -2868,6 +2871,11 @@ AddCustomer.propTypes = {
     editCustomerDetails: PropTypes.object
 }
 export default AddCustomer
+
+
+
+
+
 
 
 

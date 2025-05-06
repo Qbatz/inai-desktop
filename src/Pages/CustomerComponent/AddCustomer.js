@@ -1723,7 +1723,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.gstVat && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
                                                 <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                     {errors.gstVat}
                                                 </span>
@@ -1757,7 +1757,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         </div>
                                         {errors.natureOfBusiness && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
                                                 <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.natureOfBusiness}</p>
                                             </div>
                                         )}
@@ -2094,21 +2094,21 @@ function AddCustomer({ editCustomerDetails }) {
 
                                                     {errors.contactErrors?.[index]?.countryCode && errors.contactErrors?.[index]?.number ? (
                                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                            <InfoCircle size={16} color="#DC2626" />
+                                                            <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
                                                             <p>Country code & Number is required</p>
                                                         </div>
                                                     ) : (
                                                         <>
                                                             {errors.contactErrors?.[index]?.countryCode && (
                                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                    <InfoCircle size={16} color="#DC2626" />
+                                                                    <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
                                                                     <p>{errors.contactErrors[index].countryCode}</p>
                                                                 </div>
                                                             )}
 
                                                             {errors.contactErrors?.[index]?.number && (
                                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                    <InfoCircle size={16} color="#DC2626" />
+                                                                    <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
                                                                     <p>{errors.contactErrors[index].number}</p>
                                                                 </div>
                                                             )}
@@ -2192,16 +2192,24 @@ function AddCustomer({ editCustomerDetails }) {
                                 <h4 className="text-base font-medium mb-4 font-Gilroy text-black">Office Address <span className='text-red-500'>*</span></h4>
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
+                                    <div className='mb-6 items-center'>
+                                        <div className="relative w-full">
+                                            <input
+                                                type="text"
+                                                ref={address1Ref}
+                                                placeholder="Enter Address Line 1"
+                                                value={officeAddress.address1}
+                                                onChange={(e) => handleOfficeChange('address1', e.target.value)}
+                                                className="px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent"
+                                            />
 
-                                    <div className='mb-2 items-center '>
-                                        <input
-                                            type='text'
-                                            ref={address1Ref}
-                                            placeholder='Enter Address Line 1'
-                                            value={officeAddress.address1}
-                                            onChange={(e) => handleOfficeChange('address1', e.target.value)}
-                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
+                                            {!officeAddress.address1 && (
+                                                <span className="absolute left-3 top-[13px] text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                    Enter Address Line 1<span className="text-red-500 ml-0.5">*</span>
+                                                </span>
+                                            )}
+                                        </div>
+
                                         {errors.address1 && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2209,6 +2217,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             </div>
                                         )}
                                     </div>
+
 
                                     <div className='mb-2  items-center'>
                                         <input
@@ -2240,27 +2249,33 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                     </div>
 
-                                    <div className='mb-2 relative items-center'>
-                                        <input
-                                            ref={cityRef}
-                                            type='text'
-                                            placeholder='Enter City'
-                                            value={officeAddress.city}
-                                            onChange={(e) => handleOfficeChange('city', e.target.value)}
-                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent'
-                                        />
-                                        {!officeAddress.city && (
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
-                                                Enter City<span className="text-red-500 text-lg ml-0.5">*</span>
-                                            </span>
-                                        )}
-                                        {errors.city && (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs font-Gilroy">{errors.city}</span>
-                                            </div>
-                                        )}
+                                    <div className="mb-6">
+                                        <div className='relative'>
+                                            <input
+                                                ref={cityRef}
+                                                type='text'
+                                                placeholder='Enter City'
+                                                value={officeAddress.city}
+                                                onChange={(e) => handleOfficeChange('city', e.target.value)}
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent'
+                                            />
+
+                                            {!officeAddress.city && (
+                                                <span className="absolute left-3 top-[13px] text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                    Enter City<span className="text-red-500 ml-0.5">*</span>
+                                                </span>
+                                            )}
+
+                                            {errors.city && (
+                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 absolute left-0 -bottom-5'>
+                                                    <InfoCircle size={16} color="#DC2626" />
+                                                    <span>{errors.city}</span>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
+
+
 
 
 
@@ -2354,16 +2369,24 @@ function AddCustomer({ editCustomerDetails }) {
                                     <span className='text-sm font-medium mb-4 font-Gilroy text-[#205DA8]'> Same as office Address</span></h4>
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-4'>
 
+                                    <div className='mb-6 items-center'>
+                                        <div className="relative w-full">
+                                            <input
+                                                ref={shipAddress1Ref}
+                                                type="text"
+                                                placeholder="Enter Address Line 1"
+                                                value={shippingAddress.address1}
+                                                onChange={(e) => handleShippingChange('address1', e.target.value)}
+                                                className="px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent"
+                                            />
 
-                                    <div className='mb-2 items-center '>
-                                        <input
-                                            ref={shipAddress1Ref}
-                                            type='text'
-                                            placeholder='Enter Address Line 1'
-                                            value={shippingAddress.address1}
-                                            onChange={(e) => handleShippingChange('address1', e.target.value)}
-                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
+                                            {!shippingAddress.address1 && (
+                                                <span className="absolute left-3 top-[13px] text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                    Enter Address Line 1<span className="text-red-500 ml-0.5">*</span>
+                                                </span>
+                                            )}
+                                        </div>
+
                                         {errors.shipaddress1 && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2371,6 +2394,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             </div>
                                         )}
                                     </div>
+
 
                                     <div className='mb-2  items-center'>
                                         <input
@@ -2403,16 +2427,25 @@ function AddCustomer({ editCustomerDetails }) {
                                             className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                         />
                                     </div>
-                                    <div className='mb-2 items-center'>
-                                        <input
-                                            ref={shipCityRef}
 
-                                            type='text'
-                                            placeholder='Enter City'
-                                            value={shippingAddress.city}
-                                            onChange={(e) => handleShippingChange('city', e.target.value)}
-                                            className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                        />
+                                    <div className='mb-6 items-center'>
+                                        <div className="relative w-full">
+                                            <input
+                                                ref={shipCityRef}
+                                                type='text'
+                                                placeholder='Enter City'
+                                                value={shippingAddress.city}
+                                                onChange={(e) => handleShippingChange('city', e.target.value)}
+                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent'
+                                            />
+
+                                            {!shippingAddress.city && (
+                                                <span className="absolute left-3 top-[13px] text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                    Enter City<span className="text-red-500 ml-0.5">*</span>
+                                                </span>
+                                            )}
+                                        </div>
+
                                         {errors.shipcity && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2420,6 +2453,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             </div>
                                         )}
                                     </div>
+
                                     <div className='mb-2 items-center'>
                                         <Select
                                             options={statesList}

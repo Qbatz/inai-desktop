@@ -194,22 +194,22 @@ function BasicVendor({ vendorDetails }) {
 
     const validateForm = () => {
         let errors = {};
-    
+
         if (!surName) errors.surName = "Title is required";
         if (!contactPerson?.trim()) errors.contactPerson = "Contact Person is required";
         if (!countryCode) errors.countryCode = "countryCode is required";
         if (!contactNumber?.trim() || !/^\d{10}$/.test(contactNumber))
             errors.contactNumber = "Enter a valid 10-digit Contact Number";
-    
+
         if (email?.trim()) {
             const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
             if (!emailRegex.test(email)) errors.email = "Invalid Email format";
         }
-    
+
         if (!designation?.trim()) errors.designation = "Designation is required";
         if (!gstVat?.trim()) errors.gstVat = "GST/VAT is required";
         if (!businessName) errors.businessName = "Business Name is required";
-    
+
 
         additionalContacts?.forEach((contact, index) => {
             const hasName = typeof contact.name === "string" && contact.name.trim();
@@ -217,7 +217,7 @@ function BasicVendor({ vendorDetails }) {
                 if (!String(contact.surName || "").trim()) {
                     errors[`additionalSurName${index}`] = `Title is required`;
                 }
-        
+
                 if (
                     typeof contact.contactNumber !== "string" ||
                     !contact.contactNumber.trim() ||
@@ -225,18 +225,18 @@ function BasicVendor({ vendorDetails }) {
                 ) {
                     errors[`additionalContactNumber${index}`] = `Enter a valid 10-digit Contact Number`;
                 }
-        
+
                 if (!contact.countryCode) {
                     errors[`additionalCountryCode${index}`] = `Country code is required`;
                 }
-        
+
                 if (typeof contact.email === "string" && contact.email.trim()) {
                     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.(com|org|net|in)$/;
                     if (!emailRegex.test(contact.email)) {
                         errors[`additionalEmail${index}`] = `Invalid Email format`;
                     }
                 }
-        
+
                 if (
                     typeof contact.designation !== "string" ||
                     !contact.designation.trim()
@@ -245,9 +245,9 @@ function BasicVendor({ vendorDetails }) {
                 }
             }
         });
-        
+
         setFormErrors(errors);
-    
+
         if (Object.keys(errors).length > 0) {
             if (errors.surName) surNameRef.current?.focus();
             else if (errors.contactPerson) contactPersonRef.current?.focus();
@@ -270,7 +270,7 @@ function BasicVendor({ vendorDetails }) {
                         additionalRefs.current[index].countryCodeRef?.current?.focus();
                         break;
                     }
-                  
+
                     if (errors[`additionalDesignation${index}`] && additionalRefs.current[index]) {
                         additionalRefs.current[index].designationRef?.current?.focus();
                         break;
@@ -278,10 +278,10 @@ function BasicVendor({ vendorDetails }) {
                 }
             }
         }
-    
+
         return Object.keys(errors).length === 0;
     };
- 
+
 
     const handleSaveClick = () => {
         const fieldsToCompare = [
@@ -324,7 +324,7 @@ function BasicVendor({ vendorDetails }) {
         }
 
         if (validateForm()) {
-         
+
             const filteredContacts = additionalContacts.filter(contact =>
                 String(contact.surName || '').trim() !== '' ||
                 String(contact.name || '').trim() !== '' ||
@@ -333,7 +333,7 @@ function BasicVendor({ vendorDetails }) {
                 String(contact.email || '').trim() !== '' ||
                 String(contact.designation || '').trim() !== ''
             );
-            
+
             const formattedAdditionalContacts = filteredContacts.length > 0
                 ? filteredContacts.map(contact => ({
                     title: contact.surName,
@@ -1051,7 +1051,7 @@ function BasicVendor({ vendorDetails }) {
             }
 
 
-          
+
             const filteredContacts = additionalContacts.filter(contact =>
                 String(contact.surName || '').trim() !== '' ||
                 String(contact.name || '').trim() !== '' ||
@@ -1060,7 +1060,7 @@ function BasicVendor({ vendorDetails }) {
                 String(contact.email || '').trim() !== '' ||
                 String(contact.designation || '').trim() !== ''
             );
-            
+
             const formattedAdditionalContacts = filteredContacts.length > 0
                 ? filteredContacts.map(contact => ({
                     title: contact.surName,
@@ -1856,7 +1856,7 @@ function BasicVendor({ vendorDetails }) {
                                                 </div>
                                                 <div>
                                                     <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
-                                                        Email ID 
+                                                        Email ID
                                                     </label>
                                                     <input
                                                         type="text"
@@ -1941,19 +1941,30 @@ function BasicVendor({ vendorDetails }) {
                                     </label>
                                     <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
-                                        <div className='mb-2 items-center '>
-                                            <input
-                                                type='text'
-                                                ref={officeAddress1Ref}
-                                                value={officeAddress1}
-                                                onChange={handleOfficeAddress1Change}
-                                                placeholder='Enter Address Line 1'
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
+                                        <div className='mb-6 items-center'>
+                                            <div className="relative w-full">
+                                                <input
+                                                    type='text'
+                                                    ref={officeAddress1Ref}
+                                                    value={officeAddress1}
+                                                    onChange={handleOfficeAddress1Change}
+                                                    placeholder='Enter Address Line 1'
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent'
+                                                />
+                                                {!officeAddress1 && (
+                                                    <span className="absolute left-3 top-[13px] text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                        Enter Address Line 1<span className="text-red-500 ml-0.5">*</span>
+                                                    </span>
+                                                )}
+                                            </div>
+
                                             {formErrors.officeAddress1 && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress1} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-0.5">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress1}
+                                                </p>
+                                            )}
                                         </div>
+
 
                                         <div className='mb-2 items-center'>
                                             <input
@@ -2001,9 +2012,7 @@ function BasicVendor({ vendorDetails }) {
                                         </div>
 
 
-
-                                        <div className='mb-2  items-center'>
-
+                                        <div className='mb-2 items-center'>
                                             <div className="relative w-full">
                                                 <input
                                                     id="clientId"
@@ -2016,15 +2025,18 @@ function BasicVendor({ vendorDetails }) {
                                                 />
                                                 {!city && (
                                                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
-                                                        Enter City<span className="text-red-500 text-lg ml-0.5">*</span>
+                                                        Enter City<span className="text-red-500 ml-0.5">*</span>
                                                     </span>
                                                 )}
                                             </div>
 
                                             {formErrors.city && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.city} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-0.5">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.city}
+                                                </p>
+                                            )}
                                         </div>
+
                                         <div className='mb-2 items-center'>
                                             <Select
                                                 id="state"
@@ -2106,26 +2118,37 @@ function BasicVendor({ vendorDetails }) {
                                             onChange={handleCheckboxChange}
                                             className="ml-2"
                                         /></span><span className='text-sm font-medium mb-4 font-Gilroy text-blue-800'> Same as office Address</span></h4>
+
                                     <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-4'>
 
 
-                                        <div className='mb-2 items-center '>
-                                            <input
-                                                id='clientId'
-                                                type='text'
-                                                ref={shippingAddress1Ref}
-                                                value={shippingAddress1}
-                                                onChange={handleShippingAddress1Change}
-                                                placeholder='Enter Address Line '
-                                                className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
+                                        <div className='mb-6 items-center'>
+                                            <div className="relative w-full">
+                                                <input
+                                                    id='clientId'
+                                                    type='text'
+                                                    ref={shippingAddress1Ref}
+                                                    value={shippingAddress1}
+                                                    onChange={handleShippingAddress1Change}
+                                                    placeholder='Enter Address Line'
+                                                    className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent'
+                                                />
+
+                                                {!shippingAddress1 && (
+                                                    <span className="absolute left-3 top-[13px] text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                        Enter Address Line<span className="text-red-500 ml-0.5">*</span>
+                                                    </span>
+                                                )}
+                                            </div>
 
                                             {formErrors.shippingAddress1 && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingAddress1} </p>)}
-
-
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-0.5">
+                                                    <span><InfoCircle size="14" color="#DC2626" /></span>
+                                                    {formErrors.shippingAddress1}
+                                                </p>
+                                            )}
                                         </div>
+
                                         <div className='mb-2 items-center'>
                                             <input
                                                 type='text'
@@ -2180,17 +2203,20 @@ function BasicVendor({ vendorDetails }) {
                                                 placeholder='Enter City'
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800 placeholder-transparent'
                                             />
+
                                             {!shippingCity && (
-                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
-                                                    Enter City<span className="text-red-500 text-lg ml-0.5">*</span>
+                                                <span className="absolute left-3 top-[13px] text-sm font-Gilroy font-medium text-neutral-400 pointer-events-none">
+                                                    Enter City<span className="text-red-500 ml-0.5">*</span>
                                                 </span>
                                             )}
+
                                             {formErrors.shippingCity && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-0.5">
                                                     <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingCity}
                                                 </p>
                                             )}
                                         </div>
+
 
                                         <div className='mb-2 items-center'>
 
@@ -2340,7 +2366,7 @@ function BasicVendor({ vendorDetails }) {
                                                     <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryName} </p>)}
                                         </div>
 
-                                      
+
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
                                                 Beneficiary Currency<span className='text-red-500'>*</span>

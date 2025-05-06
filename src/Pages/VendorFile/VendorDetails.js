@@ -155,12 +155,16 @@ function VendorDetails() {
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.street || 'N/A'}</p>
                       </div>
                       <div>
-                        <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Postal Code</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.postalCode || 'N/A'}</p>
+                        <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 3</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.locality || 'N/A'}</p>
                       </div>
                       <div>
-                        <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Street</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.locality || 'N/A'}</p>
+                        <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 4</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.address4 || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Postal Code</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[0]?.postalCode || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">City</p>
@@ -215,18 +219,24 @@ function VendorDetails() {
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 1</p>
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.doorNo || 'N/A'}</p>
                       </div>
+                     
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 2</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.street || 'N/A'}</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[2]?.street || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 3</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[3]?.locality  || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 4</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[4]?.address4 || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Postal Code</p>
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.postalCode || 'N/A'}</p>
                       </div>
-                      <div>
-                        <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Street</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.locality || 'N/A'}</p>
-                      </div>
+                     
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">City</p>
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.city || 'N/A'}</p>

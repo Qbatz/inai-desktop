@@ -527,7 +527,7 @@ function BasicVendor({ vendorDetails }) {
 
     const handlePostalCodeChange = (e) => {
         const value = e.target.value;
-        if (/^\d{0,10}$/.test(value)) {
+        if (/^\d{0,6}$/.test(value)) {
             setPostalCode(value);
         }
         if (formErrors.postalCode && /^\d+$/.test(value)) {

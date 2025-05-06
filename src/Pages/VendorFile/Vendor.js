@@ -196,7 +196,7 @@ function VendorList() {
   useEffect(() => {
     const delayApi = setTimeout(() => {
       const trimmedSearch = searchTerm.trim();
-         if (trimmedSearch.length >= 3) {
+         if (trimmedSearch.length >= 1) {
         setLoading(true);
         dispatch({
           type: VENDOR_SAGA,
@@ -208,7 +208,7 @@ function VendorList() {
           payload: { searchKeyword: "" },
         });
       }
-    }, 2000);
+    }, 500);
   
     return () => {
       clearTimeout(delayApi);
@@ -341,8 +341,8 @@ function VendorList() {
               </div>
 
               <div className="">
-                <div className='overflow-x-auto rounded-xl border border-slate-200  max-h-[340px] overflow-y-auto p-0 mt-4 mb-extra'>
-                  <table className="w-full  table-auto border-collapse  rounded-xl border-b-0 border-[#E1E8F0]">
+                <div className='overflow-x-auto rounded-xl border border-slate-200  max-h-[320px] overflow-y-auto p-0 mb-1 mt-4'>
+                  <table className="w-full  table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                     <thead className="bg-slate-100 sticky top-0 z-10">
                       <tr>
                         <th className="px-4 py-2 text-center text-neutral-600 text-sm font-medium font-Gilroy">S.No</th>
@@ -418,13 +418,14 @@ function VendorList() {
               </div>
 
               {vendorList.length > 10 && (
+                
                 <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center bg-white p-3 rounded-lg">
                   <div className="flex items-center gap-2">
 
                     <select
                       value={itemsPerPage}
                       onChange={handleItemsPerPageChange}
-                      className="cursor-pointer border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none"
+                      className="cursor-pointer border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-1 py-1 outline-none"
                     >
 
                       <option value={10}>10</option>

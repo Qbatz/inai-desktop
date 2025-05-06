@@ -167,7 +167,7 @@ function CustomerList() {
 
   useEffect(() => {
     const delayApi = setTimeout(() => {
-      if (searchTerm.trim().length >= 3) {
+      if (searchTerm.trim().length >= 1) {
         dispatch({
           type: GET_CUSTOMER_LIST_SAGA,
           payload: { searchKeyword: searchTerm.trim() },
@@ -340,7 +340,7 @@ function CustomerList() {
         <div
           className=""
         >
-          <div className='rounded-xl border border-slate-200 max-h-[340px] overflow-y-auto p-0 mt-4 '>
+          <div className='rounded-xl border border-slate-200 max-h-[310px] overflow-y-auto p-0 mt-4 mb-1'>
 
             <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
               <thead className="bg-slate-100 sticky top-0 z-10">

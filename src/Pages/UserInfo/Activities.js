@@ -88,7 +88,7 @@ function Activities() {
                         <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
                     </div>
                 )}
-                <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[250px] overflow-y-auto p-0 mt-4 mb-extra'>
+                <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[240px] overflow-y-auto p-0 mt-4 '>
 
                     <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                         <thead className="bg-slate-100 sticky top-0 z-10">
@@ -152,15 +152,14 @@ function Activities() {
             </div>
 
             {activitiesList.length > 10 && (
+               
                 <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
                     <div className="flex items-center gap-2">
-
                         <select
                             value={itemsPerPage}
                             onChange={handleItemsPerPageChange}
-                            className="border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none"
+                            className="border border-[#205DA8] rounded-md text-[#205DA8] font-bold px-2 py-1 outline-none cursor-pointer"
                         >
-
                             <option value={10}>10</option>
                             <option value={50}>50</option>
                             <option value={100}>100</option>
@@ -171,7 +170,8 @@ function Activities() {
                         <button
                             onClick={() => handlePageChange(currentPage - 1)}
                             disabled={currentPage === 1}
-                            className={`p-2 rounded-full ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"}`}
+                            className={`p-2 rounded-full ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"
+                                }`}
                         >
                             <ArrowLeft2 size="16" color={currentPage === 1 ? "#ccc" : "#205DA8"} />
                         </button>
@@ -181,12 +181,14 @@ function Activities() {
                         <button
                             onClick={() => handlePageChange(currentPage + 1)}
                             disabled={currentPage === totalPages}
-                            className={`p-2 rounded-full ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"}`}
+                            className={`p-2 rounded-full ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-[#205DA8] cursor-pointer"
+                                }`}
                         >
                             <ArrowRight2 size="16" color={currentPage === totalPages ? "#ccc" : "#205DA8"} />
                         </button>
                     </div>
                 </nav>
+
             )}
 
         </div>

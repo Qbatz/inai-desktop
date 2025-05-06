@@ -28,3 +28,20 @@ iframe{
     font-family: 'Gilroy' !important;
 }
 
+.react-datepicker__header {
+    background-color: #fff !important;
+    border-bottom: unset !important;
+    padding: 12px;
+    text-align: center;
+    font-family: Gilroy;
+    
+  }
+  .react-datepicker__month-container {
+    float: left;
+    font-family: 'Gilroy' !important;
+    
+}
+.react-datepicker__day--keyboard-selected, .react-datepicker__month-text--keyboard-selected, .react-datepicker__quarter-text--keyboard-selected, .react-datepicker__year-text--keyboard-selected {
+       background-color: #205DA8 !important;
+    color: white !important;
+}

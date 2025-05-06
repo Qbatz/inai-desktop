@@ -30,6 +30,9 @@ import UserDetails from "../Pages/UserInfo/UserDetails";
 import { GET_USER_INFO_SAGA } from '../Utils/Constant';
 import PropTypes from 'prop-types';
 import ProductDetails from "../Pages/Product/ProductDetails";
+import InvoiceList from "../Pages/Invoice/InvoiceList";
+import AddInvoice from "../Pages/Invoice/AddInvoice";
+
 
 
 
@@ -158,7 +161,9 @@ function Sidebar({ state }) {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "invoice" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => setActiveItem("invoice")}
+                            onClick={() => {setActiveItem("invoice")
+                                navigate('/invoice')
+                            }}
                         >
                             <img src={activeItem === "invoice" ? InvoiceBlue : InvoiceIcon} alt="InvoiceIcon" />
                             <span className="hidden lg:inline">Invoice</span>
@@ -266,6 +271,9 @@ function Sidebar({ state }) {
                         <Route path="/vendor-details/:vendorId" element={<VendorDetails />} />
                         <Route path="/user/details" element={<UserDetails />} />
                         <Route path="/product-details/:productId" element={<ProductDetails />} />
+                        <Route path="/invoice" element={<InvoiceList />} />
+                        <Route path="/add-invoice" element={<AddInvoice />} />
+                        
                     </Routes>
 
                 </div>

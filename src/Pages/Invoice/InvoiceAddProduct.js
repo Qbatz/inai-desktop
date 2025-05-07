@@ -9,75 +9,101 @@ function InvoiceAddProduct({handleClose}) {
 
 
     const options = [
-        { value: "Select Country", label: "Select Country" },
-        { value: "India", label: "India" },
-        { value: "United States", label: "United States" },
-        { value: "United Kingdom", label: "United Kingdom" },
-        { value: "Australia", label: "Australia" },
-        { value: "Canada", label: "Canada" },
-        { value: "Germany", label: "Germany" },
-        { value: "France", label: "France" },
-        { value: "Italy", label: "Italy" },
-        { value: "Singapore", label: "Singapore" },
-        { value: "Japan", label: "Japan" },
-        { value: "China", label: "China" },
+        { value: "Select Country", label: "Select Package Type" },
+        { value: "ALUMINIUM DRUM", label: "ALUMINIUM DRUM" },
+        { value: "BELT ROLL", label: "BELT ROLL" },
+        { value: "BUNDLE", label: "BUNDLE" },
+        { value: "CORRUGATED BOX", label: "CORRUGATED BOX" },
+        { value: "CORTON BOX", label: "CORTON BOX" },
+        { value: "GUNNY BAGS", label: "GUNNY BAGS" },
+        { value: "MS FRAME", label: "MS FRAME" },
+        { value: "PAPER BAG", label: "PAPER BAG" },
+        { value: "PLASTIC FILM BAG", label: "PLASTIC FILM BAG" },
+        { value: "PLASTIC PALLET", label: "PLASTIC PALLET" },
+        { value: "PLASTIC TANK", label: "PLASTIC TANK" },
+        { value: "PLASTICS DRUM", label: "PLASTICS DRUM" },
+        { value: "PLYWOOD BOX", label: "PLYWOOD BOX" },
+        { value: "STEEL DRUM", label: "STEEL DRUM" },
+        { value: "STEEL JERRICANS", label: "STEEL JERRICANS" },
+        { value: "TEXTILE BAG", label: "TEXTILE BAG" },
+        { value: "WOODEN BOX", label: "WOODEN BOX" },
+        { value: "WOODEN CRATE", label: "WOODEN CRATE" },
+        { value: "WOODEN DRUM", label: "WOODEN DRUM" },
+        { value: "WOODEN PALLETS", label: "WOODEN PALLETS" },
+        { value: "WOVEN PLASTIC BAG", label: "WOVEN PLASTIC BAG" }
     ];
 
 
     const customSelectStateStyles = {
         control: (base) => ({
-            ...base,
+          ...base,
+          borderColor: '#E5E7EB',
+          borderRadius: '0.6rem',
+          boxShadow: 'none',
+          cursor: 'pointer',
+          padding: '4px 1px',
+          minHeight: '40px',
+          '&:hover': {
             borderColor: '#E5E7EB',
-            borderRadius: '0.6rem',
-            boxShadow: 'none',
-            cursor: 'pointer',
-            padding: '4px 1px',
-            minHeight: '40px',
-            '&:hover': {
-                borderColor: '#E5E7EB',
-            },
+          },
         }),
         option: (base, state) => ({
-            ...base,
-            backgroundColor: state.isFocused ? '#205DA8' : 'white',
-            color: state.isFocused ? 'white' : 'black',
-            fontWeight: 500,
-            padding: '4px 10px',
-            cursor: 'pointer',
-            fontSize: "14px",
-            fontFamily: 'Gilroy'
+          ...base,
+          backgroundColor: state.isFocused ? '#205DA8' : 'white',
+          color: state.isFocused ? 'white' : 'black',
+          fontWeight: 500,
+          padding: '4px 10px',
+          cursor: 'pointer',
+          fontSize: "14px",
+          fontFamily: 'Gilroy',
         }),
         menu: (base) => ({
-            ...base,
-            maxHeight: '120px',
-            overflowY: 'auto',
-            scrollbarWidth: 'thin',
-            msOverflowStyle: 'auto',
+          ...base,
+          maxHeight: '120px',
+          overflowY: 'auto',
+          scrollBehavior: 'smooth',
+          transition: 'all 0.3s ease-in-out',
+          transformOrigin: 'top',
+          overscrollBehaviorY: 'contain',
+        }),
+        menuList: (base) => ({
+          ...base,
+          maxHeight: '120px',
+          overflowY: 'auto',
+          scrollBehavior: 'smooth',
+          scrollbarWidth: 'thin',
+          paddingRight: '4px',
+          '&::-webkit-scrollbar': {
+            width: '4px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#cbd5e1',
+            borderRadius: '6px',
+          },
         }),
         singleValue: (base) => ({
-            ...base,
-            color: '#64748B',
-            fontSize: '14px',
-            fontFamily: 'Gilroy'
+          ...base,
+          color: '#64748B',
+          fontSize: '14px',
+          fontFamily: 'Gilroy',
         }),
         indicatorSeparator: () => ({
-            display: 'none',
+          display: 'none',
         }),
         dropdownIndicator: (base) => ({
-            ...base,
-            color: '#94A3B8',
-            padding: '0 8px',
+          ...base,
+          color: '#94A3B8',
+          padding: '0 8px',
         }),
         placeholder: (base) => ({
-            ...base,
-            color: '#262626',
-            fontSize: "14px",
-            fontWeight: 500,
-            fontFamily: "Gilroy, sans-serif"
+          ...base,
+          color: '#262626',
+          fontSize: "14px",
+          fontWeight: 500,
+          fontFamily: "Gilroy, sans-serif",
         }),
-
-
-    };
+      };
+      
 
 
 

@@ -86,9 +86,9 @@ function AddInvoice() {
     }
 
 
-    const handleNextPackageDetail = () =>{
+    const handleNextPackageDetail = () => {
         setValue(4)
-}
+    }
 
 
 
@@ -121,7 +121,11 @@ function AddInvoice() {
             overflowY: 'auto',
             scrollbarWidth: 'thin',
             msOverflowStyle: 'auto',
+            scrollBehavior: 'smooth',
+            transition: 'all 0.3s ease-in-out',
+            transformOrigin: 'top',
         }),
+        
         singleValue: (base) => ({
             ...base,
             color: '#64748B',
@@ -143,6 +147,7 @@ function AddInvoice() {
             fontWeight: 500,
             fontFamily: "Gilroy, sans-serif"
         }),
+
 
 
     };
@@ -224,8 +229,8 @@ function AddInvoice() {
                 </div>
 
 
-                
-                
+
+
 
 
                 {
@@ -238,7 +243,7 @@ function AddInvoice() {
                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Customer</label>
                             <Select
                                 options={options}
-                                                                placeholder="Enter Select"
+                                placeholder="Enter Select"
                                 classNamePrefix="custom"
                                 menuPlacement="auto"
                                 styles={customSelectStateStyles}
@@ -318,6 +323,7 @@ function AddInvoice() {
                                         classNamePrefix="custom"
                                         menuPlacement="auto"
                                         styles={customSelectStateStyles}
+
                                     />
 
                                 </div>
@@ -705,7 +711,7 @@ function AddInvoice() {
 
                             <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold"  >Save & Exit</button>
 
-                            <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold"  onClick={handleNextPackageDetail}>Next</button>
+                            <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleNextPackageDetail}>Next</button>
 
                         </div>
                     </>}

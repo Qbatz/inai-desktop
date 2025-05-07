@@ -76,6 +76,10 @@ function VendorDetails() {
                         <p className="font-semibold font-Gilroy text-sm pt-2">+{vendor.country_code}{vendor.contactNumber || 'N/A'}</p>
                       </div>
                       <div>
+                          <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Designation</p>
+                          <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{vendor.designation}</p>
+                        </div>
+                      <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">GST/VAT</p>
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.gstvat || 'N/A'}</p>
                       </div>

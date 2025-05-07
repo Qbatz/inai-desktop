@@ -1462,24 +1462,6 @@ function BasicVendor({ vendorDetails }) {
         }
     }, [vendorDetails, businessName]);
 
-    const stateOptions = [
-        { value: '', label: 'Select State', isDisabled: true },
-        { value: 'Tamil Nadu', label: 'Tamil Nadu' },
-        { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
-        { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
-        { value: 'Assam', label: 'Assam' },
-        { value: 'Bihar', label: 'Bihar' },
-        { value: 'Chhattisgarh', label: 'Chhattisgarh' }
-    ];
-
-    const countryOptions = [
-        { value: 'India', label: 'India' },
-        { value: 'United States', label: 'United States' },
-        { value: 'Canada', label: 'Canada' },
-        { value: 'United Kingdom', label: 'United Kingdom' },
-        { value: 'Australia', label: 'Australia' }
-    ];
-
     const customSelectStyles = {
         control: (base) => ({
             ...base,
@@ -1487,30 +1469,62 @@ function BasicVendor({ vendorDetails }) {
             borderRadius: '0.6rem',
             boxShadow: 'none',
             cursor: 'pointer',
-            padding: '6px 1px',
-            minHeight: '46px',
+            padding: '4px 1px',
+            minHeight: '40px',
             '&:hover': {
                 borderColor: '#E5E7EB',
             },
         }),
         option: (base, state) => ({
             ...base,
-            backgroundColor: state.isFocused ? 'blue' : 'white',
+            backgroundColor: state.isFocused ? '#205DA8' : 'white',
             color: state.isFocused ? 'white' : 'black',
             fontWeight: 500,
             padding: '4px 10px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            fontSize: "14px",
+            fontFamily: 'Gilroy',
         }),
         menu: (base) => ({
             ...base,
             maxHeight: '120px',
             overflowY: 'auto',
-            scrollbarWidth: 'thin',
-            msOverflowStyle: 'auto',
+            scrollBehavior: 'smooth',
+            transition: 'all 0.3s ease-in-out',
+            transformOrigin: 'top',
+            overscrollBehaviorY: 'contain',
         }),
-        singleValue: (base) => ({
+        menuList: (base) => ({
             ...base,
-            color: '#64748B',
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollBehavior: 'smooth',
+            scrollbarWidth: 'thin',
+            paddingRight: '4px',
+            '&::-webkit-scrollbar': {
+                width: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#cbd5e1',
+                borderRadius: '6px',
+            },
+        }),
+        singleValue: (base, state) => {
+            const isPlaceholderSelected = state.data?.isPlaceholder;
+            return {
+                ...base,
+                fontFamily: "Gilroy",
+                fontWeight: 500,
+                fontSize: "14px",
+                textTransform: "capitalize",
+                color: isPlaceholderSelected ? "oklch(70.8% 0 0)" : "black",
+            };
+        },
+        placeholder: (base) => ({
+            ...base,
+            fontSize: "14px",
+            fontWeight: 500,
+            fontFamily: "Gilroy, sans-serif",
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -1521,24 +1535,7 @@ function BasicVendor({ vendorDetails }) {
             padding: '0 8px',
         }),
     };
-
-    const beneficiaryCurrencyOptions = [
-        { value: "USD", label: "USD" },
-        { value: "INR", label: "INR" },
-        { value: "EUR", label: "EUR" },
-        { value: "GBP", label: "GBP" },
-        { value: "JPY", label: "JPY" }
-    ];
-    const bankCountryOptions = [
-        { value: "India", label: "India" },
-        { value: "United States", label: "United States" },
-        { value: "Canada", label: "Canada" },
-        { value: "United Kingdom", label: "United Kingdom" },
-        { value: "Australia", label: "Australia" }
-    ];
-
-
-
+ 
     return (
         <div className="bg-slate-100  w-full rounded-t-2xl ">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4 relative">
@@ -2038,29 +2035,81 @@ function BasicVendor({ vendorDetails }) {
                                         </div>
 
                                         <div className='mb-2 items-center'>
+
                                             <Select
                                                 id="state"
-                                                value={stateOptions.find(option => option.value === officeState) || null}
+                                                value={officeState ? { value: officeState, label: officeState } : null}
                                                 onChange={(selectedOption) => handleStateChange(selectedOption)}
-                                                options={stateOptions}
+                                                options={[
+                                                    { value: '', label: 'Select State', isPlaceholder: true },
+                                                    { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
+                                                    { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
+                                                    { value: 'Assam', label: 'Assam' },
+                                                    { value: 'Bihar', label: 'Bihar' },
+                                                    { value: 'Chhattisgarh', label: 'Chhattisgarh' },
+                                                    { value: 'Goa', label: 'Goa' },
+                                                    { value: 'Gujarat', label: 'Gujarat' },
+                                                    { value: 'Haryana', label: 'Haryana' },
+                                                    { value: 'Himachal Pradesh', label: 'Himachal Pradesh' },
+                                                    { value: 'Jharkhand', label: 'Jharkhand' },
+                                                    { value: 'Karnataka', label: 'Karnataka' },
+                                                    { value: 'Kerala', label: 'Kerala' },
+                                                    { value: 'Madhya Pradesh', label: 'Madhya Pradesh' },
+                                                    { value: 'Maharashtra', label: 'Maharashtra' },
+                                                    { value: 'Manipur', label: 'Manipur' },
+                                                    { value: 'Meghalaya', label: 'Meghalaya' },
+                                                    { value: 'Mizoram', label: 'Mizoram' },
+                                                    { value: 'Nagaland', label: 'Nagaland' },
+                                                    { value: 'Odisha', label: 'Odisha' },
+                                                    { value: 'Punjab', label: 'Punjab' },
+                                                    { value: 'Rajasthan', label: 'Rajasthan' },
+                                                    { value: 'Sikkim', label: 'Sikkim' },
+                                                    { value: 'Tamil Nadu', label: 'Tamil Nadu' },
+                                                    { value: 'Telangana', label: 'Telangana' },
+                                                    { value: 'Tripura', label: 'Tripura' },
+                                                    { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
+                                                    { value: 'Uttarakhand', label: 'Uttarakhand' },
+                                                    { value: 'West Bengal', label: 'West Bengal' },
+                                                    { value: 'Delhi', label: 'Delhi' },
+                                                    { value: 'Jammu and Kashmir', label: 'Jammu and Kashmir' },
+                                                    { value: 'Ladakh', label: 'Ladakh' },
+                                                    { value: 'Puducherry', label: 'Puducherry' },
+                                                ]}
                                                 placeholder="Select State"
                                                 styles={customSelectStyles}
-                                                className="placeholder-transparent font-Gilroy text-sm font-medium text-neutral-800"
+                                                className="placeholder-transparent font-Gilroy text-sm font-medium text-neutral-800 customState__control"
+                                                classNamePrefix="custom"
                                             />
+
 
                                         </div>
 
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
+
                                             <Select
-                                                id="country"
-                                                value={countryOptions.find(option => option.value === country) || null}
+                                                options={[
+                                                    { value: '', label: 'Select Country', isPlaceholder: true },
+                                                    { value: 'India', label: 'India' },
+                                                    { value: 'United States', label: 'United States' },
+                                                    { value: 'United Kingdom', label: 'United Kingdom' },
+                                                    { value: 'Australia', label: 'Australia' },
+                                                    { value: 'Canada', label: 'Canada' },
+                                                    { value: 'Germany', label: 'Germany' },
+                                                    { value: 'France', label: 'France' },
+                                                    { value: 'Italy', label: 'Italy' },
+                                                    { value: 'Singapore', label: 'Singapore' },
+                                                    { value: 'Japan', label: 'Japan' },
+                                                    { value: 'China', label: 'China' }
+                                                ]}
+                                                value={country ? { value: country, label: country } : null}
                                                 onChange={(selectedOption) => handleCountryChange(selectedOption)}
-                                                options={countryOptions}
                                                 placeholder="Select Country"
+                                                classNamePrefix="custom"
                                                 styles={customSelectStyles}
                                                 className="placeholder-transparent font-Gilroy text-sm font-medium text-neutral-800"
                                             />
+
 
 
 
@@ -2224,12 +2273,49 @@ function BasicVendor({ vendorDetails }) {
                                                 id="shippingState"
                                                 value={shippingState ? { value: shippingState, label: shippingState } : null}
                                                 onChange={handleShippingState}
-                                                options={stateOptions}
+                                                options={[
+                                                    { value: '', label: 'Select State', isPlaceholder: true },
+                                                    { value: 'Andhra Pradesh', label: 'Andhra Pradesh' },
+                                                    { value: 'Arunachal Pradesh', label: 'Arunachal Pradesh' },
+                                                    { value: 'Assam', label: 'Assam' },
+                                                    { value: 'Bihar', label: 'Bihar' },
+                                                    { value: 'Chhattisgarh', label: 'Chhattisgarh' },
+                                                    { value: 'Goa', label: 'Goa' },
+                                                    { value: 'Gujarat', label: 'Gujarat' },
+                                                    { value: 'Haryana', label: 'Haryana' },
+                                                    { value: 'Himachal Pradesh', label: 'Himachal Pradesh' },
+                                                    { value: 'Jharkhand', label: 'Jharkhand' },
+                                                    { value: 'Karnataka', label: 'Karnataka' },
+                                                    { value: 'Kerala', label: 'Kerala' },
+                                                    { value: 'Madhya Pradesh', label: 'Madhya Pradesh' },
+                                                    { value: 'Maharashtra', label: 'Maharashtra' },
+                                                    { value: 'Manipur', label: 'Manipur' },
+                                                    { value: 'Meghalaya', label: 'Meghalaya' },
+                                                    { value: 'Mizoram', label: 'Mizoram' },
+                                                    { value: 'Nagaland', label: 'Nagaland' },
+                                                    { value: 'Odisha', label: 'Odisha' },
+                                                    { value: 'Punjab', label: 'Punjab' },
+                                                    { value: 'Rajasthan', label: 'Rajasthan' },
+                                                    { value: 'Sikkim', label: 'Sikkim' },
+                                                    { value: 'Tamil Nadu', label: 'Tamil Nadu' },
+                                                    { value: 'Telangana', label: 'Telangana' },
+                                                    { value: 'Tripura', label: 'Tripura' },
+                                                    { value: 'Uttar Pradesh', label: 'Uttar Pradesh' },
+                                                    { value: 'Uttarakhand', label: 'Uttarakhand' },
+                                                    { value: 'West Bengal', label: 'West Bengal' },
+                                                    { value: 'Delhi', label: 'Delhi' },
+                                                    { value: 'Jammu and Kashmir', label: 'Jammu and Kashmir' },
+                                                    { value: 'Ladakh', label: 'Ladakh' },
+                                                    { value: 'Puducherry', label: 'Puducherry' },
+
+                                                ]}
                                                 placeholder="Select State"
                                                 styles={customSelectStyles}
-                                                className="font-Gilroy text-sm font-medium text-neutral-800"
+                                                className="font-Gilroy text-sm font-medium text-neutral-800 customState__control"
+                                                classNamePrefix="custom"
                                                 isSearchable={false}
                                             />
+
 
                                         </div>
 
@@ -2240,12 +2326,27 @@ function BasicVendor({ vendorDetails }) {
                                                 id="shippingCountry"
                                                 value={shippingCountry ? { value: shippingCountry, label: shippingCountry } : null}
                                                 onChange={handleShippingCountry}
-                                                options={countryOptions}
+                                                options={[
+                                                    { value: '', label: 'Select Country', isPlaceholder: true },
+                                                    { value: 'India', label: 'India' },
+                                                    { value: 'United States', label: 'United States' },
+                                                    { value: 'United Kingdom', label: 'United Kingdom' },
+                                                    { value: 'Australia', label: 'Australia' },
+                                                    { value: 'Canada', label: 'Canada' },
+                                                    { value: 'Germany', label: 'Germany' },
+                                                    { value: 'France', label: 'France' },
+                                                    { value: 'Italy', label: 'Italy' },
+                                                    { value: 'Singapore', label: 'Singapore' },
+                                                    { value: 'Japan', label: 'Japan' },
+                                                    { value: 'China', label: 'China' }
+                                                ]}
                                                 placeholder="Select Country"
                                                 styles={customSelectStyles}
-                                                className="font-Gilroy text-sm font-medium text-neutral-800"
+                                                className="font-Gilroy text-sm font-medium text-neutral-800 custom__control"
+                                                classNamePrefix="custom"
                                                 isSearchable={false}
                                             />
+
 
                                         </div>
                                         <div className='mb-2 items-center'>
@@ -2372,16 +2473,25 @@ function BasicVendor({ vendorDetails }) {
                                                 Beneficiary Currency<span className='text-red-500'>*</span>
                                             </label>
 
+
                                             <Select
                                                 ref={beneficiaryCurrencyRef}
                                                 value={beneficiaryCurrency ? { value: beneficiaryCurrency, label: beneficiaryCurrency } : null}
                                                 onChange={(selectedOption) => handleBeneficiaryCurrency({ target: { value: selectedOption.value } })}
-                                                options={beneficiaryCurrencyOptions}
+                                                options={[
+                                                    { value: "USD", label: "USD" },
+                                                    { value: "INR", label: "INR" },
+                                                    { value: "EUR", label: "EUR" },
+                                                    { value: "GBP", label: "GBP" },
+                                                    { value: "JPY", label: "JPY" }
+                                                ]}
                                                 placeholder="Select beneficiary currency"
                                                 styles={customSelectStyles}
-                                                className="capitalize font-Gilroy font-medium text-sm text-neutral-800"
+                                                className="capitalize font-Gilroy font-medium text-sm text-neutral-800 customState__control"
+                                                classNamePrefix="custom"
                                                 isSearchable={false}
                                             />
+
 
                                             {formErrors.beneficiaryCurrency && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
@@ -2530,18 +2640,31 @@ function BasicVendor({ vendorDetails }) {
                                             <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
                                                 Bank Country
                                             </label>
+                                           
                                             <Select
                                                 id="bankCountry"
-                                                value={bankCountryOptions.find(option => option.value === bankCountry) || null}
+                                                value={
+                                                    bankCountry
+                                                        ? { value: bankCountry, label: bankCountry }
+                                                        : null
+                                                }
                                                 onChange={(selectedOption) =>
                                                     handleBankCountryChange({ target: { value: selectedOption.value } })
                                                 }
-                                                options={bankCountryOptions}
+                                                options={[
+                                                    { value: "India", label: "India" },
+                                                    { value: "United States", label: "United States" },
+                                                    { value: "Canada", label: "Canada" },
+                                                    { value: "United Kingdom", label: "United Kingdom" },
+                                                    { value: "Australia", label: "Australia" }
+                                                ]}
                                                 placeholder="Select Bank Country"
                                                 styles={customSelectStyles}
                                                 className="font-Gilroy text-sm font-medium text-neutral-800"
+                                                classNamePrefix="custom"
                                                 isSearchable={false}
                                             />
+
                                         </div>
 
 

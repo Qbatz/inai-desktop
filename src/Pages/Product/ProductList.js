@@ -243,7 +243,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
 
     useEffect(() => {
         const delayApi = setTimeout(() => {
-          if (searchTerm.trim().length >= 3) {
+          if (searchTerm.trim().length >= 1) {
             dispatch({
               type: GET_PRODUCT_SAGA,
               payload: { searchKeyword: searchTerm.trim() },

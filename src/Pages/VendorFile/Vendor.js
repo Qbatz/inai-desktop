@@ -364,7 +364,7 @@ function VendorList() {
                           </td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.title}.{item.contactPersonName}</td>
-                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.emailId}</td>
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.emailId || 'N/A'}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">+{item.country_code}{item.contactNumber}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.Amount || '-'}</td>
                           <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">

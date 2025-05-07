@@ -43,13 +43,13 @@ function FormBuilder(props) {
     }
 
 
-    
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const { title, value, options, type } = formData;
 
-              let tempError = {};
+        let tempError = {};
         let isValid = true;
 
         if (!title.trim()) {
@@ -182,7 +182,11 @@ function FormBuilder(props) {
                             type === 'text' && <>
 
                                 <div className='mb-2 gap-8 items-center'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Title</label>
+                                  
+                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                        Title <span className='text-red-600 -ml-1'>*</span>
+                                    </label>
+
                                     <input
                                         id='clientId'
                                         type='text'
@@ -210,7 +214,9 @@ function FormBuilder(props) {
                                     />
                                 </div>
                                 <div className='mb-2  gap-8'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Value</label>
+                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                       Value <span className='text-red-600 -ml-1'>*</span>
+                                    </label>
                                     <input
                                         id='clientId'
                                         type='text'
@@ -240,8 +246,10 @@ function FormBuilder(props) {
                             type === 'textarea' && <>
 
                                 <div className='mb-2  gap-8'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Title</label>
-                                    <input
+                                     <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                        Title <span className='text-red-600 -ml-1'>*</span>
+                                    </label>
+                                  <input
                                         id='clientId'
                                         type='text'
                                         placeholder='Enter your title'
@@ -268,8 +276,10 @@ function FormBuilder(props) {
                                     />
                                 </div>
                                 <div className='mb-2 gap-8'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Value</label>
-                                    <input
+                                <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                       Value <span className='text-red-600 -ml-1'>*</span>
+                                    </label>
+                                  <input
                                         id='clientId'
                                         type='text'
                                         placeholder='Enter your value'
@@ -299,8 +309,10 @@ function FormBuilder(props) {
                         {type === "select" && (
                             <>
                                 <div className='mb-2  gap-8'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Title</label>
-                                    <input
+                                <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                        Title <span className='text-red-600 -ml-1'>*</span>
+                                    </label>
+                                   <input
                                         type='text'
                                         placeholder='Enter your title'
                                         onChange={(e) => handleChange("title", e.target.value)}
@@ -316,8 +328,10 @@ function FormBuilder(props) {
                                 </div>
 
                                 <div className='mb-2  gap-8'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Options</label>
-                                    <div className="flex gap-4 relative">
+                                <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                       Options <span className='text-red-600 -ml-1'>*</span>
+                                    </label>
+                                   <div className="flex gap-4 relative">
                                         <input
                                             type='text'
                                             placeholder='Enter option name'
@@ -373,8 +387,10 @@ function FormBuilder(props) {
                         {type === "radio" && (
                             <>
                                 <div className='mb-2 gap-8'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Title</label>
-                                    <input
+                                <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                        Title <span className='text-red-600 -ml-1'>*</span>
+                                    </label>
+                                   <input
                                         type='text'
                                         placeholder='Enter your title'
                                         onChange={(e) => handleChange("title", e.target.value)}
@@ -390,8 +406,10 @@ function FormBuilder(props) {
                                 </div>
 
                                 <div className='mb-2 gap-8'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Options</label>
-                                    <div className="flex gap-4 relative ">
+                                <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                       Options <span className='text-red-600 -ml-1'>*</span>
+                                    </label>
+                                   <div className="flex gap-4 relative ">
                                         <input
                                             type='text'
                                             placeholder='Enter option name'
@@ -407,12 +425,7 @@ function FormBuilder(props) {
                                                 {formData.options.map((option, index) => (
                                                     <li key={index} className="flex justify-between items-center px-3 py-2 hover:bg-gray-100 cursor-pointer">
                                                         <div>
-                                                            {/* <input
-                                                            type="radio"
-                                                            name="custom-radio"
-                                                            value={option}
-                                                            className="mr-2"
-                                                        /> */}
+                                                          
                                                             <span className="text-gray-700">{option}</span></div>
                                                         <button
                                                             className="text-red-500"
@@ -445,8 +458,9 @@ function FormBuilder(props) {
                         {type === "checkbox" && (
                             <>
                                 <div className='mb-2 gap-8'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Title</label>
-                                    <input
+                                <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                        Title <span className='text-red-600 -ml-1'>*</span>
+                                    </label><input
                                         type='text'
                                         placeholder='Enter your title'
                                         onChange={(e) => handleChange("title", e.target.value)}
@@ -462,8 +476,10 @@ function FormBuilder(props) {
                                 </div>
 
                                 <div className='mb-2 gap-8'>
-                                    <label className='block text-gray-700 mb-2 text-start font-Gilroy'>Options</label>
-                                    <div className="flex gap-4 relative ">
+                                <label className='block text-gray-700 mb-2 text-start font-Gilroy'>
+                                       Options <span className='text-red-600 -ml-1'>*</span>
+                                    </label>
+                                   <div className="flex gap-4 relative ">
                                         <input
                                             type='text'
                                             placeholder='Enter option name'

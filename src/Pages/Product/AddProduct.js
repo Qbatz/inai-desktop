@@ -639,54 +639,54 @@ function AddProduct() {
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.pdf,.doc,.docx,.txt,image/*';
-      
+
         input.onchange = async (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            let compressedFile = file;
-      
-            if (file.type.startsWith("image/")) {
-              try {
-                const options = {
-                  maxSizeMB: 1,
-                  maxWidthOrHeight: 1024,
-                  useWebWorker: true,
-                };
-                const compressedBlob = await imageCompression(file, options);
-                compressedFile = new File([compressedBlob], file.name, {
-                  type: compressedBlob.type,
-                  lastModified: Date.now(),
+            const file = e.target.files[0];
+            if (file) {
+                let compressedFile = file;
+
+                if (file.type.startsWith("image/")) {
+                    try {
+                        const options = {
+                            maxSizeMB: 1,
+                            maxWidthOrHeight: 1024,
+                            useWebWorker: true,
+                        };
+                        const compressedBlob = await imageCompression(file, options);
+                        compressedFile = new File([compressedBlob], file.name, {
+                            type: compressedBlob.type,
+                            lastModified: Date.now(),
+                        });
+                    } catch (error) {
+                        console.error(`Compression failed for ${file.name}:`, error);
+                    }
+                }
+
+                const newPreviewUrl = URL.createObjectURL(compressedFile);
+
+                setTechImages((prev) => {
+                    const updated = [...prev];
+
+                    if (updated[index]?.previewUrl) {
+                        URL.revokeObjectURL(updated[index].previewUrl);
+                    }
+
+                    updated[index] = {
+                        ...updated[index],
+                        file: compressedFile,
+                        previewUrl: newPreviewUrl,
+                        name: compressedFile.name,
+                        type: compressedFile.type,
+                    };
+
+                    return updated;
                 });
-              } catch (error) {
-                console.error(`Compression failed for ${file.name}:`, error);
-              }
             }
-      
-            const newPreviewUrl = URL.createObjectURL(compressedFile);
-      
-            setTechImages((prev) => {
-              const updated = [...prev];
-      
-              if (updated[index]?.previewUrl) {
-                URL.revokeObjectURL(updated[index].previewUrl);
-              }
-      
-              updated[index] = {
-                ...updated[index],
-                file: compressedFile,
-                previewUrl: newPreviewUrl,
-                name: compressedFile.name,
-                type: compressedFile.type,
-              };
-      
-              return updated;
-            });
-          }
         };
-      
+
         input.click();
-      };
-      
+    };
+
 
 
 
@@ -1378,15 +1378,7 @@ function AddProduct() {
         { value: 'japan', label: 'Japan' },
         { value: 'uk', label: 'United Kingdom' },
     ];
-    const unitOptions = [
-        { value: '', label: 'Select Unit of measurement', isDisabled: true },
-        { value: 'kg', label: 'Kilogram (kg)' },
-        { value: 'g', label: 'Gram (g)' },
-        { value: 'l', label: 'Litre (l)' },
-        { value: 'ml', label: 'Millilitre (ml)' },
-        { value: 'pcs', label: 'Pieces (pcs)' }
-    ];
-
+  
     const selectCustomStyles = {
         control: (provided) => ({
             ...provided,
@@ -1415,13 +1407,60 @@ function AddProduct() {
             fontFamily: 'Gilroy',
             color: '#94A3B8',
         }),
-        menu: (provided) => ({
-            ...provided,
-            borderRadius: '0.375rem',
-            marginTop: '0.25rem',
-            zIndex: 10,
-            fontFamily: 'Gilroy',
+     
+        menu: (base) => ({
+            ...base,
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollBehavior: 'smooth',
+            transition: 'all 0.3s ease-in-out',
+            transformOrigin: 'top',
+            overscrollBehaviorY: 'contain',
         }),
+        menuList: (provided) => ({
+            ...provided,
+            maxHeight: '150px',
+            fontWeight: 400,
+            padding: 0,
+            overflowY: 'auto',
+            fontFamily: 'Gilroy',
+            fontSize: '15px',
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#6b7280 #ffffff',
+            '&::-webkit-scrollbar': {
+                width: '10px',
+            },
+            '&::-webkit-scrollbar-track': {
+                background: '#ffffff',
+                borderRadius: '0.375rem',
+            },
+            '&::-webkit-scrollbar-thumb': {
+                background: '#6b7280',
+                borderRadius: '0.375rem',
+                border: '2px solid #ffffff',
+                cursor: 'pointer',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+                background: '#4b5563',
+            },
+            '&::-webkit-scrollbar-button': {
+                background: '#ffffff',
+                height: '12px',
+                display: 'block',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '8px',
+                backgroundPosition: 'center',
+            },
+            '&::-webkit-scrollbar-button:decrement': {
+                backgroundImage:
+                    'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiAxNSA5IDE4IDE4IDkiLz48L3N2Zz4=")',
+            },
+            '&::-webkit-scrollbar-button:increment': {
+                backgroundImage:
+                    'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBsdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiA5IDkgNiAxOCA5Ii8+PC9zdmc+")',
+            },
+        }),
+        
         option: (provided, state) => ({
             ...provided,
             backgroundColor: state.isFocused ? '#205DA8' : 'white',
@@ -1443,49 +1482,7 @@ function AddProduct() {
             fontWeight: '500',
             fontFamily: 'Gilroy',
         }),
-        menuList: (provided) => ({
-            ...provided,
-            maxHeight: '150px',
-            fontWeight: 400,
-            padding: 0,
-            overflowY: 'auto',
-            fontFamily: 'Gilroy',
-            fontSize: '15px',
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#6b7280 #ffffff',
-            '::-webkit-scrollbar': {
-                width: '10px',
-            },
-            '::-webkit-scrollbar-track': {
-                background: '#ffffff',
-                borderRadius: '0.375rem',
-            },
-            '::-webkit-scrollbar-thumb': {
-                background: '#6b7280',
-                borderRadius: '0.375rem',
-                border: '2px solid #ffffff',
-                cursor: 'pointer',
-            },
-            '::-webkit-scrollbar-thumb:hover': {
-                background: '#4b5563',
-            },
-            '::-webkit-scrollbar-button': {
-                background: '#ffffff',
-                height: '12px',
-                display: 'block',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '8px',
-                backgroundPosition: 'center',
-            },
-            '::-webkit-scrollbar-button:decrement': {
-                backgroundImage:
-                    'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiAxNSA5IDE4IDE4IDkiLz48L3N2Zz4=")',
-            },
-            '::-webkit-scrollbar-button:increment': {
-                backgroundImage:
-                    'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBsdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiA5IDkgNiAxOCA5Ii8+PC9zdmc+")',
-            },
-        }),
+      
     };
 
     const customSelectStyles = {
@@ -1496,7 +1493,14 @@ function AddProduct() {
             boxShadow: 'none',
             cursor: 'pointer',
             padding: '6px 1px',
-            minHeight: '44px',
+            minHeight: '46px',
+            '&:hover': {
+                borderColor: '#D1D5DB',
+            },
+            '&:focus-within': {
+                borderColor: '#D1D5DB',
+                boxShadow: 'none',
+            },
         }),
         option: (base, state) => ({
             ...base,
@@ -1506,17 +1510,34 @@ function AddProduct() {
             padding: '4px 10px',
             cursor: 'pointer'
         }),
+
         menu: (base) => ({
             ...base,
             maxHeight: '120px',
             overflowY: 'auto',
-
-            scrollbarWidth: 'thin',
-            msOverflowStyle: 'auto',
+            scrollBehavior: 'smooth',
+            transition: 'all 0.3s ease-in-out',
+            transformOrigin: 'top',
+            overscrollBehaviorY: 'contain',
         }),
-        singleValue: (base) => ({
+        menuList: (base) => ({
             ...base,
-            color: '#64748B',
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollBehavior: 'smooth',
+            scrollbarWidth: 'thin',
+            paddingRight: '4px',
+            '&::-webkit-scrollbar': {
+                width: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#cbd5e1',
+                borderRadius: '6px',
+            },
+        }),
+        singleValue: (base, state) => ({
+            ...base,
+            color: state.data.value === '' ? 'oklch(70.8% 0 0)' : 'black' 
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -1528,6 +1549,7 @@ function AddProduct() {
         }),
     };
 
+  
 
     return (
         <div className="bg-gray-100 p-6  flex w-full justify-center relative">
@@ -2051,7 +2073,7 @@ function AddProduct() {
                         <div>
                             <label className="block font-normal text-md font-Outfit mb-1.5">Unit of measurement <span className="text-red-500 text-sm">*</span></label>
                             <div className="relative">
-                                <Select
+                                {/* <Select
                                     ref={unitRef}
                                     value={unitOptions.find(option => option.value === formData.unit)}
                                     onChange={(selectedOption) => handleInputChange('unit', selectedOption?.value)}
@@ -2060,7 +2082,39 @@ function AddProduct() {
                                     className="capitalize font-Gilroy font-medium text-sm text-neutral-600"
                                     isSearchable={false}
                                     placeholder="Select Unit of measurement"
+                                /> */}
+                                <Select
+                                    ref={unitRef}
+                                    value={
+                                        formData.unit
+                                            ? {
+                                                value: formData.unit,
+                                                label:
+                                                    formData.unit === 'kg' ? 'Kilogram (kg)' :
+                                                        formData.unit === 'g' ? 'Gram (g)' :
+                                                            formData.unit === 'l' ? 'Litre (l)' :
+                                                                formData.unit === 'ml' ? 'Millilitre (ml)' :
+                                                                    formData.unit === 'pcs' ? 'Pieces (pcs)' :
+                                                                        'Select Unit of measurement'
+                                            }
+                                            : { value: '', label: 'Select Unit of measurement', isDisabled: true }
+                                    }
+                                    onChange={(selectedOption) => handleInputChange('unit', selectedOption?.value)}
+                                    options={[
+                                        { value: '', label: 'Select Unit of measurement', isDisabled: true },
+                                        { value: 'kg', label: 'Kilogram (kg)' },
+                                        { value: 'g', label: 'Gram (g)' },
+                                        { value: 'l', label: 'Litre (l)' },
+                                        { value: 'ml', label: 'Millilitre (ml)' },
+                                        { value: 'pcs', label: 'Pieces (pcs)' }
+                                    ]}
+                                    styles={customSelectStyles}
+                                    className="capitalize font-Gilroy font-medium text-sm text-neutral-600"
+                                    isSearchable={false}
+                                    placeholder="Select Unit of measurement"
                                 />
+
+
                             </div>
 
                             {errors.unit && (
@@ -2154,7 +2208,7 @@ function AddProduct() {
                             />
                         </div>
                         <div >
-                            <label className="block font-normal text-md font-Outfit mb-1">Gst <span className="text-red-500 text-sm">*</span></label>
+                            <label className="block font-normal text-md font-Outfit mb-1">GST <span className="text-red-500 text-sm">*</span></label>
                             <div className="flex items-center w-full border border-gray-300 rounded-lg overflow-hidden">
                                 <div className="px-3 py-2 border-r text-slate-400 text-sm">%</div>
                                 <input
@@ -2406,7 +2460,7 @@ function AddProduct() {
                                     options={stateOptions}
                                     value={stateOptions.find(option => option.value === formData.stateName)}
                                     onChange={(selectedOption) => handleInputChange('stateName', selectedOption.value)}
-                                    className="font-Gilroy text-sm"
+                                    className="font-Gilroy text-sm focus:outline-none"
                                     classNamePrefix="react-select"
                                     styles={customSelectStyles}
                                 />

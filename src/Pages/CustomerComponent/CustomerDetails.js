@@ -69,7 +69,7 @@ function CustomerDetails() {
                                         </div>
                                         <div>
                                             <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Email</p>
-                                            <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{customer.emailId}</p>
+                                            <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{customer.emailId || 'N/A'}</p>
                                         </div>
                                         <div>
                                             <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Mobile no.</p>

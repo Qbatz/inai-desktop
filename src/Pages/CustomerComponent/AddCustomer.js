@@ -11,6 +11,7 @@ import Select from "react-select";
 
 
 
+
 function AddCustomer({ editCustomerDetails }) {
 
 
@@ -419,7 +420,8 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "address3" ||
                 field === "address4" ||
                 field === "landmark") &&
-            /[^a-zA-Z0-9\s,./]/.test(value)
+            /[^a-zA-Z0-9\s,./=<>\@\#\$\%\^\&\?\’\'\-]/.test(value)
+
         ) return;
 
         if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
@@ -440,7 +442,8 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "address3" ||
                 field === "address4" ||
                 field === "landmark") &&
-            /[^a-zA-Z0-9\s,./]/.test(value)
+           /[^a-zA-Z0-9\s,./=<>\@\#\$\%\^\&\?\’\'\-]/.test(value)
+
         ) return;
 
         if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
@@ -637,7 +640,7 @@ function AddCustomer({ editCustomerDetails }) {
             }
             return;
         } else {
-           
+
             const filteredContacts = contacts.filter(contact =>
                 (typeof contact.surName === 'string' && contact.surName.trim() !== '') ||
                 (typeof contact.name === 'string' && contact.name.trim() !== '') ||
@@ -646,7 +649,7 @@ function AddCustomer({ editCustomerDetails }) {
                 (typeof contact.email === 'string' && contact.email.trim() !== '') ||
                 (typeof contact.designation === 'string' && contact.designation.trim() !== '')
             );
-            
+
             const AddPayload = {
                 businessName: formData.businessName,
                 title: formData.surName,
@@ -856,7 +859,7 @@ function AddCustomer({ editCustomerDetails }) {
             isValid = false;
         }
         if (isValid) {
-       
+
             const filteredContacts = contacts.filter(contact =>
                 (typeof contact.surName === 'string' && contact.surName.trim() !== '') ||
                 (typeof contact.name === 'string' && contact.name.trim() !== '') ||
@@ -865,7 +868,7 @@ function AddCustomer({ editCustomerDetails }) {
                 (typeof contact.email === 'string' && contact.email.trim() !== '') ||
                 (typeof contact.designation === 'string' && contact.designation.trim() !== '')
             );
-            
+
             const AddPayload = {
                 businessName: formData.businessName,
                 title: formData.surName,
@@ -1448,22 +1451,9 @@ function AddCustomer({ editCustomerDetails }) {
         }
     }, [state.customer.successCode]);
 
-    const options = [
-        { value: "Select Country", label: "Select Country" },
-        { value: "India", label: "India" },
-        { value: "United States", label: "United States" },
-        { value: "United Kingdom", label: "United Kingdom" },
-        { value: "Australia", label: "Australia" },
-        { value: "Canada", label: "Canada" },
-        { value: "Germany", label: "Germany" },
-        { value: "France", label: "France" },
-        { value: "Italy", label: "Italy" },
-        { value: "Singapore", label: "Singapore" },
-        { value: "Japan", label: "Japan" },
-        { value: "China", label: "China" },
-    ];
+ 
     const statesList = [
-        { value: "Select State", label: "Select State" },
+        { value: "Select State", label: "Select State", isPlaceholder: true },
         { value: "Tamil Nadu", label: "Tamil Nadu" },
         { value: "Andhra Pradesh", label: "Andhra Pradesh" },
         { value: "Arunachal Pradesh", label: "Arunachal Pradesh" },
@@ -1475,7 +1465,7 @@ function AddCustomer({ editCustomerDetails }) {
         { value: "Haryana", label: "Haryana" },
     ];
 
-    const customSelectStateStyles = {
+    const customSelectStyles = {
         control: (base) => ({
             ...base,
             borderColor: '#E5E7EB',
@@ -1496,20 +1486,48 @@ function AddCustomer({ editCustomerDetails }) {
             padding: '4px 10px',
             cursor: 'pointer',
             fontSize: "14px",
-            fontFamily: 'Gilroy'
+            fontFamily: 'Gilroy',
         }),
         menu: (base) => ({
             ...base,
             maxHeight: '120px',
             overflowY: 'auto',
-            scrollbarWidth: 'thin',
-            msOverflowStyle: 'auto',
+            scrollBehavior: 'smooth',
+            transition: 'all 0.3s ease-in-out',
+            transformOrigin: 'top',
+            overscrollBehaviorY: 'contain',
         }),
-        singleValue: (base) => ({
+        menuList: (base) => ({
             ...base,
-            color: '#64748B',
-            fontSize: '14px',
-            fontFamily: 'Gilroy'
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollBehavior: 'smooth',
+            scrollbarWidth: 'thin',
+            paddingRight: '4px',
+            '&::-webkit-scrollbar': {
+                width: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#cbd5e1',
+                borderRadius: '6px',
+            },
+        }),
+        singleValue: (base, state) => {
+            const isPlaceholderSelected = state.data?.isPlaceholder;
+            return {
+                ...base,
+                fontFamily: "Gilroy",
+                fontWeight: 500,
+                fontSize: "14px",
+                textTransform: "capitalize",
+                color: isPlaceholderSelected ? "oklch(70.8% 0 0)" : "black",
+            };
+        },
+        placeholder: (base) => ({
+            ...base,
+            fontSize: "14px",
+            fontWeight: 500,
+            fontFamily: "Gilroy, sans-serif",
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -1519,86 +1537,7 @@ function AddCustomer({ editCustomerDetails }) {
             color: '#94A3B8',
             padding: '0 8px',
         }),
-        placeholder: (base) => ({
-            ...base,
-            color: '#262626',
-            fontSize: "14px",
-            fontWeight: 500,
-            fontFamily: "Gilroy, sans-serif"
-        }),
-
-
     };
-    const customSelectStyles = {
-        control: (base, state) => ({
-            ...base,
-            height: "50px",
-            border: "1px solid #ced4da",
-            padding: "0 10px",
-            borderRadius: "10px",
-            boxShadow: "none",
-            color: "#222222",
-            cursor: "pointer",
-            borderColor: state.isFocused ? "#ced4da" : "#ced4da",
-            "&:hover": {
-                borderColor: "#ced4da",
-                backgroundColor: "transparent",
-            },
-        }),
-        menu: (base) => ({
-            ...base,
-            border: "1px solid #ced4da",
-            fontSize: "12px",
-            fontWeight: 500,
-        }),
-        menuList: (base) => ({
-            ...base,
-            maxHeight: "120px",
-            overflowY: "auto",
-            padding: 0,
-            fontFamily: "Gilroy",
-            scrollbarWidth: "thin",
-
-        }),
-        placeholder: (base) => ({
-            ...base,
-            color: ' #64748B',
-            fontSize: "14px",
-            fontWeight: 500,
-            fontFamily: "Gilroy"
-        }),
-        input: (base) => ({
-            ...base,
-            backgroundColor: "transparent",
-            fontFamily: "Gilroy",
-            fontWeight: 500,
-            fontSize: "0.75rem",
-            textTransform: "capitalize",
-            outline: "none",
-            color: 'black',
-        }),
-        dropdownIndicator: (base) => ({
-            ...base,
-            display: "inline-block",
-            fill: "currentColor",
-            lineHeight: 1,
-            stroke: "currentColor",
-            strokeWidth: 0,
-        }),
-        indicatorSeparator: () => ({
-            display: "none",
-        }),
-        singleValue: (base) => ({
-            ...base,
-            fontFamily: "Gilroy",
-            fontWeight: 500,
-            fontSize: "14px",
-            textTransform: "capitalize",
-            color: 'black',
-        }),
-
-    };
-
 
     return (
         <div className='bg-slate-100 flex flex-1 flex-col p-2 sm:p-2 md:p-2 lg:p-2 rounded-t-2xl'>
@@ -1681,24 +1620,26 @@ function AddCustomer({ editCustomerDetails }) {
                                         <Select
                                             ref={legalStatusRef}
                                             options={[
-                                                { value: '', label: 'Select Legal Status of firm' },
+                                                { value: '', label: 'Select Legal Status of firm', isPlaceholder: true },
                                                 { value: 'PRIVATE LIMITED', label: 'PRIVATE LIMITED' },
                                                 { value: 'LLT_LOW LATENCY TRANSSPORT', label: 'LLT_LOW LATENCY TRANSSPORT' },
                                                 { value: 'PARTNERSHIP', label: 'PARTNERSHIP' },
                                                 { value: 'PROPRIETORSHIP', label: 'PROPRIETORSHIP' }
                                             ]}
+                                          
                                             value={
                                                 formData.legalStatus
                                                     ? { label: formData.legalStatus, value: formData.legalStatus }
-                                                    : { label: 'Select Legal Status of firm', value: '' }
+                                                    : null
                                             }
+
                                             onChange={(selectedOption) =>
                                                 handleInputChange('legalStatus', selectedOption.value)
                                             }
                                             placeholder="Select Legal Status of firm"
                                             classNamePrefix="custom"
                                             menuPlacement="auto"
-                                            styles={customSelectStateStyles}
+                                            styles={customSelectStyles}
                                         />
                                         {errors.legalStatus && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
@@ -1962,7 +1903,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         <input
                                             ref={emailRef}
                                             type='text'
-                                            value={formData.emailId}
+                                            value={formData.emailId || 'N/A'}
                                             onChange={(e) => handleInputChange('emailId', e.target.value)}
                                             placeholder='Enter Email ID'
                                             className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
@@ -2127,7 +2068,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     <input
                                                         type="text"
                                                         placeholder="Enter Email ID"
-                                                        value={contact.email}
+                                                        value={contact.email || 'N/A'}
                                                         ref={contactRefs.current[index]?.email}
                                                         onChange={(e) => handleChange(index, "email", e.target.value)}
                                                         className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
@@ -2288,7 +2229,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             options={statesList}
                                             value={statesList.find((item) => item.value === officeAddress.state) || null}
                                             onChange={(selectedOption) => handleOfficeChange('state', selectedOption?.value || "")}
-                                            styles={customSelectStateStyles}
+                                            styles={customSelectStyles}
                                             placeholder="Select State"
                                         />
                                         {errors.state && (
@@ -2304,15 +2245,35 @@ function AddCustomer({ editCustomerDetails }) {
 
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
+                                      
                                         <Select
-                                            options={options}
-                                            value={officeAddress.country ? { label: officeAddress.country, value: officeAddress.country } : null}
+                                            options={[
+                                                { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
+                                                { value: 'India', label: 'India' },
+                                                { value: "India", label: "India" },
+                                                { value: "United States", label: "United States" },
+                                                { value: "United Kingdom", label: "United Kingdom" },
+                                                { value: "Australia", label: "Australia" },
+                                                { value: "Canada", label: "Canada" },
+                                                { value: "Germany", label: "Germany" },
+                                                { value: "France", label: "France" },
+                                                { value: "Italy", label: "Italy" },
+                                                { value: "Singapore", label: "Singapore" },
+                                                { value: "Japan", label: "Japan" },
+                                                { value: "China", label: "China" },
+                                            ]}
+                                            value={
+                                                officeAddress.country
+                                                    ? { label: officeAddress.country, value: officeAddress.country }
+                                                    : { label: 'Select Country', value: '', isPlaceholder: true }
+                                            }
                                             onChange={(selectedOption) => handleOfficeChange('country', selectedOption.value)}
-                                            placeholder="Select"
+                                            placeholder="Select Country"
                                             classNamePrefix="custom"
                                             menuPlacement="auto"
-                                            styles={customSelectStateStyles}
+                                            styles={customSelectStyles}
                                         />
+
                                         {errors.country && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2462,7 +2423,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             options={statesList}
                                             value={statesList.find((item) => item.value === shippingAddress.state) || null}
                                             onChange={(selectedOption) => handleShippingChange('state', selectedOption?.value || "")}
-                                            styles={customSelectStateStyles}
+                                            styles={customSelectStyles}
                                             placeholder="Select State"
                                         />
                                         {errors.shipstate && (
@@ -2473,18 +2434,38 @@ function AddCustomer({ editCustomerDetails }) {
                                         )}
                                     </div>
 
+                                
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
 
                                         <Select
-                                            options={options}
-                                            value={shippingAddress.country ? { label: shippingAddress.country, value: shippingAddress.country } : null}
-                                            onChange={(selectedOption) => handleOfficeChange('country', selectedOption.value)}
-                                            placeholder="Select"
+                                            options={[
+                                                { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
+                                                { value: 'India', label: 'India' },
+                                                { value: 'United States', label: 'United States' },
+                                                { value: 'United Kingdom', label: 'United Kingdom' },
+                                                { value: 'Australia', label: 'Australia' },
+                                                { value: 'Canada', label: 'Canada' },
+                                                { value: 'Germany', label: 'Germany' },
+                                                { value: 'France', label: 'France' },
+                                                { value: 'Italy', label: 'Italy' },
+                                                { value: 'Singapore', label: 'Singapore' },
+                                                { value: 'Japan', label: 'Japan' },
+                                                { value: 'China', label: 'China' }
+                                            ]}
+                                            value={
+                                                shippingAddress.country
+                                                    ? { label: shippingAddress.country, value: shippingAddress.country }
+                                                    : { label: 'Select Country', value: '', isPlaceholder: true }
+                                            }
+                                            onChange={(selectedOption) => handleShippingChange('country', selectedOption.value)}
+                                            placeholder="Select Country"
                                             classNamePrefix="customs"
                                             menuPlacement="auto"
                                             styles={customSelectStyles}
+
                                         />
+
                                         {errors.shipcountry && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
                                                 <InfoCircle size={16} color="#DC2626" />
@@ -2492,6 +2473,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             </div>
                                         )}
                                     </div>
+
 
 
 
@@ -2620,7 +2602,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                         { value: 'JPY', label: 'JPY' },
                                                     ]}
                                                     placeholder="Select beneficiary currency"
-                                                    styles={customSelectStateStyles}
+                                                    styles={customSelectStyles}
                                                     className="capitalize font-Gilroy font-medium text-sm text-neutral-800"
                                                 />
 
@@ -2766,7 +2748,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                         { value: 'Australia', label: 'Australia' },
                                                     ]}
                                                     placeholder="Select Bank Country"
-                                                    styles={customSelectStateStyles}
+                                                    styles={customSelectStyles}
                                                     className="capitalize font-Gilroy font-medium text-sm text-neutral-800"
                                                     classNamePrefix="custom"
                                                 />

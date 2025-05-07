@@ -420,7 +420,7 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "address3" ||
                 field === "address4" ||
                 field === "landmark") &&
-            /[^a-zA-Z0-9\s,./=<>\@\#\$\%\^\&\?\’\'\-]/.test(value)
+             /[^a-zA-Z0-9\s,./=<>@#$%^&?’'-]/.test(value)
 
         ) return;
 
@@ -442,7 +442,8 @@ function AddCustomer({ editCustomerDetails }) {
                 field === "address3" ||
                 field === "address4" ||
                 field === "landmark") &&
-           /[^a-zA-Z0-9\s,./=<>\@\#\$\%\^\&\?\’\'\-]/.test(value)
+         /[^a-zA-Z0-9\s,./=<>\@#$%^&?’'-]/.test(value)
+
 
         ) return;
 

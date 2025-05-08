@@ -25,8 +25,7 @@ function AddInvoice() {
     ]);
     const [value, setValue] = useState(1);
     const rowRefs = useRef([]);
-    const inputRefs = useRef([]);
-    const [errors, setErrors] = useState({});
+      const [errors, setErrors] = useState({});
     const [showBox, setShowBox] = useState(false)
     const [showProduct, setShowProduct] = useState(false)
     const [customerOptions, setCustomerOptions] = useState([])
@@ -185,7 +184,39 @@ function AddInvoice() {
 
     const handleItemChange = (index, field, value) => {
         const updatedItems = [...items];
+        const updatedErrors = [...itemErrors];
+
+
+        if ((field === 'qty' || field === 'unitCost' || field === 'packageNo') && !/^\d*\.?\d*$/.test(value)) {
+            return;
+        }
+
         updatedItems[index][field] = value;
+
+
+        if (updatedErrors[index]) {
+            switch (field) {
+                case 'itemNo':
+                case 'description':
+                case 'hsn':
+                case 'packageNo':
+                    if (value.trim()) {
+                        delete updatedErrors[index][field];
+                    }
+                    break;
+                case 'qty':
+                case 'unitCost':
+                    if (value && !isNaN(value)) {
+                        delete updatedErrors[index][field];
+                    }
+
+                    break;
+                default:
+
+                    break;
+            }
+        }
+
 
         if (field === 'qty' || field === 'unitCost') {
             const qty = parseFloat(updatedItems[index].qty) || 0;
@@ -194,7 +225,10 @@ function AddInvoice() {
         }
 
         setItems(updatedItems);
+        setItemErrors(updatedErrors);
     };
+
+
 
     const grandTotal = items.reduce((sum, item) => {
         const total = parseFloat(item.total || item.totalCost || 0);
@@ -260,13 +294,6 @@ function AddInvoice() {
                 borderColor: '#E5E7EB',
             },
         }),
-        placeholder: (base) => ({
-            ...base,
-            color: 'red',
-            fontSize: "14px",
-            fontWeight: 500,
-            fontFamily: "Gilroy, sans-serif",
-        }),
         option: (base, state) => ({
             ...base,
             backgroundColor: state.isFocused ? '#205DA8' : 'white',
@@ -301,11 +328,22 @@ function AddInvoice() {
                 borderRadius: '6px',
             },
         }),
-        singleValue: (base) => ({
+        singleValue: (base, state) => {
+            const isPlaceholderSelected = state.data?.isPlaceholder;
+            return {
+                ...base,
+                fontFamily: "Gilroy",
+                fontWeight: 500,
+                fontSize: "14px",
+                textTransform: "capitalize",
+                color: isPlaceholderSelected ? "oklch(70.8% 0 0)" : "black",
+            };
+        },
+        placeholder: (base) => ({
             ...base,
-            color: '#000',
-            fontSize: '14px',
-            fontFamily: 'Gilroy',
+            fontSize: "14px",
+            fontWeight: 500,
+            fontFamily: "Gilroy, sans-serif",
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -314,13 +352,6 @@ function AddInvoice() {
             ...base,
             color: '#94A3B8',
             padding: '0 8px',
-        }),
-        placeholder: (base) => ({
-            ...base,
-            color: '#262626',
-            fontSize: "14px",
-            fontWeight: 500,
-            fontFamily: "Gilroy, sans-serif",
         }),
     };
 
@@ -434,9 +465,6 @@ function AddInvoice() {
 
     }, [state.customer.customerList])
 
-
-
-    console.log("state", state)
 
 
 
@@ -569,9 +597,6 @@ function AddInvoice() {
                 const rowError = newErrors.rowErrors[i] || {};
                 const refs = rowRefs.current[i] || {};
 
-                console.log("rowError", rowError);
-                console.log("refs", refs);
-
 
                 if (rowError.poNumber && !focusSet) {
                     refs.po?.current?.focus();
@@ -610,7 +635,7 @@ function AddInvoice() {
             if (!item.itemNo.trim()) {
                 rowError.itemNo = 'Please enter Item No.';
                 if (!focusSet) {
-                    rowItemsRefs.current[index]?.itemNo?.current?.focus();
+                    rowItemsRefs.current[index]?.itemNo?.focus();
                     focusSet = true;
                 }
             }
@@ -618,7 +643,7 @@ function AddInvoice() {
             if (!item.description.trim()) {
                 rowError.description = 'Please enter Description.';
                 if (!focusSet) {
-                    rowItemsRefs.current[index]?.description?.current?.focus();
+                    rowItemsRefs.current[index]?.description?.focus();
                     focusSet = true;
                 }
             }
@@ -626,7 +651,7 @@ function AddInvoice() {
             if (!item.hsn.trim()) {
                 rowError.hsn = 'Please enter HSN.';
                 if (!focusSet) {
-                    rowItemsRefs.current[index]?.hsn?.current?.focus();
+                    rowItemsRefs.current[index]?.hsn?.focus();
                     focusSet = true;
                 }
             }
@@ -634,7 +659,7 @@ function AddInvoice() {
             if (!item.qty || isNaN(item.qty)) {
                 rowError.qty = 'Enter valid Quantity.';
                 if (!focusSet) {
-                    rowItemsRefs.current[index]?.qty?.current?.focus();
+                    rowItemsRefs.current[index]?.qty?.focus();
                     focusSet = true;
                 }
             }
@@ -642,7 +667,7 @@ function AddInvoice() {
             if (!item.unitCost || isNaN(item.unitCost)) {
                 rowError.unitCost = 'Enter valid Unit Cost.';
                 if (!focusSet) {
-                    rowItemsRefs.current[index]?.unitCost?.current?.focus();
+                    rowItemsRefs.current[index]?.unitCost?.focus();
                     focusSet = true;
                 }
             }
@@ -650,7 +675,7 @@ function AddInvoice() {
             if (!item.packageNo.trim()) {
                 rowError.packageNo = 'Please enter Package No.';
                 if (!focusSet) {
-                    rowItemsRefs.current[index]?.packageNo?.current?.focus();
+                    rowItemsRefs.current[index]?.packageNo?.focus();
                     focusSet = true;
                 }
             }
@@ -666,6 +691,12 @@ function AddInvoice() {
 
 
 
+    const getInputRef = (field, index) => (el) => {
+        if (!rowItemsRefs.current[index]) {
+            rowItemsRefs.current[index] = {};
+        }
+        rowItemsRefs.current[index][field] = el;
+    };
 
 
 
@@ -675,31 +706,26 @@ function AddInvoice() {
 
     const handleSaveExitForCustomerDetail = () => {
         if (validateCustomerForm()) {
-
+            alert('validation success')
         }
     }
 
 
     const handleSaveExitForInvoiceDetail = () => {
         if (validateInvoiceForm()) {
-
+            alert('validation success')
         }
     }
 
 
     const handleSaveExitForItemDetail = () => {
         if (validateItemsForm()) {
-
+            alert('validation success')
         }
     }
 
 
-    const getInputRef = (field, index) => {
-        const key = `${field}-${index}`;
-        return (el) => {
-            inputRefs.current[key] = el;
-        };
-    };
+
 
 
 
@@ -1301,7 +1327,7 @@ function AddInvoice() {
                         <div className='h-fit overflow-y-auto  lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3 ' >
                             <div
                                 className="">
-                                <div className='rounded-xl border border-slate-200 max-h-[240px] overflow-y-auto p-0 mt-4 '>
+                                <div className='rounded-xl border border-slate-200 max-h-[250px] overflow-y-auto p-0 mt-4 '>
 
                                     <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                                         <thead className="bg-[#205DA8] sticky top-0 z-10">
@@ -1329,7 +1355,7 @@ function AddInvoice() {
 
                                                         {itemErrors[index]?.itemNo && (
                                                             <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
-                                                               
+
                                                                 {itemErrors[index].itemNo}
                                                             </div>
                                                         )}
@@ -1344,8 +1370,7 @@ function AddInvoice() {
                                                             placeholder="Enter Description" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
 
                                                         {itemErrors[index]?.description && (
-                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                                                                <InfoCircle size={16} color="#DC2626" />
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
                                                                 {itemErrors[index].description}
                                                             </div>
                                                         )}
@@ -1357,8 +1382,8 @@ function AddInvoice() {
                                                             onChange={(e) => handleItemChange(index, 'hsn', e.target.value)}
                                                             placeholder="Enter HSN" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
                                                         {itemErrors[index]?.hsn && (
-                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                                                                <InfoCircle size={16} color="#DC2626" />
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+
                                                                 {itemErrors[index].hsn}
                                                             </div>
                                                         )}
@@ -1372,8 +1397,8 @@ function AddInvoice() {
                                                             placeholder="Enter Item QTY" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
 
                                                         {itemErrors[index]?.qty && (
-                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                                                                <InfoCircle size={16} color="#DC2626" />
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+
                                                                 {itemErrors[index].qty}
                                                             </div>
                                                         )}
@@ -1389,8 +1414,8 @@ function AddInvoice() {
 
 
                                                         {itemErrors[index]?.unitCost && (
-                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                                                                <InfoCircle size={16} color="#DC2626" />
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+
                                                                 {itemErrors[index].unitCost}
                                                             </div>
                                                         )}
@@ -1399,7 +1424,8 @@ function AddInvoice() {
                                                     <td className="px-2 py-2 text-center">
 
                                                         <input type="text" value={item.total}
-                                                            readOnly placeholder="Total" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+                                                            readOnly placeholder="Total" className={`w-full px-3 py-3 border rounded-xl text-sm focus:outline-none ${itemErrors[index] && Object.keys(itemErrors[index]).length > 0 ? "mb-5" : "mb-0"
+                                                                }`} />
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
                                                         <input type="text" value={item.packageNo}
@@ -1408,8 +1434,7 @@ function AddInvoice() {
                                                             placeholder="Enter No" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
 
                                                         {itemErrors[index]?.packageNo && (
-                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
-                                                                <InfoCircle size={16} color="#DC2626" />
+                                                            <div className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-Gilroy">
                                                                 {itemErrors[index].packageNo}
                                                             </div>
                                                         )}
@@ -1568,6 +1593,10 @@ AddInvoice.propTypes = {
     value: PropTypes.string,
     onClick: PropTypes.func,
     placeholder: PropTypes.string,
+    inputRef: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+    ])
 }
 
 export default AddInvoice

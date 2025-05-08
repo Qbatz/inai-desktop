@@ -97,7 +97,7 @@ const InvoiceList = () => {
 
         <div className="flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative bg-gray-100">
             {isVisible && (
-                <div className="bg-white flex-1 flex flex-col rounded-2xl p-4 relative h-[510px] w-full">
+                <div className="bg-white flex-1 flex flex-col rounded-2xl p-4 relative h-[515px] w-full">
 
                     <div className="flex w-full justify-between items-center mb-2">
                         <h2 className="text-xl font-semibold  font-Gilroy text-black">Invoice</h2>
@@ -118,7 +118,7 @@ const InvoiceList = () => {
                                 value={searchTerm}
                                 onChange={handleSearchChange}
                                 placeholder="Search by ID, Support, or Others"
-                                className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy text-sm font-medium"
+                                 className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
                             />
                         </div>
 
@@ -139,7 +139,7 @@ const InvoiceList = () => {
                             <thead className="bg-gray-100 sticky top-0 z-10">
                                 <tr>
                                     {["S.No", "Invoice Number", "Contact Person Name", "Email ID", "Mobile No.", "Date", "Amount", ""].map((head, i) => (
-                                        <th key={i} className="px-4 py-2 text-center text-gray-600 text-sm font-normal font-gilroy">
+                                        <th key={i} className="px-4 py-2 text-center text-gray-600 text-sm font-normal font-Gilroy">
                                             {head}
                                         </th>
                                     ))}

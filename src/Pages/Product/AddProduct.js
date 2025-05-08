@@ -1378,7 +1378,7 @@ function AddProduct() {
         { value: 'japan', label: 'Japan' },
         { value: 'uk', label: 'United Kingdom' },
     ];
-  
+
     const selectCustomStyles = {
         control: (provided) => ({
             ...provided,
@@ -1407,7 +1407,7 @@ function AddProduct() {
             fontFamily: 'Gilroy',
             color: '#94A3B8',
         }),
-     
+
         menu: (base) => ({
             ...base,
             maxHeight: '120px',
@@ -1460,7 +1460,7 @@ function AddProduct() {
                     'url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBsdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iNiA5IDkgNiAxOCA5Ii8+PC9zdmc+")',
             },
         }),
-        
+
         option: (provided, state) => ({
             ...provided,
             backgroundColor: state.isFocused ? '#205DA8' : 'white',
@@ -1482,7 +1482,7 @@ function AddProduct() {
             fontWeight: '500',
             fontFamily: 'Gilroy',
         }),
-      
+
     };
 
     const customSelectStyles = {
@@ -1537,7 +1537,7 @@ function AddProduct() {
         }),
         singleValue: (base, state) => ({
             ...base,
-            color: state.data.value === '' ? 'oklch(70.8% 0 0)' : 'black' 
+            color: state.data.value === '' ? 'oklch(70.8% 0 0)' : 'black'
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -1549,7 +1549,7 @@ function AddProduct() {
         }),
     };
 
-  
+
 
     return (
         <div className="bg-gray-100 p-6  flex w-full justify-center relative">
@@ -2196,7 +2196,7 @@ function AddProduct() {
 
 
                         <div >
-                            <label className="block font-normal text-sm font-Outfit mb-1.5">
+                            <label className="block font-normal text-sm font-Outfit mb-2">
                                 HSN
                             </label>
                             <input
@@ -2204,7 +2204,7 @@ function AddProduct() {
                                 value={formData.hsn}
                                 onChange={(e) => handleInputChange('hsn', e.target.value)}
                                 className="w-full border focus:outline-none border-gray-300 rounded-lg px-3 py-3 font-medium text-sm text-slate-500 font-Gilroy"
-                                placeholder="Enter hsn"
+                                placeholder="Enter HSN"
                             />
                         </div>
                         <div >
@@ -2433,13 +2433,13 @@ function AddProduct() {
 
 
                                 <DatePicker
-                                    
+
                                     selected={selectedDate}
                                     onChange={handleDateChange}
                                     dateFormat="dd/MM/yyyy"
                                     className='cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full'
                                     placeholderText="Month and Year of Manufacture"
-                                    customInput={<CustomInput  ref={yearRef} />}
+                                    customInput={<CustomInput ref={yearRef} />}
                                     wrapperClassName="w-full"
                                 />
                             </div>

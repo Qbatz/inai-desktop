@@ -343,10 +343,13 @@ function AddCustomer({ editCustomerDetails }) {
         }
 
 
-        if (!officeAddress.postalCode?.trim()) {
-            errors.postalCode = "Postal Code is required";
-            isValid = false
+        if (!officeAddress.postalCode?.trim() || officeAddress.postalCode.length !== 6) {
+            errors.postalCode = !officeAddress.postalCode?.trim()
+                ? "Postal Code is required"
+                : "Postal code must be exactly 6 digits";
+            isValid = false;
         }
+
 
         if (!shippingAddress.address1?.trim()) {
             errors.shipaddress1 = "Address Line 1 is required";
@@ -358,11 +361,13 @@ function AddCustomer({ editCustomerDetails }) {
             isValid = false
         }
 
-
-        if (!shippingAddress.postalCode?.trim()) {
-            errors.shippostalCode = "Postal Code is required";
-            isValid = false
+        if (!shippingAddress.postalCode?.trim() || shippingAddress.postalCode.length !== 6) {
+            errors.shippostalCode = !shippingAddress.postalCode?.trim()
+                ? "Postal Code is required"
+                : "Postal code must be exactly 6 digits";
+            isValid = false;
         }
+
 
         setErrors(errors)
 
@@ -411,22 +416,19 @@ function AddCustomer({ editCustomerDetails }) {
             return { ...prevErrors, contactErrors: updatedErrors };
         });
     };
+
     const handleOfficeChange = (field, value) => {
         if (field === "city" && /[^a-zA-Z\s]/.test(value)) return;
 
         if (
-            (field === "address1" ||
-                field === "address2" ||
-                field === "address3" ||
-                field === "address4" ||
-                field === "landmark") &&
-                /[^a-zA-Z0-9\s,./=<>@#$%^&?’'-]/.test(value)
-
+            ["address1", "address2", "address3", "address4", "landmark"].includes(field) &&
+            /[^a-zA-Z0-9\s,./=<>@#$%^&?’'-]/.test(value)
         ) return;
 
-        if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
+        if (field === "postalCode" && (!/^\d{0,6}$/.test(value))) return;
 
         setOfficeAddress((prev) => ({ ...prev, [field]: value }));
+
         setErrors((prevErrors) => ({
             ...prevErrors,
             [field]: value.trim() ? "" : prevErrors[field],
@@ -434,19 +436,15 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
     const handleShippingChange = (field, value) => {
+
         if (field === "city" && /[^a-zA-Z\s]/.test(value)) return;
 
         if (
-            (field === "address1" ||
-                field === "address2" ||
-                field === "address3" ||
-                field === "address4" ||
-                field === "landmark") &&
-        /[^a-zA-Z0-9\s,./=<>@#$%^&?’'-]/.test(value)
-
+            ["address1", "address2", "address3", "address4", "landmark"].includes(field) &&
+            /[^a-zA-Z0-9\s,./=<>@#$%^&?’'-]/.test(value)
         ) return;
 
-        if (field === "postalCode" && (!/^\d*$/.test(value) || value.length > 6)) return;
+        if (field === "postalCode" && (!/^\d{0,6}$/.test(value))) return;
 
         setShippingAddress((prev) => ({ ...prev, [field]: value }));
         setErrors((prevErrors) => ({
@@ -802,10 +800,20 @@ function AddCustomer({ editCustomerDetails }) {
 
         if (!officeAddress.address1?.trim()) addressErrors.address1 = "Address Line 1 is required";
         if (!officeAddress.city?.trim()) addressErrors.city = "City is required";
-        if (!officeAddress.postalCode?.trim()) addressErrors.postalCode = "Postal Code is required";
+        if (!officeAddress.postalCode?.trim() || officeAddress.postalCode.length !== 6) {
+            addressErrors.postalCode = !officeAddress.postalCode?.trim()
+                ? "Postal Code is required"
+                : "Postal code must be exactly 6 digits";
+        }
+
         if (!shippingAddress.address1?.trim()) addressErrors.shipaddress1 = "Shipping Address Line 1 is required";
         if (!shippingAddress.city?.trim()) addressErrors.shipcity = "Shipping City is required";
-        if (!shippingAddress.postalCode?.trim()) addressErrors.shippostalCode = "Shipping Postal Code is required";
+        if (!shippingAddress.postalCode?.trim() || shippingAddress.postalCode.length !== 6) {
+            addressErrors.shippostalCode = !shippingAddress.postalCode?.trim()
+                ? "Shipping Postal Code is required"
+                : "Shipping Postal Code must be exactly 6 digits";
+        }
+
 
         bankDetailsList.forEach((bank, index) => {
             let bankError = {};
@@ -1115,10 +1123,14 @@ function AddCustomer({ editCustomerDetails }) {
             addressErrors.city = "City is required"
             isValid = false
         };
-        if (!officeAddress.postalCode?.trim()) {
-            addressErrors.postalCode = "Postal Code is required"
-            isValid = false
-        };
+
+        if (!officeAddress.postalCode?.trim() || officeAddress.postalCode.length !== 6) {
+            addressErrors.postalCode = !officeAddress.postalCode?.trim()
+                ? "Postal Code is required"
+                : "Postal code must be exactly 6 digits";
+            isValid = false;
+        }
+
         if (!shippingAddress.address1?.trim()) {
             addressErrors.shipaddress1 = "Shipping Address Line 1 is required"
             isValid = false
@@ -1127,10 +1139,14 @@ function AddCustomer({ editCustomerDetails }) {
             addressErrors.shipcity = "Shipping City is required"
             isValid = false
         };
-        if (!shippingAddress.postalCode?.trim()) {
-            addressErrors.shippostalCode = "Shipping Postal Code is required"
-            isValid = false
-        };
+
+        if (!shippingAddress.postalCode?.trim() || shippingAddress.postalCode.length !== 6) {
+            addressErrors.shippostalCode = !shippingAddress.postalCode?.trim()
+                ? "Shipping Postal Code is required"
+                : "Shipping Postal Code must be exactly 6 digits";
+            isValid = false;
+        }
+
 
 
 
@@ -1451,7 +1467,7 @@ function AddCustomer({ editCustomerDetails }) {
         }
     }, [state.customer.successCode]);
 
- 
+
     const statesList = [
         { value: "Select State", label: "Select State", isPlaceholder: true },
         { value: "Tamil Nadu", label: "Tamil Nadu" },
@@ -1626,7 +1642,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                 { value: 'PARTNERSHIP', label: 'PARTNERSHIP' },
                                                 { value: 'PROPRIETORSHIP', label: 'PROPRIETORSHIP' }
                                             ]}
-                                          
+
                                             value={
                                                 formData.legalStatus
                                                     ? { label: formData.legalStatus, value: formData.legalStatus }
@@ -1903,7 +1919,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         <input
                                             ref={emailRef}
                                             type='text'
-                                            value={formData.emailId || 'N/A'}
+                                            value={formData.emailId}
                                             onChange={(e) => handleInputChange('emailId', e.target.value)}
                                             placeholder='Enter Email ID'
                                             className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
@@ -2068,7 +2084,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     <input
                                                         type="text"
                                                         placeholder="Enter Email ID"
-                                                        value={contact.email || 'N/A'}
+                                                        value={contact.email}
                                                         ref={contactRefs.current[index]?.email}
                                                         onChange={(e) => handleChange(index, "email", e.target.value)}
                                                         className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
@@ -2245,7 +2261,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
-                                      
+
                                         <Select
                                             options={[
                                                 { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
@@ -2434,7 +2450,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         )}
                                     </div>
 
-                                
+
                                     <div className='mb-2 items-center'>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Country</label>
 

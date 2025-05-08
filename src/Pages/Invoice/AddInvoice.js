@@ -8,7 +8,7 @@ import InvoiceAddProduct from "../../Pages/Invoice/InvoiceAddProduct";
 import AddBox from "../../Pages/Invoice/AddBox";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
-import { GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
+import { GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA } from '../../Utils/Constant';
 import { format } from 'date-fns';
 import { InfoCircle } from "iconsax-react";
 
@@ -20,12 +20,15 @@ function AddInvoice() {
 
     const dispatch = useDispatch();
     const state = useSelector(state => state);
+
+    const [officeAddress, setOfficeAddress] = useState('')
+    const [shippingAddress, setShippingAddress] = useState('')
     const [rows, setRows] = useState([
         { poNumber: '', date: null }
     ]);
     const [value, setValue] = useState(1);
     const rowRefs = useRef([]);
-      const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
     const [showBox, setShowBox] = useState(false)
     const [showProduct, setShowProduct] = useState(false)
     const [customerOptions, setCustomerOptions] = useState([])
@@ -422,48 +425,6 @@ function AddInvoice() {
 
 
 
-    useEffect(() => {
-        dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { searchKeyword: "" } });
-    }, []);
-
-
-    useEffect(() => {
-
-        rowRefs.current = rows.map((_, i) => rowRefs.current[i] || {
-            po: React.createRef(),
-            date: React.createRef(),
-        });
-    }, [rows.length]);
-
-
-    useEffect(() => {
-        rowRefs.current = rows.map((_, i) => {
-            return rowRefs.current[i] || { po: React.createRef(), date: React.createRef() };
-        });
-    }, [rows]);
-
-
-    useEffect(() => {
-        rowRefs.current = items.map((_, i) => {
-            return rowRefs.current[i] || {
-                itemNo: React.createRef(),
-                description: React.createRef(),
-                hsn: React.createRef(),
-                qty: React.createRef(),
-                unitCost: React.createRef(),
-                packageNo: React.createRef(),
-            };
-        });
-    }, [items]);
-
-    useEffect(() => {
-        const Options = state.customer?.customerList?.map((item) => ({
-            value: item.clientId,
-            label: item.contactPerson,
-        }));
-        setCustomerOptions(Options)
-
-    }, [state.customer.customerList])
 
 
 
@@ -726,8 +687,69 @@ function AddInvoice() {
 
 
 
+    useEffect(() => {
+        dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { searchKeyword: "" } });
+    }, []);
 
 
+    useEffect(() => {
+
+        rowRefs.current = rows.map((_, i) => rowRefs.current[i] || {
+            po: React.createRef(),
+            date: React.createRef(),
+        });
+    }, [rows.length]);
+
+
+    useEffect(() => {
+        rowRefs.current = rows.map((_, i) => {
+            return rowRefs.current[i] || { po: React.createRef(), date: React.createRef() };
+        });
+    }, [rows]);
+
+
+    useEffect(() => {
+        rowRefs.current = items.map((_, i) => {
+            return rowRefs.current[i] || {
+                itemNo: React.createRef(),
+                description: React.createRef(),
+                hsn: React.createRef(),
+                qty: React.createRef(),
+                unitCost: React.createRef(),
+                packageNo: React.createRef(),
+            };
+        });
+    }, [items]);
+
+    useEffect(() => {
+        const Options = state.customer?.customerList?.map((item) => ({
+            value: item.clientId,
+            label: item.contactPerson,
+        }));
+        setCustomerOptions(Options)
+
+    }, [state.customer.customerList])
+
+
+    useEffect(() => {
+        if (formData.customer) {
+            dispatch({ type: GET_CUSTOMER_DETAILS_SAGA, payload: formData.customer });
+        }
+    }, [formData.customer]);
+
+
+    const customer = state.customer?.customerDetails || {};
+
+
+
+    useEffect(() => {
+
+        const OfficeAddress = customer?.address?.filter((item) => item.addressType === "Office Address");
+        setOfficeAddress(OfficeAddress || []);
+
+        const ShippingAddress = customer?.address?.filter((item) => item.addressType === "Shipping Address");
+        setShippingAddress(ShippingAddress || []);
+    }, [state.customer?.customerDetails]);
 
 
 
@@ -811,16 +833,28 @@ function AddInvoice() {
                             <div className='rounded-lg bg-[#EFF2F5] border-[#EFF2F5] min-h-[230px] p-4'>
 
 
-                                <label className='block text-[#205DA8] text-xs font-Gilroy font-semibold'>Consignee</label>
+                                <label className='block text-[#205DA8] text-xs font-Gilroy font-semibold mb-2'>Consignee</label>
 
-                                <label className='block text-[#0F172A] text-lg font-Gilroy font-semibold'>Rakul Preet</label>
+                                <label className='block text-[#0F172A] text-lg font-Gilroy font-semibold mb-2'>{customer.contactPerson || 'Name'}</label>
 
-                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium'>Flat No. G-2, Plot No. 19, Mullai Street, Sakthi Nagar, Adambakkam, Chennai – 600 088 </label>
+                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium mb-2'>
+                                    {officeAddress?.length > 0 ? (
+                                        officeAddress.map((office, index) => (
+                                            <span className='block text-[#0F172A] text-base font-Gilroy font-medium pe-5' key={index}>{office.doorNo}{' '}{office.street}{''} {office.locality}{''} {office.address4}  {' '} {office.city} {' '} - {office.postalCode} </span>
+                                        ))
+                                    ) : (
+                                        <span className='block text-[#0F172A] text-base font-Gilroy font-medium mb-2'  >No office address available</span>
+                                    )}
+                                </label>
 
-                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium'>inai@inaippl.com </label>
-                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium'>+91 6363636363</label>
+                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium mb-2'>{customer.emailId} </label>
+                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium mb-1'>
+                                    {customer?.country_code && customer?.contactNumber
+                                        ? ` + ${customer.country_code} ${customer.contactNumber}`
+                                        : '-'}
+                                </label>
 
-                                <label className='block text-[#737982] text-base font-Gilroy font-medium'>GSTIN  :  </label>
+                                <label className='block text-[#737982] text-base font-Gilroy font-medium mb-1'>GSTIN  : {customer.gstVat} </label>
                                 <label className='block text-[#737982] text-base font-Gilroy font-medium'>IEC :</label>
 
 
@@ -830,16 +864,26 @@ function AddInvoice() {
                             <div className='rounded-lg bg-[#EFF2F5] border-[#EFF2F5] min-h-[230px] p-4'>
 
 
-                                <label className='block text-[#205DA8] text-xs font-Gilroy font-semibold'>Consignee</label>
+                                <label className='block text-[#205DA8] text-xs font-Gilroy font-semibold mb-2'>Consignee</label>
 
-                                <label className='block text-[#0F172A] text-lg font-Gilroy font-semibold'>Rakul Preet</label>
+                                <label className='block text-[#0F172A] text-lg font-Gilroy font-semibold mb-2'>{customer.contactPerson || 'Name'}</label>
 
-                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium'>Flat No. G-2, Plot No. 19, Mullai Street, Sakthi Nagar, Adambakkam, Chennai – 600 088 </label>
+                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium mb-2'>
+                                    {shippingAddress?.length > 0 ? (
+                                        shippingAddress.map((ship, index) => (
+                                            <span className='block text-[#0F172A] text-base font-Gilroy font-medium pe-5' key={index}>{ship.doorNo}{' '}{ship.street}{''} {ship.locality}{''} {ship.address4}  {' '} {ship.city} {' '} - {ship.postalCode} </span>
+                                        ))
+                                    ) : (
+                                        <span className='block text-[#0F172A] text-base font-Gilroy font-medium mb-2'  >No ship address available</span>
+                                    )}
+                                </label>
+                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium mb-2'>{customer.emailId} </label>
+                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium mb-1'>
+                                    {customer?.country_code && customer?.contactNumber
+                                        ? ` + ${customer.country_code} ${customer.contactNumber}`
+                                        : '-'} </label>
 
-                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium'>inai@inaippl.com </label>
-                                <label className='block text-[#0F172A] text-base font-Gilroy font-medium'>+91 6363636363</label>
-
-                                <label className='block text-[#737982] text-base font-Gilroy font-medium'>GSTIN  :  </label>
+                                <label className='block text-[#737982] text-base font-Gilroy font-medium mb-1'>GSTIN  : {customer.gstVat} </label>
                                 <label className='block text-[#737982] text-base font-Gilroy font-medium'>IEC :</label>
                             </div>
                         </div>

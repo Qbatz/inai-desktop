@@ -738,20 +738,21 @@ function AddInvoice() {
     }, [formData.customer]);
 
 
-    const customer = state.customer?.customerDetails || {};
+    const customer = formData.customer ? state.customer?.customerDetails : {};
 
 
 
     useEffect(() => {
+        if (formData.customer) {
+            const OfficeAddress = customer?.address?.filter((item) => item.addressType === "Office Address");
+            setOfficeAddress(OfficeAddress || []);
 
-        const OfficeAddress = customer?.address?.filter((item) => item.addressType === "Office Address");
-        setOfficeAddress(OfficeAddress || []);
-
-        const ShippingAddress = customer?.address?.filter((item) => item.addressType === "Shipping Address");
-        setShippingAddress(ShippingAddress || []);
+            const ShippingAddress = customer?.address?.filter((item) => item.addressType === "Shipping Address");
+            setShippingAddress(ShippingAddress || []);
+        }
     }, [state.customer?.customerDetails]);
 
-
+   
 
 
     return (
@@ -871,11 +872,24 @@ function AddInvoice() {
                                 <label className='block text-[#0F172A] text-base font-Gilroy font-medium mb-2'>
                                     {shippingAddress?.length > 0 ? (
                                         shippingAddress.map((ship, index) => (
-                                            <span className='block text-[#0F172A] text-base font-Gilroy font-medium pe-5' key={index}>{ship.doorNo}{' '}{ship.street}{''} {ship.locality}{''} {ship.address4}  {' '} {ship.city} {' '} - {ship.postalCode} </span>
+                                            <span className='block text-[#0F172A] text-base font-Gilroy font-medium pe-5' key={index}>
+                                                {ship.doorNo} {ship.street} {ship.locality} {ship.address4} {ship.city} - {ship.postalCode}
+                                            </span>
                                         ))
                                     ) : (
-                                        <span className='block text-[#0F172A] text-base font-Gilroy font-medium mb-2'  >No ship address available</span>
+                                        <span className='block text-[#0F172A] text-base font-Gilroy font-medium pe-5'>
+                                            {officeAddress?.length > 0 ? (
+                                                officeAddress.map((office, index) => (
+                                                    <span key={index}>
+                                                        {office.doorNo} {office.street} {office.locality} {office.address4} {office.city} - {office.postalCode}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                'No shipping or office address available'
+                                            )}
+                                        </span>
                                     )}
+
                                 </label>
                                 <label className='block text-[#0F172A] text-base font-Gilroy font-medium mb-2'>{customer.emailId} </label>
                                 <label className='block text-[#0F172A] text-base font-Gilroy font-medium mb-1'>

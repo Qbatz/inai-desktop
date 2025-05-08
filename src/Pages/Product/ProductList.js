@@ -309,7 +309,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
             )}
 
 
-            <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative h-fit'>
+            <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative h-[540px]'>
 
                 <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
                     <div>
@@ -384,7 +384,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
 
 
                 <div className="">
-                    <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[350px] overflow-y-auto p-0 mt-4'>
+                    <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[330px] overflow-y-auto p-0 mt-4'>
                         <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                             <thead className="bg-slate-100 sticky top-0 z-10">
                                 <tr>
@@ -492,7 +492,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                     productList.length > 10 &&
 
 
-                    <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center bg-white p-4 rounded-lg">
+                    <nav className="absolute right-4 bottom-0 flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center bg-white p-4 rounded-lg">
                         <div className="flex items-center gap-2">
                             <select
                                 value={itemsPerPage}

@@ -256,7 +256,7 @@ function VendorList() {
         {
           isVisible ?
 
-            <div className='flex flex-col flex-1 bg-white rounded-2xl ps-5 pt-3 pe-5 relative h-fit'>
+            <div className='flex flex-col flex-1 bg-white rounded-2xl ps-5 pt-3 pe-5 relative h-[520px]'>
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
                   <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
@@ -419,7 +419,7 @@ function VendorList() {
 
               {vendorList.length > 10 && (
                 
-                <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center bg-white p-3 rounded-lg">
+                <nav className="absolute right-4 bottom-0 flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center bg-white p-3 rounded-lg">
                   <div className="flex items-center gap-2">
 
                     <select

@@ -2433,13 +2433,13 @@ function AddProduct() {
 
 
                                 <DatePicker
-                                    ref={yearRef}
+                                    
                                     selected={selectedDate}
                                     onChange={handleDateChange}
                                     dateFormat="dd/MM/yyyy"
                                     className='cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full'
                                     placeholderText="Month and Year of Manufacture"
-                                    customInput={<CustomInput />}
+                                    customInput={<CustomInput  ref={yearRef} />}
                                     wrapperClassName="w-full"
                                 />
                             </div>

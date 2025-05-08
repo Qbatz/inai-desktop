@@ -524,9 +524,9 @@ function BasicVendor({ vendorDetails }) {
         setOfficeState(selectedOption ? selectedOption.value : '');
     };
 
-
     const handlePostalCodeChange = (e) => {
         const value = e.target.value;
+
         if (/^\d{0,6}$/.test(value)) {
             setPostalCode(value);
         }
@@ -534,6 +534,7 @@ function BasicVendor({ vendorDetails }) {
             setFormErrors((prevErrors) => ({ ...prevErrors, postalCode: "" }));
         }
     };
+
 
     const handleLandmarkChange = (e) => {
         const value = e.target.value;
@@ -605,11 +606,12 @@ function BasicVendor({ vendorDetails }) {
 
     const handleShippingPostalCodeChange = (e) => {
         const value = e.target.value;
+
         if (/^\d{0,6}$/.test(value)) {
             setShippingPostalCode(value);
-            if (formErrors.shippingPostalCode && /^\d+$/.test(value)) {
-                setFormErrors((prevErrors) => ({ ...prevErrors, shippingPostalCode: "" }));
-            }
+        }
+        if (formErrors.shippingPostalCode && /^\d+$/.test(value)) {
+            setFormErrors((prevErrors) => ({ ...prevErrors, shippingPostalCode: "" }));
         }
     };
 
@@ -669,11 +671,21 @@ function BasicVendor({ vendorDetails }) {
 
         if (!officeAddress1.trim()) errors.officeAddress1 = "OfficeAddress is required";
         if (!city.trim()) errors.city = "City is required";
-        if (!postalCode.trim()) errors.postalCode = "Postal Code is required";
+        if (!postalCode.trim() || postalCode.length !== 6) {
+            errors.postalCode = !postalCode.trim()
+                ? "Postal Code is required"
+                : "Postal Code must be exactly 6 digits";
+        }
+
 
         if (!shippingAddress1.trim()) errors.shippingAddress1 = "Shipping Address is required";
         if (!shippingCity.trim()) errors.shippingCity = "City is required";
-        if (!shippingPostalCode.trim()) errors.shippingPostalCode = "Postal Code is required";
+        if (!shippingPostalCode.trim() || shippingPostalCode.length !== 6) {
+            errors.shippingPostalCode = !shippingPostalCode.trim()
+                ? "Postal Code is required"
+                : "Postal Code must be exactly 6 digits";
+        }
+
         setFormErrors(errors);
         if (Object.keys(errors).length > 0) {
             if (errors.officeAddress1) officeAddress1Ref.current?.focus();
@@ -1535,7 +1547,7 @@ function BasicVendor({ vendorDetails }) {
             padding: '0 8px',
         }),
     };
- 
+
     return (
         <div className="bg-slate-100  w-full rounded-t-2xl ">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4 relative">
@@ -2640,7 +2652,7 @@ function BasicVendor({ vendorDetails }) {
                                             <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
                                                 Bank Country
                                             </label>
-                                           
+
                                             <Select
                                                 id="bankCountry"
                                                 value={

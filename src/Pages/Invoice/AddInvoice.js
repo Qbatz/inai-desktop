@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Select from "react-select";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -7,48 +7,67 @@ import { Trash } from "iconsax-react";
 import InvoiceAddProduct from "../../Pages/Invoice/InvoiceAddProduct";
 import AddBox from "../../Pages/Invoice/AddBox";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from 'react-redux';
+import { GET_CUSTOMER_LIST_SAGA } from '../../Utils/Constant';
+import { format } from 'date-fns';
+import { InfoCircle } from "iconsax-react";
+
 
 
 function AddInvoice() {
 
-    const [value, setValue] = useState(1);
 
 
-    const [showBox, setShowBox] = useState(false)
-    const [showProduct, setShowProduct] = useState(false)
-
-
-
+    const dispatch = useDispatch();
+    const state = useSelector(state => state);
     const [rows, setRows] = useState([
         { poNumber: '', date: null }
     ]);
+    const [value, setValue] = useState(1);
+    const rowRefs = useRef([]);
+      const [errors, setErrors] = useState({});
+    const [showBox, setShowBox] = useState(false)
+    const [showProduct, setShowProduct] = useState(false)
+    const [customerOptions, setCustomerOptions] = useState([])
+
+    const [formData, setFormData] = useState({
+        customer: "",
+        invoiceType: null,
+        invoiceNo: '',
+        currency: null,
+        invoiceDate: null,
+        originOfGoods: null,
+        portOfLoading: null,
+        portOfDischarge: null,
+        destinationCountry: null,
+        deliveryTerm: null,
+        paymentTerm1: '',
+        paymentTerm2: '',
+        shippingBillNo: '',
+        shippingBillDate: null,
+        bankPaymentRefNo: '',
+        billOfLading: '',
+        billOfLadingDate: null,
+        noOfPackage: '',
+        netWeight: '',
+        grossWeight: '',
+        freight: '',
+        insurance: ''
+    });
+
 
     const [items, setItems] = useState([
         { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '' }
     ]);
 
-    const handleAddItem = () => {
-        setItems([
-            ...items,
-            { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '' }
-        ]);
-    };
+    const [itemErrors, setItemErrors] = useState([]);
+    const rowItemsRefs = useRef([]);
 
 
-    const handleAddRow = () => {
-        setRows([...rows, { poNumber: '', date: null }]);
-    };
 
-    const handleRemoveRow = (index) => {
-        const newRows = rows.filter((_, i) => i !== index);
-        setRows(newRows);
-    };
 
-    const handleInputChange = (index, field, value) => {
-        const updatedRows = [...rows];
-        updatedRows[index][field] = value;
-        setRows(updatedRows);
-    };
+
+
 
     const tabs = [
         { id: 1, label: "Customer Detail" },
@@ -73,22 +92,192 @@ function AddInvoice() {
         { value: "China", label: "China" },
     ];
 
+    const InvoiceOptions = [
+        { value: "", label: "Select Type" },
+        { value: "EXPORT", label: "EXPORT" },
+        { value: "DOMESTIC", label: "DOMESTIC" },
+    ]
+
+
+    const beneficiaryCurrencyOptions = [
+        { value: "USD", label: "USD" },
+        { value: "INR", label: "INR" },
+        { value: "EUR", label: "EUR" },
+        { value: "GBP", label: "GBP" },
+        { value: "JPY", label: "JPY" }
+    ];
+
+
+    const portOptions = [
+        { value: "IN-MUMBAI", label: "Mumbai Port" },
+        { value: "IN-CHENNAI", label: "Chennai Port" },
+        { value: "IN-KOLKATA", label: "Kolkata Port" },
+        { value: "IN-KANDLA", label: "Kandla Port" },
+        { value: "NL-ROTTERDAM", label: "Rotterdam Port (Netherlands)" },
+        { value: "DE-HAMBURG", label: "Hamburg Port (Germany)" },
+        { value: "BE-ANTWERP", label: "Antwerp Port (Belgium)" },
+        { value: "UK-FELIXSTOWE", label: "Felixstowe Port" },
+        { value: "UK-SOUTHAMPTON", label: "Southampton Port" },
+        { value: "UK-LONDON", label: "London Gateway Port" },
+        { value: "JP-TOKYO", label: "Tokyo Port" },
+        { value: "JP-YOKOHAMA", label: "Yokohama Port" },
+        { value: "JP-KOBE", label: "Kobe Port" },
+        { value: "US-LOSANGELES", label: "Los Angeles Port" },
+        { value: "US-NEWYORK", label: "New York Port" },
+        { value: "US-HOUSTON", label: "Houston Port" },
+
+    ];
+
+
+
+    const customerRef = useRef();
+    const invoiceTypeRef = useRef();
+    const invoiceNoRef = useRef();
+    const currencyRef = useRef();
+    const invoiceDateRef = useRef();
+    const originOfGoodsRef = useRef();
+    const portOfLoadingRef = useRef();
+    const portOfDischargeRef = useRef();
+    const destinationCountryRef = useRef();
+    const deliveryTermRef = useRef();
+    const paymentTerm1Ref = useRef();
+    const paymentTerm2Ref = useRef();
+    const bankPaymentRefNoRef = useRef();
+    const freightRef = useRef();
+    const insuranceRef = useRef();
+
+
+    const handleAddItem = () => {
+        setItems([
+            ...items,
+            { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '' }
+        ]);
+    };
+
+
+    const handleAddRow = () => {
+        setRows([...rows, { poNumber: '', date: null }]);
+    };
+
+    const handleRemoveRow = (index) => {
+        const newRows = rows.filter((_, i) => i !== index);
+        setRows(newRows);
+    };
+
+    const handleInputChange = (index, field, value) => {
+        const formattedValue = field === 'date' ? format(value, 'yyyy/MM/dd') : value;
+        const updatedRows = [...rows];
+        updatedRows[index][field] = formattedValue;
+        setRows(updatedRows);
+        setErrors((prevErrors) => {
+            const updatedRowErrors = [...(prevErrors.rowErrors || [])];
+            if (updatedRowErrors[index]) {
+                updatedRowErrors[index] = { ...updatedRowErrors[index], [field]: '' };
+            }
+
+            return {
+                ...prevErrors,
+                rowErrors: updatedRowErrors,
+            };
+        });
+    };
+
+    const handleItemChange = (index, field, value) => {
+        const updatedItems = [...items];
+        const updatedErrors = [...itemErrors];
+
+
+        if ((field === 'qty' || field === 'unitCost' || field === 'packageNo') && !/^\d*\.?\d*$/.test(value)) {
+            return;
+        }
+
+        updatedItems[index][field] = value;
+
+
+        if (updatedErrors[index]) {
+            switch (field) {
+                case 'itemNo':
+                case 'description':
+                case 'hsn':
+                case 'packageNo':
+                    if (value.trim()) {
+                        delete updatedErrors[index][field];
+                    }
+                    break;
+                case 'qty':
+                case 'unitCost':
+                    if (value && !isNaN(value)) {
+                        delete updatedErrors[index][field];
+                    }
+
+                    break;
+                default:
+
+                    break;
+            }
+        }
+
+
+        if (field === 'qty' || field === 'unitCost') {
+            const qty = parseFloat(updatedItems[index].qty) || 0;
+            const unit = parseFloat(updatedItems[index].unitCost) || 0;
+            updatedItems[index].total = (qty * unit).toFixed(2);
+        }
+
+        setItems(updatedItems);
+        setItemErrors(updatedErrors);
+    };
+
+
+
+    const grandTotal = items.reduce((sum, item) => {
+        const total = parseFloat(item.total || item.totalCost || 0);
+        return sum + total;
+    }, 0);
+
+
+
+
     const handleTabClick = (id) => {
-        setValue(id);
-    }
+        if (id === 2) {
+            if (validateCustomerForm()) {
+                setValue(id);
+            }
+        } else if (id === 3) {
+            if (validateInvoiceForm()) {
+                setValue(id);
+            }
+        } else if (id === 4) {
+            if (validateItemsForm()) {
+                setValue(id);
+            }
+
+        } else {
+            setValue(id);
+        }
+    };
+
 
     const handleNextInvoiceDetail = () => {
-        setValue(2)
+        if (validateCustomerForm()) {
+            setValue(2)
+        }
     }
 
     const handleNextItemDetail = () => {
-        setValue(3)
+        if (validateInvoiceForm()) {
+            setValue(3)
+        }
+
     }
 
 
-    const handleNextPackageDetail = () =>{
-        setValue(4)
-}
+    const handleNextPackageDetail = () => {
+        if (validateItemsForm()) {
+            setValue(4)
+        }
+
+    }
 
 
 
@@ -113,20 +302,48 @@ function AddInvoice() {
             padding: '4px 10px',
             cursor: 'pointer',
             fontSize: "14px",
-            fontFamily: 'Gilroy'
+            fontFamily: 'Gilroy',
         }),
         menu: (base) => ({
             ...base,
             maxHeight: '120px',
             overflowY: 'auto',
-            scrollbarWidth: 'thin',
-            msOverflowStyle: 'auto',
+            scrollBehavior: 'smooth',
+            transition: 'all 0.3s ease-in-out',
+            transformOrigin: 'top',
+            overscrollBehaviorY: 'contain',
         }),
-        singleValue: (base) => ({
+        menuList: (base) => ({
             ...base,
-            color: '#64748B',
-            fontSize: '14px',
-            fontFamily: 'Gilroy'
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollBehavior: 'smooth',
+            scrollbarWidth: 'thin',
+            paddingRight: '4px',
+            '&::-webkit-scrollbar': {
+                width: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#cbd5e1',
+                borderRadius: '6px',
+            },
+        }),
+        singleValue: (base, state) => {
+            const isPlaceholderSelected = state.data?.isPlaceholder;
+            return {
+                ...base,
+                fontFamily: "Gilroy",
+                fontWeight: 500,
+                fontSize: "14px",
+                textTransform: "capitalize",
+                color: isPlaceholderSelected ? "oklch(70.8% 0 0)" : "black",
+            };
+        },
+        placeholder: (base) => ({
+            ...base,
+            fontSize: "14px",
+            fontWeight: 500,
+            fontFamily: "Gilroy, sans-serif",
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -136,16 +353,8 @@ function AddInvoice() {
             color: '#94A3B8',
             padding: '0 8px',
         }),
-        placeholder: (base) => ({
-            ...base,
-            color: '#262626',
-            fontSize: "14px",
-            fontWeight: 500,
-            fontFamily: "Gilroy, sans-serif"
-        }),
-
-
     };
+
 
 
     const CustomInput = React.forwardRef(({ value, onClick, placeholder }, ref) => (
@@ -160,8 +369,26 @@ function AddInvoice() {
         />
     ));
 
-    CustomInput.displayName = 'CustomInput';
+    const CustomDateInput = React.forwardRef(({ value, onClick, placeholder }, ref) => (
+        <input
+            ref={ref}
+            value={value}
+            onClick={onClick}
+            readOnly
+            placeholder={placeholder}
+            className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+        />
+    ));
 
+
+    const CustomDateInputWrapper = ({ inputRef, ...props }) => (
+        <CustomDateInput {...props} ref={inputRef} />
+    );
+
+
+
+    CustomInput.displayName = 'CustomInput';
+    CustomDateInput.displayName = 'CustomDateInput'
 
     const handleAddProduct = () => {
         setShowProduct(true)
@@ -182,6 +409,324 @@ function AddInvoice() {
     const handleCloseAddBox = () => {
         setShowBox(false)
     }
+
+
+    const handleInputChangeForInvoice = (field, value) => {
+        const formattedValue = field === 'invoiceDate' || field === 'shippingBillDate' || field === 'billOfLadingDate' ? format(value, 'yyyy/MM/dd') : value;
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: formattedValue,
+        }));
+        setErrors((prev) => ({ ...prev, [field]: '' }));
+    };
+
+
+
+    useEffect(() => {
+        dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { searchKeyword: "" } });
+    }, []);
+
+
+    useEffect(() => {
+
+        rowRefs.current = rows.map((_, i) => rowRefs.current[i] || {
+            po: React.createRef(),
+            date: React.createRef(),
+        });
+    }, [rows.length]);
+
+
+    useEffect(() => {
+        rowRefs.current = rows.map((_, i) => {
+            return rowRefs.current[i] || { po: React.createRef(), date: React.createRef() };
+        });
+    }, [rows]);
+
+
+    useEffect(() => {
+        rowRefs.current = items.map((_, i) => {
+            return rowRefs.current[i] || {
+                itemNo: React.createRef(),
+                description: React.createRef(),
+                hsn: React.createRef(),
+                qty: React.createRef(),
+                unitCost: React.createRef(),
+                packageNo: React.createRef(),
+            };
+        });
+    }, [items]);
+
+    useEffect(() => {
+        const Options = state.customer?.customerList?.map((item) => ({
+            value: item.clientId,
+            label: item.contactPerson,
+        }));
+        setCustomerOptions(Options)
+
+    }, [state.customer.customerList])
+
+
+
+
+    const validateCustomerForm = () => {
+        const newErrors = {};
+
+        if (!formData.customer) {
+            newErrors.customer = 'Please select a customer';
+        }
+
+        setErrors(newErrors);
+
+
+        if (Object.keys(newErrors).length > 0) {
+            if (newErrors.customer) {
+                customerRef.current?.focus();
+            }
+            return false;
+        }
+
+        return true;
+    };
+
+
+
+    const validateInvoiceForm = () => {
+        const newErrors = {};
+        let isValid = true;
+
+
+        if (!formData.invoiceType) { newErrors.invoiceType = 'Invoice type is required'; isValid = false; }
+        if (!formData.invoiceNo) { newErrors.invoiceNo = 'Invoice number is required'; isValid = false; }
+        if (!formData.currency) { newErrors.currency = 'Currency is required'; isValid = false; }
+        if (!formData.invoiceDate) { newErrors.invoiceDate = 'Invoice date is required'; isValid = false; }
+        if (!formData.originOfGoods) { newErrors.originOfGoods = 'Origin of goods is required'; isValid = false; }
+        if (!formData.portOfLoading) { newErrors.portOfLoading = 'Port of loading is required'; isValid = false; }
+        if (!formData.portOfDischarge) { newErrors.portOfDischarge = 'Port of discharge is required'; isValid = false; }
+        if (!formData.destinationCountry) { newErrors.destinationCountry = 'Destination country is required'; isValid = false; }
+        if (!formData.deliveryTerm) { newErrors.deliveryTerm = 'Delivery term is required'; isValid = false; }
+        if (!formData.paymentTerm1) { newErrors.paymentTerm1 = 'Payment term is required'; isValid = false; }
+        if (!formData.paymentTerm2) { newErrors.paymentTerm2 = 'Payment term is required'; isValid = false; }
+        if (!formData.bankPaymentRefNo) { newErrors.bankPaymentRefNo = 'Bank payment reference number is required'; isValid = false; }
+        if (!formData.freight) { newErrors.freight = 'Freight is required'; isValid = false; }
+        if (!formData.insurance) { newErrors.insurance = 'Insurance is required'; isValid = false; }
+
+
+        newErrors.rowErrors = [];
+
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const rowError = {};
+
+            if (!row.poNumber.trim()) {
+                rowError.poNumber = 'PO Number is required';
+                isValid = false;
+            }
+
+            if (!row.date) {
+                rowError.date = 'Date is required';
+                isValid = false;
+            }
+
+            newErrors.rowErrors[i] = rowError;
+        }
+
+        setErrors(newErrors);
+
+
+        if (!isValid) {
+            let focusSet = false;
+
+            if (newErrors.invoiceType && !focusSet) {
+                invoiceTypeRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.invoiceNo && !focusSet) {
+                invoiceNoRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.currency && !focusSet) {
+                currencyRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.invoiceDate && !focusSet) {
+                invoiceDateRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.originOfGoods && !focusSet) {
+                originOfGoodsRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.portOfLoading && !focusSet) {
+                portOfLoadingRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.portOfDischarge && !focusSet) {
+                portOfDischargeRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.destinationCountry && !focusSet) {
+                destinationCountryRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.deliveryTerm && !focusSet) {
+                deliveryTermRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.paymentTerm1 && !focusSet) {
+                paymentTerm1Ref.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.paymentTerm2 && !focusSet) {
+                paymentTerm2Ref.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.bankPaymentRefNo && !focusSet) {
+                bankPaymentRefNoRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.freight && !focusSet) {
+                freightRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.insurance && !focusSet) {
+                insuranceRef.current?.focus();
+                focusSet = true;
+            }
+
+            for (let i = 0; i < newErrors.rowErrors.length; i++) {
+                const rowError = newErrors.rowErrors[i] || {};
+                const refs = rowRefs.current[i] || {};
+
+
+                if (rowError.poNumber && !focusSet) {
+                    refs.po?.current?.focus();
+                    focusSet = true;
+                }
+
+
+                if (rowError.date && !focusSet) {
+                    const dateRef = rowRefs.current[i]?.date?.current;
+                    if (dateRef) {
+                        dateRef.focus();
+                        focusSet = true;
+                    }
+                }
+                if (focusSet) break;
+            }
+
+
+            return false;
+        }
+
+        return true;
+    };
+
+
+
+
+
+    const validateItemsForm = () => {
+        const errors = [];
+        let focusSet = false;
+
+        items.forEach((item, index) => {
+            const rowError = {};
+
+            if (!item.itemNo.trim()) {
+                rowError.itemNo = 'Please enter Item No.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.itemNo?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.description.trim()) {
+                rowError.description = 'Please enter Description.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.description?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.hsn.trim()) {
+                rowError.hsn = 'Please enter HSN.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.hsn?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.qty || isNaN(item.qty)) {
+                rowError.qty = 'Enter valid Quantity.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.qty?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.unitCost || isNaN(item.unitCost)) {
+                rowError.unitCost = 'Enter valid Unit Cost.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.unitCost?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.packageNo.trim()) {
+                rowError.packageNo = 'Please enter Package No.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.packageNo?.focus();
+                    focusSet = true;
+                }
+            }
+
+            errors.push(rowError);
+        });
+
+        setItemErrors(errors);
+
+
+        return errors.every((err) => Object.keys(err).length === 0);
+    };
+
+
+
+    const getInputRef = (field, index) => (el) => {
+        if (!rowItemsRefs.current[index]) {
+            rowItemsRefs.current[index] = {};
+        }
+        rowItemsRefs.current[index][field] = el;
+    };
+
+
+
+
+
+
+
+    const handleSaveExitForCustomerDetail = () => {
+        if (validateCustomerForm()) {
+            alert('validation success')
+        }
+    }
+
+
+    const handleSaveExitForInvoiceDetail = () => {
+        if (validateInvoiceForm()) {
+            alert('validation success')
+        }
+    }
+
+
+    const handleSaveExitForItemDetail = () => {
+        if (validateItemsForm()) {
+            alert('validation success')
+        }
+    }
+
+
+
+
 
 
 
@@ -224,8 +769,8 @@ function AddInvoice() {
                 </div>
 
 
-                
-                
+
+
 
 
                 {
@@ -237,12 +782,25 @@ function AddInvoice() {
                         <div className='mb-2 items-center w-[350px]'>
                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Customer</label>
                             <Select
-                                options={options}
-                                                                placeholder="Enter Select"
+                                ref={customerRef}
+                                options={customerOptions}
+                                placeholder="Enter Select"
                                 classNamePrefix="custom"
                                 menuPlacement="auto"
+                                id="customer-select"
                                 styles={customSelectStateStyles}
+                                value={customerOptions.find(opt => opt.value === formData.customer)}
+                                onChange={(e) => handleInputChangeForInvoice('customer', e.value)}
                             />
+
+
+                            {errors.customer && (
+                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                    <InfoCircle size={16} color="#DC2626" />
+                                    <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.customer}</p>
+                                </div>
+                            )}
+
 
                         </div>
 
@@ -289,7 +847,7 @@ function AddInvoice() {
                         <div className="flex justify-end gap-3 h-fit items-center mt-8">
 
 
-                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold"  >Save & Exit</button>
+                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold" onClick={handleSaveExitForCustomerDetail}  >Save & Exit</button>
 
                             <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleNextInvoiceDetail} >Next</button>
 
@@ -313,12 +871,22 @@ function AddInvoice() {
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Invoice Type <span className='text-red-500'>*</span></label>
                                     <Select
-                                        options={options}
-                                        placeholder="Enter Select"
+                                        ref={invoiceTypeRef}
+                                        options={InvoiceOptions}
+                                        placeholder="Select Invoice Type"
                                         classNamePrefix="custom"
                                         menuPlacement="auto"
                                         styles={customSelectStateStyles}
+                                        value={InvoiceOptions.find(opt => opt.value === formData.invoiceType)}
+                                        onChange={(e) => handleInputChangeForInvoice('invoiceType', e.value)}
+
                                     />
+                                    {errors.invoiceType && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.invoiceType}</p>
+                                        </div>
+                                    )}
 
                                 </div>
 
@@ -326,22 +894,38 @@ function AddInvoice() {
                                     <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Invoice No  <span className='text-red-500'>*</span></label>
                                     <input
                                         type='text'
-                                        placeholder='Enter Invoice No '
+                                        ref={invoiceNoRef}
+                                        placeholder='Enter Invoice No'
+                                        value={formData.invoiceNo}
+                                        onChange={(e) => handleInputChangeForInvoice('invoiceNo', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
-
+                                    {errors.invoiceNo && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.invoiceNo}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Currency <span className='text-red-500'>*</span></label>
                                     <Select
-                                        options={options}
+                                        options={beneficiaryCurrencyOptions}
                                         placeholder="Select Currency"
                                         classNamePrefix="custom"
                                         menuPlacement="auto"
+                                        ref={currencyRef}
                                         styles={customSelectStateStyles}
+                                        value={beneficiaryCurrencyOptions.find(opt => opt.value === formData.currency)}
+                                        onChange={(e) => handleInputChangeForInvoice('currency', e.value)}
                                     />
-
+                                    {errors.currency && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.currency}</p>
+                                        </div>
+                                    )}
                                 </div>
 
 
@@ -353,16 +937,18 @@ function AddInvoice() {
                                         dateFormat="dd/MM/yyyy"
                                         className="w-full"
                                         placeholderText="Select Invoice Date"
-                                        customInput={<CustomInput />}
+                                        customInput={<CustomInput ref={invoiceDateRef} />}
                                         wrapperClassName="w-full"
+                                        selected={formData.invoiceDate ? new Date(formData.invoiceDate) : null}
+                                        onChange={(date) => handleInputChangeForInvoice('invoiceDate', date)}
                                     />
-
+                                    {errors.invoiceDate && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.invoiceDate}</p>
+                                        </div>
+                                    )}
                                 </div>
-
-
-
-
-
 
 
                                 <div className='mb-2 items-center'>
@@ -372,32 +958,56 @@ function AddInvoice() {
                                         placeholder="Select Origin of Goods"
                                         classNamePrefix="custom"
                                         menuPlacement="auto"
+                                        ref={originOfGoodsRef}
                                         styles={customSelectStateStyles}
+                                        value={options.find(opt => opt.value === formData.originOfGoods)}
+                                        onChange={(e) => handleInputChangeForInvoice('originOfGoods', e.value)}
                                     />
-
+                                    {errors.originOfGoods && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.originOfGoods}</p>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Port of Loading <span className='text-red-500'>*</span></label>
                                     <Select
-                                        options={options}
+                                        options={portOptions}
                                         placeholder="Select Port of Loading "
                                         classNamePrefix="custom"
                                         menuPlacement="auto"
+                                        ref={portOfLoadingRef}
                                         styles={customSelectStateStyles}
+                                        value={portOptions.find(opt => opt.value === formData.portOfLoading)}
+                                        onChange={(e) => handleInputChangeForInvoice('portOfLoading', e.value)}
                                     />
-
+                                    {errors.portOfLoading && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.portOfLoading}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Port of Discharge <span className='text-red-500'>*</span></label>
                                     <Select
-                                        options={options}
+                                        options={portOptions}
                                         placeholder="Select Port of Discharge"
                                         classNamePrefix="custom"
                                         menuPlacement="auto"
+                                        ref={portOfDischargeRef}
                                         styles={customSelectStateStyles}
+                                        value={portOptions.find(opt => opt.value === formData.portOfDischarge)}
+                                        onChange={(e) => handleInputChangeForInvoice('portOfDischarge', e.value)}
                                     />
-
+                                    {errors.portOfDischarge && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.portOfDischarge}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className='mb-2 items-center'>
@@ -407,9 +1017,17 @@ function AddInvoice() {
                                         placeholder="Select Destination Country"
                                         classNamePrefix="custom"
                                         menuPlacement="auto"
+                                        ref={destinationCountryRef}
                                         styles={customSelectStateStyles}
+                                        value={options.find(opt => opt.value === formData.destinationCountry)}
+                                        onChange={(e) => handleInputChangeForInvoice('destinationCountry', e.value)}
                                     />
-
+                                    {errors.destinationCountry && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.destinationCountry}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className='mb-2 items-center'>
@@ -419,9 +1037,17 @@ function AddInvoice() {
                                         placeholder="Enter Delivery Term"
                                         classNamePrefix="custom"
                                         menuPlacement="auto"
+                                        ref={deliveryTermRef}
                                         styles={customSelectStateStyles}
+                                        value={options.find(opt => opt.value === formData.deliveryTerm)}
+                                        onChange={(e) => handleInputChangeForInvoice('deliveryTerm', e.value)}
                                     />
-
+                                    {errors.deliveryTerm && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.deliveryTerm}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className='mb-2 items-center'>
@@ -429,9 +1055,17 @@ function AddInvoice() {
                                     <input
                                         type='text'
                                         placeholder='Enter Payment Term'
+                                        ref={paymentTerm1Ref}
+                                        value={formData.paymentTerm1}
+                                        onChange={(e) => handleInputChangeForInvoice('paymentTerm1', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
-
+                                    {errors.paymentTerm1 && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.paymentTerm1}</p>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Payment Term <span className='text-red-500'>*</span></label>
@@ -439,8 +1073,17 @@ function AddInvoice() {
                                     <input
                                         type='text'
                                         placeholder='Enter Payment Term'
+                                        ref={paymentTerm2Ref}
+                                        value={formData.paymentTerm2}
+                                        onChange={(e) => handleInputChangeForInvoice('paymentTerm2', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
+                                    {errors.paymentTerm2 && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.paymentTerm2}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className='mb-2 items-center'>
@@ -449,6 +1092,8 @@ function AddInvoice() {
                                     <input
                                         type='text'
                                         placeholder='Enter Shipping Bill No.'
+                                        value={formData.shippingBillNo}
+                                        onChange={(e) => handleInputChangeForInvoice('shippingBillNo', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
                                 </div>
@@ -461,6 +1106,8 @@ function AddInvoice() {
                                         placeholderText="Select Shipping Bill No. Date"
                                         customInput={<CustomInput />}
                                         wrapperClassName="w-full"
+                                        selected={formData.shippingBillDate ? new Date(formData.shippingBillDate) : null}
+                                        onChange={(date) => handleInputChangeForInvoice('shippingBillDate', date)}
                                     />
                                 </div>
 
@@ -470,13 +1117,19 @@ function AddInvoice() {
                                     <input
                                         type='text'
                                         placeholder='Enter Bank Payment Reference No.'
+                                        ref={bankPaymentRefNoRef}
+                                        value={formData.bankPaymentRefNo}
+                                        onChange={(e) => handleInputChangeForInvoice('bankPaymentRefNo', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
+
+                                    {errors.bankPaymentRefNo && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.bankPaymentRefNo}</p>
+                                        </div>
+                                    )}
                                 </div>
-
-
-
-
 
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Bill of Lading </label>
@@ -484,6 +1137,8 @@ function AddInvoice() {
                                     <input
                                         type='text'
                                         placeholder='Enter Bill of Lading'
+                                        value={formData.billOfLading}
+                                        onChange={(e) => handleInputChangeForInvoice('billOfLading', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
                                 </div>
@@ -498,6 +1153,8 @@ function AddInvoice() {
                                         placeholderText="Select Bill of Lading Date"
                                         customInput={<CustomInput />}
                                         wrapperClassName="w-full"
+                                        selected={formData.billOfLadingDate ? new Date(formData.billOfLadingDate) : null}
+                                        onChange={(date) => handleInputChangeForInvoice('billOfLadingDate', date)}
                                     />
                                 </div>
 
@@ -507,6 +1164,8 @@ function AddInvoice() {
                                     <input
                                         type='text'
                                         placeholder='Enter No of Package'
+                                        value={formData.noOfPackage}
+                                        onChange={(e) => handleInputChangeForInvoice('noOfPackage', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
                                 </div>
@@ -517,6 +1176,8 @@ function AddInvoice() {
                                     <input
                                         type='text'
                                         placeholder='Enter Net Weight'
+                                        value={formData.netWeight}
+                                        onChange={(e) => handleInputChangeForInvoice('netWeight', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
                                 </div>
@@ -526,6 +1187,8 @@ function AddInvoice() {
                                     <input
                                         type='text'
                                         placeholder='Enter Gross Weight'
+                                        value={formData.grossWeight}
+                                        onChange={(e) => handleInputChangeForInvoice('grossWeight', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
                                 </div>
@@ -536,27 +1199,39 @@ function AddInvoice() {
                                     <input
                                         type='text'
                                         placeholder='Enter Freight'
+                                        value={formData.freight}
+                                        ref={freightRef}
+                                        onChange={(e) => handleInputChangeForInvoice('freight', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
+                                    {errors.freight && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.freight}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Insurance</label>
+                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Insurance <span className='text-red-500'>*</span></label>
 
                                     <input
                                         type='text'
                                         placeholder='Enter Insurance'
+                                        ref={insuranceRef}
+                                        value={formData.insurance}
+                                        onChange={(e) => handleInputChangeForInvoice('insurance', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
+                                    {errors.insurance && (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.insurance}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                             </div>
-
-
-
-
-
-
 
 
                             {rows.map((row, index) => (
@@ -569,9 +1244,18 @@ function AddInvoice() {
                                             type='text'
                                             placeholder='Enter PO Number'
                                             value={row.poNumber}
+                                            ref={rowRefs.current[index]?.po}
                                             onChange={(e) => handleInputChange(index, 'poNumber', e.target.value)}
                                             className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                         />
+
+
+                                        {errors?.rowErrors?.[index]?.poNumber && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors?.rowErrors?.[index]?.poNumber}</p>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className='mb-2 items-center'>
@@ -584,9 +1268,17 @@ function AddInvoice() {
                                             onChange={(date) => handleInputChange(index, 'date', date)}
                                             className="w-full"
                                             placeholderText="Select Date"
-                                            customInput={<input className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800' />}
+                                            customInput={<CustomDateInputWrapper inputRef={rowRefs.current[index]?.date} />}
                                             wrapperClassName="w-full"
                                         />
+
+                                        {errors?.rowErrors?.[index]?.date && (
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                                <InfoCircle size={16} color="#DC2626" />
+                                                <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors?.rowErrors?.[index]?.date}</p>
+                                            </div>
+                                        )}
+
                                     </div>
 
                                     <div className='flex gap-4 items-center mt-6'>
@@ -618,7 +1310,7 @@ function AddInvoice() {
                         <div className="flex justify-end gap-3 h-fit items-center mt-4">
 
 
-                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold"  >Save & Exit</button>
+                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold" onClick={handleSaveExitForInvoiceDetail} >Save & Exit</button>
 
                             <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleNextItemDetail} >Next</button>
 
@@ -635,7 +1327,7 @@ function AddInvoice() {
                         <div className='h-fit overflow-y-auto  lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3 ' >
                             <div
                                 className="">
-                                <div className='rounded-xl border border-slate-200 max-h-[240px] overflow-y-auto p-0 mt-4 '>
+                                <div className='rounded-xl border border-slate-200 max-h-[250px] overflow-y-auto p-0 mt-4 '>
 
                                     <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                                         <thead className="bg-[#205DA8] sticky top-0 z-10">
@@ -655,25 +1347,99 @@ function AddInvoice() {
                                             {items.map((item, index) => (
                                                 <tr key={index} className="border-0">
                                                     <td className="px-2 py-2 text-center">
-                                                        <input type="text" placeholder="Enter Item No." className="w-full px-3 py-3 border rounded-xl text-sm" />
+                                                        <input type="text"
+                                                            ref={getInputRef('itemNo', index)}
+                                                            value={item.itemNo}
+                                                            onChange={(e) => handleItemChange(index, 'itemNo', e.target.value)}
+                                                            placeholder="Enter Item No." className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+                                                        {itemErrors[index]?.itemNo && (
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+
+                                                                {itemErrors[index].itemNo}
+                                                            </div>
+                                                        )}
+
+
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
-                                                        <input type="text" placeholder="Enter Description" className="w-full px-3 py-3 border rounded-xl text-sm" />
+                                                        <input type="text"
+                                                            ref={getInputRef('description', index)}
+                                                            value={item.description}
+                                                            onChange={(e) => handleItemChange(index, 'description', e.target.value)}
+                                                            placeholder="Enter Description" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+                                                        {itemErrors[index]?.description && (
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                {itemErrors[index].description}
+                                                            </div>
+                                                        )}
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
-                                                        <input type="text" placeholder="Enter HSN" className="w-full px-3 py-3 border rounded-xl text-sm" />
+                                                        <input type="text"
+                                                            value={item.hsn}
+                                                            ref={getInputRef('hsn', index)}
+                                                            onChange={(e) => handleItemChange(index, 'hsn', e.target.value)}
+                                                            placeholder="Enter HSN" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+                                                        {itemErrors[index]?.hsn && (
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+
+                                                                {itemErrors[index].hsn}
+                                                            </div>
+                                                        )}
+
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
-                                                        <input type="text" placeholder="Enter Item QTY" className="w-full px-3 py-3 border rounded-xl text-sm" />
+                                                        <input type="text"
+                                                            value={item.qty}
+                                                            ref={getInputRef('qty', index)}
+                                                            onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
+                                                            placeholder="Enter Item QTY" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+                                                        {itemErrors[index]?.qty && (
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+
+                                                                {itemErrors[index].qty}
+                                                            </div>
+                                                        )}
+
+
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
-                                                        <input type="text" placeholder="Enter Per Unit" className="w-full px-3 py-3 border rounded-xl text-sm" />
+                                                        <input type="text"
+                                                            value={item.unitCost}
+                                                            ref={getInputRef('unitCost', index)}
+                                                            onChange={(e) => handleItemChange(index, 'unitCost', e.target.value)}
+                                                            placeholder="Enter Per Unit" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+
+                                                        {itemErrors[index]?.unitCost && (
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+
+                                                                {itemErrors[index].unitCost}
+                                                            </div>
+                                                        )}
+
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
-                                                        <input type="text" placeholder="Total" className="w-full px-3 py-3 border rounded-xl text-sm" />
+
+                                                        <input type="text" value={item.total}
+                                                            readOnly placeholder="Total" className={`w-full px-3 py-3 border rounded-xl text-sm focus:outline-none ${itemErrors[index] && Object.keys(itemErrors[index]).length > 0 ? "mb-5" : "mb-0"
+                                                                }`} />
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
-                                                        <input type="text" placeholder="Enter No" className="w-full px-3 py-3 border rounded-xl text-sm" />
+                                                        <input type="text" value={item.packageNo}
+                                                            ref={getInputRef('packageNo', index)}
+                                                            onChange={(e) => handleItemChange(index, 'packageNo', e.target.value)}
+                                                            placeholder="Enter No" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+                                                        {itemErrors[index]?.packageNo && (
+                                                            <div className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                {itemErrors[index].packageNo}
+                                                            </div>
+                                                        )}
+
+
                                                     </td>
                                                 </tr>
                                             ))}
@@ -689,6 +1455,8 @@ function AddInvoice() {
                                 <input
                                     type='text'
                                     placeholder='Total Value'
+                                    value={grandTotal}
+                                    readOnly
                                     className=' w-[250px]  px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                             </div>
@@ -703,9 +1471,9 @@ function AddInvoice() {
                         <div className="flex justify-end gap-3 h-fit items-center mt-2">
 
 
-                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold"  >Save & Exit</button>
+                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold" onClick={handleSaveExitForItemDetail} >Save & Exit</button>
 
-                            <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold"  onClick={handleNextPackageDetail}>Next</button>
+                            <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleNextPackageDetail}>Next</button>
 
                         </div>
                     </>}
@@ -825,6 +1593,10 @@ AddInvoice.propTypes = {
     value: PropTypes.string,
     onClick: PropTypes.func,
     placeholder: PropTypes.string,
+    inputRef: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+    ])
 }
 
 export default AddInvoice

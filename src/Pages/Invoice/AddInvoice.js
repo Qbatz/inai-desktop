@@ -19,24 +19,14 @@ function AddInvoice() {
 
 
     const dispatch = useDispatch();
-
     const state = useSelector(state => state);
     const [rows, setRows] = useState([
         { poNumber: '', date: null }
     ]);
     const [value, setValue] = useState(1);
     const rowRefs = useRef([]);
-
-    useEffect(() => {
-        rowRefs.current = rows.map(() => ({
-            date: React.createRef(),
-            po: React.createRef(),
-        }));
-    }, [rows]);
-
-
+    const inputRefs = useRef([]);
     const [errors, setErrors] = useState({});
-
     const [showBox, setShowBox] = useState(false)
     const [showProduct, setShowProduct] = useState(false)
     const [customerOptions, setCustomerOptions] = useState([])
@@ -67,16 +57,15 @@ function AddInvoice() {
     });
 
 
-
     const [items, setItems] = useState([
         { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '' }
     ]);
 
+    const [itemErrors, setItemErrors] = useState([]);
+    const rowItemsRefs = useRef([]);
 
 
 
-
-    
 
 
 
@@ -158,6 +147,7 @@ function AddInvoice() {
     const freightRef = useRef();
     const insuranceRef = useRef();
 
+
     const handleAddItem = () => {
         setItems([
             ...items,
@@ -224,7 +214,10 @@ function AddInvoice() {
                 setValue(id);
             }
         } else if (id === 4) {
-            setValue(id);
+            if (validateItemsForm()) {
+                setValue(id);
+            }
+
         } else {
             setValue(id);
         }
@@ -246,7 +239,10 @@ function AddInvoice() {
 
 
     const handleNextPackageDetail = () => {
-        setValue(4)
+        if (validateItemsForm()) {
+            setValue(4)
+        }
+
     }
 
 
@@ -342,17 +338,22 @@ function AddInvoice() {
         />
     ));
 
-    const CustomDateInput = React.forwardRef((props, ref) => {
-        return (
-            <input
-                {...props}
-                ref={ref}
-                className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
-            />
-        );
-    });
+    const CustomDateInput = React.forwardRef(({ value, onClick, placeholder }, ref) => (
+        <input
+            ref={ref}
+            value={value}
+            onClick={onClick}
+            readOnly
+            placeholder={placeholder}
+            className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+        />
+    ));
 
-    console.log("rowRefs.current:", rowRefs.current);
+
+    const CustomDateInputWrapper = ({ inputRef, ...props }) => (
+        <CustomDateInput {...props} ref={inputRef} />
+    );
+
 
 
     CustomInput.displayName = 'CustomInput';
@@ -404,7 +405,25 @@ function AddInvoice() {
     }, [rows.length]);
 
 
+    useEffect(() => {
+        rowRefs.current = rows.map((_, i) => {
+            return rowRefs.current[i] || { po: React.createRef(), date: React.createRef() };
+        });
+    }, [rows]);
 
+
+    useEffect(() => {
+        rowRefs.current = items.map((_, i) => {
+            return rowRefs.current[i] || {
+                itemNo: React.createRef(),
+                description: React.createRef(),
+                hsn: React.createRef(),
+                qty: React.createRef(),
+                unitCost: React.createRef(),
+                packageNo: React.createRef(),
+            };
+        });
+    }, [items]);
 
     useEffect(() => {
         const Options = state.customer?.customerList?.map((item) => ({
@@ -419,14 +438,6 @@ function AddInvoice() {
 
     console.log("state", state)
 
-    console.log("formData", formData)
-
-
-    console.log("rows", rows)
-
-    console.log("items", items)
-
-    console.log(" rowRefs ", rowRefs)
 
 
     const validateCustomerForm = () => {
@@ -566,16 +577,13 @@ function AddInvoice() {
                     refs.po?.current?.focus();
                     focusSet = true;
                 }
-                console.log("rowRefs.current[index].date:", rowRefs.current[i].date);
-        
+
 
                 if (rowError.date && !focusSet) {
                     const dateRef = rowRefs.current[i]?.date?.current;
                     if (dateRef) {
                         dateRef.focus();
                         focusSet = true;
-                    } else {
-                        console.log("Date ref not found yet.");
                     }
                 }
                 if (focusSet) break;
@@ -588,24 +596,110 @@ function AddInvoice() {
         return true;
     };
 
-    console.log("error", errors)
+
+
+
+
+    const validateItemsForm = () => {
+        const errors = [];
+        let focusSet = false;
+
+        items.forEach((item, index) => {
+            const rowError = {};
+
+            if (!item.itemNo.trim()) {
+                rowError.itemNo = 'Please enter Item No.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.itemNo?.current?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.description.trim()) {
+                rowError.description = 'Please enter Description.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.description?.current?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.hsn.trim()) {
+                rowError.hsn = 'Please enter HSN.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.hsn?.current?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.qty || isNaN(item.qty)) {
+                rowError.qty = 'Enter valid Quantity.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.qty?.current?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.unitCost || isNaN(item.unitCost)) {
+                rowError.unitCost = 'Enter valid Unit Cost.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.unitCost?.current?.focus();
+                    focusSet = true;
+                }
+            }
+
+            if (!item.packageNo.trim()) {
+                rowError.packageNo = 'Please enter Package No.';
+                if (!focusSet) {
+                    rowItemsRefs.current[index]?.packageNo?.current?.focus();
+                    focusSet = true;
+                }
+            }
+
+            errors.push(rowError);
+        });
+
+        setItemErrors(errors);
+
+
+        return errors.every((err) => Object.keys(err).length === 0);
+    };
+
+
+
+
+
+
+
+
+
+
     const handleSaveExitForCustomerDetail = () => {
         if (validateCustomerForm()) {
-            console.log("Validation passed");
+
         }
     }
 
 
     const handleSaveExitForInvoiceDetail = () => {
         if (validateInvoiceForm()) {
-            console.log("Validation passed");
+
         }
     }
 
 
+    const handleSaveExitForItemDetail = () => {
+        if (validateItemsForm()) {
+
+        }
+    }
 
 
-
+    const getInputRef = (field, index) => {
+        const key = `${field}-${index}`;
+        return (el) => {
+            inputRefs.current[key] = el;
+        };
+    };
 
 
 
@@ -1148,7 +1242,7 @@ function AddInvoice() {
                                             onChange={(date) => handleInputChange(index, 'date', date)}
                                             className="w-full"
                                             placeholderText="Select Date"
-                                            customInput={<CustomDateInput ref={rowRefs.current[index].date} />}
+                                            customInput={<CustomDateInputWrapper inputRef={rowRefs.current[index]?.date} />}
                                             wrapperClassName="w-full"
                                         />
 
@@ -1228,33 +1322,79 @@ function AddInvoice() {
                                                 <tr key={index} className="border-0">
                                                     <td className="px-2 py-2 text-center">
                                                         <input type="text"
+                                                            ref={getInputRef('itemNo', index)}
                                                             value={item.itemNo}
                                                             onChange={(e) => handleItemChange(index, 'itemNo', e.target.value)}
                                                             placeholder="Enter Item No." className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+                                                        {itemErrors[index]?.itemNo && (
+                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                               
+                                                                {itemErrors[index].itemNo}
+                                                            </div>
+                                                        )}
+
+
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
                                                         <input type="text"
+                                                            ref={getInputRef('description', index)}
                                                             value={item.description}
                                                             onChange={(e) => handleItemChange(index, 'description', e.target.value)}
                                                             placeholder="Enter Description" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+                                                        {itemErrors[index]?.description && (
+                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                                                <InfoCircle size={16} color="#DC2626" />
+                                                                {itemErrors[index].description}
+                                                            </div>
+                                                        )}
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
                                                         <input type="text"
                                                             value={item.hsn}
+                                                            ref={getInputRef('hsn', index)}
                                                             onChange={(e) => handleItemChange(index, 'hsn', e.target.value)}
                                                             placeholder="Enter HSN" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+                                                        {itemErrors[index]?.hsn && (
+                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                                                <InfoCircle size={16} color="#DC2626" />
+                                                                {itemErrors[index].hsn}
+                                                            </div>
+                                                        )}
+
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
                                                         <input type="text"
                                                             value={item.qty}
+                                                            ref={getInputRef('qty', index)}
                                                             onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
                                                             placeholder="Enter Item QTY" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+                                                        {itemErrors[index]?.qty && (
+                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                                                <InfoCircle size={16} color="#DC2626" />
+                                                                {itemErrors[index].qty}
+                                                            </div>
+                                                        )}
+
+
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
                                                         <input type="text"
                                                             value={item.unitCost}
+                                                            ref={getInputRef('unitCost', index)}
                                                             onChange={(e) => handleItemChange(index, 'unitCost', e.target.value)}
                                                             placeholder="Enter Per Unit" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+
+                                                        {itemErrors[index]?.unitCost && (
+                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                                                <InfoCircle size={16} color="#DC2626" />
+                                                                {itemErrors[index].unitCost}
+                                                            </div>
+                                                        )}
+
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
 
@@ -1263,8 +1403,18 @@ function AddInvoice() {
                                                     </td>
                                                     <td className="px-2 py-2 text-center">
                                                         <input type="text" value={item.packageNo}
+                                                            ref={getInputRef('packageNo', index)}
                                                             onChange={(e) => handleItemChange(index, 'packageNo', e.target.value)}
                                                             placeholder="Enter No" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+
+                                                        {itemErrors[index]?.packageNo && (
+                                                            <div className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                                                                <InfoCircle size={16} color="#DC2626" />
+                                                                {itemErrors[index].packageNo}
+                                                            </div>
+                                                        )}
+
+
                                                     </td>
                                                 </tr>
                                             ))}
@@ -1296,7 +1446,7 @@ function AddInvoice() {
                         <div className="flex justify-end gap-3 h-fit items-center mt-2">
 
 
-                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold"  >Save & Exit</button>
+                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold" onClick={handleSaveExitForItemDetail} >Save & Exit</button>
 
                             <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleNextPackageDetail}>Next</button>
 

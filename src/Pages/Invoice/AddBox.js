@@ -133,7 +133,7 @@ function AddBox({ handleClose }) {
     const numberOfPackagesRef = useRef(null);
     const marksRef = useRef(null);
 
-
+    const isInteger = (value) => /^\d*$/.test(value);
 
     const handlePackageTypeChange = (selectedOption) => {
         setPackageType(selectedOption ? selectedOption.value : '');
@@ -146,55 +146,69 @@ function AddBox({ handleClose }) {
     };
 
     const handleLengthChange = (e) => {
-        setLength(e.target.value);
-        if (errors.length) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                length: undefined
-            }));
+        const value = e.target.value;
+        if (isInteger(value)) {
+            setLength(value);
+            if (errors.length) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    length: undefined,
+                }));
+            }
         }
     };
-
+    
     const handleWidthChange = (e) => {
-        setWidth(e.target.value);
-        if (errors.width) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                width: undefined
-            }));
+        const value = e.target.value;
+        if (isInteger(value)) {
+            setWidth(value);
+            if (errors.width) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    width: undefined,
+                }));
+            }
         }
     };
-
+    
     const handleDepthChange = (e) => {
-        setDepth(e.target.value);
-        if (errors.depth) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                depth: undefined
-            }));
+        const value = e.target.value;
+        if (isInteger(value)) {
+            setDepth(value);
+            if (errors.depth) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    depth: undefined,
+                }));
+            }
         }
     };
-
+    
     const handleWeightChange = (e) => {
-        setWeight(e.target.value);
-        if (errors.weight) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                weight: undefined
-            }));
+        const value = e.target.value;
+        if (isInteger(value)) {
+            setWeight(value);
+            if (errors.weight) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    weight: undefined,
+                }));
+            }
         }
     };
-
+    
     const handleNumberOfPackagesChange = (e) => {
-        setNumberOfPackages(e.target.value);
-        if (errors.numberOfPackages) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                numberOfPackages: undefined
-            }));
+        const value = e.target.value;
+        if (isInteger(value)) {
+            setNumberOfPackages(value);
+            if (errors.numberOfPackages) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    numberOfPackages: undefined,
+                }));
+            }
         }
     };
-
     const handleMarksChange = (e) => {
         setMarks(e.target.value);
         if (errors.marks) {

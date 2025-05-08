@@ -13,7 +13,7 @@ function DeleteInvoiceList({ handleClose }) {
 
                 <div className="flex justify-center border-b-0">
                     <h2 className="text-[18px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">
-                        Delete InvoiceList
+                        Delete Invoice
                     </h2>
                 </div>
 

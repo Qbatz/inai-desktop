@@ -1646,11 +1646,7 @@ function AddProduct() {
 
 
                         <div className="col-span-5 md:col-span-3 w-full flex flex-col h-full">
-                            {/* <label className="block font-normal text-md font-Outfit ps-2"> {editDetails ? "Edit Photos" : "Add Photos"}</label> */}
-                            <label className="block font-normal text-md font-Outfit ps-2">
-                                {editDetails ? "Edit Photos" : <>Add Photos<span className="text-red-500">*</span></>}
-                            </label>
-
+                            <label className="block font-normal text-md font-Outfit ps-2"> {editDetails ? "Edit Photos" : "Add Photos"} <span className="text-red-500 text-sm">*</span></label>
 
 
 
@@ -1836,9 +1832,10 @@ function AddProduct() {
 
                             )}
 
-                            <label className="block font-normal text-md font-Outfit mt-2 ps-2">
-                                Technical<span className="text-red-500">*</span>
-                            </label>
+
+
+                            <label className="block font-normal text-md font-Outfit mt-2 ps-2">Technical <span className="text-red-500 text-sm">*</span></label>
+
 
 
 

@@ -193,7 +193,7 @@ function Sidebar({ state }) {
 
                     <img src={Profile} alt="Profile" className="h-11 w-11 rounded-full object-cover" />
 
-                    <div className="hidden sm:hidden md:hidden lg:flex flex-col w-[150px] overflow-hidden">
+                    <div className="hidden sm:hidden md:hidden lg:flex flex-col w-[150px] overflow-hidden mt-1">
                         <p
                             className={`text-sm font-semibold font-Gilroy truncate whitespace-nowrap overflow-hidden cursor-pointer ${activeItem === "" ? "text-[#205DA8]" : "text-black"} `}
                             title={

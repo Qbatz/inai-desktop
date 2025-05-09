@@ -256,7 +256,7 @@ function VendorList() {
         {
           isVisible ?
 
-            <div className='flex flex-col flex-1 bg-white rounded-2xl ps-5 pt-3 pe-5 relative h-[520px]'>
+            <div className='flex flex-col flex-1 bg-white rounded-2xl ps-5 pt-3 pe-5 relative h-[510px]'>
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
                   <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
@@ -271,7 +271,7 @@ function VendorList() {
 
                 <button
                   onClick={() => { navigate('/add-vendor') }}
-                  className="px-6 md:px-8 lg:px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-xs md:text-base font-medium flex items-center gap-2"
+                  className="px-6 md:px-8  py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-xs md:text-base font-medium flex items-center gap-2"
                 >
                   <img src={PlusCircle} alt="plus" className="w-4 md:w-5 lg:w-4" />
                   Add Vendor

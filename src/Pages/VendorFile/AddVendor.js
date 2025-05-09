@@ -2492,6 +2492,7 @@ function BasicVendor({ vendorDetails }) {
                                                 value={beneficiaryCurrency ? { value: beneficiaryCurrency, label: beneficiaryCurrency } : null}
                                                 onChange={(selectedOption) => handleBeneficiaryCurrency({ target: { value: selectedOption.value } })}
                                                 options={[
+                                                    { value: 'Select Currency', label: 'Select Currency', isPlaceholder: true },
                                                     { value: "USD", label: "USD" },
                                                     { value: "INR", label: "INR" },
                                                     { value: "EUR", label: "EUR" },
@@ -2665,11 +2666,18 @@ function BasicVendor({ vendorDetails }) {
                                                     handleBankCountryChange({ target: { value: selectedOption.value } })
                                                 }
                                                 options={[
-                                                    { value: "India", label: "India" },
-                                                    { value: "United States", label: "United States" },
-                                                    { value: "Canada", label: "Canada" },
-                                                    { value: "United Kingdom", label: "United Kingdom" },
-                                                    { value: "Australia", label: "Australia" }
+                                                    { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
+                                                    { value: 'India', label: 'India' },
+                                                    { value: 'United States', label: 'United States' },
+                                                    { value: 'United Kingdom', label: 'United Kingdom' },
+                                                    { value: 'Australia', label: 'Australia' },
+                                                    { value: 'Canada', label: 'Canada' },
+                                                    { value: 'Germany', label: 'Germany' },
+                                                    { value: 'France', label: 'France' },
+                                                    { value: 'Italy', label: 'Italy' },
+                                                    { value: 'Singapore', label: 'Singapore' },
+                                                    { value: 'Japan', label: 'Japan' },
+                                                    { value: 'China', label: 'China' }
                                                 ]}
                                                 placeholder="Select Bank Country"
                                                 styles={customSelectStyles}

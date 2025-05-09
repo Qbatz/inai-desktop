@@ -272,7 +272,7 @@ const UserDetails = ({ state }) => {
                 </div>
             </div>
 
-            <div className="p-2 sm:p-2 md:p-2 lg:p-4 bg-white  rounded-2xl max-w-5xl">
+            <div className="p-2 sm:p-2 md:p-2 lg:p-4 bg-white relative  rounded-2xl max-w-5xl h-[380px]">
 
                 {
                     activeTabs === 1 && <div>

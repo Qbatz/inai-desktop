@@ -1371,12 +1371,18 @@ function AddProduct() {
         { value: 'JPY', label: 'JPY' }
     ];
     const countryOptions = [
-        { value: 'india', label: 'India' },
-        { value: 'usa', label: 'United States' },
-        { value: 'china', label: 'China' },
-        { value: 'germany', label: 'Germany' },
-        { value: 'japan', label: 'Japan' },
-        { value: 'uk', label: 'United Kingdom' },
+        { value: '', label: 'Select Country', isDisabled: true },
+        { value: 'India', label: 'India' },
+        { value: 'United States', label: 'United States' },
+        { value: 'United Kingdom', label: 'United Kingdom' },
+        { value: 'Australia', label: 'Australia' },
+        { value: 'Canada', label: 'Canada' },
+        { value: 'Germany', label: 'Germany' },
+        { value: 'France', label: 'France' },
+        { value: 'Italy', label: 'Italy' },
+        { value: 'Singapore', label: 'Singapore' },
+        { value: 'Japan', label: 'Japan' },
+        { value: 'China', label: 'China' }
     ];
 
     const selectCustomStyles = {
@@ -2073,16 +2079,7 @@ function AddProduct() {
                         <div>
                             <label className="block font-normal text-md font-Outfit mb-1.5">Unit of measurement <span className="text-red-500 text-sm">*</span></label>
                             <div className="relative">
-                                {/* <Select
-                                    ref={unitRef}
-                                    value={unitOptions.find(option => option.value === formData.unit)}
-                                    onChange={(selectedOption) => handleInputChange('unit', selectedOption?.value)}
-                                    options={unitOptions}
-                                    styles={customSelectStyles}
-                                    className="capitalize font-Gilroy font-medium text-sm text-neutral-600"
-                                    isSearchable={false}
-                                    placeholder="Select Unit of measurement"
-                                /> */}
+                               
                                 <Select
                                     ref={unitRef}
                                     value={

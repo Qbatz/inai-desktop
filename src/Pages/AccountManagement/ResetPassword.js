@@ -173,7 +173,7 @@ const ReSetPassword = () => {
                             <img src={LoginImage} className='w-full h-auto max-w-md object-contain' alt='Login' />
                             <div className="text-center ">
                                 <div className="mx-auto w-full max-w-[340px]">
-                                    <label className="block text-black text-3xl font-bold font-Montserrat mb-3">
+                                    <label className="block text-black text-2xl font-bold font-Montserrat mb-3">
                                         Communication is the heart of Business.
                                     </label>
                                     <label className="block text-neutral-600 font-Montserrat text-base font-normal">
@@ -223,17 +223,17 @@ const ReSetPassword = () => {
                     )}
 
 
-
-
-
                     <div className="mb-4 relative">
                         <input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Password *"
+                            placeholder="Password"
                             value={password}
                             onChange={handlePassword}
-                            className="w-full h-12 px-3 border text-md border-gray-300 font-Gilroy rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-12 px-3 border text-md border-gray-300 font-Gilroy rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
                         />
+                        <div className="absolute left-[84px] top-1 text-red-500 pointer-events-none select-none">
+                            *
+                        </div>
                         <button
                             type="button"
                             className="absolute right-3 top-3 text-gray-500"
@@ -248,14 +248,18 @@ const ReSetPassword = () => {
                         )}
                     </div>
 
+
                     <div className="mb-4 relative">
                         <input
                             type={showConfirmPassword ? "text" : "password"}
-                            placeholder="Confirm Password *"
+                            placeholder="Confirm Password"
                             value={confirmPassword}
                             onChange={handleConfirmPassword}
-                            className="w-full h-12 px-3 border text-md font-Gilroy border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full h-12 px-3 border text-md font-Gilroy border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
                         />
+                        <div className="absolute left-[146px] top-1 text-red-500 pointer-events-none select-none">
+                            *
+                        </div>
                         <button
                             type="button"
                             className="absolute right-3 top-3 text-gray-500"
@@ -269,6 +273,7 @@ const ReSetPassword = () => {
                             </p>
                         )}
                     </div>
+
 
 
 

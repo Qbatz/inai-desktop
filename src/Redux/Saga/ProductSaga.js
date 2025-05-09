@@ -21,7 +21,8 @@ import {
     ADD_TECH_IMAGE_PRODUCT_SAGA,
     GET_PARTICULAR_PRODUCT_SAGA,
     GET_PARTICULAR_PRODUCT_REDUCER,
-    EDIT_PARTICULAR_PRODUCT_SAGA
+    EDIT_PARTICULAR_PRODUCT_SAGA,
+    EDIT_PARTICULAR_PRODUCT_REDUCER 
 } from "../../Utils/Constant";
 import { refreshToken } from "../../Token_Access/Token";
 import { EditParticularProduct, ParticularProduct, addTechImage, addImage, DeleteProductTechImage, DeleteProductImage, getProduct, addProduct, DeleteProduct, editProduct, GetCategory, GetSubCategory, GetBrand, editImage, editTechImage } from "../Action/ProductAction";
@@ -553,6 +554,9 @@ function* handleEditParticularProduct(action) {
     try {
         const response = yield call(EditParticularProduct, action.payload)
         if (response.status === 200) {
+            
+            yield put({ type: EDIT_PARTICULAR_PRODUCT_REDUCER , payload: { statusCode: response.status } });
+
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,

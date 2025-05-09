@@ -7,7 +7,7 @@ import moment from "moment";
 import { Edit, DocumentDownload } from "iconsax-react";
 import Pdf from '../../Asset/Images/pdf.png'
 import WordIcon from '../../Asset/Images/doc.png';
-
+import { InfoCircle } from "iconsax-react";
 
 function ProductDetails() {
 
@@ -22,7 +22,8 @@ function ProductDetails() {
     const [showAll, setShowAll] = useState(false);
     const [showTechAll, setShowTechAll] = useState(false);
     const [loading, setLoading] = useState(false)
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState({});
+
 
     const images = productDetails?.images ?? [];
     const imagesToShow = showAll ? images : images.slice(0, 6);
@@ -36,7 +37,6 @@ function ProductDetails() {
     const [editedValue, setEditedValue] = useState("");
 
     const editableRef = useRef(null);
-
 
 
     const [containStates, setContainStates] = useState({});
@@ -95,17 +95,27 @@ function ProductDetails() {
 
     const triggerUpdate = () => {
         if (editingField && editedValue !== "" && Object.keys(errorMessage).length === 0) {
+            let finalValue = editedValue;
+
+            if (editingField === "manufacturing_year" && /^\d{8}$/.test(editedValue)) {
+                const year = editedValue.slice(0, 4);
+                const month = editedValue.slice(4, 6);
+                const day = editedValue.slice(6, 8);
+                finalValue = `${year}-${month}-${day}`;
+            }
+
             dispatch({
                 type: EDIT_PARTICULAR_PRODUCT_SAGA,
                 payload: {
                     field: editingField,
-                    value: editedValue,
+                    value: finalValue,
                     uniqueProductCode: productDetails.uniqueProductCode
                 }
             });
-            setLoading(true)
+            setLoading(true);
         }
     };
+
 
 
     const handleEditClick = (fieldKey, currentValue) => {
@@ -118,18 +128,24 @@ function ProductDetails() {
         const inputValue = e.target.value;
         let sanitizedValue = inputValue;
         let tempError = {};
-
         if (editingField === "price" || editingField === "discount" || editingField === "manufacturing_year") {
             sanitizedValue = inputValue.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
             const trimmedValue = sanitizedValue.trim();
 
             if (trimmedValue === "" || isNaN(parseFloat(trimmedValue)) || !/^\d*\.?\d*$/.test(trimmedValue)) {
-                tempError[editingField] = "Price  is required";
+                let fieldLabel = "";
+
+                if (editingField === "price") fieldLabel = "Price";
+                else if (editingField === "discount") fieldLabel = "Discount";
+                else if (editingField === "manufacturing_year") fieldLabel = "Manufacturing year";
+
+                tempError[editingField] = `${fieldLabel} is required`;
                 setErrorMessage(tempError);
                 setEditedValue(trimmedValue);
                 return;
             }
         }
+
         if (editingField === "origin_country") {
             sanitizedValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
         }
@@ -137,23 +153,34 @@ function ProductDetails() {
         setEditedValue(sanitizedValue);
         setErrorMessage({});
 
-        if (editingField === "manufacturing_year") {
-            dispatch({
-                type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                payload: {
-                    field: editingField,
-                    value: inputValue,
-                    uniqueProductCode: productDetails.uniqueProductCode
-                }
-            });
-            setLoading(true)
-        }
-    };
+          };
 
+
+
+
+    const requiredFields = [
+        "product_name",
+        "description",
+        "price",
+        "discount",
+        "hsn_code",
+        "origin_country",
+        "manufacturing_year",
+        "state"
+    ];
 
     const handleKeyDown = (e, fieldKey) => {
         if (e.key === "Enter") {
+            let error = {};
+
+            if (!editedValue && requiredFields.includes(fieldKey)) {
+                error[fieldKey] = `Enter the ${fieldKey.replace(/_/g, ' ')}`;
+                setErrorMessage(prev => ({ ...prev, ...error }));
+                return;
+            }
+
             if (Object.keys(errorMessage).length > 0) return;
+
             dispatch({
                 type: EDIT_PARTICULAR_PRODUCT_SAGA,
                 payload: {
@@ -162,16 +189,24 @@ function ProductDetails() {
                     uniqueProductCode: productDetails.uniqueProductCode
                 }
             });
-            setLoading(true)
+
+            setLoading(true);
             setEditingField(null);
+            setErrorMessage(prev => {
+                const newErr = { ...prev };
+                delete newErr[fieldKey];
+                return newErr;
+            });
         }
     };
+
+
 
 
     return (
         <div className="bg-blueGray-100 min-h-screen w-full">
             <div className="p-3  flex flex-col" >
-                <h1 className="text-xl font-semibold mb-2 font-Gilroy text-black sticky sticky top-0 bg-blueGray-100 z-10 ">Product Detail</h1>
+                <h1 className="text-xl font-semibold mb-2 font-Gilroy text-black sticky sticky top-0 bg-blueGray-100 z-10 ps-2">Product Detail</h1>
 
 
                 <div className="p-8 bg-white  min-h-screen rounded-2xl relative">
@@ -184,12 +219,9 @@ function ProductDetails() {
                     <div className="grid grid-cols-2 gap-4 mb-3 p-2">
                         <div>
                             <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Images </p>
-                            <div className="grid grid-cols-3 flex items-center justify-center  gap-2">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-2">
                                 {imagesToShow.length > 0 ? imagesToShow.map((img, index) => {
                                     const isLastVisible = !showAll && index === 5;
-
-
-
                                     return (
                                         <div
                                             key={index}
@@ -226,7 +258,7 @@ function ProductDetails() {
 
                         <div>
                             <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Tech Images </p>
-                            <div className="grid grid-cols-3 flex items-center justify-center gap-4">
+                            <div className="rid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-2">
                                 {imagesToShowTech.length > 0 ? imagesToShowTech?.map((img, index) => {
                                     const isLastVisible = !showTechAll && index === 5;
                                     const isPDF = img.url.endsWith(".pdf");
@@ -287,7 +319,7 @@ function ProductDetails() {
                                                         alt={`Product ${index}`}
                                                         className="w-[120px] h-[120px] object-cover rounded-md"
                                                     />
-                                                                                                  </div>
+                                                </div>
                                             )}
 
 
@@ -338,13 +370,19 @@ function ProductDetails() {
                                     {productDetails.productName || "N/A"}
                                 </p>
                             )}
+                            {errorMessage.product_name && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                    <InfoCircle size={14} color="#DC2626" />
+                                    {errorMessage.product_name}
+                                </p>
+                            )}
                         </div>
 
 
                     </div>
 
 
-                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-12 p-2 ">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-12 p-2 ">
 
                         <div>
                             <div className='flex items-center space-x-3'>
@@ -366,12 +404,19 @@ function ProductDetails() {
                                     {productDetails.description || "N/A"}
                                 </p>
                             )}
+
+                            {errorMessage.description && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                    <InfoCircle size={14} color="#DC2626" />
+                                    {errorMessage.description}
+                                </p>
+                            )}
                         </div>
 
                     </div>
 
 
-                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-12 p-2 ">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-2 ">
 
                         <div>
                             <div className='flex items-center space-x-3'>
@@ -405,8 +450,12 @@ function ProductDetails() {
                                 </p>
                             )}
 
-                            {errorMessage.price && <div className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600">{errorMessage.price}</div>}
-
+                            {errorMessage.price && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                    <InfoCircle size={14} color="#DC2626" />
+                                    {errorMessage.price}
+                                </p>
+                            )}
                         </div>
 
                         <div>
@@ -444,8 +493,12 @@ function ProductDetails() {
                                 </p>
                             )}
 
-                            {errorMessage.discount && <div className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600">{errorMessage.discount}</div>}
-
+                            {errorMessage.discount && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                    <InfoCircle size={14} color="#DC2626" />
+                                    {errorMessage.discount}
+                                </p>
+                            )}
                         </div>
 
                         <div>
@@ -466,7 +519,17 @@ function ProductDetails() {
                                 <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
                                     {productDetails.hsnCode || "N/A"}
                                 </p>
-                            )}                        </div>
+                            )}
+
+                            {errorMessage.hsn_code && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                    <InfoCircle size={14} color="#DC2626" />
+                                    {errorMessage.hsn_code}
+                                </p>
+                            )}
+
+
+                        </div>
                         <div>
                             <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">GST</p>
                             <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
@@ -516,7 +579,15 @@ function ProductDetails() {
                                 <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
                                     {productDetails.countryOfOrigin || "N/A"}
                                 </p>
-                            )}                          </div>
+                            )}
+                            {errorMessage.origin_country && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                    <InfoCircle size={14} color="#DC2626" />
+                                    {errorMessage.origin_country}
+                                </p>
+                            )}
+
+                        </div>
                         <div>
                             <div className='flex items-center space-x-3'>
                                 <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Month and Year of Manufacture</p>
@@ -545,7 +616,12 @@ function ProductDetails() {
                                         : "N/A"}
                                 </p>
                             )}
-
+                            {errorMessage.manufacturing_year && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                    <InfoCircle size={14} color="#DC2626" />
+                                    {errorMessage.manufacturing_year}
+                                </p>
+                            )}
                         </div>
                         <div>
                             <div className='flex items-center space-x-3'>
@@ -565,7 +641,16 @@ function ProductDetails() {
                                 <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
                                     {productDetails.State || "N/A"}
                                 </p>
-                            )}                                 </div>
+                            )}
+                            {errorMessage.state && (
+                                <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                    <InfoCircle size={14} color="#DC2626" />
+                                    {errorMessage.state}
+                                </p>
+                            )}
+
+
+                        </div>
 
 
 

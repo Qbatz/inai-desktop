@@ -1029,6 +1029,7 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
     const handleCustomerEditAddress = () => {
+       
         let isValid = true;
         let finalErrors = {};
         let addressErrors = {};
@@ -1052,10 +1053,7 @@ function AddCustomer({ editCustomerDetails }) {
             tempErrors.contactPerson = "Contact Person is required";
             isValid = false;
         }
-        if (!formData.emailId?.trim()) {
-            tempErrors.emailId = "Email ID is required";
-            isValid = false;
-        } else if (!/^\S+@\S+\.\S+$/.test(formData.emailId)) {
+      if (formData.emailId && !/^\S+@\S+\.\S+$/.test(formData.emailId)) {
             tempErrors.emailId = "Invalid Email format";
             isValid = false;
         }
@@ -1100,11 +1098,10 @@ function AddCustomer({ editCustomerDetails }) {
                 } else if (contact.number.length !== 10 || !/^[0-9]*$/.test(contact.number)) {
                     contactError.number = "Contact Number must be 10 digits and contain only numbers";
                 }
-                if (!contact.email?.trim()) {
-                    contactError.email = "Contact Email is required";
-                } else if (!/^\S+@\S+\.\S+$/.test(contact.email)) {
+                if (contact.email && !/^\S+@\S+\.\S+$/.test(contact.email)) {
                     contactError.email = "Invalid Email format";
                 }
+                
                 if (!contact.designation?.trim()) contactError.designation = "Contact Designation is required";
 
                 if (Object.keys(contactError).length > 0) {
@@ -1148,11 +1145,9 @@ function AddCustomer({ editCustomerDetails }) {
         }
 
 
-
-
-
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
 
+        
 
         if (!isValid) {
             if (addressErrors.address1) address1Ref.current?.focus();

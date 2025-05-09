@@ -88,7 +88,7 @@ function Activities() {
                         <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
                     </div>
                 )}
-                <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[240px] overflow-y-auto p-0 mt-4 '>
+                <div className='overflow-x-auto rounded-xl border border-slate-200 max-h-[260px] overflow-y-auto p-0 mt-4 '>
 
                     <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                         <thead className="bg-slate-100 sticky top-0 z-10">
@@ -153,7 +153,7 @@ function Activities() {
 
             {activitiesList.length > 10 && (
                
-                <nav className="sticky flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
+                <nav className="absolute right-4 bottom-0  flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center mt-4 bg-white p-4 rounded-lg">
                     <div className="flex items-center gap-2">
                         <select
                             value={itemsPerPage}

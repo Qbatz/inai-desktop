@@ -81,7 +81,7 @@ function AddInvoice() {
     ];
 
     const options = [
-        { value: "Select Country", label: "Select Country" },
+        { value: "", label: "Select Country" , isPlaceholder: true},
         { value: "India", label: "India" },
         { value: "United States", label: "United States" },
         { value: "United Kingdom", label: "United Kingdom" },
@@ -96,13 +96,14 @@ function AddInvoice() {
     ];
 
     const InvoiceOptions = [
-        { value: "", label: "Select Type" },
+        { value: "", label: "Select Type", isPlaceholder: true },
         { value: "EXPORT", label: "EXPORT" },
         { value: "DOMESTIC", label: "DOMESTIC" },
     ]
 
 
     const beneficiaryCurrencyOptions = [
+        { value: "", label: "Select Currency", isPlaceholder: true },
         { value: "USD", label: "USD" },
         { value: "INR", label: "INR" },
         { value: "EUR", label: "EUR" },
@@ -112,6 +113,7 @@ function AddInvoice() {
 
 
     const portOptions = [
+        { value: "", label: "Select Port" , isPlaceholder: true},
         { value: "IN-MUMBAI", label: "Mumbai Port" },
         { value: "IN-CHENNAI", label: "Chennai Port" },
         { value: "IN-KOLKATA", label: "Kolkata Port" },
@@ -752,7 +754,7 @@ function AddInvoice() {
         }
     }, [state.customer?.customerDetails]);
 
-   
+
 
 
     return (

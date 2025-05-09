@@ -1029,7 +1029,7 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
     const handleCustomerEditAddress = () => {
-       
+
         let isValid = true;
         let finalErrors = {};
         let addressErrors = {};
@@ -1053,7 +1053,7 @@ function AddCustomer({ editCustomerDetails }) {
             tempErrors.contactPerson = "Contact Person is required";
             isValid = false;
         }
-      if (formData.emailId && !/^\S+@\S+\.\S+$/.test(formData.emailId)) {
+        if (formData.emailId && !/^\S+@\S+\.\S+$/.test(formData.emailId)) {
             tempErrors.emailId = "Invalid Email format";
             isValid = false;
         }
@@ -1101,7 +1101,7 @@ function AddCustomer({ editCustomerDetails }) {
                 if (contact.email && !/^\S+@\S+\.\S+$/.test(contact.email)) {
                     contactError.email = "Invalid Email format";
                 }
-                
+
                 if (!contact.designation?.trim()) contactError.designation = "Contact Designation is required";
 
                 if (Object.keys(contactError).length > 0) {
@@ -1147,7 +1147,7 @@ function AddCustomer({ editCustomerDetails }) {
 
         finalErrors = { ...tempErrors, contactErrors, ...addressErrors, bankErrors };
 
-        
+
 
         if (!isValid) {
             if (addressErrors.address1) address1Ref.current?.focus();
@@ -1162,7 +1162,7 @@ function AddCustomer({ editCustomerDetails }) {
 
         else {
             const filteredContacts = contacts.filter(contact =>
-                contact.surName.trim() !== '' ||
+                contact.surName !== '' ||
                 contact.name.trim() !== '' ||
                 contact.countryCode !== '' ||
                 contact.number !== '' ||
@@ -2260,7 +2260,6 @@ function AddCustomer({ editCustomerDetails }) {
                                         <Select
                                             options={[
                                                 { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
-                                                { value: 'India', label: 'India' },
                                                 { value: "India", label: "India" },
                                                 { value: "United States", label: "United States" },
                                                 { value: "United Kingdom", label: "United Kingdom" },
@@ -2606,6 +2605,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                         handleBankingChange(index, 'beneficiaryCurrency', selectedOption?.value || '')
                                                     }
                                                     options={[
+                                                        { value: 'Select Currency', label: 'Select Currency', isPlaceholder: true },
                                                         { value: 'USD', label: 'USD' },
                                                         { value: 'INR', label: 'INR' },
                                                         { value: 'EUR', label: 'EUR' },
@@ -2752,11 +2752,19 @@ function AddCustomer({ editCustomerDetails }) {
                                                         handleBankingChange(index, 'bankCountry', selectedOption?.value || '')
                                                     }
                                                     options={[
+                                                        
+                                                        { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
                                                         { value: 'India', label: 'India' },
                                                         { value: 'United States', label: 'United States' },
-                                                        { value: 'Canada', label: 'Canada' },
                                                         { value: 'United Kingdom', label: 'United Kingdom' },
                                                         { value: 'Australia', label: 'Australia' },
+                                                        { value: 'Canada', label: 'Canada' },
+                                                        { value: 'Germany', label: 'Germany' },
+                                                        { value: 'France', label: 'France' },
+                                                        { value: 'Italy', label: 'Italy' },
+                                                        { value: 'Singapore', label: 'Singapore' },
+                                                        { value: 'Japan', label: 'Japan' },
+                                                        { value: 'China', label: 'China' }
                                                     ]}
                                                     placeholder="Select Bank Country"
                                                     styles={customSelectStyles}

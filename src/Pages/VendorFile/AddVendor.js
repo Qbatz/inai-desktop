@@ -1795,7 +1795,7 @@ function BasicVendor({ vendorDetails }) {
                                                             value={contact.name}
                                                             onChange={(e) => handleAdditionalContactChange(index, "name", e.target.value)}
                                                             placeholder="Enter Contact Person Name"
-                                                            className="px-3 py-3 w-full  border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl  font-Gilroy border  focus:outline-none"
+                                                            className="px-3 py-3 w-full  border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl  font-Gilroy border focus:outline-none text-sm"
                                                         />
                                                     </div>
 
@@ -1843,7 +1843,7 @@ function BasicVendor({ vendorDetails }) {
                                                             value={contact.contactNumber}
                                                             onChange={(e) => handleAdditionalContactChange(index, "contactNumber", e.target.value)}
                                                             placeholder="Enter Contact Number"
-                                                            className="px-3 py-3 font-Gilroy w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl rounded-xl focus:outline-none"
+                                                            className="px-3 py-3 font-Gilroy w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl rounded-xl focus:outline-none text-sm"
                                                         />
                                                     </div>
                                                     {
@@ -1873,7 +1873,7 @@ function BasicVendor({ vendorDetails }) {
                                                         value={contact.email}
                                                         onChange={(e) => handleAdditionalContactChange(index, "email", e.target.value)}
                                                         placeholder="Enter Email ID"
-                                                        className="px-3 py-3  font-Gilroy w-full border rounded-xl focus:outline-none"
+                                                        className="px-3 py-3  font-Gilroy w-full border rounded-xl focus:outline-none text-sm"
                                                     />
                                                     {formErrors[`additionalEmail${index}`] && (
                                                         <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
@@ -1890,7 +1890,7 @@ function BasicVendor({ vendorDetails }) {
                                                         value={contact.designation}
                                                         onChange={(e) => handleAdditionalContactChange(index, "designation", e.target.value)}
                                                         placeholder="Enter Designation"
-                                                        className="px-3 py-3 w-full font-Gilroy border rounded-xl focus:outline-none"
+                                                        className="px-3 py-3 w-full font-Gilroy border rounded-xl focus:outline-none text-sm"
                                                     />
                                                     {formErrors[`additionalDesignation${index}`] && (
                                                         <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">

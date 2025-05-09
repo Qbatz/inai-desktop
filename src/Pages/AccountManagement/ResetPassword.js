@@ -173,7 +173,7 @@ const ReSetPassword = () => {
                             <img src={LoginImage} className='w-full h-auto max-w-md object-contain' alt='Login' />
                             <div className="text-center ">
                                 <div className="mx-auto w-full max-w-[340px]">
-                                    <label className="block text-black text-3xl font-bold font-Montserrat mb-3">
+                                    <label className="block text-black text-2xl font-bold font-Montserrat mb-3">
                                         Communication is the heart of Business.
                                     </label>
                                     <label className="block text-neutral-600 font-Montserrat text-base font-normal">

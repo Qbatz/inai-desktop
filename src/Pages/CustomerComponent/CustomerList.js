@@ -258,16 +258,16 @@ function CustomerList() {
         </div>
       )}
 
-      {isVisible && <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative h-[520px]'>
+      {isVisible && <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative h-[510px]'>
 
-        <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
+        <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0'>
           <div>
-            <h2 className="text-xl font-semibold mb-2 font-Gilroy text-black">Customer</h2>
+            <h2 className="text-xl font-semibold font-Gilroy text-black">Customer</h2>
           </div>
 
           <div className="">
-            <button onClick={handleAddCustomer} className="px-6 md:px-8 lg:px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-xs md:text-base font-medium flex items-center gap-2">
-              <img src={PlusCircle} alt="plus" className='w-4 md:w-5 lg:w-4' /> Add Customer</button>
+            <button onClick={handleAddCustomer} className="px-6 md:px-8 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-xs md:text-base font-medium flex items-center gap-2">
+              <img src={PlusCircle} alt="plus" className='w-4 md:w-5' /> Add Customer</button>
           </div>
         </div>
 

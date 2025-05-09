@@ -67,14 +67,25 @@ function ProductDetails() {
 
     useEffect(() => {
         if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-
-            dispatch({ type: GET_PARTICULAR_PRODUCT_SAGA, payload: productId });
             setLoading(false)
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })
             }, 1000)
         }
     }, [state.Common?.successCode, state.Common?.code]);
+
+
+    useEffect(() => {
+        if (state.Common?.editStatusCode === 200) {
+            dispatch({ type: GET_PARTICULAR_PRODUCT_SAGA, payload: productId });
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 1000)
+        }
+
+    }, [state.Common?.editStatusCode])
+
 
 
     useEffect(() => {
@@ -153,7 +164,7 @@ function ProductDetails() {
         setEditedValue(sanitizedValue);
         setErrorMessage({});
 
-          };
+    };
 
 
 
@@ -201,6 +212,13 @@ function ProductDetails() {
     };
 
 
+    const currencySymbols = {
+        USD: "$",
+        INR: "₹",
+        EUR: "€",
+        GBP: "£",
+        JPY: "¥"
+    };
 
 
     return (
@@ -460,7 +478,9 @@ function ProductDetails() {
 
                         <div>
                             <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Currency </p>
-                            <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.currency || "N/A"}</p>
+                            <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
+                                {productDetails.currency ? `${currencySymbols[productDetails.currency] || ''} ${productDetails.currency}` : "N/A"}
+                            </p>
                         </div>
 
                         <div>

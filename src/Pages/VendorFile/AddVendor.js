@@ -98,7 +98,8 @@ function BasicVendor({ vendorDetails }) {
     const [initialEditData, setInitialEditData] = useState(null);
 
     const alphaNumericRegex = /^[A-Za-z0-9]*$/;
-    const alphaNumericWithSpaceRegex = /^[A-Za-z0-9\s]*$/;
+    const alphaNumericWithSpaceRegex = /^[\s\S]*$/;
+
 
     const onlyNumbersRegex = /^[0-9]*$/;
 
@@ -1579,16 +1580,16 @@ function BasicVendor({ vendorDetails }) {
                 </div>
 
                 {formErrors.general && (
-                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                        <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.general}
+                    <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                        <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.general}
                     </p>
                 )}
 
                 {
-                    state.Common.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
+                    state.Common.errorMessage && <label className="block mb-2 text-start font-Gilroy font-normal text-sm text-red-600"> {state.Common.errorMessage} </label>
                 }
                 {
-                    state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-green-600"> {state.Common.successMessage
+                    state.Common.successMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-sm text-green-600"> {state.Common.successMessage
                     } </label>
                 }
 
@@ -1632,18 +1633,18 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                         </div>
                                         {formErrors.surName && formErrors.contactPerson ? (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span>
+                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span>
                                                 Title and Name are required
                                             </p>
                                         ) : formErrors.surName ? (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span>
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
+                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span>
                                                 {formErrors.surName}
                                             </p>
                                         ) : formErrors.contactPerson ? (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span>
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
+                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span>
                                                 {formErrors.contactPerson}
                                             </p>
                                         ) : null}
@@ -1682,16 +1683,16 @@ function BasicVendor({ vendorDetails }) {
                                         </div>
                                         {
                                             formErrors.countryCode && formErrors.contactNumber ? (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> Country Code and Contact Number are required
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> Country Code and Contact Number are required
                                                 </p>
                                             ) : formErrors.countryCode ? (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.countryCode}
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5"/></span> {formErrors.countryCode}
                                                 </p>
                                             ) : formErrors.contactNumber ? (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.contactNumber}
+                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.contactNumber}
                                                 </p>
                                             ) : null
                                         }
@@ -1723,8 +1724,8 @@ function BasicVendor({ vendorDetails }) {
                                             className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                         />
                                         {formErrors.designation && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.designation} </p>)}
+                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.designation} </p>)}
                                     </div>
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>GST/VAT <span className='text-red-500'>*</span></label>
@@ -1738,8 +1739,8 @@ function BasicVendor({ vendorDetails }) {
                                             className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                         />
                                         {formErrors.gstVat && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.gstVat} </p>)}
+                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.gstVat} </p>)}
                                     </div>
                                     <div className='  '>
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name <span className='text-red-500'>*</span> </label>
@@ -1753,8 +1754,8 @@ function BasicVendor({ vendorDetails }) {
                                             className='px-3 py-3 w-full border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                         />
                                         {formErrors.businessName && (
-                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.businessName} </p>)}
+                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.businessName} </p>)}
 
                                     </div>
 
@@ -1784,7 +1785,7 @@ function BasicVendor({ vendorDetails }) {
                                                         >
                                                             <option value="" className="font-Gilroy text-neutral-800 " >Select</option>
                                                             {state.Common?.titles?.map((title) => (
-                                                                <option key={title.id} value={title.id}>
+                                                                <option key={title.id} value={title.id} >
                                                                     {title.name}
                                                                 </option>
                                                             ))}
@@ -1801,16 +1802,16 @@ function BasicVendor({ vendorDetails }) {
 
                                                     {
                                                         formErrors[`additionalName${index}`] && formErrors[`additionalSurName${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
                                                                 <span><InfoCircle size="14" color="#DC2626" /></span> Title and Name are required
                                                             </p>
                                                         ) : formErrors[`additionalName${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalName${index}`]}
+                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalName${index}`]}
                                                             </p>
                                                         ) : formErrors[`additionalSurName${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalSurName${index}`]}
+                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalSurName${index}`]}
                                                             </p>
                                                         ) : null
                                                     }
@@ -1848,16 +1849,16 @@ function BasicVendor({ vendorDetails }) {
                                                     </div>
                                                     {
                                                         formErrors[`additionalContactNumber${index}`] && formErrors[`additionalCountryCode${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                                <span><InfoCircle size="14" color="#DC2626" /></span> Country Code and Contact Number are required
+                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> Country Code and Contact Number are required
                                                             </p>
                                                         ) : formErrors[`additionalContactNumber${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalContactNumber${index}`]}
+                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalContactNumber${index}`]}
                                                             </p>
                                                         ) : formErrors[`additionalCountryCode${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                                <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalCountryCode${index}`]}
+                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalCountryCode${index}`]}
                                                             </p>
                                                         ) : null
                                                     }
@@ -1876,8 +1877,8 @@ function BasicVendor({ vendorDetails }) {
                                                         className="px-3 py-3  font-Gilroy w-full border rounded-xl focus:outline-none text-sm"
                                                     />
                                                     {formErrors[`additionalEmail${index}`] && (
-                                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalEmail${index}`]} </p>
+                                                        <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                            <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalEmail${index}`]} </p>
                                                     )}
                                                 </div>
                                                 <div>
@@ -1893,8 +1894,8 @@ function BasicVendor({ vendorDetails }) {
                                                         className="px-3 py-3 w-full font-Gilroy border rounded-xl focus:outline-none text-sm"
                                                     />
                                                     {formErrors[`additionalDesignation${index}`] && (
-                                                        <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                            <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors[`additionalDesignation${index}`]} </p>
+                                                        <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                            <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalDesignation${index}`]} </p>
                                                     )}
                                                 </div>
                                             </div>
@@ -1968,8 +1969,8 @@ function BasicVendor({ vendorDetails }) {
                                             </div>
 
                                             {formErrors.officeAddress1 && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-0.5">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress1}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-0.5">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.officeAddress1}
                                                 </p>
                                             )}
                                         </div>
@@ -1984,8 +1985,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.officeAddress2 && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress2}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.officeAddress2}
                                                 </p>
                                             )}
                                         </div>
@@ -1999,8 +2000,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.officeAddress3 && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress3}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.officeAddress3}
                                                 </p>
                                             )}
                                         </div>
@@ -2014,8 +2015,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.officeAddress4 && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.officeAddress4}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5"/></span> {formErrors.officeAddress4}
                                                 </p>
                                             )}
                                         </div>
@@ -2040,7 +2041,7 @@ function BasicVendor({ vendorDetails }) {
                                             </div>
 
                                             {formErrors.city && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-0.5">
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-0.5">
                                                     <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.city}
                                                 </p>
                                             )}
@@ -2141,8 +2142,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.postalCode && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.postalCode} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.postalCode} </p>)}
                                         </div>
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Landmark </label>
@@ -2155,8 +2156,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.landmark && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.landmark} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.landmark} </p>)}
                                         </div>
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Google Map </label>
@@ -2203,8 +2204,8 @@ function BasicVendor({ vendorDetails }) {
                                             </div>
 
                                             {formErrors.shippingAddress1 && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-0.5">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span>
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span>
                                                     {formErrors.shippingAddress1}
                                                 </p>
                                             )}
@@ -2219,8 +2220,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.shippingAddress2 && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingAddress2}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.shippingAddress2}
                                                 </p>
                                             )}
                                         </div>
@@ -2272,8 +2273,8 @@ function BasicVendor({ vendorDetails }) {
                                             )}
 
                                             {formErrors.shippingCity && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-0.5">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingCity}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.shippingCity}
                                                 </p>
                                             )}
                                         </div>
@@ -2373,8 +2374,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.shippingPostalCode && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.shippingPostalCode} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5"/></span> {formErrors.shippingPostalCode} </p>)}
                                         </div>
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Landmark </label>
@@ -2449,7 +2450,7 @@ function BasicVendor({ vendorDetails }) {
 
 
                                 {formErrors.general && (
-                                    <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2 mb-3">
+                                    <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1 mb-3">
                                         <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.general}
                                     </p>
                                 )}
@@ -2475,7 +2476,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
 
                                             {formErrors.beneficiaryName && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
                                                     <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryName} </p>)}
                                         </div>
 
@@ -2506,8 +2507,8 @@ function BasicVendor({ vendorDetails }) {
 
 
                                             {formErrors.beneficiaryCurrency && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.beneficiaryCurrency}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.beneficiaryCurrency}
                                                 </p>
                                             )}
                                         </div>
@@ -2525,8 +2526,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.accountNumber && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.accountNumber} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.accountNumber} </p>)}
                                         </div>
 
 
@@ -2552,8 +2553,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.bankName && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankName} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5"/></span> {formErrors.bankName} </p>)}
                                         </div>
 
                                         <div className='mb-2 items-center'>
@@ -2571,8 +2572,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.ifscCode && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.ifscCode} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.ifscCode} </p>)}
                                         </div>
                                         <div className='mb-2  items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code  </label>
@@ -2588,8 +2589,8 @@ function BasicVendor({ vendorDetails }) {
                                                 className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                             />
                                             {formErrors.swift && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.swift} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.swift} </p>)}
                                         </div>
 
                                         <div className='mb-2 items-center'>
@@ -2606,8 +2607,8 @@ function BasicVendor({ vendorDetails }) {
                                             />
 
                                             {formErrors.bankAddress && (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">
-                                                    <span><InfoCircle size="14" color="#DC2626" /></span> {formErrors.bankAddress} </p>)}
+                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.bankAddress} </p>)}
 
                                         </div>
 

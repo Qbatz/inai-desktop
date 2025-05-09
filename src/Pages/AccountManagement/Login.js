@@ -218,7 +218,7 @@ function Login({ message, loginStatusCode }) {
                 />
                 {clientIdError &&
                   <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                    <InfoCircle size="14" color="#DC2626" /> <p className='text-red-500 text-xs mt-1 font-Gilroy'>{clientIdError}</p>
+                    <InfoCircle size="14" color="#DC2626" className='mt-0.5'/> <p className='text-red-500 text-xs mt-1 font-Gilroy'>{clientIdError}</p>
 
                   </div>
                 }
@@ -237,7 +237,7 @@ function Login({ message, loginStatusCode }) {
                 />
                 {userIdError &&
                   <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                    <InfoCircle size="14" color="#DC2626" />
+                    <InfoCircle size="14" color="#DC2626"className='mt-0.5' />
 
                     <p className='text-red-500 text-xs mt-1 font-Gilroy'>{userIdError}</p>
                   </div>}
@@ -264,7 +264,7 @@ function Login({ message, loginStatusCode }) {
 
                 {passwordError &&
                   <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                    <InfoCircle size="14" color="#DC2626" />
+                    <InfoCircle size="14" color="#DC2626"className='mt-0.5' />
                     <p className='text-red-500 text-xs mt-1 font-Gilroy'>{passwordError}</p>
                   </div>
                 }

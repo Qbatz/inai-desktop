@@ -150,8 +150,7 @@ function AddCustomer({ editCustomerDetails }) {
         }
 
         if (field === "cin" && /[^a-zA-Z0-9]/.test(value)) return;
-
-        if (field === "businessName" && /[^a-zA-Z0-9\s&@]/.test(value)) return;
+        if (field === "businessName" && /[^a-zA-Z\s&@]/.test(value)) return;
         if (field === "designation" && /[^a-zA-Z0-9\s]/.test(value)) return;
         if (field === "contactPerson" && /[^a-zA-Z\s]/.test(value)) return;
         if (field === "contactNumber" && !/^\d*$/.test(value)) return;
@@ -1614,8 +1613,8 @@ function AddCustomer({ editCustomerDetails }) {
                                             className='px-3 py-3 border w-full rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
                                         />
                                         {errors.businessName && (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt'>
+                                                <InfoCircle size={14} color="#DC2626" className='mt-0.5'/>
                                                 <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                     {errors.businessName}
                                                 </span>
@@ -1654,7 +1653,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.legalStatus && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle  size={14} color="#DC2626" className='mb-0.5' />
                                                 <span className="text-red-500 text-xs font-Gilroy">
                                                     {errors.legalStatus}
                                                 </span>
@@ -1677,8 +1676,8 @@ function AddCustomer({ editCustomerDetails }) {
                                             className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                         />
                                         {errors.gstVat && (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
+                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-0.5'>
+                                                <InfoCircle size={14} color="#DC2626" className='mt-0.5' />
                                                 <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                     {errors.gstVat}
                                                 </span>
@@ -1712,7 +1711,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         </div>
                                         {errors.natureOfBusiness && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
+                                                <InfoCircle size={14} color="#DC2626" className='mt-0.5' />
                                                 <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.natureOfBusiness}</p>
                                             </div>
                                         )}
@@ -1737,8 +1736,8 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.pan && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-0.5 font-Gilroy">
                                                     {errors.pan}
                                                 </span>
                                             </div>
@@ -1758,7 +1757,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.tan && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={14} color="#DC2626" />
                                                 <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                     {errors.tan}
                                                 </span>
@@ -1780,7 +1779,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.cin && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={14} color="#DC2626" />
                                                 <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                     {errors.cin}
                                                 </span>
@@ -1818,8 +1817,8 @@ function AddCustomer({ editCustomerDetails }) {
 
                                         {errors.surName && errors.contactPerson ? (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-0.5 font-Gilroy">
                                                     Title & Contact Name is required
                                                 </span>
                                             </div>
@@ -1827,7 +1826,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <>
                                                 {errors.surName && (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        <InfoCircle size={14} color="#DC2626" />
                                                         <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                             {errors.surName}
                                                         </span>
@@ -1835,7 +1834,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                 )}
                                                 {errors.contactPerson && (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        <InfoCircle size={14} color="#DC2626" />
                                                         <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                             {errors.contactPerson}
                                                         </span>
@@ -1881,8 +1880,8 @@ function AddCustomer({ editCustomerDetails }) {
                                         </div>
                                         {errors.countryCode && errors.contactNumber ? (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-0.5 font-Gilroy">
                                                     Country Code & Contact Number is required
                                                 </span>
                                             </div>
@@ -1890,7 +1889,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <>
                                                 {errors.countryCode && (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        <InfoCircle size={14} color="#DC2626" />
                                                         <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                             {errors.countryCode}
                                                         </span>
@@ -1898,7 +1897,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                 )}
                                                 {errors.contactNumber && (
                                                     <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        <InfoCircle size={14} color="#DC2626" />
                                                         <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                             {errors.contactNumber}
                                                         </span>
@@ -1921,7 +1920,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.emailId && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={14} color="#DC2626" />
                                                 <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
                                                     {errors.emailId}
                                                 </span>
@@ -1936,12 +1935,12 @@ function AddCustomer({ editCustomerDetails }) {
                                             value={formData.designation}
                                             onChange={(e) => handleInputChange('designation', e.target.value)}
                                             placeholder='Enter Designation'
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                         />
                                         {errors.designation && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-0.5 font-Gilroy">
                                                     {errors.designation}
                                                 </span>
                                             </div>
@@ -1993,21 +1992,21 @@ function AddCustomer({ editCustomerDetails }) {
                                                     </div>
                                                     {errors.contactErrors?.[index]?.surName && errors.contactErrors?.[index]?.name ? (
                                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                            <InfoCircle size={16} color="#DC2626" />
+                                                            <InfoCircle size={14} color="#DC2626" />
                                                             <p>Title & Name is required</p>
                                                         </div>
                                                     ) : (
                                                         <>
                                                             {errors.contactErrors?.[index]?.surName && (
                                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                    <InfoCircle size={16} color="#DC2626" />
-                                                                    <p>{errors.contactErrors[index].surName}</p>
+                                                                    <InfoCircle size={14} color="#DC2626" />
+                                                                    <p className='mt-0.5'>{errors.contactErrors[index].surName}</p>
                                                                 </div>
                                                             )}
 
                                                             {errors.contactErrors?.[index]?.name && (
                                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                    <InfoCircle size={16} color="#DC2626" />
+                                                                    <InfoCircle size={14} color="#DC2626" />
                                                                     <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].name}</p>
                                                                 </div>
                                                             )}
@@ -2049,21 +2048,21 @@ function AddCustomer({ editCustomerDetails }) {
 
                                                     {errors.contactErrors?.[index]?.countryCode && errors.contactErrors?.[index]?.number ? (
                                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                            <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
-                                                            <p>Country code & Number is required</p>
+                                                            <InfoCircle size={14} color="#DC2626" className='' />
+                                                            <p className='mt-0.5'>Country code & Number is required</p>
                                                         </div>
                                                     ) : (
                                                         <>
                                                             {errors.contactErrors?.[index]?.countryCode && (
                                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                    <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
+                                                                    <InfoCircle size={14} color="#DC2626" className='mt-0.5' />
                                                                     <p>{errors.contactErrors[index].countryCode}</p>
                                                                 </div>
                                                             )}
 
                                                             {errors.contactErrors?.[index]?.number && (
                                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                    <InfoCircle size={16} color="#DC2626" className='mt-0.5' />
+                                                                    <InfoCircle size={14} color="#DC2626" className='mt-0.5' />
                                                                     <p>{errors.contactErrors[index].number}</p>
                                                                 </div>
                                                             )}
@@ -2103,8 +2102,8 @@ function AddCustomer({ editCustomerDetails }) {
                                                     />
                                                     {errors.contactErrors?.[index]?.designation && (
                                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                            <InfoCircle size={16} color="#DC2626" />
-                                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.contactErrors[index].designation}</p>
+                                                            <InfoCircle size={14} color="#DC2626" />
+                                                            <p className="text-red-500 text-xs mt-0.5 font-Gilroy">{errors.contactErrors[index].designation}</p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -2167,8 +2166,8 @@ function AddCustomer({ editCustomerDetails }) {
 
                                         {errors.address1 && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs font-Gilroy">{errors.address1}</span>
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy mt-0.5">{errors.address1}</span>
                                             </div>
                                         )}
                                     </div>
@@ -2223,8 +2222,8 @@ function AddCustomer({ editCustomerDetails }) {
 
                                             {errors.city && (
                                                 <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 absolute left-0 -bottom-5'>
-                                                    <InfoCircle size={16} color="#DC2626" />
-                                                    <span>{errors.city}</span>
+                                                    <InfoCircle size={14} color="#DC2626" />
+                                                    <span className='mt-0.5'>{errors.city}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -2245,7 +2244,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.state && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={14} color="#DC2626" />
                                                 <span className="text-red-500 text-xs font-Gilroy">{errors.state}</span>
                                             </div>
                                         )}
@@ -2287,7 +2286,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                         {errors.country && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={14} color="#DC2626" />
                                                 <span className="text-red-500 text-xs font-Gilroy">{errors.country}</span>
                                             </div>
                                         )}
@@ -2305,8 +2304,8 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.postalCode && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs font-Gilroy">{errors.postalCode}</span>
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy mt-0.5">{errors.postalCode}</span>
                                             </div>
                                         )}
                                     </div>
@@ -2364,7 +2363,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                         {errors.shipaddress1 && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={14} color="#DC2626" />
                                                 <span className="text-red-500 text-xs font-Gilroy">{errors.shipaddress1}</span>
                                             </div>
                                         )}
@@ -2423,8 +2422,8 @@ function AddCustomer({ editCustomerDetails }) {
 
                                         {errors.shipcity && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs font-Gilroy">{errors.shipcity}</span>
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy mt-0.5">{errors.shipcity}</span>
                                             </div>
                                         )}
                                     </div>
@@ -2439,7 +2438,7 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.shipstate && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={14} color="#DC2626" />
                                                 <span className="text-red-500 text-xs font-Gilroy">{errors.shipstate}</span>
                                             </div>
                                         )}
@@ -2479,7 +2478,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                         {errors.shipcountry && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
+                                                <InfoCircle size={14} color="#DC2626" />
                                                 <span className="text-red-500 text-xs font-Gilroy">{errors.shipcountry}</span>
                                             </div>
                                         )}
@@ -2501,8 +2500,8 @@ function AddCustomer({ editCustomerDetails }) {
                                         />
                                         {errors.shippostalCode && (
                                             <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={16} color="#DC2626" />
-                                                <span className="text-red-500 text-xs font-Gilroy"> {errors.shippostalCode}</span>
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                <span className="text-red-500 text-xs font-Gilroy mt-0.5"> {errors.shippostalCode}</span>
                                             </div>
                                         )}
                                     </div>
@@ -2583,7 +2582,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                                 {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryName && (
                                                     <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].beneficiaryName}
+                                                        <InfoCircle size={14} color="#DC2626" /> {errors.bankErrors[index].beneficiaryName}
                                                     </div>
                                                 )}
 
@@ -2619,7 +2618,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                                 {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].beneficiaryCurrency && (
                                                     <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                        <InfoCircle size={16} color="#DC2626" />
+                                                        <InfoCircle size={14} color="#DC2626" className='mb-0.5' />
                                                         {errors.bankErrors[index].beneficiaryCurrency}
                                                     </div>
                                                 )}
@@ -2640,7 +2639,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                 />
                                                 {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].accountNumber && (
                                                     <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].accountNumber}
+                                                        <InfoCircle size={14} color="#DC2626" /> {errors.bankErrors[index].accountNumber}
                                                     </div>
                                                 )}
 
@@ -2658,7 +2657,8 @@ function AddCustomer({ editCustomerDetails }) {
                                                 />
                                                 {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].bankName && (
                                                     <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].bankName}
+                                                        <InfoCircle size={14} color="#DC2626" />
+                                                         {errors.bankErrors[index].bankName}
                                                     </div>
                                                 )}
 
@@ -2682,8 +2682,8 @@ function AddCustomer({ editCustomerDetails }) {
                                                     className='px-3 py-3 w-full border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
                                                 />
                                                 {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].ifscCode && (
-                                                    <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].ifscCode}
+                                                    <div className='text-red-500 text-xs font-Gilroy mt-1.5 flex items-center gap-1'>
+                                                        <InfoCircle size={14} color="#DC2626"className='mb-0.5' /> {errors.bankErrors[index].ifscCode}
                                                     </div>
                                                 )}
                                             </div>
@@ -2699,7 +2699,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                 />
                                                 {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].swiftCode && (
                                                     <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].swiftCode}
+                                                        <InfoCircle size={14} color="#DC2626" /> {errors.bankErrors[index].swiftCode}
                                                     </div>
                                                 )}
 
@@ -2718,8 +2718,8 @@ function AddCustomer({ editCustomerDetails }) {
                                                 />
 
                                                 {errors.bankErrors && errors.bankErrors[index] && errors.bankErrors[index].bankAddress1 && (
-                                                    <div className='text-red-500 text-xs font-Gilroy mt-1 flex items-center gap-1'>
-                                                        <InfoCircle size={16} color="#DC2626" /> {errors.bankErrors[index].bankAddress1}
+                                                    <div className='text-red-500 text-xs font-Gilroy mt-1.5 flex items-center gap-1'>
+                                                        <InfoCircle size={14} color="#DC2626" className='mb-0.5'/> {errors.bankErrors[index].bankAddress1}
                                                     </div>
                                                 )}
                                             </div>

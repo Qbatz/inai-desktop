@@ -38,7 +38,6 @@ function ProductDetails() {
 
     const editableRef = useRef(null);
 
-    const [displayError, setDisplayError] = useState('')
 
     const [containStates, setContainStates] = useState({});
 
@@ -154,18 +153,7 @@ function ProductDetails() {
         setEditedValue(sanitizedValue);
         setErrorMessage({});
 
-        // if (editingField === "manufacturing_year" && inputValue) {
-        //     dispatch({
-        //         type: EDIT_PARTICULAR_PRODUCT_SAGA,
-        //         payload: {
-        //             field: editingField,
-        //             value: inputValue,
-        //             uniqueProductCode: productDetails.uniqueProductCode
-        //         }
-        //     });
-        //     setLoading(true)
-        // }
-    };
+          };
 
 
 

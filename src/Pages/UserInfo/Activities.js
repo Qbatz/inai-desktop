@@ -129,9 +129,6 @@ function Activities() {
                                             )}
                                         </td>
 
-
-
-
                                         <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.datetime}</td>
 
                                     </tr>
@@ -139,9 +136,6 @@ function Activities() {
                             )}
                         </tbody>
                     </table>
-
-
-
 
 
 

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { InfoCircle } from "iconsax-react";
 import { Eye, EyeOff } from "lucide-react";
-import { OTP_SEND_SAGA, OTP_VERIFY_SAGA, ACCOUNT_REGISTER_SAGA, RESET_CODE } from '../../Utils/Constant'
+import { OTP_SEND_SAGA, OTP_VERIFY_SAGA, ACCOUNT_REGISTER_SAGA, RESET_CODE, OTP_SEND_REDUCER_REMOVE } from '../../Utils/Constant'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 
@@ -84,7 +84,7 @@ export default function SignUp() {
     specialChar: /[!@#$%^&*(),.?":{}|<>]/,
   };
 
-
+  console.log("state", state)
 
   const handleSENDOTP = () => {
     if (!mobile.match(/^[0-9]{10}$/)) {
@@ -92,7 +92,7 @@ export default function SignUp() {
       return;
     }
     if (mobile) {
-      dispatch({ type: OTP_SEND_SAGA, payload: { mobile: mobile , email: state?.userInfo?.emailId} })
+      dispatch({ type: OTP_SEND_SAGA, payload: { mobile: mobile, email: state?.userInfo?.emailId } })
       setLoading(true)
     }
 
@@ -196,11 +196,13 @@ export default function SignUp() {
   useEffect(() => {
 
     if (state.userInfo.isTrue) {
+        dispatch({ type: RESET_CODE })
       setLoading(false)
       setShowOtp(false);
       setShowMobile(false);
       setShowSignUp(false)
       navigate('/register')
+     
 
     } else {
       setLoading(false)
@@ -214,9 +216,21 @@ export default function SignUp() {
       setLoading(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE })
-      }, 8000)
+      }, 4000)
     }
   }, [state.Common.successCode, state.Common.code]);
+
+
+  useEffect(() => {
+    if (state.userInfo.otpSendSuccessCode === 200) {
+      setTimeout(() => {
+        dispatch({ type: RESET_CODE })
+        dispatch({ type: OTP_SEND_REDUCER_REMOVE })
+      }, 3000)
+
+    }
+
+  }, [state.userInfo.otpSendSuccessCode])
 
 
 
@@ -233,7 +247,7 @@ export default function SignUp() {
 
   return (
     <div className="flex items-center justify-center h-auto  w-full">
-      <div className="w-full max-w-md bg-white p-6 rounded-lg ">
+      <div className="w-full max-w-md bg-white pt-4 rounded-lg ">
 
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
@@ -252,9 +266,12 @@ export default function SignUp() {
           <>
 
             <div className="mb-4">
+              <label className="block text-gray-700 font-Gilroy mb-1">
+                Mobile <span className="text-red-600">*</span>
+              </label>
               <input
                 type="tel"
-                placeholder="Mobile *"
+                placeholder="Mobile"
                 value={mobile}
                 maxLength={10}
                 onChange={handleMobile}
@@ -280,9 +297,12 @@ export default function SignUp() {
 
           showOtp &&
           <>
+            <label className="block text-gray-700 font-Gilroy mb-1">
+              OTP <span className="text-red-600">*</span>
+            </label>
             <input
               type="text"
-              placeholder="Enter OTP *"
+              placeholder="Enter OTP"
               value={otp}
               onChange={handleOtpChange}
               className='w-full h-12 px-3 font-Gilroy border rounded-md focus:outline-none focus:ring-2 text-start  mb-4 border-gray-300 focus:ring-blue-500'
@@ -389,7 +409,7 @@ export default function SignUp() {
                 className="absolute right-3 top-3 text-gray-500"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ?   <Eye size={20} /> : <EyeOff size={20} />}
+                {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
               </button>
 
 
@@ -413,7 +433,7 @@ export default function SignUp() {
                 className="absolute right-3 top-3 text-gray-500"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ?   <Eye size={20} /> : <EyeOff size={20} />}
+                {showConfirmPassword ? <Eye size={20} /> : <EyeOff size={20} />}
               </button>
               {error.confirmPassword && (
                 <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-2">

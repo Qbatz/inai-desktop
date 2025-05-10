@@ -155,6 +155,7 @@ export const EDIT_PARTICULAR_PRODUCT_REDUCER = "Edit_Particular_Product_Reducer"
 export const EDIT_PARTICULAR_PRODUCT_SAGA = "Edit_Particular_Product_Saga";
 
 
+export const OTP_SEND_REDUCER_REMOVE = "Otp_Send_Reducer_Remove"
 
 
 export const REMOVE_ACCOUNT_REDUCER = "Remove_Account_Reducer";

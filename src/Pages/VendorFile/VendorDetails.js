@@ -76,9 +76,9 @@ function VendorDetails() {
                         <p className="font-semibold font-Gilroy text-sm pt-2">+{vendor.country_code}{vendor.contactNumber || 'N/A'}</p>
                       </div>
                       <div>
-                          <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Designation</p>
-                          <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{vendor.designation}</p>
-                        </div>
+                        <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Designation</p>
+                        <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{vendor.designation}</p>
+                      </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">GST/VAT</p>
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.gstvat || 'N/A'}</p>
@@ -215,6 +215,7 @@ function VendorDetails() {
                     </div>
                   </div>
 
+                  <hr className='mt-2 mb-[8px] border-1 border-[#E7E7E7] ' />
 
                   <div className="p-2 rounded-lg bg-white">
                     <h2 className="text-lg font-semibold mb-4 font-Gilroy">Shipping Address</h2>
@@ -223,24 +224,24 @@ function VendorDetails() {
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 1</p>
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.doorNo || 'N/A'}</p>
                       </div>
-                     
+
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 2</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[2]?.street || 'N/A'}</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.street || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 3</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[3]?.locality  || 'N/A'}</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.locality || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Address Line 4</p>
-                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[4]?.address4 || 'N/A'}</p>
+                        <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.address4 || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Postal Code</p>
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.postalCode || 'N/A'}</p>
                       </div>
-                     
+
                       <div>
                         <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">City</p>
                         <p className="font-semibold font-Gilroy text-sm pt-2">{vendor.address?.[1]?.city || 'N/A'}</p>
@@ -251,7 +252,7 @@ function VendorDetails() {
                         <p className="text-gray-500 text-xs font-medium font-Gilroy">Landmark</p>
                         <p className="font-semibold text-sm pt-2 font-Gilroy">{vendor.address?.[1]?.landMark || 'N/A'}</p>
                       </div>
-                      <div  className='col-span-12 md:col-span-8 w-full'>
+                      <div className='col-span-12 md:col-span-8 w-full'>
 
 
                         <p className="text-gray-500 text-xs font-medium font-Gilroy">Google Map</p>

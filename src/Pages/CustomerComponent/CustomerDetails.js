@@ -20,13 +20,13 @@ function CustomerDetails() {
 
     const isValidUrl = (string) => {
         try {
-          new URL(string);
-          return true;
+            new URL(string);
+            return true;
         } catch (_) {
-          return false;
+            return false;
         }
-      };
-      
+    };
+
 
     return (
         <div className="bg-blueGray-100 min-h-screen w-full">
@@ -60,27 +60,27 @@ function CustomerDetails() {
                                     <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 ">
 
                                         <div>
-                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Business Name *</p>
+                                            <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Business Name *</p>
                                             <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.businessName}</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Contact Person</p>
+                                            <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Contact Person</p>
                                             <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{customer.title}.{customer.contactPerson}</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Email</p>
+                                            <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Email</p>
                                             <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{customer.emailId || 'N/A'}</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Mobile no.</p>
+                                            <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Mobile no.</p>
                                             <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>+{customer.country_code}{customer.contactNumber}</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Designation</p>
+                                            <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Designation</p>
                                             <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{customer.designation}</p>
                                         </div>
                                         <div>
-                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">GST/VAT</p>
+                                            <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">GST/VAT</p>
                                             <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{customer.gstVat}</p>
                                         </div>
                                     </div>
@@ -102,31 +102,31 @@ function CustomerDetails() {
                                         customer?.bankDetails?.map((bank, index) => {
                                             return index === 0 && <div key={index} className="grid grid-cols-2 gap-4 text-sm text-gray-600">
                                                 <div>
-                                                    <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Beneficiary Customer Name</p>
+                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Beneficiary Customer Name</p>
                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{bank.name || 'N/A'}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Beneficiary Account Number</p>
+                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Beneficiary Account Number</p>
                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{bank.accountNo || 'N/A'}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">IFSC Code</p>
+                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">IFSC Code</p>
                                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.ifscCode || 'N/A'}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Bank Address </p>
+                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Bank Address </p>
                                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize'>{bank.address1 || 'N/A'}{" , "}{bank.address2}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Bank Country</p>
+                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Bank Country</p>
                                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.country || 'N/A'}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Intermediary Routing Bank</p>
+                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Intermediary Routing Bank</p>
                                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.routingBank || 'N/A'}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Sift Code for intermediary Bank</p>
+                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Sift Code for intermediary Bank</p>
                                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.swiftCode || 'N/A'}</p>
                                                 </div>
                                             </div>
@@ -156,76 +156,132 @@ function CustomerDetails() {
                                 </div>
 
                                 <hr className='mt-2 mb-[8px] border-1 border-[#E7E7E7] ' />
-                                <div className="grid gap-4">
-                                    {
-                                        customer?.address?.length > 0 ? (
-                                            customer?.address?.map(item => {
-                                                return <div key={item.id}>
-                                                    <h3 className="text-base font-semibold mb-2 font-Gilroy text-black">{item.addressType === "Office Address" ? 'Office Address' : 'Shipping Address'}</h3>
-                                                    <div className="grid grid-cols-3  gap-4">
-                                                        <div>
-                                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 1</p>
-                                                            <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.doorNo || 'N/A'}</p>
+                                {
+                                    customer?.address?.length > 0 ? (
+                                        (() => {
+                                            const officeAddresses = customer.address.filter(item => item.addressType === "Office Address");
+                                            const shippingAddresses = customer.address.filter(item => item.addressType !== "Office Address");
 
+                                            return (
+                                                <>
+                                                    {officeAddresses.map(item => (
+                                                        <div key={item.id}>
+                                                            <h3 className="text-base font-semibold mb-2 font-Gilroy text-black">Office Address</h3>
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 1</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.doorNo || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 2</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.street || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 3</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.locality || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 4</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.address4 || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Postal Code</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.postalCode || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">City</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.city || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Landmark</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.landMark || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Google Map</p>
+                                                                    {isValidUrl(item.mapLink) ? (
+                                                                        <a
+                                                                            href={item.mapLink}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline"
+                                                                        >
+                                                                            {item.mapLink}
+                                                                        </a>
+                                                                    ) : (
+                                                                        <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">
+                                                                            {item.mapLink || 'N/A'}
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
                                                         </div>
+                                                    ))}
 
-                                                        <div>
-                                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 2</p>
-                                                            <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.street || 'N/A'}</p>
+                                                    {officeAddresses.length > 0 && shippingAddresses.length > 0 && (
+                                                        <hr className="my-4 border-[#E7E7E7]" />
+                                                    )}
 
+                                                    {shippingAddresses.map(item => (
+                                                        <div key={item.id}>
+                                                            <h3 className="text-base font-semibold mb-2 font-Gilroy text-black">Shipping Address</h3>
+                                                            <div className="grid grid-cols-3 gap-4">
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 1</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.doorNo || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 2</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.street || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 3</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.locality || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 4</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.address4 || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Postal Code</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.postalCode || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">City</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.city || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Landmark</p>
+                                                                    <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.landMark || 'N/A'}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Google Map</p>
+                                                                    {isValidUrl(item.mapLink) ? (
+                                                                        <a
+                                                                            href={item.mapLink}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline"
+                                                                        >
+                                                                            {item.mapLink}
+                                                                        </a>
+                                                                    ) : (
+                                                                        <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">
+                                                                            {item.mapLink || 'N/A'}
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div>
-                                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 3</p>
-                                                            <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.locality || 'N/A'}</p>
-
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Address Line 4</p>
-                                                            <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.address4 || 'N/A'}</p>
-
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Postal Code</p>
-                                                            <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.postalCode || 'N/A'}</p>
-
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Landmark</p>
-                                                            <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{item.landMark || 'N/A'}</p>
-
-                                                        </div>
-                                                        <div>
-                                                            <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">Google Map</p>
-                                                            {isValidUrl(item.mapLink) ? (
-                                                                <a
-                                                                    href={item.mapLink}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-sm cursor-pointer font-semibold mb-2 font-Gilroy text-blue-500 overflow-hidden text-ellipsis whitespace-nowrap underline"
-                                                                >
-                                                                    {item.mapLink}
-                                                                </a>
-                                                            ) : (
-                                                                <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
-                                                                    {item.mapLink || 'N/A'}
-                                                                </p>
-                                                            )}
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            })
-                                        )
-                                            :
-                                            (
-                                                <div className="text-sm text-gray-500 font-Gilroy text-center">No address details available</div>
-
-                                            )
-                                    }
+                                                    ))}
+                                                </>
+                                            );
+                                        })()
+                                    ) : (
+                                        <div className="text-sm text-gray-500 font-Gilroy text-center">No address details available</div>
+                                    )
+                                }
 
 
-
-                                </div>
                             </div>
 
                         </>

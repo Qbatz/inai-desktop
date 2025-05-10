@@ -1,5 +1,5 @@
 
-import { REMOVE_ACCOUNT_REDUCER,GET_ACTIVITIES_REDUCER, GET_USER_INFO_REDUCER, SIGN_IN_REDUCER, LOG_OUT, LOG_IN, SIGN_UP_VERIFICATION_REDUCER, OTP_SEND_REDUCER, STORE_VERIFY_CODE, ACCOUNT_REGISTER_REDUCER } from "../../Utils/Constant";
+import { OTP_SEND_REDUCER_REMOVE,REMOVE_ACCOUNT_REDUCER, GET_ACTIVITIES_REDUCER, GET_USER_INFO_REDUCER, SIGN_IN_REDUCER, LOG_OUT, LOG_IN, SIGN_UP_VERIFICATION_REDUCER, OTP_SEND_REDUCER, STORE_VERIFY_CODE, ACCOUNT_REGISTER_REDUCER } from "../../Utils/Constant";
 
 export const initialState = {
 
@@ -12,6 +12,7 @@ export const initialState = {
     emailId: '',
     userDetails: [],
     ActivitiesList: [],
+    otpSendSuccessCode: 0,
 }
 
 const UserReducer = (state = initialState, action) => {
@@ -31,7 +32,11 @@ const UserReducer = (state = initialState, action) => {
             return { ...state, is_verified: action.payload.is_verified, emailId: action.payload.emailId }
 
         case OTP_SEND_REDUCER:
-            return { ...state, otpValue: action.payload.response.otp }
+            return { ...state, otpValue: action.payload.response.otp, otpSendSuccessCode: action.payload.statusCode }
+
+        case OTP_SEND_REDUCER_REMOVE:
+            return { ...state, otpSendSuccessCode: 0 }
+
 
         case STORE_VERIFY_CODE:
             return { ...state, verifyCode: action.payload || '' }

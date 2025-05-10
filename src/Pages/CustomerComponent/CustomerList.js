@@ -296,7 +296,7 @@ function CustomerList() {
 
 
 
-          <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
+          {/* <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
             <div
               className="flex items-center cursor-pointer"
               onClick={() => setShowPicker(!showPicker)}
@@ -332,7 +332,47 @@ function CustomerList() {
                 />
               </div>
             )}
+          </div> */}
+          <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => setShowPicker(!showPicker)}
+            >
+              <Calendar
+                size="16"
+                color="gray"
+                className="absolute left-6 top-1/2 transform -translate-y-1/2"
+              />
+              <input
+                type="text"
+                value={`${dateRange[0].startDate
+                    ? moment(dateRange[0].startDate).format("MMMM D")
+                    : ""
+                  } - ${dateRange[0].endDate
+                    ? moment(dateRange[0].endDate).format("MMMM YYYY")
+                    : ""
+                  }`}
+                readOnly
+                className="w-full pl-20 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
+              />
+            </div>
+
+            {showPicker && (
+              <div
+                ref={pickerRef}
+                className="absolute top-15 right-0 mt-2 shadow-lg border rounded-lg bg-white z-20"
+              >
+                <DateRangePicker
+                  ranges={dateRange}
+                  onChange={handleSelect}
+                  moveRangeOnFirstSelection={false}
+                  editableDateInputs={true}
+                  locale={enGB}
+                />
+              </div>
+            )}
           </div>
+
 
         </div>
 
@@ -372,7 +412,12 @@ function CustomerList() {
                       <td className="text-[#205DA8] px-4 py-2 text-center text-sm font-medium font-Gilroy overflow-hidden hover:underline hover:cursor-pointer" onClick={() => handleCustomerDetails(item.clientId)}>{item.businessName}</td>
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.title}.{item.contactPerson}</td>
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.emailId || 'N/A'}</td>
-                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">+{item.country_code}{item.contactNumber}</td>
+
+                      <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">
+                        +{item.country_code}
+                        <span className="ml-1">{item.contactNumber}</span>
+                      </td>
+
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">{item.Amount || '-'}</td>
                       <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
                         <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">

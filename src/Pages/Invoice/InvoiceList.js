@@ -149,13 +149,13 @@ const InvoiceList = () => {
                                 {paginatedInvoices.length > 0 ? (
                                     paginatedInvoices.map((invoice, index) => (
                                         <tr key={invoice.id}>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium">{invoice.id}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm">{invoice.name}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm">{invoice.email}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm">{invoice.mobile}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm">{invoice.date}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm">{invoice.amount}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.id}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.name}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.email}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.mobile}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.date}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.amount}</td>
                                             <td className="px-4 py-2 text-center relative">
                                                 <div
                                                     onClick={(e) => handleShowPopup(index, e)}
@@ -176,7 +176,7 @@ const InvoiceList = () => {
                                                             <div
                                                                 className="px-4 py-2 cursor-pointer flex items-center gap-2"
                                                             >
-                                                                <Edit size="16" color="#205DA8" /> Edit
+                                                                <Edit size="16" color="#205DA8" className='' /> Edit
                                                             </div>
                                                             <div
                                                                 className="px-4 py-2 cursor-pointer flex items-center gap-2 text-red-700"

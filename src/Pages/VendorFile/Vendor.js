@@ -291,12 +291,12 @@ function VendorList() {
                     value={searchTerm}
                     onChange={handleSearchChange}
                     placeholder='Search by name'
-                    className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
+                    className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy text-sm font-medium"
                   />
                 </div>
-                <div className=" col-span-2 bg-slate-100  rounded-lg flex items-center gap-2 justify-center  cursor-pointer">
+                <div className="col-span-2 bg-slate-100 rounded-lg flex items-center gap-2 justify-center  cursor-pointer">
                   <img alt="plus" src={Filter}
-                    className=" text-gray-500 h-4 w-4"
+                    className="text-gray-500 h-4 w-4"
                   />
 
                   <label className="hidden xs:hidden sm:block md:block lg:block text-gray-500 font-Gilroy text-sm font-medium">
@@ -313,14 +313,14 @@ function VendorList() {
                     <Calendar
                       size="16"
                       color="gray"
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2"
+                      className="absolute left-8 top-1/2 transform -translate-y-1/2"
                     />
 
                     <input
                       type="text"
-                      value={`${dateRange[0].startDate ? dateRange[0].startDate.toLocaleDateString() : ""} - ${dateRange[0].endDate ? dateRange[0].endDate.toLocaleDateString() : ""}`}
-                      readOnly
-                      className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
+                      value={`${dateRange[0].startDate ? moment(dateRange[0].startDate).format("MMMM D") : ""} - ${dateRange[0].endDate ? moment(dateRange[0].endDate).format("MMMM YYYY") : ""}`}
+                       readOnly
+                      className="w-full pl-20 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
                     />
 
                   </div>
@@ -365,7 +365,7 @@ function VendorList() {
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy hover:underline hover:cursor-pointer text-[#205DA8]" onClick={() => handleViewVendor(item.vendorId)}>{item.businessName}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.title}.{item.contactPersonName}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy" >{item.emailId || 'N/A'}</td>
-                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">+{item.country_code}{item.contactNumber}</td>
+                          <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">+{item.country_code} <span className="ml-1"></span>{item.contactNumber}</td>
                           <td className=" px-4 py-2 text-center text-trueGray-600 text-sm font-medium font-Gilroy">{item.Amount || '-'}</td>
                           <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy relative">
                             <div onClick={(e) => handleShowPopup(index, e)} className="w-8 h-8 rounded-full border border-[#E1E8F0] flex items-center justify-center cursor-pointer hover:bg-slate-100 transition duration-200">

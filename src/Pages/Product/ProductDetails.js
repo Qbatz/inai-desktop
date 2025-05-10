@@ -8,6 +8,9 @@ import { Edit, DocumentDownload } from "iconsax-react";
 import Pdf from '../../Asset/Images/pdf.png'
 import WordIcon from '../../Asset/Images/doc.png';
 import { InfoCircle } from "iconsax-react";
+import Select from "react-select";
+
+
 
 function ProductDetails() {
 
@@ -86,7 +89,11 @@ function ProductDetails() {
 
     }, [state.Common?.editStatusCode])
 
-
+    const handleEditClick = (fieldKey, currentValue) => {
+        setEditingField(fieldKey);
+        setEditedValue(currentValue || "");
+        setErrorMessage("");
+    };
 
     useEffect(() => {
         document.addEventListener('mousedown', handleOutsideClick);
@@ -104,68 +111,181 @@ function ProductDetails() {
     };
 
 
-    const triggerUpdate = () => {
-        if (editingField && editedValue !== "" && Object.keys(errorMessage).length === 0) {
-            let finalValue = editedValue;
+ 
 
-            if (editingField === "manufacturing_year" && /^\d{8}$/.test(editedValue)) {
-                const year = editedValue.slice(0, 4);
-                const month = editedValue.slice(4, 6);
-                const day = editedValue.slice(6, 8);
-                finalValue = `${year}-${month}-${day}`;
-            }
 
-            dispatch({
-                type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                payload: {
-                    field: editingField,
-                    value: finalValue,
-                    uniqueProductCode: productDetails.uniqueProductCode
-                }
-            });
-            setLoading(true);
+const triggerUpdate = () => {
+    if (!editingField) return;
+
+    const fieldKeyMap = {
+        product_name: "productName",
+        description: "description",
+        price: "price",
+        discount: "discount",
+        hsn_code: "hsnCode",
+        origin_country: "countryOfOrigin",
+        manufacturing_year: "manufacturingYearAndMonth",
+        state: "State"
+    };
+
+    const currentValue = productDetails[fieldKeyMap[editingField]] || "";
+    const readableFieldName = fieldKeyMap[editingField] || editingField;
+
+   
+   if (editedValue.trim() === currentValue.toString().trim()) {
+        setErrorMessage({
+        [editingField]: `No changes made to ${readableFieldName}`
+    });
+    return;
+}
+
+    if (editedValue !== "" && Object.keys(errorMessage).length === 0) {
+        let finalValue = editedValue;
+
+        if (editingField === "manufacturing_year" && /^\d{8}$/.test(editedValue)) {
+            const year = editedValue.slice(0, 4);
+            const month = editedValue.slice(4, 6);
+            const day = editedValue.slice(6, 8);
+            finalValue = `${year}-${month}-${day}`;
         }
-    };
+
+       
+
+        dispatch({
+            type: EDIT_PARTICULAR_PRODUCT_SAGA,
+            payload: {
+                field: editingField,
+                value: finalValue,
+                uniqueProductCode: productDetails.uniqueProductCode
+            }
+        });
+
+        setLoading(true);
+        setEditingField(null);
+    } 
+};
 
 
 
-    const handleEditClick = (fieldKey, currentValue) => {
-        setEditingField(fieldKey);
-        setEditedValue(currentValue || "");
-        setErrorMessage("");
-    };
-
-    const handleValueChange = (e) => {
-        const inputValue = e.target.value;
+    const handleValueChange = (e, customValue = null) => {
+        const inputValue = customValue ?? e.target.value;
         let sanitizedValue = inputValue;
         let tempError = {};
+        let finalValue = sanitizedValue;
+
+        const fieldKeyMap = {
+            product_name: "productName",
+            description: "description",
+            price: "price",
+            discount: "discount",
+            hsn_code: "hsnCode",
+            origin_country: "countryOfOrigin",
+            manufacturing_year: "manufacturingYearAndMonth",
+            state: "State"
+        };
+
+        const actualKey = fieldKeyMap[editingField] || editingField;
+        const currentValue = productDetails[actualKey];
+
         if (editingField === "price" || editingField === "discount" || editingField === "manufacturing_year") {
             sanitizedValue = inputValue.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
             const trimmedValue = sanitizedValue.trim();
 
             if (trimmedValue === "" || isNaN(parseFloat(trimmedValue)) || !/^\d*\.?\d*$/.test(trimmedValue)) {
-                let fieldLabel = "";
-
-                if (editingField === "price") fieldLabel = "Price";
-                else if (editingField === "discount") fieldLabel = "Discount";
-                else if (editingField === "manufacturing_year") fieldLabel = "Manufacturing year";
-
-                tempError[editingField] = `${fieldLabel} is required`;
+                let fieldLabel = editingField.replace(/_/g, ' ');
+                tempError[editingField] = `${fieldLabel.charAt(0).toUpperCase() + fieldLabel.slice(1)} is required`;
                 setErrorMessage(tempError);
                 setEditedValue(trimmedValue);
                 return;
             }
+
+            finalValue = trimmedValue;
         }
 
         if (editingField === "origin_country") {
             sanitizedValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
+            finalValue = sanitizedValue;
+        }
+
+        if (requiredFields.includes(editingField)) {
+            const trimmed = sanitizedValue.trim();
+            if (trimmed === "") {
+                tempError[editingField] = `Enter the ${editingField.replace(/_/g, ' ')}`;
+                setErrorMessage(tempError);
+            } else {
+                setErrorMessage(prev => {
+                    const newErr = { ...prev };
+                    delete newErr[editingField];
+                    return newErr;
+                });
+            }
+        }
+
+
+        const trimmedNewValue = finalValue?.toString().trim();
+        const trimmedOldValue = currentValue?.toString().trim();
+
+        if (trimmedNewValue === (trimmedOldValue || "")) {
+            setErrorMessage({
+                [editingField]: `No changes made to ${editingField.replace(/_/g, ' ')}`
+            });
+            return;
+        }
+
+        if (editingField === "manufacturing_year" && /^\d{8}$/.test(sanitizedValue)) {
+            const year = sanitizedValue.slice(0, 4);
+            const month = sanitizedValue.slice(4, 6);
+            const day = sanitizedValue.slice(6, 8);
+            finalValue = `${year}-${month}-${day}`;
+
+            dispatch({
+                type: EDIT_PARTICULAR_PRODUCT_SAGA,
+                payload: {
+                    field: "manufacturing_year",
+                    value: finalValue,
+                    uniqueProductCode: productDetails.uniqueProductCode
+                }
+            });
+
+            setLoading(true);
+            setEditingField(null);
+            return;
         }
 
         setEditedValue(sanitizedValue);
-        setErrorMessage({});
 
+        if (editingField === "state") {
+            dispatch({
+                type: EDIT_PARTICULAR_PRODUCT_SAGA,
+                payload: {
+                    field: "state",
+                    value: sanitizedValue,
+                    uniqueProductCode: productDetails.uniqueProductCode
+                }
+            });
+            setEditingField(null);
+            setLoading(true);
+            return;
+        }
+
+        if (editingField === "origin_country") {
+            sanitizedValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
+            finalValue = sanitizedValue;
+
+            dispatch({
+                type: EDIT_PARTICULAR_PRODUCT_SAGA,
+                payload: {
+                    field: "origin_country",
+                    value: finalValue,
+                    uniqueProductCode: productDetails.uniqueProductCode
+                }
+            });
+
+            setLoading(true);
+            setEditingField(null);
+            return;
+        }
     };
-
 
 
 
@@ -180,6 +300,19 @@ function ProductDetails() {
         "state"
     ];
 
+
+
+    const fieldKeyMap = {
+        product_name: "productName",
+        description: "description",
+        price: "price",
+        discount: "discount",
+        hsn_code: "hsnCode",
+        origin_country: "countryOfOrigin",
+        manufacturing_year: "manufacturingYearAndMonth",
+        state: "State"
+    };
+
     const handleKeyDown = (e, fieldKey) => {
         if (e.key === "Enter") {
             let error = {};
@@ -187,6 +320,21 @@ function ProductDetails() {
             if (!editedValue && requiredFields.includes(fieldKey)) {
                 error[fieldKey] = `Enter the ${fieldKey.replace(/_/g, ' ')}`;
                 setErrorMessage(prev => ({ ...prev, ...error }));
+                return;
+            }
+
+            const actualKey = fieldKeyMap[fieldKey] || fieldKey;
+            const currentValue = productDetails[actualKey];
+
+
+
+            const trimmedEdited = editedValue?.toString().trim();
+            const trimmedCurrent = currentValue?.toString().trim();
+
+            if (trimmedEdited === (trimmedCurrent || "")) {
+                setErrorMessage({
+                    [fieldKey]: `No changes made to ${fieldKey.replace(/_/g, ' ')}`
+                });
                 return;
             }
 
@@ -212,12 +360,111 @@ function ProductDetails() {
     };
 
 
+
     const currencySymbols = {
         USD: "$",
         INR: "₹",
         EUR: "€",
         GBP: "£",
         JPY: "¥"
+    };
+    const countryOptions = [
+        { value: 'Select Country', label: 'Select Country', isDisabled: true },
+        { value: 'India', label: 'India' },
+        { value: 'United States', label: 'United States' },
+        { value: 'United Kingdom', label: 'United Kingdom' },
+        { value: 'Australia', label: 'Australia' },
+        { value: 'Canada', label: 'Canada' },
+        { value: 'Germany', label: 'Germany' },
+        { value: 'France', label: 'France' },
+        { value: 'Italy', label: 'Italy' },
+        { value: 'Singapore', label: 'Singapore' },
+        { value: 'Japan', label: 'Japan' },
+        { value: 'China', label: 'China' }
+    ];
+
+    const stateOptions = [
+        { value: 'Enter State', label: 'Enter State', isDisabled: true },
+        { value: 'tamil-nadu', label: 'Tamil Nadu' },
+        { value: 'maharashtra', label: 'Maharashtra' },
+        { value: 'karnataka', label: 'Karnataka' },
+        { value: 'delhi', label: 'Delhi' },
+        { value: 'kerala', label: 'Kerala' },
+        { value: 'gujarat', label: 'Gujarat' },
+        { value: 'rajasthan', label: 'Rajasthan' },
+        { value: 'west-bengal', label: 'West Bengal' },
+        { value: 'uttar-pradesh', label: 'Uttar Pradesh' },
+        { value: 'andhra-pradesh', label: 'Andhra Pradesh' },
+        { value: 'madhya-pradesh', label: 'Madhya Pradesh' },
+        { value: 'bihar', label: 'Bihar' },
+        { value: 'assam', label: 'Assam' },
+        { value: 'odisha', label: 'Odisha' },
+        { value: 'punjab', label: 'Punjab' }
+    ];
+
+
+    const customSelectStyles = {
+        control: (base) => ({
+            ...base,
+            borderColor: '#D1D5DB',
+            borderRadius: '0.5rem',
+            boxShadow: 'none',
+            cursor: 'pointer',
+            padding: '6px 1px',
+            minHeight: '46px',
+            '&:hover': {
+                borderColor: '#D1D5DB',
+            },
+            '&:focus-within': {
+                borderColor: '#D1D5DB',
+                boxShadow: 'none',
+            },
+        }),
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isFocused ? '#205DA8' : 'white',
+            color: state.isFocused ? 'white' : 'black',
+            fontWeight: 500,
+            padding: '4px 10px',
+            cursor: 'pointer'
+        }),
+
+        menu: (base) => ({
+            ...base,
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollBehavior: 'smooth',
+            transition: 'all 0.3s ease-in-out',
+            transformOrigin: 'top',
+            overscrollBehaviorY: 'contain',
+        }),
+        menuList: (base) => ({
+            ...base,
+            maxHeight: '120px',
+            overflowY: 'auto',
+            scrollBehavior: 'smooth',
+            scrollbarWidth: 'thin',
+            paddingRight: '4px',
+            '&::-webkit-scrollbar': {
+                width: '4px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#cbd5e1',
+                borderRadius: '6px',
+            },
+        }),
+        singleValue: (base, state) => ({
+            ...base,
+            color: state.data.value === '' ? 'oklch(70.8% 0 0)' : 'black'
+        }),
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+        dropdownIndicator: (base) => ({
+            ...base,
+            color: '#94A3B8',
+            padding: '0 8px',
+        }),
     };
 
 
@@ -363,7 +610,7 @@ function ProductDetails() {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-12 p-2 ">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 p-2 ">
 
                         <div>
                             <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Code </p>
@@ -377,9 +624,10 @@ function ProductDetails() {
                             </div>
                             {editingField === "product_name" ? (
                                 <input ref={editableRef}
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-full"
+                                    className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
                                     value={editedValue}
                                     onChange={handleValueChange}
+                                    placeholder='Enter Product Name'
                                     onKeyDown={(e) => handleKeyDown(e, "product_name")}
                                     autoFocus
                                 />
@@ -411,8 +659,9 @@ function ProductDetails() {
                             </div>
                             {editingField === "description" ? (
                                 <input ref={editableRef}
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-[500px]"
+                                    className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-[500px]"
                                     value={editedValue}
+                                    placeholder='Enter Description'
                                     onChange={handleValueChange}
                                     onKeyDown={(e) => handleKeyDown(e, "description")}
                                     autoFocus
@@ -455,7 +704,7 @@ function ProductDetails() {
                             </div>
                             {editingField === "price" ? (
                                 <input ref={editableRef}
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-full placeholder:text-xs"
+                                    className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
                                     value={editedValue}
                                     onChange={handleValueChange}
                                     onKeyDown={(e) => handleKeyDown(e, "price")}
@@ -497,7 +746,8 @@ function ProductDetails() {
                             {editingField === "discount" ? (
                                 <input ref={editableRef}
                                     type="text"
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-full"
+                                    placeholder='Enter Discount'
+                                    className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
                                     value={editedValue}
                                     onChange={handleValueChange}
                                     onKeyDown={(e) => handleKeyDown(e, "discount")}
@@ -529,8 +779,9 @@ function ProductDetails() {
                             </div>
                             {editingField === "hsn_code" ? (
                                 <input ref={editableRef}
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-full"
+                                    className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
                                     value={editedValue}
+                                    placeholder='Enter HSN'
                                     onChange={handleValueChange}
                                     onKeyDown={(e) => handleKeyDown(e, "hsn_code")}
                                     autoFocus
@@ -588,13 +839,23 @@ function ProductDetails() {
 
                             </div>
                             {editingField === "origin_country" ? (
-                                <input ref={editableRef}
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-full"
-                                    value={editedValue}
-                                    onChange={handleValueChange}
-                                    onKeyDown={(e) => handleKeyDown(e, "origin_country")}
-                                    autoFocus
-                                />
+
+                                <div ref={editableRef}>
+                                    <Select
+                                        options={countryOptions}
+                                        value={countryOptions.find(option => option.value === editedValue)}
+                                        onChange={(selectedOption) => handleValueChange(null, selectedOption.value)}
+                                        className="font-Gilroy text-sm w-auto"
+                                        classNamePrefix="react-select"
+                                        placeholder="Enter Country of Origin"
+                                        styles={customSelectStyles}
+                                    />
+
+                                </div>
+
+
+
+
                             ) : (
                                 <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
                                     {productDetails.countryOfOrigin || "N/A"}
@@ -619,7 +880,7 @@ function ProductDetails() {
                             {editingField === "manufacturing_year" ? (
                                 <input ref={editableRef}
                                     type="date"
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1"
+                                    className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
                                     value={
                                         editedValue
                                             ? moment(editedValue).format("YYYY-MM-DD")
@@ -650,13 +911,21 @@ function ProductDetails() {
 
                             </div>
                             {editingField === "state" ? (
-                                <input ref={editableRef}
-                                    className="text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-md px-2 py-1 w-full"
-                                    value={editedValue}
-                                    onChange={handleValueChange}
-                                    onKeyDown={(e) => handleKeyDown(e, "state")}
-                                    autoFocus
-                                />
+
+                                <div ref={editableRef}>
+                                    <Select
+                                        options={stateOptions}
+                                        value={stateOptions.find(option => option.value === editedValue)}
+                                        onChange={(selectedOption) => handleValueChange(null, selectedOption.value)}
+                                        className="mb-2 font-Gilroy text-sm w-auto"
+                                        classNamePrefix="react-select"
+                                        placeholder="Enter State"
+                                        styles={customSelectStyles}
+                                        autoFocus
+                                    />
+
+                                </div>
+
                             ) : (
                                 <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
                                     {productDetails.State || "N/A"}

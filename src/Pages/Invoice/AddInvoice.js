@@ -836,7 +836,7 @@ function AddInvoice() {
                             <div className='rounded-lg bg-[#EFF2F5] border-[#EFF2F5] min-h-[230px] p-4'>
 
 
-                                <label className='block text-[#205DA8] text-xs font-Gilroy font-semibold mb-2'>Consignee</label>
+                                <label className='block text-[#205DA8] text-sm font-Gilroy font-semibold mb-2'>Consignee</label>
 
                                 <label className='block text-[#0F172A] text-lg font-Gilroy font-semibold mb-2'>{customer.contactPerson || 'Name'}</label>
 
@@ -867,7 +867,7 @@ function AddInvoice() {
                             <div className='rounded-lg bg-[#EFF2F5] border-[#EFF2F5] min-h-[230px] p-4'>
 
 
-                                <label className='block text-[#205DA8] text-xs font-Gilroy font-semibold mb-2'>Consignee</label>
+                                <label className='block text-[#205DA8] text-sm font-Gilroy font-semibold mb-2'>Consignee</label>
 
                                 <label className='block text-[#0F172A] text-lg font-Gilroy font-semibold mb-2'>{customer.contactPerson || 'Name'}</label>
 

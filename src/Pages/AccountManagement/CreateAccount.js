@@ -27,6 +27,7 @@ function CreateAccount() {
     const [emailVerifyMessage, setEmailVerifyMessage] = useState(false)
 
     const handleEmailChange = (e) => {
+       dispatch({ type: REMOVE_ACCOUNT_REDUCER })
         setErrorMessage('')
         const value = e.target.value.toLowerCase();
         setEmail(value);
@@ -140,9 +141,11 @@ function CreateAccount() {
 
     useEffect(() => {
         if (state.userInfo.isTrue) {
+             dispatch({ type: RESET_CODE })
             setMessage(true);
-
-
+            setErrorMessage("")
+        }else{
+             setMessage(false);
         }
     }, [state.userInfo.isTrue])
 
@@ -166,15 +169,16 @@ function CreateAccount() {
 
 
                 {emailVerifyMessage && (
-                    <div className="p-6 text-center font-Gilroy">
-                        <h2 className="text-[#0AEB7A] font-Gilroy"> 
+                    <div className="ps-16 pe-10 pt-6 text-start font-Gilroy">
+                        <h2 className="text-green-600 font-Gilroy"> 
 
                             Check your email <span className="font-bold font-Gilroy">{emailid}</span> to complete the registration
                             Check your Junk/Spam folder
                             Add <span className="font-semibold font-Gilroy">noreply@inaippl.com</span> to your address book.to avoid notification emails going to the spam folder
                         </h2>
 
-                    </div>)}
+                    </div>
+                     )} 
 
                 {message &&
                     <div className="my-4 text-start flex flex-col mx-4 justify-start">

@@ -12,16 +12,19 @@ iframe{
     width: auto !important;
 }
 
-.recaptcha-checkbox-border {
+
+
+
+.recaptcha-checkbox .recaptcha-checkbox-border {
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border-radius: 2px;
     background-color: #fff;
-    border: 1px solid #205DA8 !important;
+    border: 2px solid red !important;
     font-size: 1px;
-    height: 14px;
+    height: 24px;
     position: absolute;
-    width: 14px;
+    width: 24px;
     z-index: 1;
 }
 .recaptcha-anchor-label span{

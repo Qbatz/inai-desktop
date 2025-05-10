@@ -162,8 +162,8 @@ function* handleSendOtp(action) {
     try {
         const response = yield call(OtpSend, action.payload);
         if (response?.status && response?.status === 200) {
-            yield put({ type: OTP_SEND_REDUCER, payload: { response: response.data } });
-            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message } });
+            yield put({ type: OTP_SEND_REDUCER, payload: { response: response.data, statusCode: response.status } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message  } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message, statusCode: response.status } });

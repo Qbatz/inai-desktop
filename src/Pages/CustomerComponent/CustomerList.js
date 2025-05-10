@@ -294,45 +294,6 @@ function CustomerList() {
             <label className='block text-gray-500 font-Gilroy  text-sm font-medium'>Filters</label>
           </div>
 
-
-
-          {/* <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
-            <div
-              className="flex items-center cursor-pointer"
-              onClick={() => setShowPicker(!showPicker)}
-            >
-              <Calendar
-                size="16"
-                color="gray"
-                className="absolute left-3 top-1/2 transform -translate-y-1/2"
-              />
-              <input
-                type="text"
-                value={`${dateRange[0].startDate
-                  ? dateRange[0].startDate.toLocaleDateString()
-                  : ""
-                  } - ${dateRange[0].endDate
-                    ? dateRange[0].endDate.toLocaleDateString()
-                    : ""
-                  }`}
-                readOnly
-                className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
-              />
-
-            </div>
-
-            {showPicker && (
-              <div ref={pickerRef} className="absolute top-15 right-0  mt-2 shadow-lg border rounded-lg bg-white z-20">
-                <DateRangePicker
-                  ranges={dateRange}
-                  onChange={handleSelect}
-                  moveRangeOnFirstSelection={false}
-                  editableDateInputs={true}
-                  locale={enGB}
-                />
-              </div>
-            )}
-          </div> */}
           <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
             <div
               className="flex items-center cursor-pointer"

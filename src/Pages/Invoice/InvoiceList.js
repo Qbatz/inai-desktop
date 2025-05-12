@@ -95,7 +95,7 @@ const InvoiceList = () => {
 
     return (
 
-        <div className="flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative bg-gray-100">
+        <div className="flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative bg-slate-100">
             {isVisible && (
                 <div className="bg-white flex-1 flex flex-col rounded-2xl p-4 relative h-[515px] w-full">
 
@@ -127,7 +127,7 @@ const InvoiceList = () => {
                             <label className="text-gray-500 font-Gilroy text-sm font-medium">Filters</label>
                         </div>
 
-                        <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer px-16 py-2 flex items-center gap-2 w-max">
+                        <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer px-10 py-2 flex items-center gap-2 ">
                             <Calendar size="16" color="gray" />
                             <span className="text-gray-500 text-sm font-medium font-Gilroy">April 11 - April 24</span>
                         </div>

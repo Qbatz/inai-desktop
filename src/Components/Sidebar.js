@@ -84,6 +84,8 @@ function Sidebar({ state }) {
             setActiveItem("client");
         } else if (path === "/") {
             setActiveItem("dashboard");
+        }else if(path === "/invoice"){
+ setActiveItem("invoice");
         }
 
     }, [window.location.pathname]);

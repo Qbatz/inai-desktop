@@ -30,7 +30,7 @@ function DeleteCustomer({ handleClose, deleteVendorId }) {
     }, [state.Common.successCode])
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6 relative">
+            <div className="bg-white rounded-lg shadow-lg w-[388px] h-fit  p-6 relative">
             {loading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
                         <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
@@ -39,12 +39,12 @@ function DeleteCustomer({ handleClose, deleteVendorId }) {
 
                 <div className="flex justify-center border-b-0">
                     <h2 className="text-[18px] font-semibold text-[#222222] text-center flex-1 font-Gilroy">
-                        Delete Customer
+                        Delete Vendor
                     </h2>
                 </div>
 
 
-                <div className="text-center text-[14px] text-[#646464] font-medium mt-[20px] font-Gilroy">
+                <div className="text-center text-[14px] text-[#646464] font-medium mt-[15px] font-Gilroy">
                     Are you sure you want to  Delete?
                 </div>
 

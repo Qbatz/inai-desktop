@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
-import { SearchNormal1, Calendar,Trash, ArrowLeft2, ArrowRight2, ArrowUp, ArrowDown } from "iconsax-react";
+import { SearchNormal1, Calendar, Trash, ArrowLeft2, ArrowRight2, ArrowUp, ArrowDown } from "iconsax-react";
 import Filter from '../../Asset/Images/filter.png';
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -34,7 +34,7 @@ function ProductList() {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-  
+
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -71,12 +71,12 @@ function ProductList() {
                 const valA = a[sortConfig.key];
                 const valB = b[sortConfig.key];
 
-               
+
                 if (!isNaN(valA) && !isNaN(valB)) {
                     return sortConfig.direction === 'asc' ? valA - valB : valB - valA;
                 }
 
-               
+
                 const strA = valA?.toString().toLowerCase() || "";
                 const strB = valB?.toString().toLowerCase() || "";
 
@@ -98,8 +98,8 @@ function ProductList() {
     );
 
 
-  
-const [isStartSelected, setIsStartSelected] = useState(false);
+
+    const [isStartSelected, setIsStartSelected] = useState(false);
 
     const totalPages = Math.ceil(productList?.length / itemsPerPage);
 
@@ -108,32 +108,32 @@ const [isStartSelected, setIsStartSelected] = useState(false);
         setSearchTerm(e.target.value);
     }
 
-   
 
 
- const handleSelect = (ranges) => {
-    const selection = ranges.selection;
-    const selectedStart = selection.startDate;
-    const selectedEnd = selection.endDate;
 
-    if (!isStartSelected) {
+    const handleSelect = (ranges) => {
+        const selection = ranges.selection;
+        const selectedStart = selection.startDate;
+        const selectedEnd = selection.endDate;
 
-      setDateRange([
-        {
-          ...selection,
-          endDate: null,
-        },
-      ]);
-      setStartDate(moment(selectedStart).format("YYYY-MM-DD"));
-      setEndDate("");
-      setIsStartSelected(true);
-    } else {
-      setDateRange([selection]);
-      setEndDate(moment(selectedEnd).format("YYYY-MM-DD"));
-      setShowPicker(false);
-      setIsStartSelected(false);
-    }
-  };
+        if (!isStartSelected) {
+
+            setDateRange([
+                {
+                    ...selection,
+                    endDate: null,
+                },
+            ]);
+            setStartDate(moment(selectedStart).format("YYYY-MM-DD"));
+            setEndDate("");
+            setIsStartSelected(true);
+        } else {
+            setDateRange([selection]);
+            setEndDate(moment(selectedEnd).format("YYYY-MM-DD"));
+            setShowPicker(false);
+            setIsStartSelected(false);
+        }
+    };
 
 
 
@@ -200,9 +200,9 @@ const [isStartSelected, setIsStartSelected] = useState(false);
 
 
     const handleNavigateproductDetails = (item) => {
-               navigate(`/product-details/${item.uniqueProductCode}`); 
-      };
-      
+        navigate(`/product-details/${item.uniqueProductCode}`);
+    };
+
 
 
 
@@ -211,7 +211,13 @@ const [isStartSelected, setIsStartSelected] = useState(false);
         setLoading(true)
     }, [])
 
+    useEffect(() => {
+        const updatedTotalPages = Math.ceil(productList.length / itemsPerPage);
 
+        if (currentPage > updatedTotalPages && updatedTotalPages > 0) {
+            setCurrentPage(updatedTotalPages);
+        }
+    }, [productList, itemsPerPage, currentPage]);
 
     useEffect(() => {
         if (state.Common.successCode === 200) {
@@ -243,28 +249,28 @@ const [isStartSelected, setIsStartSelected] = useState(false);
 
     useEffect(() => {
         const delayApi = setTimeout(() => {
-          if (searchTerm.trim().length >= 1) {
-            dispatch({
-              type: GET_PRODUCT_SAGA,
-              payload: { searchKeyword: searchTerm.trim() },
-            });
-            setLoading(true);
-          } else if (searchTerm.trim().length === 0) {
-            dispatch({
-              type: GET_PRODUCT_SAGA,
-              payload: { searchKeyword: "" },
-            });
-          }
+            if (searchTerm.trim().length >= 1) {
+                dispatch({
+                    type: GET_PRODUCT_SAGA,
+                    payload: { searchKeyword: searchTerm.trim() },
+                });
+                setLoading(true);
+            } else if (searchTerm.trim().length === 0) {
+                dispatch({
+                    type: GET_PRODUCT_SAGA,
+                    payload: { searchKeyword: "" },
+                });
+            }
         }, 500);
-      
+
         return () => clearTimeout(delayApi);
-      }, [searchTerm]);
-      
+    }, [searchTerm]);
+
 
 
     useEffect(() => {
         const delayApi = setTimeout(() => {
-            if (startDate && endDate ) {
+            if (startDate && endDate) {
                 dispatch({
                     type: GET_PRODUCT_SAGA,
                     payload: { startDate: startDate, endDate: endDate },
@@ -301,7 +307,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
 
 
     return (
-        <div className='bg-slate-100 flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative'>
+        <div className='bg-slate-100 p-4 rounded-tl-lg rounded-tr-lg m-0 relative w-full'>
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
                     <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
@@ -309,7 +315,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
             )}
 
 
-            <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative h-[540px]'>
+            <div className='bg-white  rounded-2xl ps-5 pt-3 pe-5 relative h-[540px]'>
 
                 <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
                     <div>
@@ -410,14 +416,14 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                                 ) : (
                                     paginatedData?.map((item, index) => (
                                         <tr key={index} className="border-0 ">
-                                            <td className="px-4 py-2 text-center text-sm font-Gilroy">{index + 1}</td>
-                                            <td  onClick={()=>handleNavigateproductDetails(item)} className=" text-[#205DA8] hover:underline hover:cursor-pointer flex items-center px-6 py-3 font-Gilroy font-semibold text-sm  cursor-pointer">
-                                                    <img
-                                                        src={item.images[0]?.url || Cloth}
-                                                        alt={item.productName}
-                                                        className="w-10 h-10 rounded-md mr-4"
-                                                        type="image/svg+xml"
-                                                    />
+                                            <td className="px-4 py-2 text-center text-sm font-Gilroy"> {(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                            <td onClick={() => handleNavigateproductDetails(item)} className=" text-[#205DA8] hover:underline hover:cursor-pointer flex items-center px-6 py-3 font-Gilroy font-semibold text-sm  cursor-pointer">
+                                                <img
+                                                    src={item.images[0]?.url || Cloth}
+                                                    alt={item.productName}
+                                                    className="w-10 h-10 rounded-md mr-4"
+                                                    type="image/svg+xml"
+                                                />
 
                                                 {item.productName}
                                             </td>
@@ -465,7 +471,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                                                             }}
                                                             className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
                                                         >
-                                                           
+
                                                             <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700"
                                                                 onClick={() => handleDeleteProductPopup(item.uniqueProductCode)}
                                                             >

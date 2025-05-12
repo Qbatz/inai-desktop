@@ -8,7 +8,7 @@ function DeleteInvoiceList({ handleClose }) {
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg shadow-lg w-[388px] h-[200px] p-6">
+            <div className="bg-white rounded-lg shadow-lg w-[388px]  h-fit  p-6">
 
 
                 <div className="flex justify-center border-b-0">
@@ -18,7 +18,7 @@ function DeleteInvoiceList({ handleClose }) {
                 </div>
 
 
-                <div className="text-center text-[14px] text-[#646464] font-medium mt-[20px] font-Gilroy">
+                <div className="text-center text-[14px] text-[#646464] font-medium mt-[15px] font-Gilroy">
                     Are you sure you want to  Delete?
                 </div>
 

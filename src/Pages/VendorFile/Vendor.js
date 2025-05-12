@@ -134,6 +134,22 @@ function VendorList() {
     setSearchTerm(e.target.value);
   }
 
+
+   useEffect(() => {
+        const updatedTotalPages = Math.ceil(vendorList.length / itemsPerPage);
+
+        if (currentPage > updatedTotalPages && updatedTotalPages > 0) {
+            setCurrentPage(updatedTotalPages);
+        }
+    }, [vendorList, itemsPerPage, currentPage]);
+
+
+
+
+
+
+
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (popupRef.current && !popupRef.current.contains(event.target)) {

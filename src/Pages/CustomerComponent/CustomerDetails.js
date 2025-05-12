@@ -27,23 +27,30 @@ function CustomerDetails() {
         }
     };
 
+    
 
     return (
-        <div className="bg-blueGray-100 min-h-screen w-full">
+        <div className="bg-blueGray-100  w-full">
             <div className="p-3">
 
-                <div className="p-6 bg-white  min-h-screen rounded-2xl  ps-5 pt-3 pe-5  min-h-fit">
+                <div className="p-4 bg-white max-h-fit overflow-y-auto rounded-2xl  ps-5 pt-3 pe-5 ">
 
-                    <h1 className="text-xl font-semibold mb-2 font-Gilroy text-black">Customer</h1>
 
-                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-12 p-2 ">
+                    <h1
+                        className="sticky top-0 left-0 w-full text-xl font-semibold mb-2 font-Gilroy text-black bg-white z-50 p-3"
+                    >
+                        Customer
+                    </h1>
+
+
+                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-12 p-2 lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3  max-h-[440px] overflow-y-auto ">
 
                         <>
 
                             <div className=''>
 
 
-                                <div className="bg-white p-4 rounded-xl shadow-sm border mb-5 ">
+                                <div className="bg-white p-4 rounded-xl shadow-sm border border-[#DCDCDC]  mb-5 ">
                                     <div className='flex items-center justify-between'>
 
                                         <h2 className="text-base font-semibold mb-2 font-Gilroy text-black">Basic Information</h2>
@@ -86,7 +93,7 @@ function CustomerDetails() {
                                     </div>
                                 </div>
 
-                                <div className=" bg-white p-4 rounded-xl shadow-sm border">
+                                <div className=" bg-white p-4 rounded-xl shadow-sm border border-[#DCDCDC]">
                                     <div className='flex items-center justify-between'>
 
                                         <h2 className="text-base font-semibold mb-2 font-Gilroy text-black">Bank Details</h2>
@@ -143,7 +150,7 @@ function CustomerDetails() {
 
 
 
-                            <div className=" bg-white p-4 rounded-xl shadow-sm border min-h-fit ">
+                            <div className=" bg-white p-4 rounded-xl shadow-sm border min-h-fit  border-[#DCDCDC]">
                                 <div className='flex items-center justify-between'>
 
                                     <h2 className="text-base font-semibold mb-2 font-Gilroy text-black">Address Information</h2>

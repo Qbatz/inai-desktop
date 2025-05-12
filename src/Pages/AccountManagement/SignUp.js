@@ -84,7 +84,7 @@ export default function SignUp() {
     specialChar: /[!@#$%^&*(),.?":{}|<>]/,
   };
 
-  console.log("state", state)
+ 
 
   const handleSENDOTP = () => {
     if (!mobile.match(/^[0-9]{10}$/)) {

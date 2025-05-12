@@ -165,6 +165,19 @@ function CustomerList() {
 
   }, [state.Common.successCode])
 
+useEffect(() => {
+  const updatedTotalPages = Math.ceil(customerList.length / itemsPerPage);
+
+  if (currentPage > updatedTotalPages && updatedTotalPages > 0) {
+    setCurrentPage(updatedTotalPages);
+  }
+}, [customerList, itemsPerPage, currentPage]);
+
+
+
+
+
+
   useEffect(() => {
     const delayApi = setTimeout(() => {
       if (searchTerm.trim().length >= 1) {

@@ -211,7 +211,13 @@ function ProductList() {
         setLoading(true)
     }, [])
 
+    useEffect(() => {
+        const updatedTotalPages = Math.ceil(productList.length / itemsPerPage);
 
+        if (currentPage > updatedTotalPages && updatedTotalPages > 0) {
+            setCurrentPage(updatedTotalPages);
+        }
+    }, [productList, itemsPerPage, currentPage]);
 
     useEffect(() => {
         if (state.Common.successCode === 200) {
@@ -301,7 +307,7 @@ function ProductList() {
 
 
     return (
-        <div className='bg-slate-100 flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative'>
+        <div className='bg-slate-100 p-4 rounded-tl-lg rounded-tr-lg m-0 relative w-full'>
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
                     <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
@@ -309,7 +315,7 @@ function ProductList() {
             )}
 
 
-            <div className='bg-white flex-1 flex flex-col rounded-2xl ps-5 pt-3 pe-5 relative h-[540px]'>
+            <div className='bg-white  rounded-2xl ps-5 pt-3 pe-5 relative h-[540px]'>
 
                 <div className='flex flex-col xs:items-center sm:flex-row md:flex-row justify-between items-center gap-2 sticky left-0 top-0 right-0 '>
                     <div>
@@ -409,7 +415,7 @@ function ProductList() {
                                 ) : (
                                     paginatedData?.map((item, index) => (
                                         <tr key={index} className="border-0 ">
-                                            <td className="px-4 py-2 text-center text-sm font-Gilroy">{index + 1}</td>
+                                            <td className="px-4 py-2 text-center text-sm font-Gilroy"> {(currentPage - 1) * itemsPerPage + index + 1}</td>
                                             <td onClick={() => handleNavigateproductDetails(item)} className=" text-[#205DA8] hover:underline hover:cursor-pointer flex items-center px-6 py-3 font-Gilroy font-semibold text-sm  cursor-pointer">
                                                 <img
                                                     src={item.images[0]?.url || Cloth}

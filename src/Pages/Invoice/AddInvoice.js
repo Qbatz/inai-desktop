@@ -417,13 +417,49 @@ function AddInvoice() {
 
 
     const handleInputChangeForInvoice = (field, value) => {
-        const formattedValue = field === 'invoiceDate' || field === 'shippingBillDate' || field === 'billOfLadingDate' ? format(value, 'yyyy/MM/dd') : value;
-        setFormData((prevData) => ({
-            ...prevData,
-            [field]: formattedValue,
+    let formattedValue = value;
+
+ 
+    if (['invoiceDate', 'shippingBillDate', 'billOfLadingDate'].includes(field)) {
+        formattedValue = format(value, 'yyyy/MM/dd');
+    }
+
+
+    const textWithSpaceFields = ['paymentTerm1', 'paymentTerm2'];
+    const numberOnlyFields = ['noOfPackage', 'netWeight', 'grossWeight', 'freight', 'insurance', 'shippingBillNo'];
+    const noSpecialCharFields = ['billOfLading'];
+
+    let isValid = true;
+
+    if (textWithSpaceFields.includes(field)) {
+        const regex = /^[A-Za-z\s]*$/;
+        isValid = regex.test(formattedValue);
+    } else if (numberOnlyFields.includes(field)) {
+        const regex = /^[0-9]*$/;
+        isValid = regex.test(formattedValue);
+    } else if (noSpecialCharFields.includes(field)) {
+        const regex = /^[A-Za-z0-9\s]*$/; 
+        isValid = regex.test(formattedValue);
+    }
+
+    if (!isValid) {
+        setErrors((prev) => ({
+            ...prev,
+            [field]: `Invalid value for ${field}`,
         }));
-        setErrors((prev) => ({ ...prev, [field]: '' }));
-    };
+        return;
+    }
+
+    setFormData((prevData) => ({
+        ...prevData,
+        [field]: formattedValue,
+    }));
+
+    setErrors((prev) => ({
+        ...prev,
+        [field]: '',
+    }));
+};
 
 
 

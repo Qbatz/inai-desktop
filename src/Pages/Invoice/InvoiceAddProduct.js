@@ -178,7 +178,6 @@ function InvoiceAddProduct({ handleClose }) {
   
     if (hasError) return;
   
-    console.log({ packageType, qty, weight });
   };
   
   

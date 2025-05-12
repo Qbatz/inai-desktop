@@ -108,9 +108,6 @@ function ProductList() {
         setSearchTerm(e.target.value);
     }
 
-
-
-
     const handleSelect = (ranges) => {
         const selection = ranges.selection;
         const selectedStart = selection.startDate;

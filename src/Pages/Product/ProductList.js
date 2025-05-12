@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
-import { SearchNormal1, Calendar,Trash, ArrowLeft2, ArrowRight2, ArrowUp, ArrowDown } from "iconsax-react";
+import { SearchNormal1, Calendar, Trash, ArrowLeft2, ArrowRight2, ArrowUp, ArrowDown } from "iconsax-react";
 import Filter from '../../Asset/Images/filter.png';
 import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -34,7 +34,7 @@ function ProductList() {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-  
+
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -71,12 +71,12 @@ function ProductList() {
                 const valA = a[sortConfig.key];
                 const valB = b[sortConfig.key];
 
-               
+
                 if (!isNaN(valA) && !isNaN(valB)) {
                     return sortConfig.direction === 'asc' ? valA - valB : valB - valA;
                 }
 
-               
+
                 const strA = valA?.toString().toLowerCase() || "";
                 const strB = valB?.toString().toLowerCase() || "";
 
@@ -98,8 +98,8 @@ function ProductList() {
     );
 
 
-  
-const [isStartSelected, setIsStartSelected] = useState(false);
+
+    const [isStartSelected, setIsStartSelected] = useState(false);
 
     const totalPages = Math.ceil(productList?.length / itemsPerPage);
 
@@ -108,32 +108,32 @@ const [isStartSelected, setIsStartSelected] = useState(false);
         setSearchTerm(e.target.value);
     }
 
-   
 
 
- const handleSelect = (ranges) => {
-    const selection = ranges.selection;
-    const selectedStart = selection.startDate;
-    const selectedEnd = selection.endDate;
 
-    if (!isStartSelected) {
+    const handleSelect = (ranges) => {
+        const selection = ranges.selection;
+        const selectedStart = selection.startDate;
+        const selectedEnd = selection.endDate;
 
-      setDateRange([
-        {
-          ...selection,
-          endDate: null,
-        },
-      ]);
-      setStartDate(moment(selectedStart).format("YYYY-MM-DD"));
-      setEndDate("");
-      setIsStartSelected(true);
-    } else {
-      setDateRange([selection]);
-      setEndDate(moment(selectedEnd).format("YYYY-MM-DD"));
-      setShowPicker(false);
-      setIsStartSelected(false);
-    }
-  };
+        if (!isStartSelected) {
+
+            setDateRange([
+                {
+                    ...selection,
+                    endDate: null,
+                },
+            ]);
+            setStartDate(moment(selectedStart).format("YYYY-MM-DD"));
+            setEndDate("");
+            setIsStartSelected(true);
+        } else {
+            setDateRange([selection]);
+            setEndDate(moment(selectedEnd).format("YYYY-MM-DD"));
+            setShowPicker(false);
+            setIsStartSelected(false);
+        }
+    };
 
 
 
@@ -200,9 +200,9 @@ const [isStartSelected, setIsStartSelected] = useState(false);
 
 
     const handleNavigateproductDetails = (item) => {
-               navigate(`/product-details/${item.uniqueProductCode}`); 
-      };
-      
+        navigate(`/product-details/${item.uniqueProductCode}`);
+    };
+
 
 
 
@@ -243,28 +243,28 @@ const [isStartSelected, setIsStartSelected] = useState(false);
 
     useEffect(() => {
         const delayApi = setTimeout(() => {
-          if (searchTerm.trim().length >= 1) {
-            dispatch({
-              type: GET_PRODUCT_SAGA,
-              payload: { searchKeyword: searchTerm.trim() },
-            });
-            setLoading(true);
-          } else if (searchTerm.trim().length === 0) {
-            dispatch({
-              type: GET_PRODUCT_SAGA,
-              payload: { searchKeyword: "" },
-            });
-          }
+            if (searchTerm.trim().length >= 1) {
+                dispatch({
+                    type: GET_PRODUCT_SAGA,
+                    payload: { searchKeyword: searchTerm.trim() },
+                });
+                setLoading(true);
+            } else if (searchTerm.trim().length === 0) {
+                dispatch({
+                    type: GET_PRODUCT_SAGA,
+                    payload: { searchKeyword: "" },
+                });
+            }
         }, 500);
-      
+
         return () => clearTimeout(delayApi);
-      }, [searchTerm]);
-      
+    }, [searchTerm]);
+
 
 
     useEffect(() => {
         const delayApi = setTimeout(() => {
-            if (startDate && endDate ) {
+            if (startDate && endDate) {
                 dispatch({
                     type: GET_PRODUCT_SAGA,
                     payload: { startDate: startDate, endDate: endDate },
@@ -347,8 +347,6 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                         <label className='block text-gray-500 font-Gilroy  text-sm font-medium'>Filters</label>
                     </div>
 
-
-
                     <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
                         <div
                             className="flex items-center cursor-pointer"
@@ -361,14 +359,14 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                             />
                             <input
                                 type="text"
-                                value={`${dateRange[0].startDate ? dateRange[0].startDate.toLocaleDateString() : ""} - ${dateRange[0].endDate ? dateRange[0].endDate.toLocaleDateString() : ""}`}
+                                value={`${dateRange[0].startDate ? dateRange[0].startDate.toLocaleDateString('en-GB', { month: 'long', day: 'numeric' }) : ""} - ${dateRange[0].endDate ? dateRange[0].endDate.toLocaleDateString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' }) : ""}`}
                                 readOnly
-                                className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy  text-sm font-medium"
+                                className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
                             />
                         </div>
 
                         {showPicker && (
-                            <div ref={pickerRef} className="absolute top-15 right-0  mt-2 shadow-lg border rounded-lg bg-white z-20">
+                            <div ref={pickerRef} className="absolute top-15 right-0 mt-2 shadow-lg border rounded-lg bg-white z-20">
                                 <DateRangePicker
                                     ranges={dateRange}
                                     onChange={handleSelect}
@@ -379,6 +377,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                             </div>
                         )}
                     </div>
+
 
                 </div>
 
@@ -411,13 +410,13 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                                     paginatedData?.map((item, index) => (
                                         <tr key={index} className="border-0 ">
                                             <td className="px-4 py-2 text-center text-sm font-Gilroy">{index + 1}</td>
-                                            <td  onClick={()=>handleNavigateproductDetails(item)} className=" text-[#205DA8] hover:underline hover:cursor-pointer flex items-center px-6 py-3 font-Gilroy font-semibold text-sm  cursor-pointer">
-                                                    <img
-                                                        src={item.images[0]?.url || Cloth}
-                                                        alt={item.productName}
-                                                        className="w-10 h-10 rounded-md mr-4"
-                                                        type="image/svg+xml"
-                                                    />
+                                            <td onClick={() => handleNavigateproductDetails(item)} className=" text-[#205DA8] hover:underline hover:cursor-pointer flex items-center px-6 py-3 font-Gilroy font-semibold text-sm  cursor-pointer">
+                                                <img
+                                                    src={item.images[0]?.url || Cloth}
+                                                    alt={item.productName}
+                                                    className="w-10 h-10 rounded-md mr-4"
+                                                    type="image/svg+xml"
+                                                />
 
                                                 {item.productName}
                                             </td>
@@ -465,7 +464,7 @@ const [isStartSelected, setIsStartSelected] = useState(false);
                                                             }}
                                                             className="w-32 bg-slate-100 shadow-lg rounded-md z-50"
                                                         >
-                                                           
+
                                                             <div className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy text-red-700"
                                                                 onClick={() => handleDeleteProductPopup(item.uniqueProductCode)}
                                                             >

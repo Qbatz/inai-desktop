@@ -37,19 +37,19 @@ function VendorDetails() {
 
 
   return (
-    <div className="bg-blueGray-100 min-h-screen w-full">
+    <div className="bg-blueGray-100  w-full">
       <div className="p-3">
-        <div className="p-6 bg-white rounded-2xl">
+        <div className="p-4 bg-white rounded-2xl">
           <div className="flex p-2 justify-between">
             <h1 className="text-lg sm:text-xl md:text-xl lg:text-xl font-semibold font-Gilroy text-black">Vendor</h1>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 p-2">
+          <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 p-2 lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3  max-h-[455px] overflow-y-auto ">
             {VendorList?.map((vendor, index) => (
               <>
                 <div key={index} className="flex flex-col space-y-6">
 
-                  <div className="p-6 rounded-lg border border-gray-300 relative bg-white">
+                  <div className="p-6 rounded-xl border border-[#DCDCDC] relative bg-white">
 
                     <div className="absolute top-4 right-6 text-gray-500">
                       <div className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-400 cursor-pointer">
@@ -86,7 +86,7 @@ function VendorDetails() {
                     </div>
                   </div>
 
-                  <div className="p-6 rounded-lg border border-gray-300 relative bg-white">
+                  <div className="p-6 rounded-xl border border-[#DCDCDC] relative bg-white">
                     <div className="absolute top-4 right-6 text-gray-500">
                       <div className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-400 cursor-pointer">
                         <img src={Dot} alt="Dot" className="w-4 h-4" />
@@ -137,7 +137,7 @@ function VendorDetails() {
                 </div>
 
 
-                <div className="p-6 rounded-lg border border-gray-300 bg-white relative">
+                <div className="p-6 rounded-xl border border-[#DCDCDC] bg-white relative">
                   <div className="absolute top-4 right-6 text-gray-500">
                     <div className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-400 cursor-pointer">
                       <img src={Dot} alt="Dot" className="w-4 h-4" />

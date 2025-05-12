@@ -111,67 +111,11 @@ function ProductDetails() {
     };
 
 
- 
-
-
-const triggerUpdate = () => {
-    if (!editingField) return;
-
-    const fieldKeyMap = {
-        product_name: "productName",
-        description: "description",
-        price: "price",
-        discount: "discount",
-        hsn_code: "hsnCode",
-        origin_country: "countryOfOrigin",
-        manufacturing_year: "manufacturingYearAndMonth",
-        state: "State"
-    };
-
-    const currentValue = productDetails[fieldKeyMap[editingField]] || "";
-    const readableFieldName = fieldKeyMap[editingField] || editingField;
-
-   
-   if (editedValue.trim() === currentValue.toString().trim()) {
-        setErrorMessage({
-        [editingField]: `No changes made to ${readableFieldName}`
-    });
-    return;
-}
-
-    if (editedValue !== "" && Object.keys(errorMessage).length === 0) {
-        let finalValue = editedValue;
-
-        if (editingField === "manufacturing_year" && /^\d{8}$/.test(editedValue)) {
-            const year = editedValue.slice(0, 4);
-            const month = editedValue.slice(4, 6);
-            const day = editedValue.slice(6, 8);
-            finalValue = `${year}-${month}-${day}`;
-        }
-
-       
-
-        dispatch({
-            type: EDIT_PARTICULAR_PRODUCT_SAGA,
-            payload: {
-                field: editingField,
-                value: finalValue,
-                uniqueProductCode: productDetails.uniqueProductCode
-            }
-        });
-
-        setLoading(true);
-        setEditingField(null);
-    } 
-};
 
 
 
-    const handleValueChange = (e, customValue = null) => {
-        const inputValue = customValue ?? e.target.value;
-        let sanitizedValue = inputValue;
-        let tempError = {};
-        let finalValue = sanitizedValue;
+    const triggerUpdate = () => {
+        if (!editingField) return;
 
         const fieldKeyMap = {
             product_name: "productName",
@@ -184,64 +128,33 @@ const triggerUpdate = () => {
             state: "State"
         };
 
-        const actualKey = fieldKeyMap[editingField] || editingField;
-        const currentValue = productDetails[actualKey];
-
-        if (editingField === "price" || editingField === "discount" || editingField === "manufacturing_year") {
-            sanitizedValue = inputValue.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
-            const trimmedValue = sanitizedValue.trim();
-
-            if (trimmedValue === "" || isNaN(parseFloat(trimmedValue)) || !/^\d*\.?\d*$/.test(trimmedValue)) {
-                let fieldLabel = editingField.replace(/_/g, ' ');
-                tempError[editingField] = `${fieldLabel.charAt(0).toUpperCase() + fieldLabel.slice(1)} is required`;
-                setErrorMessage(tempError);
-                setEditedValue(trimmedValue);
-                return;
-            }
-
-            finalValue = trimmedValue;
-        }
-
-        if (editingField === "origin_country") {
-            sanitizedValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
-            finalValue = sanitizedValue;
-        }
-
-        if (requiredFields.includes(editingField)) {
-            const trimmed = sanitizedValue.trim();
-            if (trimmed === "") {
-                tempError[editingField] = `Enter the ${editingField.replace(/_/g, ' ')}`;
-                setErrorMessage(tempError);
-            } else {
-                setErrorMessage(prev => {
-                    const newErr = { ...prev };
-                    delete newErr[editingField];
-                    return newErr;
-                });
-            }
-        }
+        const currentValue = productDetails[fieldKeyMap[editingField]] || "";
+        const readableFieldName = fieldKeyMap[editingField] || editingField;
 
 
-        const trimmedNewValue = finalValue?.toString().trim();
-        const trimmedOldValue = currentValue?.toString().trim();
-
-        if (trimmedNewValue === (trimmedOldValue || "")) {
+        if (editedValue.trim() === currentValue.toString().trim()) {
             setErrorMessage({
-                [editingField]: `No changes made to ${editingField.replace(/_/g, ' ')}`
+                [editingField]: `No changes made to ${readableFieldName}`
             });
             return;
         }
 
-        if (editingField === "manufacturing_year" && /^\d{8}$/.test(sanitizedValue)) {
-            const year = sanitizedValue.slice(0, 4);
-            const month = sanitizedValue.slice(4, 6);
-            const day = sanitizedValue.slice(6, 8);
-            finalValue = `${year}-${month}-${day}`;
+        if (editedValue !== "" && Object.keys(errorMessage).length === 0) {
+            let finalValue = editedValue;
+
+            if (editingField === "manufacturing_year" && /^\d{8}$/.test(editedValue)) {
+                const year = editedValue.slice(0, 4);
+                const month = editedValue.slice(4, 6);
+                const day = editedValue.slice(6, 8);
+                finalValue = `${year}-${month}-${day}`;
+            }
+
+
 
             dispatch({
                 type: EDIT_PARTICULAR_PRODUCT_SAGA,
                 payload: {
-                    field: "manufacturing_year",
+                    field: editingField,
                     value: finalValue,
                     uniqueProductCode: productDetails.uniqueProductCode
                 }
@@ -249,45 +162,144 @@ const triggerUpdate = () => {
 
             setLoading(true);
             setEditingField(null);
-            return;
-        }
-
-        setEditedValue(sanitizedValue);
-
-        if (editingField === "state") {
-            dispatch({
-                type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                payload: {
-                    field: "state",
-                    value: sanitizedValue,
-                    uniqueProductCode: productDetails.uniqueProductCode
-                }
-            });
-            setEditingField(null);
-            setLoading(true);
-            return;
-        }
-
-        if (editingField === "origin_country") {
-            sanitizedValue = inputValue.replace(/[^a-zA-Z\s]/g, '');
-            finalValue = sanitizedValue;
-
-            dispatch({
-                type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                payload: {
-                    field: "origin_country",
-                    value: finalValue,
-                    uniqueProductCode: productDetails.uniqueProductCode
-                }
-            });
-
-            setLoading(true);
-            setEditingField(null);
-            return;
         }
     };
 
 
+
+   
+const handleValueChange = (e, customValue = null) => {
+    const inputValue = customValue ?? e.target.value;
+    let Value = inputValue;
+    let tempError = {};
+    let finalValue = Value;
+
+    const fieldKeyMap = {
+        product_name: "productName",
+        description: "description",
+        price: "price",
+        discount: "discount",
+        hsn_code: "hsnCode",
+        origin_country: "countryOfOrigin",
+        manufacturing_year: "manufacturingYearAndMonth",
+        state: "State"
+    };
+
+    const actualKey = fieldKeyMap[editingField] || editingField;
+    const currentValue = productDetails[actualKey];
+
+  
+    if (editingField === "price" || editingField === "discount" || editingField === "manufacturing_year") {
+       Value = inputValue.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+        const trimmedValue = Value.trim();
+
+        if (trimmedValue === "" || isNaN(parseFloat(trimmedValue)) || !/^\d*\.?\d*$/.test(trimmedValue)) {
+            const fieldLabel = editingField.replace(/_/g, ' ');
+            tempError[editingField] = `${fieldLabel.charAt(0).toUpperCase() + fieldLabel.slice(1)} is required`;
+            setErrorMessage(tempError);
+            setEditedValue(trimmedValue); 
+            return;
+        }
+
+        finalValue = trimmedValue;
+    }
+
+   
+    if (editingField === "origin_country") {
+       Value = inputValue.replace(/[^a-zA-Z\s]/g, '');
+        finalValue = Value;
+    }
+
+   
+    if (requiredFields.includes(editingField)) {
+        const trimmed = Value.trim();
+        if (trimmed === "") {
+            tempError[editingField] = `Enter the ${editingField.replace(/_/g, ' ')}`;
+            setErrorMessage(tempError);
+            setEditedValue(Value);
+            return;
+        } else {
+            setErrorMessage(prev => {
+                const newErr = { ...prev };
+                delete newErr[editingField];
+                return newErr;
+            });
+        }
+    }
+
+
+    const NewValue = finalValue?.toString();
+    const OldValue = currentValue?.toString();
+
+    if (
+        NewValue !== undefined &&
+        NewValue.trim() !== "" &&
+        NewValue === (OldValue || "")
+    ) {
+        setErrorMessage({
+            [editingField]: `No changes made to ${editingField.replace(/_/g, ' ')}`
+        });
+        return;
+    }
+
+    
+    if (editingField === "manufacturing_year" && /^\d{8}$/.test(Value)) {
+        const year = Value.slice(0, 4);
+        const month = Value.slice(4, 6);
+        const day = Value.slice(6, 8);
+        finalValue = `${year}-${month}-${day}`;
+
+        dispatch({
+            type: EDIT_PARTICULAR_PRODUCT_SAGA,
+            payload: {
+                field: "manufacturing_year",
+                value: finalValue,
+                uniqueProductCode: productDetails.uniqueProductCode
+            }
+        });
+
+        setLoading(true);
+        setEditingField(null);
+        return;
+    }
+
+ 
+    setEditedValue(Value);
+
+    
+    if (editingField === "state") {
+        dispatch({
+            type: EDIT_PARTICULAR_PRODUCT_SAGA,
+            payload: {
+                field: "state",
+                value: Value,
+                uniqueProductCode: productDetails.uniqueProductCode
+            }
+        });
+        setEditingField(null);
+        setLoading(true);
+        return;
+    }
+
+   
+    if (editingField === "origin_country") {
+        Value = inputValue.replace(/[^a-zA-Z\s]/g, '');
+        finalValue = Value;
+
+        dispatch({
+            type: EDIT_PARTICULAR_PRODUCT_SAGA,
+            payload: {
+                field: "origin_country",
+                value: finalValue,
+                uniqueProductCode: productDetails.uniqueProductCode
+            }
+        });
+
+        setLoading(true);
+        setEditingField(null);
+        return;
+    }
+};
 
     const requiredFields = [
         "product_name",

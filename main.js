@@ -10,11 +10,11 @@ app.whenReady().then(() => {
   });
 
  
-  mainWindow.loadURL("https://inaidev.s3remotica.com/");
+  mainWindow.loadURL("https://inaitesting.s3remotica.com/");
 
   mainWindow.webContents.on("did-fail-load", () => {
    
-    setTimeout(() => mainWindow.loadURL("https://inaidev.s3remotica.com/"), 1000);
+    setTimeout(() => mainWindow.loadURL("https://inaitesting.s3remotica.com/"), 1000);
   });
 
   app.on("window-all-closed", () => {
@@ -27,7 +27,7 @@ app.whenReady().then(() => {
         width: 800,
         height: 600,
       });
-      newWindow.loadURL("https://inaidev.s3remotica.com/");
+      newWindow.loadURL("https://inaitesting.s3remotica.com/");
     }
   });
 });

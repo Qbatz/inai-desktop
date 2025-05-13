@@ -20,7 +20,7 @@ function Navbar({ state }) {
 
 
             <div className="flex items-center bg-gray-100 px-3 py-2 rounded-full md:w-1/3 mr-2">
-                <img src={Search} alt="Search" className="w-4 h-4 sm:w-5 sm:h-5" />
+                <img src={Search} alt="Search" className="w-4 h-4 sm:w-5 sm:h-5 cursor-pointer" />
                 <input
                     type="text"
                     autoComplete="new"

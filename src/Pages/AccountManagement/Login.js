@@ -273,7 +273,7 @@ function Login({ message, loginStatusCode }) {
               </div>
 
 
-              <div className='mb-4 flex items-center justify-between' >
+              <div className='mb-4 flex items-center justify-between flex-wrap' >
                 <div> 
                    <input id='staySignedIn' type='checkbox' className='mr-2 bg-white border border-gray-300 rounded shadow-inner ' />
                   <label htmlFor='staySignedIn' className='text-black font-Gilroy text-sm font-medium'>Stay signed in</label>

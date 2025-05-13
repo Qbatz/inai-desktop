@@ -1598,7 +1598,7 @@ function AddProduct() {
                                 />
                                 {errors.productCode && (
                                     <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mb-2">
-                                        <InfoCircle size={14} color="#DC2626"className="mb-0.5" />
+                                        <InfoCircle size={14} color="#DC2626" className="mb-0.5" />
                                         {errors.productCode}
                                     </p>
                                 )}
@@ -1621,7 +1621,7 @@ function AddProduct() {
                                 />
                                 {errors.productName && (
                                     <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy  mb-2">
-                                          <InfoCircle size={14} color="#DC2626"className="mb-0.5" />
+                                        <InfoCircle size={14} color="#DC2626" className="mb-0.5" />
                                         {errors.productName}
                                     </p>
                                 )}
@@ -1642,7 +1642,7 @@ function AddProduct() {
                                 />
                                 {errors.description && (
                                     <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mb-2">
-                                         <InfoCircle size={14} color="#DC2626"className="mb-0.5" />
+                                        <InfoCircle size={14} color="#DC2626" className="mb-0.5" />
                                         {errors.description}
                                     </p>
                                 )}
@@ -1832,7 +1832,7 @@ function AddProduct() {
                             )}
                             {errors.images && (
                                 <p className="text-red-500 text-xs flex items-center gap-1  font-Gilroy mt-2 mb-2">
-                                    <InfoCircle size={14} color="#DC2626"className='mb-0.5' />
+                                    <InfoCircle size={14} color="#DC2626" className='mb-0.5' />
                                     {errors.images}
                                 </p>
 
@@ -2045,14 +2045,14 @@ function AddProduct() {
                             </div>
                             {errors.techImagesError && (
                                 <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                    <InfoCircle size={14} color="#DC2626"className='mb-0.5' />
+                                    <InfoCircle size={14} color="#DC2626" className='mb-0.5' />
                                     {errors.techImagesError}
                                 </p>
 
                             )}
                             {errors.techImages && (
                                 <p className="text-red-500 text-xs flex items-center gap-1 mt-2 mb-2 font-Gilroy">
-                                    <InfoCircle size={14} color="#DC2626"className='mb-0.5' />
+                                    <InfoCircle size={14} color="#DC2626" className='mb-0.5' />
                                     {errors.techImages}
                                 </p>
 
@@ -2079,7 +2079,7 @@ function AddProduct() {
                         <div>
                             <label className="block font-normal text-md font-Outfit mb-1.5">Unit of measurement <span className="text-red-500 text-sm">*</span></label>
                             <div className="relative">
-                               
+
                                 <Select
                                     ref={unitRef}
                                     value={
@@ -2116,7 +2116,7 @@ function AddProduct() {
 
                             {errors.unit && (
                                 <p className="text-red-500 text-xs flex items-center gap-1 mt-1  font-Gilroy">
-                                    <InfoCircle size={14} color="#DC2626"className='mb-0.5' />
+                                    <InfoCircle size={14} color="#DC2626" className='mb-0.5' />
                                     {errors.unit}
                                 </p>
                             )}
@@ -2154,7 +2154,7 @@ function AddProduct() {
 
                             {errors.currency && (
                                 <p className="text-red-500 mt-1 text-xs flex items-center gap-1 font-Gilroy">
-                                    <InfoCircle size={14} color="#DC2626"className='mb-0.5' />
+                                    <InfoCircle size={14} color="#DC2626" className='mb-0.5' />
                                     {errors.currency}
                                 </p>
                             )}
@@ -2223,7 +2223,7 @@ function AddProduct() {
                             </div>
                             {errors.gst && (
                                 <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                    <InfoCircle size={14} color="#DC2626"className='mb-0.5' />
+                                    <InfoCircle size={14} color="#DC2626" className='mb-0.5' />
                                     {errors.gst}
                                 </p>
                             )}
@@ -2395,11 +2395,6 @@ function AddProduct() {
                         </div>
 
 
-
-
-
-
-
                         <div>
                             <label className="block font-normal text-md font-Outfit mb-1">Country of Origin <span className="text-red-500 text-sm">*</span></label>
                             <div className="relative">
@@ -2422,19 +2417,17 @@ function AddProduct() {
                             )}
                         </div>
 
-                        <div >
+                        <div>
                             <label className="block text-md font-Outfit font-medium text-[#1F2937] mb-1">
                                 Month and Year of Manufacture <span className="text-red-500 text-sm">*</span>
                             </label>
-                            <div className=' w-full '>
-
-
+                            <div className="w-full">
                                 <DatePicker
-
                                     selected={selectedDate}
                                     onChange={handleDateChange}
-                                    dateFormat="dd/MM/yyyy"
-                                    className='cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full'
+                                    dateFormat="MM/yyyy"
+                                    showMonthYearPicker
+                                    className="cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full"
                                     placeholderText="Month and Year of Manufacture"
                                     customInput={<CustomInput ref={yearRef} />}
                                     wrapperClassName="w-full"
@@ -2447,6 +2440,7 @@ function AddProduct() {
                                 </p>
                             )}
                         </div>
+
 
                         <div>
                             <label className="block font-normal text-md font-Outfit mb-1">State <span className="text-red-500 text-sm">*</span></label>
@@ -2464,7 +2458,7 @@ function AddProduct() {
                             </div>
                             {errors.stateName && (
                                 <p className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                    <InfoCircle size={14} color="#DC2626"className='mb-0.5' />
+                                    <InfoCircle size={14} color="#DC2626" className='mb-0.5' />
                                     {errors.stateName}
                                 </p>
                             )}

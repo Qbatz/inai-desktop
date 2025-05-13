@@ -44,6 +44,7 @@ function AddInvoice() {
         portOfDischarge: null,
         destinationCountry: null,
         deliveryTerm: null,
+        place: null,
         paymentTerm1: '',
         paymentTerm2: '',
         shippingBillNo: '',
@@ -81,7 +82,7 @@ function AddInvoice() {
     ];
 
     const options = [
-        { value: "", label: "Select Country" , isPlaceholder: true},
+        { value: "", label: "Select Country", isPlaceholder: true },
         { value: "India", label: "India" },
         { value: "United States", label: "United States" },
         { value: "United Kingdom", label: "United Kingdom" },
@@ -113,7 +114,7 @@ function AddInvoice() {
 
 
     const portOptions = [
-        { value: "", label: "Select Port" , isPlaceholder: true},
+        { value: "", label: "Select Port", isPlaceholder: true },
         { value: "IN-MUMBAI", label: "Mumbai Port" },
         { value: "IN-CHENNAI", label: "Chennai Port" },
         { value: "IN-KOLKATA", label: "Kolkata Port" },
@@ -150,6 +151,7 @@ function AddInvoice() {
     const bankPaymentRefNoRef = useRef();
     const freightRef = useRef();
     const insuranceRef = useRef();
+    const placeRef = useRef();
 
 
     const handleAddItem = () => {
@@ -349,6 +351,9 @@ function AddInvoice() {
             fontSize: "14px",
             fontWeight: 500,
             fontFamily: "Gilroy, sans-serif",
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -417,49 +422,49 @@ function AddInvoice() {
 
 
     const handleInputChangeForInvoice = (field, value) => {
-    let formattedValue = value;
-
- 
-    if (['invoiceDate', 'shippingBillDate', 'billOfLadingDate'].includes(field)) {
-        formattedValue = format(value, 'yyyy/MM/dd');
-    }
+        let formattedValue = value;
 
 
-    const textWithSpaceFields = ['paymentTerm1', 'paymentTerm2'];
-    const numberOnlyFields = ['noOfPackage', 'netWeight', 'grossWeight', 'freight', 'insurance', 'shippingBillNo'];
-    const noSpecialCharFields = ['billOfLading'];
+        if (['invoiceDate', 'shippingBillDate', 'billOfLadingDate'].includes(field)) {
+            formattedValue = format(value, 'yyyy/MM/dd');
+        }
 
-    let isValid = true;
 
-    if (textWithSpaceFields.includes(field)) {
-        const regex = /^[A-Za-z\s]*$/;
-        isValid = regex.test(formattedValue);
-    } else if (numberOnlyFields.includes(field)) {
-        const regex = /^[0-9]*$/;
-        isValid = regex.test(formattedValue);
-    } else if (noSpecialCharFields.includes(field)) {
-        const regex = /^[A-Za-z0-9\s]*$/; 
-        isValid = regex.test(formattedValue);
-    }
+        const textWithSpaceFields = ['paymentTerm1', 'paymentTerm2'];
+        const numberOnlyFields = ['noOfPackage', 'netWeight', 'grossWeight', 'freight', 'insurance', 'shippingBillNo'];
+        const noSpecialCharFields = ['billOfLading'];
 
-    if (!isValid) {
+        let isValid = true;
+
+        if (textWithSpaceFields.includes(field)) {
+            const regex = /^[A-Za-z\s]*$/;
+            isValid = regex.test(formattedValue);
+        } else if (numberOnlyFields.includes(field)) {
+            const regex = /^[0-9]*$/;
+            isValid = regex.test(formattedValue);
+        } else if (noSpecialCharFields.includes(field)) {
+            const regex = /^[A-Za-z0-9\s]*$/;
+            isValid = regex.test(formattedValue);
+        }
+
+        if (!isValid) {
+            setErrors((prev) => ({
+                ...prev,
+                [field]: `Invalid value for ${field}`,
+            }));
+            return;
+        }
+
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: formattedValue,
+        }));
+
         setErrors((prev) => ({
             ...prev,
-            [field]: `Invalid value for ${field}`,
+            [field]: '',
         }));
-        return;
-    }
-
-    setFormData((prevData) => ({
-        ...prevData,
-        [field]: formattedValue,
-    }));
-
-    setErrors((prev) => ({
-        ...prev,
-        [field]: '',
-    }));
-};
+    };
 
 
 
@@ -503,6 +508,7 @@ function AddInvoice() {
         if (!formData.portOfDischarge) { newErrors.portOfDischarge = 'Port of discharge is required'; isValid = false; }
         if (!formData.destinationCountry) { newErrors.destinationCountry = 'Destination country is required'; isValid = false; }
         if (!formData.deliveryTerm) { newErrors.deliveryTerm = 'Delivery term is required'; isValid = false; }
+        if (!formData.place) { newErrors.place = 'Place is required'; isValid = false; }
         if (!formData.paymentTerm1) { newErrors.paymentTerm1 = 'Payment term is required'; isValid = false; }
         if (!formData.paymentTerm2) { newErrors.paymentTerm2 = 'Payment term is required'; isValid = false; }
         if (!formData.bankPaymentRefNo) { newErrors.bankPaymentRefNo = 'Bank payment reference number is required'; isValid = false; }
@@ -569,6 +575,10 @@ function AddInvoice() {
             }
             else if (newErrors.deliveryTerm && !focusSet) {
                 deliveryTermRef.current?.focus();
+                focusSet = true;
+            }
+            else if (newErrors.place && !focusSet) {
+                placeRef.current?.focus();
                 focusSet = true;
             }
             else if (newErrors.paymentTerm1 && !focusSet) {
@@ -1127,24 +1137,56 @@ function AddInvoice() {
                                 </div>
 
                                 <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Delivery Term (Incoterms) <span className='text-red-500'>*</span></label>
-                                    <Select
-                                        options={options}
-                                        placeholder="Enter Delivery Term"
-                                        classNamePrefix="custom"
-                                        menuPlacement="auto"
-                                        ref={deliveryTermRef}
-                                        styles={customSelectStateStyles}
-                                        value={options.find(opt => opt.value === formData.deliveryTerm)}
-                                        onChange={(e) => handleInputChangeForInvoice('deliveryTerm', e.value)}
-                                    />
-                                    {errors.deliveryTerm && (
+                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
+                                        Delivery Term (Incoterms) <span className='text-red-500'>*</span>
+                                    </label>
+
+                                    <div className='flex gap-1'>
+                                        <div className='flex-1'>
+                                            <Select
+                                                options={options}
+                                                placeholder="Enter Delivery Term"
+                                                classNamePrefix="custom"
+                                                menuPlacement="auto"
+                                                ref={deliveryTermRef}
+                                                styles={customSelectStateStyles}
+                                                value={options.find(opt => opt.value === formData.deliveryTerm)}
+                                                onChange={(e) => handleInputChangeForInvoice('deliveryTerm', e.value)}
+                                            />
+                                        </div>
+
+                                        <div className='flex-1'>
+                                            <input
+                                                type='text'
+                                                ref={placeRef}
+                                                placeholder='Enter place'
+                                                value={formData.place}
+                                                onChange={(e) => handleInputChangeForInvoice('place', e.target.value)}
+                                                className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            />
+                                        </div>
+                                    </div>
+
+
+                                    {errors.deliveryTerm && errors.place ? (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">Delivery Term & Place are required</p>
+                                        </div>
+                                    ) : errors.deliveryTerm ? (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
                                             <InfoCircle size={16} color="#DC2626" />
                                             <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.deliveryTerm}</p>
                                         </div>
-                                    )}
+                                    ) : errors.place ? (
+                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
+                                            <InfoCircle size={16} color="#DC2626" />
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.place}</p>
+                                        </div>
+                                    ) : null}
+
                                 </div>
+
 
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Payment Term <span className='text-red-500'>*</span></label>

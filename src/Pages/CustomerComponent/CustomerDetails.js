@@ -122,7 +122,7 @@ function CustomerDetails() {
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Bank Address </p>
-                                                    <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize'>{bank.address1 || 'N/A'}{" , "}{bank.address2}</p>
+                                                    <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize'>{bank.address1 || 'N/A'}{" "}{bank.address2}</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Bank Country</p>
@@ -133,8 +133,8 @@ function CustomerDetails() {
                                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.routingBank || 'N/A'}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Sift Code for intermediary Bank</p>
-                                                    <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.swiftCode || 'N/A'}</p>
+                                                    <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Swift Code for intermediary Bank</p>
+                                                    <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.intermediary_swift_code || 'N/A'}</p>
                                                 </div>
                                             </div>
                                         })
@@ -174,7 +174,7 @@ function CustomerDetails() {
                                                     {officeAddresses.map(item => (
                                                         <div key={item.id}>
                                                             <h3 className="text-base font-semibold mb-2 font-Gilroy text-black">Office Address</h3>
-                                                            <div className="grid grid-cols-3 gap-4">
+                                                            <div className="grid md:grid-cols-3 sm:grid-cols-2  xs:grid-cols-1 gap-4">
                                                                 <div>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 1</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.doorNo || 'N/A'}</p>
@@ -199,18 +199,22 @@ function CustomerDetails() {
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">City</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.city || 'N/A'}</p>
                                                                 </div>
-                                                                <div>
+                                                                </div>
+                                                                 <div className="grid grid-cols-12 gap-4 mt-1 w-full">
+                                                                <div className='col-span-12 md:col-span-4'>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Landmark</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.landMark || 'N/A'}</p>
                                                                 </div>
-                                                                <div>
+                                                                <div className='col-span-12 md:col-span-8 w-full'>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Google Map</p>
+                                                                     <div className="max-w-full sm:max-w-[1000px] md:max-w-[1000px] overflow-hidden">
                                                                     {isValidUrl(item.mapLink) ? (
                                                                         <a
                                                                             href={item.mapLink}
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
-                                                                            className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline"
+                                                                            title={item.mapLink}
+                                                                            className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline overflow-hidden text-ellipsis whitespace-nowrap block max-w-[100%]"
                                                                         >
                                                                             {item.mapLink}
                                                                         </a>
@@ -219,6 +223,7 @@ function CustomerDetails() {
                                                                             {item.mapLink || 'N/A'}
                                                                         </p>
                                                                     )}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -231,7 +236,7 @@ function CustomerDetails() {
                                                     {shippingAddresses.map(item => (
                                                         <div key={item.id}>
                                                             <h3 className="text-base font-semibold mb-2 font-Gilroy text-black">Shipping Address</h3>
-                                                            <div className="grid grid-cols-3 gap-4">
+                                                            <div className="grid md:grid-cols-3 sm:grid-cols-2  xs:grid-cols-1 gap-4">
                                                                 <div>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Address Line 1</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.doorNo || 'N/A'}</p>
@@ -256,18 +261,23 @@ function CustomerDetails() {
                                                                     <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">City</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.city || 'N/A'}</p>
                                                                 </div>
-                                                                <div>
+                                                                </div>
+                                                                <div className="grid grid-cols-12 gap-4 mt-1 w-full">
+                                                                
+                                                                <div className='col-span-12 md:col-span-4'>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Landmark</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.landMark || 'N/A'}</p>
                                                                 </div>
-                                                                <div>
+                                                                <div className='col-span-12 md:col-span-8'>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Google Map</p>
+                                                                     <div className="max-w-full sm:max-w-[600px] md:max-w-[600px] overflow-hidden">
                                                                     {isValidUrl(item.mapLink) ? (
                                                                         <a
                                                                             href={item.mapLink}
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
-                                                                            className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline"
+                                                                            title={item.mapLink}
+                                                                            className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline overflow-hidden text-ellipsis whitespace-nowrap block max-w-[100%]"
                                                                         >
                                                                             {item.mapLink}
                                                                         </a>
@@ -276,6 +286,7 @@ function CustomerDetails() {
                                                                             {item.mapLink || 'N/A'}
                                                                         </p>
                                                                     )}
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>

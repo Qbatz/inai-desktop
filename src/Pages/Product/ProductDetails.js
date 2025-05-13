@@ -95,6 +95,9 @@ function ProductDetails() {
         setErrorMessage("");
     };
 
+
+
+
     useEffect(() => {
         document.addEventListener('mousedown', handleOutsideClick);
         return () => {
@@ -168,55 +171,101 @@ function ProductDetails() {
 
 
 
+
+
     const handleValueChange = (e, customValue = null) => {
         const inputValue = customValue ?? e.target.value;
-        let Value = inputValue;
+        let value = inputValue;
         let tempError = {};
-        let finalValue = Value;
+        let finalValue = value;
 
-        const fieldKeyMap = {
-            product_name: "productName",
-            description: "description",
-            price: "price",
-            discount: "discount",
-            hsn_code: "hsnCode",
-            origin_country: "countryOfOrigin",
-            manufacturing_year: "manufacturingYearAndMonth",
-            state: "State"
-        };
+        const fieldKey = fieldKeyMap[editingField] || editingField;
+        const currentValue = productDetails[fieldKey];
 
-        const actualKey = fieldKeyMap[editingField] || editingField;
-        const currentValue = productDetails[actualKey];
+        const readableFieldName = editingField.replace(/_/g, ' ');
+        const capitalizedField = readableFieldName.charAt(0).toUpperCase() + readableFieldName.slice(1);
+        setEditedValue(value);
+
+        if (editingField === "manufacturing_year") {
+            setEditedValue(value);
+
+            const trimmedValue = value.trim();
+
+            if (trimmedValue.length === 7 && /^\d{4}-\d{2}$/.test(trimmedValue)) {
+                if (trimmedValue === currentValue?.toString().trim()) {
+                    setErrorMessage({
+                        [editingField]: `No changes made to ${readableFieldName}`
+                    });
+                    return;
+                }
+
+                finalValue = trimmedValue;
+
+                dispatch({
+                    type: EDIT_PARTICULAR_PRODUCT_SAGA,
+                    payload: {
+                        field: editingField,
+                        value: finalValue,
+                        uniqueProductCode: productDetails.uniqueProductCode
+                    }
+                });
+
+                setErrorMessage({});
+                setLoading(true);
+                setEditingField(null);
+                return;
+            } else {
+
+                tempError[editingField] = `${capitalizedField} must be in YYYY-MM format`;
+                setErrorMessage(tempError);
+                return;
+            }
+        }
 
 
-        if (editingField === "price" || editingField === "discount" || editingField === "manufacturing_year") {
-            Value = inputValue.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
-            const trimmedValue = Value.trim();
+        else if (["price", "discount"].includes(editingField)) {
+            value = inputValue.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+            const trimmedValue = value.trim();
 
             if (trimmedValue === "" || isNaN(parseFloat(trimmedValue)) || !/^\d*\.?\d*$/.test(trimmedValue)) {
-                const fieldLabel = editingField.replace(/_/g, ' ');
-                tempError[editingField] = `${fieldLabel.charAt(0).toUpperCase() + fieldLabel.slice(1)} is required`;
+                tempError[editingField] = `${capitalizedField} is required`;
                 setErrorMessage(tempError);
                 setEditedValue(trimmedValue);
                 return;
             }
 
+            if (trimmedValue === currentValue?.toString().trim()) {
+                setErrorMessage({
+                    [editingField]: `No changes made to ${readableFieldName}`
+                });
+                return;
+            }
+
             finalValue = trimmedValue;
+            setEditedValue(trimmedValue);
         }
 
+        else if (editingField === "origin_country") {
+            value = inputValue.replace(/[^a-zA-Z\s]/g, '');
+            finalValue = value;
 
-        if (editingField === "origin_country") {
-            Value = inputValue.replace(/[^a-zA-Z\s]/g, '');
-            finalValue = Value;
+            if (value.trim() === currentValue?.toString().trim()) {
+                setErrorMessage({
+                    [editingField]: `No changes made to ${readableFieldName}`
+                });
+                return;
+            }
+
+            setEditedValue(value);
         }
 
 
         if (requiredFields.includes(editingField)) {
-            const trimmed = Value.trim();
+            const trimmed = value.trim();
             if (trimmed === "") {
-                tempError[editingField] = `Enter the ${editingField.replace(/_/g, ' ')}`;
+                tempError[editingField] = `Enter the ${readableFieldName}`;
                 setErrorMessage(tempError);
-                setEditedValue(Value);
+                setEditedValue(value);
                 return;
             } else {
                 setErrorMessage(prev => {
@@ -227,69 +276,11 @@ function ProductDetails() {
             }
         }
 
-
-        const NewValue = finalValue?.toString();
-        const OldValue = currentValue?.toString();
-
-        if (
-            NewValue !== undefined &&
-            NewValue.trim() !== "" &&
-            NewValue === (OldValue || "")
-        ) {
-            setErrorMessage({
-                [editingField]: `No changes made to ${editingField.replace(/_/g, ' ')}`
-            });
-            return;
-        }
-
-
-        if (editingField === "manufacturing_year" && /^\d{8}$/.test(Value)) {
-            const year = Value.slice(0, 4);
-            const month = Value.slice(4, 6);
-            const day = Value.slice(6, 8);
-            finalValue = `${year}-${month}-${day}`;
-
+        if (["state", "origin_country", "manufacturing_year"].includes(editingField)) {
             dispatch({
                 type: EDIT_PARTICULAR_PRODUCT_SAGA,
                 payload: {
-                    field: "manufacturing_year",
-                    value: finalValue,
-                    uniqueProductCode: productDetails.uniqueProductCode
-                }
-            });
-
-            setLoading(true);
-            setEditingField(null);
-            return;
-        }
-
-
-        setEditedValue(Value);
-
-
-        if (editingField === "state") {
-            dispatch({
-                type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                payload: {
-                    field: "state",
-                    value: Value,
-                    uniqueProductCode: productDetails.uniqueProductCode
-                }
-            });
-            setEditingField(null);
-            setLoading(true);
-            return;
-        }
-
-
-        if (editingField === "origin_country") {
-            Value = inputValue.replace(/[^a-zA-Z\s]/g, '');
-            finalValue = Value;
-
-            dispatch({
-                type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                payload: {
-                    field: "origin_country",
+                    field: editingField,
                     value: finalValue,
                     uniqueProductCode: productDetails.uniqueProductCode
                 }
@@ -300,6 +291,10 @@ function ProductDetails() {
             return;
         }
     };
+
+
+
+
 
     const requiredFields = [
         "product_name",
@@ -551,7 +546,7 @@ function ProductDetails() {
                                                         href={img.url}
                                                         rel="noopener noreferrer"
                                                         download
-                                                        className="w-full h-full flex flex-col items-center justify-center p-2 relative"
+                                                        className="w-full h-full flex flex-col items-center justify-center p-2 relative "
                                                     >
                                                         <img
                                                             src={Pdf}
@@ -594,7 +589,7 @@ function ProductDetails() {
                                                         <img
                                                             src={img.url}
                                                             alt={`Product ${index}`}
-                                                            className="w-[100px] h-[120px] object-cover rounded-md"
+                                                            className="w-full h-[120px] object-cover rounded-md"
                                                         />
                                                     </div>
                                                 )}
@@ -891,11 +886,11 @@ function ProductDetails() {
                                 </div>
                                 {editingField === "manufacturing_year" ? (
                                     <input ref={editableRef}
-                                        type="date"
+                                        type="month"
                                         className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
                                         value={
                                             editedValue
-                                                ? moment(editedValue).format("YYYY-MM-DD")
+                                                ? new Date(editedValue).toISOString().slice(0, 7)
                                                 : ""
                                         }
                                         onChange={(e) => handleValueChange(e)}
@@ -905,7 +900,7 @@ function ProductDetails() {
                                 ) : (
                                     <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
                                         {productDetails.manufaturingYearAndMonth
-                                            ? moment(productDetails.manufaturingYearAndMonth).format("DD-MM-YYYY")
+                                            ? moment(productDetails.manufaturingYearAndMonth).format("MMMM YYYY")
                                             : "N/A"}
                                     </p>
                                 )}

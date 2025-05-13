@@ -193,7 +193,7 @@ function Sidebar({ state }) {
                 <div className=" mx-4   flex  space-x-3" onClick={handleUserDetails}>
 
 
-                    <img src={Profile} alt="Profile" className="h-11 w-11 rounded-full object-cover" />
+                    <img src={Profile} alt="Profile" className="h-11 w-11 rounded-full object-cover cursor-pointer" />
 
                     <div className="hidden sm:hidden md:hidden lg:flex flex-col w-[150px] overflow-hidden mt-1">
                         <p

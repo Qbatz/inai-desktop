@@ -493,16 +493,16 @@ function ProductDetails() {
                         </div>
                     )}
                     <div className='lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-6  max-h-[460px] overflow-y-auto'>
-                        <div className="grid grid-cols-2 gap-4 mb-3 p-2">
+                        <div className="grid grid-cols-2 gap-8 mb-3 p-2">
                             <div>
                                 <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Images </p>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4">
                                     {imagesToShow.length > 0 ? imagesToShow.map((img, index) => {
                                         const isLastVisible = !showAll && index === 5;
                                         return (
                                             <div
                                                 key={index}
-                                                className="relative   w-[120px] h-[120px] cursor-pointer font-Gilroy border border-gray-200 rounded-md"
+                                                className="relative   w-full h-[120px] cursor-pointer font-Gilroy border border-gray-200 rounded-md"
                                                 onClick={isLastVisible ? handleSeeMoreProductImages : undefined}
                                             >
                                                 <img
@@ -535,7 +535,7 @@ function ProductDetails() {
 
                             <div>
                                 <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Tech Images </p>
-                                <div className="rid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4">
                                     {imagesToShowTech.length > 0 ? imagesToShowTech?.map((img, index) => {
                                         const isLastVisible = !showTechAll && index === 5;
                                         const isPDF = img.url.endsWith(".pdf");
@@ -543,7 +543,7 @@ function ProductDetails() {
                                         return (
                                             <div
                                                 key={index}
-                                                className="relative w-[120px] h-[120px] cursor-pointer font-Gilroy border border-gray-200 rounded-md group hover:bg-gray-800 hover:bg-opacity-30"
+                                                className="relative w-full h-[120px] cursor-pointer font-Gilroy border border-gray-200 rounded-md group hover:bg-gray-800 hover:bg-opacity-30"
                                                 onClick={isLastVisible ? handleSeeMoreTechImages : undefined}
                                             >
                                                 {isPDF ? (
@@ -556,7 +556,7 @@ function ProductDetails() {
                                                         <img
                                                             src={Pdf}
                                                             alt="PDF"
-                                                            className="w-[120px] h-[120px] object-cover rounded-md"
+                                                            className="w-[100px] h-[120px] object-cover rounded-md"
                                                         />
                                                         <span className="hidden group-hover:flex items-center justify-center p-2 rounded-full bg-white bg-opacity-70 absolute top-2 right-2">
                                                             <DocumentDownload
@@ -577,7 +577,7 @@ function ProductDetails() {
                                                         <img
                                                             src={WordIcon}
                                                             alt="DOC File"
-                                                            className="w-[120px] h-[120px] object-contain rounded-md "
+                                                            className="w-[100px] h-[120px] object-contain rounded-md "
                                                         />
                                                         <p className="absolute bottom-1 text-xs text-black text-center truncate w-[90%] bg-white bg-opacity-80 px-1 rounded">{img.name}</p>
                                                         <span className="hidden group-hover:flex items-center justify-center p-2 rounded-full bg-white bg-opacity-70 absolute top-2 right-2">
@@ -594,7 +594,7 @@ function ProductDetails() {
                                                         <img
                                                             src={img.url}
                                                             alt={`Product ${index}`}
-                                                            className="w-[120px] h-[120px] object-cover rounded-md"
+                                                            className="w-[100px] h-[120px] object-cover rounded-md"
                                                         />
                                                     </div>
                                                 )}

@@ -226,7 +226,7 @@ function ProductList() {
             setShowDeleteProduct(false);
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })
-            }, 1000)
+            }, 100)
         }
 
     }, [state.Common.successCode])
@@ -243,7 +243,7 @@ function ProductList() {
             setLoading(false)
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })
-            }, 1000)
+            }, 100)
         }
     }, [state.Common?.successCode, state.Common?.code]);
 

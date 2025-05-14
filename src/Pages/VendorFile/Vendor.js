@@ -334,7 +334,13 @@ function VendorList() {
 
                     <input
                       type="text"
-                      value={`${dateRange[0].startDate ? moment(dateRange[0].startDate).format("MMMM D") : ""} - ${dateRange[0].endDate ? moment(dateRange[0].endDate).format("MMMM YYYY") : ""}`}
+                      value={`${dateRange[0].startDate
+                                          ? moment(dateRange[0].startDate).format("MMMM DD")
+                                          : ""
+                                        } - ${dateRange[0].endDate
+                                          ? moment(dateRange[0].endDate).format("MMMM DD")
+                                          : ""
+                                        }`}
                        readOnly
                       className="w-full pl-20 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
                     />

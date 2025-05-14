@@ -1549,6 +1549,79 @@ function BasicVendor({ vendorDetails }) {
         }),
     };
 
+    const customStyles = {
+        control: (base) => ({
+            ...base,
+            cursor: 'pointer',
+            padding: '4px',
+            borderRadius: '12px 0 0 12px',
+            border: '1px solid #d1d5db',
+            borderRight: 'none',
+            fontFamily: 'Gilroy',
+            fontSize: '14px',
+            fontWeight: 500,
+            width: '100px',
+            boxShadow: 'none',
+            '&:hover': {
+                border: '1px solid #d1d5db',
+                borderRight: 'none',
+            },
+        }),
+
+        option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isFocused ? '#205DA8' : 'white',
+            color: state.isFocused ? 'white' : 'black',
+            cursor: 'pointer',
+            fontFamily: 'Gilroy',
+            padding: '1px 5px',
+            margin: '2px 0',
+            '&:hover': {
+                backgroundColor: '#205DA8',
+                color: 'white',
+            },
+        }),
+
+        singleValue: (base) => ({
+            ...base,
+            fontSize: '13px',
+            fontFamily: 'Gilroy',
+            color: 'Gray',
+        }),
+        menu: (base) => ({
+            ...base,
+            zIndex: 9999,
+            fontSize: '13px',
+        }),
+        indicatorSeparator: () => ({
+            display: 'none',
+        }),
+    };
+
+    const titleOptions = [
+        { value: '', label: 'Select' },
+        ...(state.Common?.titles || []).map((title) => ({
+            value: title.id,
+            label: title.name
+        }))
+    ];
+    const countryCodeOptions = [
+        { value: '', label: 'Select' },
+        ...(state.Common?.country || []).map((item) => ({
+            value: item.id,
+            label: item.phone
+        }))
+    ];
+    const countryOptions = [
+        { value: '', label: 'Select' },
+        ...(state.Common?.country || []).map((item) => ({
+            value: item.id,
+            label: item.phone
+        }))
+    ];
+
+
+
     return (
         <div className="bg-slate-100  w-full rounded-t-2xl ">
             <div className="p-2 sm:p-2 md:p-2 lg:p-4 relative">
@@ -1581,7 +1654,7 @@ function BasicVendor({ vendorDetails }) {
 
                 {formErrors.general && (
                     <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                        <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.general}
+                        <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.general}
                     </p>
                 )}
 
@@ -1603,25 +1676,22 @@ function BasicVendor({ vendorDetails }) {
                                 <div className='grid md:grid-cols-3 sm:grid-cols-2 gap-3'>
 
 
-
                                     <div>
                                         <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
-                                            Contact Person<span className='text-red-500'>*</span>
+                                            Contact Person <span className="text-red-500">*</span>
                                         </label>
+
                                         <div className="flex">
-                                            <select
-                                                value={surName}
+                                            <Select
+                                                value={titleOptions.find((option) => option.value === surName)}
+                                                onChange={(selected) => handleSurNameChange({ target: { value: selected ? selected.value : '' } })}
+                                                options={titleOptions}
+                                                className="w-[100px]"
+                                                classNamePrefix="react-select"
                                                 ref={surNameRef}
-                                                onChange={handleSurNameChange}
-                                                className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
-                                            >
-                                                <option value="" >Select</option>
-                                                {state.Common?.titles?.map((title) => (
-                                                    <option key={title.id} value={title.id}>
-                                                        {title.name}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                                styles={customStyles}
+                                            />
+
                                             <input
                                                 ref={contactPersonRef}
                                                 id="contactPerson"
@@ -1632,72 +1702,70 @@ function BasicVendor({ vendorDetails }) {
                                                 className="px-3 py-3 border w-full border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                             />
                                         </div>
+
                                         {formErrors.surName && formErrors.contactPerson ? (
                                             <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span>
+                                                <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
                                                 Title and Name are required
                                             </p>
                                         ) : formErrors.surName ? (
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
-                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span>
+                                                <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
                                                 {formErrors.surName}
                                             </p>
                                         ) : formErrors.contactPerson ? (
                                             <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
-                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span>
+                                                <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
                                                 {formErrors.contactPerson}
                                             </p>
                                         ) : null}
-
-
                                     </div>
 
 
-                                    <div >
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact  Number<span className='text-red-500'>*</span> </label>
+                                    <div>
+                                        <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
+                                            Contact Number <span className="text-red-500">*</span>
+                                        </label>
 
                                         <div className="flex">
-                                            <select
-                                                value={countryCode}
+                                            <Select
+                                                value={countryCodeOptions.find((option) => option.value === countryCode)}
+                                                onChange={(selected) => handleCountryCodeChange({ target: { value: selected ? selected.value : '' } })}
+                                                options={countryCodeOptions}
+                                                className="w-[100px]"
+                                                classNamePrefix="react-select"
                                                 ref={countryCodeRef}
-                                                onChange={handleCountryCodeChange}
-                                                className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
-                                            >
-                                                <option value="">Select</option>
-                                                {state.Common?.country?.map((item) => (
-                                                    <option key={item.id} value={item.id}>
-                                                        {item.phone}
-                                                    </option>
-                                                ))}
-
-                                            </select>
+                                                styles={customStyles}
+                                            />
 
                                             <input
-                                                type='text'
+                                                type="text"
                                                 ref={contactNumberRef}
                                                 value={contactNumber}
                                                 onChange={handleContactNumberChange}
-                                                placeholder='Enter Contact  Number'
-                                                className='w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl  focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
+                                                placeholder="Enter Contact Number"
+                                                className="w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                             />
                                         </div>
-                                        {
-                                            formErrors.countryCode && formErrors.contactNumber ? (
-                                                <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> Country Code and Contact Number are required
-                                                </p>
-                                            ) : formErrors.countryCode ? (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5"/></span> {formErrors.countryCode}
-                                                </p>
-                                            ) : formErrors.contactNumber ? (
-                                                <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.contactNumber}
-                                                </p>
-                                            ) : null
-                                        }
 
+                                        {formErrors.countryCode && formErrors.contactNumber ? (
+                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
+                                                Country Code and Contact Number are required
+                                            </p>
+                                        ) : formErrors.countryCode ? (
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
+                                                <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
+                                                {formErrors.countryCode}
+                                            </p>
+                                        ) : formErrors.contactNumber ? (
+                                            <p className="text-red-600 font-Gilroy font-medium text-sm flex items-center gap-1 pt-1">
+                                                <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
+                                                {formErrors.contactNumber}
+                                            </p>
+                                        ) : null}
                                     </div>
+
                                     <div >
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Email ID </label>
                                         <input
@@ -1740,7 +1808,7 @@ function BasicVendor({ vendorDetails }) {
                                         />
                                         {formErrors.gstVat && (
                                             <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.gstVat} </p>)}
+                                                <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.gstVat} </p>)}
                                     </div>
                                     <div className='  '>
                                         <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Business Name <span className='text-red-500'>*</span> </label>
@@ -1755,7 +1823,7 @@ function BasicVendor({ vendorDetails }) {
                                         />
                                         {formErrors.businessName && (
                                             <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.businessName} </p>)}
+                                                <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.businessName} </p>)}
 
                                     </div>
 
@@ -1774,96 +1842,99 @@ function BasicVendor({ vendorDetails }) {
                                             <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-3">
                                                 <div>
                                                     <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
-                                                        Contact Person Name<span className="text-red-500 ">*</span>
+                                                        Contact Person Name<span className="text-red-500">*</span>
                                                     </label>
+
                                                     <div className="flex">
-                                                        <select
+                                                        <Select
+                                                            value={titleOptions.find((option) => option.value === contact.surName)}
+                                                            onChange={(selected) =>
+                                                                handleAdditionalContactChange(index, 'surName', selected ? selected.value : '')
+                                                            }
+                                                            options={titleOptions}
+                                                            className="w-[100px]"
+                                                            classNamePrefix="react-select"
                                                             ref={additionalRefs.current[index]?.surNameRef}
-                                                            value={contact.surName}
-                                                            onChange={(e) => handleAdditionalContactChange(index, "surName", e.target.value)}
-                                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
-                                                        >
-                                                            <option value="" className="font-Gilroy text-neutral-800 " >Select</option>
-                                                            {state.Common?.titles?.map((title) => (
-                                                                <option key={title.id} value={title.id} >
-                                                                    {title.name}
-                                                                </option>
-                                                            ))}
-                                                        </select>
+                                                            styles={customStyles}
+                                                        />
+
                                                         <input
                                                             type="text"
-
                                                             value={contact.name}
-                                                            onChange={(e) => handleAdditionalContactChange(index, "name", e.target.value)}
+                                                            onChange={(e) =>
+                                                                handleAdditionalContactChange(index, 'name', e.target.value)
+                                                            }
                                                             placeholder="Enter Contact Person Name"
-                                                            className="px-3 py-3 w-full  border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl  font-Gilroy border focus:outline-none text-sm"
+                                                            className="px-3 py-3 w-full border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl font-Gilroy border focus:outline-none text-sm"
                                                         />
                                                     </div>
 
-                                                    {
-                                                        formErrors[`additionalName${index}`] && formErrors[`additionalSurName${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                                <span><InfoCircle size="14" color="#DC2626" /></span> Title and Name are required
-                                                            </p>
-                                                        ) : formErrors[`additionalName${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalName${index}`]}
-                                                            </p>
-                                                        ) : formErrors[`additionalSurName${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalSurName${index}`]}
-                                                            </p>
-                                                        ) : null
-                                                    }
-
+                                                    {formErrors[`additionalName${index}`] && formErrors[`additionalSurName${index}`] ? (
+                                                        <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                            <InfoCircle size="14" color="#DC2626" />
+                                                            Title and Name are required
+                                                        </p>
+                                                    ) : formErrors[`additionalName${index}`] ? (
+                                                        <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                            <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
+                                                            {formErrors[`additionalName${index}`]}
+                                                        </p>
+                                                    ) : formErrors[`additionalSurName${index}`] ? (
+                                                        <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                            <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
+                                                            {formErrors[`additionalSurName${index}`]}
+                                                        </p>
+                                                    ) : null}
                                                 </div>
+
 
                                                 <div>
                                                     <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
                                                         Contact Number <span className="text-red-500">*</span>
                                                     </label>
                                                     <div className="flex">
-                                                        <select
+                                                        <Select
+                                                            value={countryOptions.find((option) => option.value === contact.countryCode)}
+                                                            onChange={(selected) =>
+                                                                handleAdditionalContactChange(index, 'countryCode', selected ? selected.value : '')
+                                                            }
+                                                            options={countryOptions}
+                                                            className="w-[100px]"
+                                                            classNamePrefix="react-select"
                                                             ref={additionalRefs.current[index]?.countryCodeRef}
-                                                            value={contact.countryCode}
-                                                            onChange={(e) => handleAdditionalContactChange(index, "countryCode", e.target.value)}
-                                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
-                                                        >
-                                                            <option value="">Select</option>
-                                                            {state.Common?.country?.map((item) => (
-                                                                <option key={item.id} value={item.id}>
-                                                                    {item.phone}
-                                                                </option>
-                                                            ))}
-
-                                                        </select>
+                                                            styles={customStyles}
+                                                        />
 
                                                         <input
                                                             type="text"
                                                             ref={additionalRefs.current[index]?.contactNumberRef}
                                                             value={contact.contactNumber}
-                                                            onChange={(e) => handleAdditionalContactChange(index, "contactNumber", e.target.value)}
+                                                            onChange={(e) =>
+                                                                handleAdditionalContactChange(index, 'contactNumber', e.target.value)
+                                                            }
                                                             placeholder="Enter Contact Number"
-                                                            className="px-3 py-3 font-Gilroy w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl rounded-xl focus:outline-none text-sm"
+                                                            className="px-3 py-3 font-Gilroy w-full border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none text-sm"
                                                         />
                                                     </div>
-                                                    {
-                                                        formErrors[`additionalContactNumber${index}`] && formErrors[`additionalCountryCode${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> Country Code and Contact Number are required
-                                                            </p>
-                                                        ) : formErrors[`additionalContactNumber${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalContactNumber${index}`]}
-                                                            </p>
-                                                        ) : formErrors[`additionalCountryCode${index}`] ? (
-                                                            <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                                <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalCountryCode${index}`]}
-                                                            </p>
-                                                        ) : null
-                                                    }
 
+                                                    {formErrors[`additionalContactNumber${index}`] && formErrors[`additionalCountryCode${index}`] ? (
+                                                        <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                            <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
+                                                            Country Code and Contact Number are required
+                                                        </p>
+                                                    ) : formErrors[`additionalContactNumber${index}`] ? (
+                                                        <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                            <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
+                                                            {formErrors[`additionalContactNumber${index}`]}
+                                                        </p>
+                                                    ) : formErrors[`additionalCountryCode${index}`] ? (
+                                                        <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
+                                                            <InfoCircle size="14" color="#DC2626" className="mb-0.5" />
+                                                            {formErrors[`additionalCountryCode${index}`]}
+                                                        </p>
+                                                    ) : null}
                                                 </div>
+
                                                 <div>
                                                     <label className="block mb-2 text-neutral-800 font-medium font-Gilroy">
                                                         Email ID
@@ -1878,7 +1949,7 @@ function BasicVendor({ vendorDetails }) {
                                                     />
                                                     {formErrors[`additionalEmail${index}`] && (
                                                         <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                            <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalEmail${index}`]} </p>
+                                                            <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors[`additionalEmail${index}`]} </p>
                                                     )}
                                                 </div>
                                                 <div>
@@ -1895,7 +1966,7 @@ function BasicVendor({ vendorDetails }) {
                                                     />
                                                     {formErrors[`additionalDesignation${index}`] && (
                                                         <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                            <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors[`additionalDesignation${index}`]} </p>
+                                                            <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors[`additionalDesignation${index}`]} </p>
                                                     )}
                                                 </div>
                                             </div>
@@ -1970,7 +2041,7 @@ function BasicVendor({ vendorDetails }) {
 
                                             {formErrors.officeAddress1 && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-0.5">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.officeAddress1}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.officeAddress1}
                                                 </p>
                                             )}
                                         </div>
@@ -1986,7 +2057,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.officeAddress2 && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.officeAddress2}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.officeAddress2}
                                                 </p>
                                             )}
                                         </div>
@@ -2001,7 +2072,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.officeAddress3 && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.officeAddress3}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.officeAddress3}
                                                 </p>
                                             )}
                                         </div>
@@ -2016,7 +2087,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.officeAddress4 && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5"/></span> {formErrors.officeAddress4}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.officeAddress4}
                                                 </p>
                                             )}
                                         </div>
@@ -2143,7 +2214,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.postalCode && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.postalCode} </p>)}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.postalCode} </p>)}
                                         </div>
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Landmark </label>
@@ -2157,7 +2228,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.landmark && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.landmark} </p>)}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.landmark} </p>)}
                                         </div>
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Google Map </label>
@@ -2205,7 +2276,7 @@ function BasicVendor({ vendorDetails }) {
 
                                             {formErrors.shippingAddress1 && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span>
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span>
                                                     {formErrors.shippingAddress1}
                                                 </p>
                                             )}
@@ -2221,7 +2292,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.shippingAddress2 && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.shippingAddress2}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.shippingAddress2}
                                                 </p>
                                             )}
                                         </div>
@@ -2274,7 +2345,7 @@ function BasicVendor({ vendorDetails }) {
 
                                             {formErrors.shippingCity && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.shippingCity}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.shippingCity}
                                                 </p>
                                             )}
                                         </div>
@@ -2375,7 +2446,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.shippingPostalCode && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5"/></span> {formErrors.shippingPostalCode} </p>)}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.shippingPostalCode} </p>)}
                                         </div>
                                         <div className='mb-2 items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Landmark </label>
@@ -2509,7 +2580,7 @@ function BasicVendor({ vendorDetails }) {
 
                                             {formErrors.beneficiaryCurrency && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.beneficiaryCurrency}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.beneficiaryCurrency}
                                                 </p>
                                             )}
                                         </div>
@@ -2528,7 +2599,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.accountNumber && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.accountNumber} </p>)}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.accountNumber} </p>)}
                                         </div>
 
 
@@ -2555,7 +2626,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.bankName && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5"/></span> {formErrors.bankName} </p>)}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.bankName} </p>)}
                                         </div>
 
                                         <div className='mb-2 items-center'>
@@ -2574,7 +2645,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.ifscCode && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.ifscCode} </p>)}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.ifscCode} </p>)}
                                         </div>
                                         <div className='mb-2  items-center'>
                                             <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>SWIFT Code  </label>
@@ -2591,7 +2662,7 @@ function BasicVendor({ vendorDetails }) {
                                             />
                                             {formErrors.swift && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.swift} </p>)}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.swift} </p>)}
                                         </div>
 
                                         <div className='mb-2 items-center'>
@@ -2609,7 +2680,7 @@ function BasicVendor({ vendorDetails }) {
 
                                             {formErrors.bankAddress && (
                                                 <p className="text-red-600 font-Gilroy font-medium text-xs flex items-center gap-1 pt-1">
-                                                    <span><InfoCircle size="14" color="#DC2626"className="mb-0.5" /></span> {formErrors.bankAddress} </p>)}
+                                                    <span><InfoCircle size="14" color="#DC2626" className="mb-0.5" /></span> {formErrors.bankAddress} </p>)}
 
                                         </div>
 

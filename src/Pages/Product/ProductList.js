@@ -353,8 +353,6 @@ function ProductList() {
                         <label className='block text-gray-500 font-Gilroy  text-sm font-medium'>Filters</label>
                     </div>
 
-
-
                     <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
                         <div
                             className="flex items-center cursor-pointer"
@@ -367,14 +365,14 @@ function ProductList() {
                             />
                             <input
                                 type="text"
-                                value={`${dateRange[0].startDate ? dateRange[0].startDate.toLocaleDateString() : ""} - ${dateRange[0].endDate ? dateRange[0].endDate.toLocaleDateString() : ""}`}
+                                value={`${dateRange[0].startDate ? dateRange[0].startDate.toLocaleDateString('en-GB', { month: 'long', day: 'numeric' }) : ""} - ${dateRange[0].endDate ? dateRange[0].endDate.toLocaleDateString('en-GB', { month: 'long', day: 'numeric', year: 'numeric' }) : ""}`}
                                 readOnly
-                                className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy  text-sm font-medium"
+                                className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
                             />
                         </div>
 
                         {showPicker && (
-                            <div ref={pickerRef} className="absolute top-15 right-0  mt-2 shadow-lg border rounded-lg bg-white z-20">
+                            <div ref={pickerRef} className="absolute top-15 right-0 mt-2 shadow-lg border rounded-lg bg-white z-20">
                                 <DateRangePicker
                                     ranges={dateRange}
                                     onChange={handleSelect}
@@ -385,6 +383,8 @@ function ProductList() {
                             </div>
                         )}
                     </div>
+
+
 
                 </div>
 

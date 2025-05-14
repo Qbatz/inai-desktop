@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { GET_PARTICULAR_PRODUCT_SAGA, RESET_CODE, EDIT_PARTICULAR_PRODUCT_SAGA } from '../../Utils/Constant'
@@ -9,9 +9,10 @@ import Pdf from '../../Asset/Images/pdf.png'
 import WordIcon from '../../Asset/Images/doc.png';
 import { InfoCircle } from "iconsax-react";
 import Select from "react-select";
-
-
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { CalendarDays } from "lucide-react";
+import PropTypes from 'prop-types';
 function ProductDetails() {
 
 
@@ -170,12 +171,18 @@ function ProductDetails() {
 
 
 
-
-
-
     const handleValueChange = (e, customValue = null) => {
-        const inputValue = customValue ?? e.target.value;
-        let value = inputValue;
+        let inputValue = customValue ?? e.target.value;
+
+
+        if (inputValue instanceof Date && editingField === "manufacturing_year") {
+            const year = inputValue.getFullYear();
+            const month = String(inputValue.getMonth() + 1).padStart(2, '0');
+            inputValue = `${year}-${month}`;
+        }
+
+
+        let value = typeof inputValue === 'string' ? inputValue : inputValue?.toString?.() ?? '';
         let tempError = {};
         let finalValue = value;
 
@@ -187,8 +194,6 @@ function ProductDetails() {
         setEditedValue(value);
 
         if (editingField === "manufacturing_year") {
-            setEditedValue(value);
-
             const trimmedValue = value.trim();
 
             if (trimmedValue.length === 7 && /^\d{4}-\d{2}$/.test(trimmedValue)) {
@@ -215,13 +220,11 @@ function ProductDetails() {
                 setEditingField(null);
                 return;
             } else {
-
                 tempError[editingField] = `${capitalizedField} must be in YYYY-MM format`;
                 setErrorMessage(tempError);
                 return;
             }
         }
-
 
         else if (["price", "discount"].includes(editingField)) {
             value = inputValue.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
@@ -259,7 +262,6 @@ function ProductDetails() {
             setEditedValue(value);
         }
 
-
         if (requiredFields.includes(editingField)) {
             const trimmed = value.trim();
             if (trimmed === "") {
@@ -291,7 +293,6 @@ function ProductDetails() {
             return;
         }
     };
-
 
 
 
@@ -474,7 +475,24 @@ function ProductDetails() {
         }),
     };
 
+    const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
+        <div
+            className="flex w-full font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-md text-gray-700 cursor-pointer"
+            onClick={onClick}
+            ref={ref}
+        >
+            <input
+                type="text"
+                className="flex-1 font-Gilroy bg-transparent outline-none py-0.5 font-medium text-sm text-slate-500 placeholder-gray-400"
+                value={value}
+                placeholder={placeholder}
+                readOnly
+            />
+            <CalendarDays className="text-gray-400 ml-2 shrink-0" size={18} />
+        </div>
+    ));
 
+    CustomInput.displayName = "CustomInput";
     return (
         <div className="bg-blueGray-100  w-full">
             <div className="p-3  flex flex-col" >
@@ -897,20 +915,7 @@ function ProductDetails() {
                                         wrapperClassName="w-full"
                                         autoFocus
                                     />
-
-
-                                    // <input ref={editableRef}
-                                    //     type="month"
-                                    //     className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
-                                    //     value={
-                                    //         editedValue
-                                    //             ? new Date(editedValue).toISOString().slice(0, 7)
-                                    //             : ""
-                                    //     }
-                                    //     onChange={(e) => handleValueChange(e)}
-                                    //     onKeyDown={(e) => handleKeyDown(e, "manufacturing_year")}
-                                    //     autoFocus
-                                    // />
+                                  
                                 ) : (
                                     <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
                                         {productDetails.manufaturingYearAndMonth
@@ -991,5 +996,9 @@ function ProductDetails() {
         </div>
     )
 }
-
+ProductDetails.propTypes = {
+    value: PropTypes.string,
+    onClick: PropTypes.func,
+    placeholder: PropTypes.string,
+};
 export default ProductDetails

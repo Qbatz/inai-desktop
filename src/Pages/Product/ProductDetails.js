@@ -885,18 +885,32 @@ function ProductDetails() {
 
                                 </div>
                                 {editingField === "manufacturing_year" ? (
-                                    <input ref={editableRef}
-                                        type="month"
-                                        className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
-                                        value={
-                                            editedValue
-                                                ? new Date(editedValue).toISOString().slice(0, 7)
-                                                : ""
-                                        }
-                                        onChange={(e) => handleValueChange(e)}
-                                        onKeyDown={(e) => handleKeyDown(e, "manufacturing_year")}
+
+                                    <DatePicker
+                                        selected={editedValue ? new Date(editedValue) : null}
+                                        onChange={(date) => handleValueChange({ target: { value: date } })}
+                                        dateFormat="MM/yyyy"
+                                        showMonthYearPicker
+                                        className="cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full"
+                                        placeholderText="Month and Year of Manufacture"
+                                        customInput={<CustomInput ref={editableRef} />}
+                                        wrapperClassName="w-full"
                                         autoFocus
                                     />
+
+
+                                    // <input ref={editableRef}
+                                    //     type="month"
+                                    //     className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
+                                    //     value={
+                                    //         editedValue
+                                    //             ? new Date(editedValue).toISOString().slice(0, 7)
+                                    //             : ""
+                                    //     }
+                                    //     onChange={(e) => handleValueChange(e)}
+                                    //     onKeyDown={(e) => handleKeyDown(e, "manufacturing_year")}
+                                    //     autoFocus
+                                    // />
                                 ) : (
                                     <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
                                         {productDetails.manufaturingYearAndMonth

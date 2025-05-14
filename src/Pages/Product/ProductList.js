@@ -38,7 +38,7 @@ function ProductList() {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-
+    const timeoutRef = useRef(null);
 
 
 
@@ -219,17 +219,32 @@ function ProductList() {
         }
     }, [productList, itemsPerPage, currentPage]);
 
+
+
+
+
     useEffect(() => {
         if (state.Common.successCode === 200) {
-            setProductList(state.product.productList)
-            setLoading(false)
+            setProductList(state.product.productList);
+            setLoading(false);
             setShowDeleteProduct(false);
-            setTimeout(() => {
-                dispatch({ type: RESET_CODE })
-            }, 100)
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+
+            timeoutRef.current = setTimeout(() => {
+                dispatch({ type: RESET_CODE });
+            }, 300);
         }
 
-    }, [state.Common.successCode])
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, [state.Common.successCode]);
+
+
 
 
     useEffect(() => {
@@ -239,13 +254,13 @@ function ProductList() {
     }, [state.product?.productList])
 
     useEffect(() => {
-        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+        if (state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
             setLoading(false)
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })
             }, 100)
         }
-    }, [state.Common?.successCode, state.Common?.code]);
+    }, [state.Common?.code]);
 
     useEffect(() => {
         const delayApi = setTimeout(() => {

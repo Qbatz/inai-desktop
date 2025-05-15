@@ -56,7 +56,7 @@ function* handleVendorBasicInfo(action) {
 
         if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: VENDOR_BASIC_INFO_REDUCER, payload: { vendorId: response.data.vendorId } })
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, isVisible: 1 } });
 
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
@@ -179,7 +179,7 @@ function* handleAddVendor(action) {
         const response = yield call(AddVendor, action.payload)
         if (response.status === 200 || response.data.statusCode === 200) {
             yield put({ type: CREATE_VENDOR_REDUCER, payload: { vendorId: response.data.vendorId } })
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, isVisible: 1 } });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
                 icon: false,

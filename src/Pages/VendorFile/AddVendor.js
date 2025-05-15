@@ -1312,11 +1312,11 @@ function BasicVendor({ vendorDetails }) {
 
 
     useEffect(() => {
-        if (state.Common?.IsVisible === 1) {
+        if (state.Common?.isVisible === 1) {
             navigate('/vendor')
         }
 
-    }, [state.Common?.IsVisible])
+    }, [state.Common?.isVisible])
 
 
 

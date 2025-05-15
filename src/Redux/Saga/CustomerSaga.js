@@ -25,7 +25,7 @@ function* handleCreateCustomer(action) {
     try {
         const response = yield call(CreateCustomer, action.payload)
         if (response.status === 200 || response.data.statusCode === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, isVisible: 1 } });
 
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,

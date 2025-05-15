@@ -1274,11 +1274,11 @@ function AddCustomer({ editCustomerDetails }) {
 
 
     useEffect(() => {
-        if (state.Common.IsVisible === 1) {
+        if (state.Common.isVisible === 1) {
             navigate('/client')
         }
 
-    }, [state.Common.IsVisible])
+    }, [state.Common.isVisible])
 
     useEffect(() => {
         dispatch({ type: GET_MASTER_SAGA })

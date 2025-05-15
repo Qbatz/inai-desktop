@@ -15,7 +15,7 @@ export const initialState = {
     successMessage: "",
     emailid: "",
     resetPassword: "",
-    IsVisible: 0,
+    isVisible: 0,
     isTriggerMessage: 0,
     country: [],
     titles: [],
@@ -33,7 +33,7 @@ const CommonReducer = (state = initialState, action) => {
                 ...state,
                 successCode: action.payload.statusCode || 0,
                 successMessage: action.payload.message || '',
-                IsVisible: action.payload.IsVisible || 0,
+                isVisible: action.payload.isVisible || 0,
                 isTriggerMessage: action.payload.isTriggerMessage || 0,
                 emailid: data.email || '',
                 resetPassword: data.resetPassword || '',
@@ -45,7 +45,7 @@ const CommonReducer = (state = initialState, action) => {
 
 
         case RESET_CODE:
-            return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "", IsVisible: 0, isTriggerMessage: 0, editStatusCode: 0 }
+            return { ...state, successCode: 0, code: 0, errorMessage: '', successMessage: "", isVisible: 0, isTriggerMessage: 0, editStatusCode: 0 }
         case GET_MASTER_REDUCER:
             return { ...state, country: action.payload.response.country, titles: action.payload.response.titles }
         case EDIT_PARTICULAR_PRODUCT_REDUCER:

@@ -20,8 +20,8 @@ function VendorDetails() {
 
 
 
-  const VendorList = state.vendor?.ParticularVendorList
-    ? [state.vendor.ParticularVendorList]
+  const VendorList = state.vendor?.particularVendorList
+    ? [state.vendor.particularVendorList]
     : [];
 
 

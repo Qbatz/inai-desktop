@@ -166,7 +166,7 @@ function* handleAddProduct(action) {
         const response = yield call(addProduct, action.payload)
 
         if (response.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, isVisible: 1 } });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
                 icon: false,
@@ -249,7 +249,7 @@ function* handleEditProduct(action) {
         const response = yield call(editProduct, action.payload)
 
         if (response.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message, isVisible: 1 } });
             toast.success(response.data.message || 'Success!', {
                 autoClose: 2000,
                 icon: false,

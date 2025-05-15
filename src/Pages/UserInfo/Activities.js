@@ -58,7 +58,7 @@ function Activities() {
 
     useEffect(() => {
         if (state.Common.successCode === 200) {
-            setActivitiesList(state.userInfo.ActivitiesList)
+            setActivitiesList(state.userInfo.activitiesList)
             setLoading(false)
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })

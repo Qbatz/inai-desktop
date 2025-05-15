@@ -11,7 +11,7 @@ export const initialState = {
     isTrue: false,
     emailId: '',
     userDetails: [],
-    ActivitiesList: [],
+    activitiesList: [],
     otpSendSuccessCode: 0,
 }
 
@@ -51,7 +51,7 @@ const UserReducer = (state = initialState, action) => {
             return { ...state, userDetails: action.payload.users };
 
         case GET_ACTIVITIES_REDUCER:
-            return { ...state, ActivitiesList: action.payload.response }
+            return { ...state, activitiesList: action.payload.response }
 
         default:
             return state;

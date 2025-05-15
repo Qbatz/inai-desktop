@@ -8,7 +8,7 @@ import InvoiceAddProduct from "../../Pages/Invoice/InvoiceAddProduct";
 import AddBox from "../../Pages/Invoice/AddBox";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
-import { GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA } from '../../Utils/Constant';
+import { GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA } from '../../Utils/Constant';
 import { format } from 'date-fns';
 import { InfoCircle } from "iconsax-react";
 
@@ -113,26 +113,14 @@ function AddInvoice() {
     ];
 
 
-    const portOptions = [
-        { value: "", label: "Select Port", isPlaceholder: true },
-        { value: "IN-MUMBAI", label: "Mumbai Port" },
-        { value: "IN-CHENNAI", label: "Chennai Port" },
-        { value: "IN-KOLKATA", label: "Kolkata Port" },
-        { value: "IN-KANDLA", label: "Kandla Port" },
-        { value: "NL-ROTTERDAM", label: "Rotterdam Port (Netherlands)" },
-        { value: "DE-HAMBURG", label: "Hamburg Port (Germany)" },
-        { value: "BE-ANTWERP", label: "Antwerp Port (Belgium)" },
-        { value: "UK-FELIXSTOWE", label: "Felixstowe Port" },
-        { value: "UK-SOUTHAMPTON", label: "Southampton Port" },
-        { value: "UK-LONDON", label: "London Gateway Port" },
-        { value: "JP-TOKYO", label: "Tokyo Port" },
-        { value: "JP-YOKOHAMA", label: "Yokohama Port" },
-        { value: "JP-KOBE", label: "Kobe Port" },
-        { value: "US-LOSANGELES", label: "Los Angeles Port" },
-        { value: "US-NEWYORK", label: "New York Port" },
-        { value: "US-HOUSTON", label: "Houston Port" },
+   const portOptions = [
+  { value: "", label: "Select Port", isPlaceholder: true },
+  ...state.invoice.PortList.map((port) => ({
+    value: port.portCode,
+    label: `${port.portCode} - (${port.city})`
+  }))
+];
 
-    ];
 
 
 
@@ -732,6 +720,11 @@ function AddInvoice() {
             alert('validation success')
         }
     }
+
+
+    useEffect(() => {
+        dispatch({ type: GET_PORT_SAGA })
+    }, [])
 
 
 

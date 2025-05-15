@@ -161,3 +161,8 @@ export const OTP_SEND_REDUCER_REMOVE = "Otp_Send_Reducer_Remove"
 export const REMOVE_ACCOUNT_REDUCER = "Remove_Account_Reducer";
 
 
+
+export const GET_PORT_REDUCER = "Get_Port_Reducer";
+export const GET_PORT_SAGA = "Get_Port_Saga";
+
+

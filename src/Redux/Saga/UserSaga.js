@@ -94,7 +94,7 @@ function* handleResetPassword(verify) {
     try {
         const response = yield call(ReSetPassword, verify.payload);
         if (response?.success || response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status , message: response.data.message || response.message ,IsVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status , message: response.data.message || response.message ,isVisible: 1 } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });

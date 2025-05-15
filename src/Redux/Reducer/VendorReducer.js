@@ -14,7 +14,7 @@ import {
 export const initialState = {
    vendorId: '',
    vendorList: [],
-   ParticularVendorList: [],
+   particularVendorList: [],
    
 }
 
@@ -40,7 +40,7 @@ const VendorReducer = (state = initialState, action) => {
          return { ...state, vendorId: '' }
 
       case VIEW_VENDOR_REDUCER:
-         return { ...state, ParticularVendorList: action.payload.Vendor }
+         return { ...state, particularVendorList: action.payload.Vendor }
 
       
 

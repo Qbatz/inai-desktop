@@ -1295,11 +1295,11 @@ function AddProduct() {
 
 
     useEffect(() => {
-        if (state.Common.IsVisible === 1) {
+        if (state.Common.isVisible === 1) {
             navigate('/product')
         }
 
-    }, [state.Common.IsVisible])
+    }, [state.Common.isVisible])
 
 
 

@@ -67,14 +67,14 @@ const ReSetPassword = () => {
 
 
     useEffect(() => {
-        if (state.Common.IsVisible === 1) {
+        if (state.Common.isVisible === 1) {
             dispatch({ type: LOG_OUT });
             const encryptDataLogin = encryptData(JSON.stringify(false));
             localStorage.setItem("inai_login", encryptDataLogin.toString());
             navigate('/')
         }
 
-    }, [state.Common.IsVisible])
+    }, [state.Common.isVisible])
 
 
 

@@ -82,7 +82,7 @@ export const GET_CUSTOMER_LIST_REDUCER = "Get_Customer_List_Reducer";
 export const GET_CUSTOMER_LIST_SAGA = "Get_Customer_List_Saga";
 
 export const GET_CUSTOMER_DETAILS_REDUCER = "Get_Customer_Details_Reducer";
-export const CUSTOMER_ID_REDUCER = "Customer_Id_Reducer";   
+export const CUSTOMER_ID_REDUCER = "Customer_Id_Reducer";
 export const GET_CUSTOMER_DETAILS_SAGA = "Get_Customer_Details_Saga";
 
 export const GET_USER_INFO_REDUCER = "Get_User_Info_Reducer";
@@ -165,4 +165,10 @@ export const REMOVE_ACCOUNT_REDUCER = "Remove_Account_Reducer";
 export const GET_PORT_REDUCER = "Get_Port_Reducer";
 export const GET_PORT_SAGA = "Get_Port_Saga";
 
+
+export const GET_PAYMENT_TERM_REDUCER = "Get_Payment_Reducer";
+export const GET_PAYMENT_TERM_SAGA = "Get_Payment_Saga";
+
+export const GET_DELIVERY_TERM_REDUCER = "Get_Delivery_Reducer";
+export const GET_DELIVERY_TERM_SAGA = "Get_Delivery_Saga";
 

@@ -8,7 +8,7 @@ import InvoiceAddProduct from "../../Pages/Invoice/InvoiceAddProduct";
 import AddBox from "../../Pages/Invoice/AddBox";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
-import { GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA } from '../../Utils/Constant';
+import { GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA, GET_PAYMENT_TERM_SAGA, GET_DELIVERY_TERM_SAGA } from '../../Utils/Constant';
 import { format } from 'date-fns';
 import { InfoCircle } from "iconsax-react";
 
@@ -45,8 +45,7 @@ function AddInvoice() {
         destinationCountry: null,
         deliveryTerm: null,
         place: null,
-        paymentTerm1: '',
-        paymentTerm2: '',
+        paymentTerm: '',
         shippingBillNo: '',
         shippingBillDate: null,
         bankPaymentRefNo: '',
@@ -113,13 +112,30 @@ function AddInvoice() {
     ];
 
 
-   const portOptions = [
-  { value: "", label: "Select Port", isPlaceholder: true },
-  ...state.invoice.PortList.map((port) => ({
-    value: port.portCode,
-    label: `${port.portCode} - (${port.city})`
-  }))
-];
+    const portOptions = [
+        { value: "", label: "Select Port", isPlaceholder: true },
+        ...state.invoice.portList.map((port) => ({
+            value: port.portCode,
+            label: `${port.portCode} - ${port.city}`
+        }))
+    ];
+
+    const paymentTermOptions = [
+        { value: "", label: "Select Payment Term", isPlaceholder: true },
+        ...state.invoice.paymentTermList.map((payment) => ({
+            value: payment.id,
+            label: payment.type
+        }))
+    ];
+
+    const deliveryTermOptions = [
+        { value: "", label: "Select Delivery Term", isPlaceholder: true },
+        ...state.invoice.deliveryTermList.map((delivery) => ({
+            value: delivery.id,
+            label: delivery.type
+        }))
+    ];
+
 
 
 
@@ -134,9 +150,8 @@ function AddInvoice() {
     const portOfDischargeRef = useRef();
     const destinationCountryRef = useRef();
     const deliveryTermRef = useRef();
-    const paymentTerm1Ref = useRef();
-    const paymentTerm2Ref = useRef();
-    const bankPaymentRefNoRef = useRef();
+    const paymentTermRef = useRef();
+      const bankPaymentRefNoRef = useRef();
     const freightRef = useRef();
     const insuranceRef = useRef();
     const placeRef = useRef();
@@ -418,16 +433,13 @@ function AddInvoice() {
         }
 
 
-        const textWithSpaceFields = ['paymentTerm1', 'paymentTerm2'];
+
         const numberOnlyFields = ['noOfPackage', 'netWeight', 'grossWeight', 'freight', 'insurance', 'shippingBillNo'];
         const noSpecialCharFields = ['billOfLading'];
 
         let isValid = true;
 
-        if (textWithSpaceFields.includes(field)) {
-            const regex = /^[A-Za-z\s]*$/;
-            isValid = regex.test(formattedValue);
-        } else if (numberOnlyFields.includes(field)) {
+        if (numberOnlyFields.includes(field)) {
             const regex = /^[0-9]*$/;
             isValid = regex.test(formattedValue);
         } else if (noSpecialCharFields.includes(field)) {
@@ -453,7 +465,6 @@ function AddInvoice() {
             [field]: '',
         }));
     };
-
 
 
 
@@ -497,8 +508,7 @@ function AddInvoice() {
         if (!formData.destinationCountry) { newErrors.destinationCountry = 'Destination country is required'; isValid = false; }
         if (!formData.deliveryTerm) { newErrors.deliveryTerm = 'Delivery term is required'; isValid = false; }
         if (!formData.place) { newErrors.place = 'Place is required'; isValid = false; }
-        if (!formData.paymentTerm1) { newErrors.paymentTerm1 = 'Payment term is required'; isValid = false; }
-        if (!formData.paymentTerm2) { newErrors.paymentTerm2 = 'Payment term is required'; isValid = false; }
+        if (!formData.paymentTerm) { newErrors.paymentTerm = 'Payment term is required'; isValid = false; }
         if (!formData.bankPaymentRefNo) { newErrors.bankPaymentRefNo = 'Bank payment reference number is required'; isValid = false; }
         if (!formData.freight) { newErrors.freight = 'Freight is required'; isValid = false; }
         if (!formData.insurance) { newErrors.insurance = 'Insurance is required'; isValid = false; }
@@ -569,12 +579,8 @@ function AddInvoice() {
                 placeRef.current?.focus();
                 focusSet = true;
             }
-            else if (newErrors.paymentTerm1 && !focusSet) {
-                paymentTerm1Ref.current?.focus();
-                focusSet = true;
-            }
-            else if (newErrors.paymentTerm2 && !focusSet) {
-                paymentTerm2Ref.current?.focus();
+            else if (newErrors.paymentTerm && !focusSet) {
+                paymentTermRef.current?.focus();
                 focusSet = true;
             }
             else if (newErrors.bankPaymentRefNo && !focusSet) {
@@ -722,8 +728,11 @@ function AddInvoice() {
     }
 
 
+
     useEffect(() => {
         dispatch({ type: GET_PORT_SAGA })
+        dispatch({ type: GET_PAYMENT_TERM_SAGA })
+        dispatch({ type: GET_DELIVERY_TERM_SAGA })
     }, [])
 
 
@@ -1137,13 +1146,13 @@ function AddInvoice() {
                                     <div className='flex gap-1'>
                                         <div className='flex-1'>
                                             <Select
-                                                options={options}
+                                                options={deliveryTermOptions}
                                                 placeholder="Enter Delivery Term"
                                                 classNamePrefix="custom"
                                                 menuPlacement="auto"
                                                 ref={deliveryTermRef}
                                                 styles={customSelectStateStyles}
-                                                value={options.find(opt => opt.value === formData.deliveryTerm)}
+                                                value={deliveryTermOptions.find(opt => opt.value === formData.deliveryTerm)}
                                                 onChange={(e) => handleInputChangeForInvoice('deliveryTerm', e.value)}
                                             />
                                         </div>
@@ -1183,39 +1192,26 @@ function AddInvoice() {
 
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Payment Term <span className='text-red-500'>*</span></label>
-                                    <input
-                                        type='text'
-                                        placeholder='Enter Payment Term'
-                                        ref={paymentTerm1Ref}
-                                        value={formData.paymentTerm1}
-                                        onChange={(e) => handleInputChangeForInvoice('paymentTerm1', e.target.value)}
-                                        className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
-                                    />
-                                    {errors.paymentTerm1 && (
-                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
-                                            <InfoCircle size={16} color="#DC2626" />
-                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.paymentTerm1}</p>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className='mb-2 items-center'>
-                                    <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Payment Term <span className='text-red-500'>*</span></label>
 
-                                    <input
-                                        type='text'
-                                        placeholder='Enter Payment Term'
-                                        ref={paymentTerm2Ref}
-                                        value={formData.paymentTerm2}
-                                        onChange={(e) => handleInputChangeForInvoice('paymentTerm2', e.target.value)}
-                                        className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
+                                    <Select
+                                        options={paymentTermOptions}
+                                        placeholder="Enter Payment Term"
+                                        classNamePrefix="custom"
+                                        menuPlacement="auto"
+                                        ref={paymentTermRef}
+                                        styles={customSelectStateStyles}
+                                        value={paymentTermOptions.find(opt => opt.value === formData.paymentTerm)}
+                                        onChange={(e) => handleInputChangeForInvoice('paymentTerm', e.value)}
                                     />
-                                    {errors.paymentTerm2 && (
+
+                                    {errors.paymentTerm && (
                                         <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1 ps-1'>
                                             <InfoCircle size={16} color="#DC2626" />
-                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.paymentTerm2}</p>
+                                            <p className="text-red-500 text-xs mt-1 font-Gilroy">{errors.paymentTerm}</p>
                                         </div>
                                     )}
                                 </div>
+
 
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Shipping Bill No.</label>

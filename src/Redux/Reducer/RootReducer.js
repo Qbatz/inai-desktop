@@ -5,6 +5,7 @@ import CustomerReducer from "./CustomerReducer";
 import SettingsReducer from "./SettingsReducer";
 import UserReducer from "./UserReducer";
 import ProductReducer from './ProductReducer'
+import InvoiceReducer from "./InvoiceReducer";
 
 const RootReducer = combineReducers({
 
@@ -13,6 +14,7 @@ const RootReducer = combineReducers({
     customer: CustomerReducer,
     settings: SettingsReducer,
     userInfo: UserReducer,
-    product: ProductReducer
+    product: ProductReducer,
+    invoice: InvoiceReducer,
 })
 export default RootReducer;

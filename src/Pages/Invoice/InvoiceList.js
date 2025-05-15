@@ -1,35 +1,73 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PlusCircle from '../../Asset/Images/Plus_Circle.svg';
 import { SearchNormal1, Calendar, Edit, Trash, ArrowLeft2, ArrowRight2 } from "iconsax-react";
 import Filter from '../../Asset/Images/filter.png';
+import { DateRangePicker } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import DeleteInvoiceList from './DeleteInvoiceList';
+import moment from 'moment';
+import { enGB } from "date-fns/locale";
+
+
 
 const InvoiceList = () => {
 
     const navigate = useNavigate();
     const popupRef = useRef(null);
-
-
+    const [showPicker, setShowPicker] = useState(false);
+    const pickerRef = useRef(null);
     const [isVisible, setIsVisible] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [showPopup, setShowPopUp] = useState(null);
     const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
     const [deleteInvoiceId, setDeleteInvoiceId] = useState('')
     const [showDeleteInvoiceList, setShowDeleteInvoiceList] = useState(false);
+    const [isStartSelected, setIsStartSelected] = useState(false);
 
 
+
+    const [dateRange, setDateRange] = useState([
+        {
+            startDate: new Date(),
+            endDate: new Date(),
+            key: "selection",
+        },
+    ]);
+
+
+
+    const handleSelect = (ranges) => {
+        const selection = ranges.selection;
+
+
+        if (!isStartSelected) {
+
+            setDateRange([
+                {
+                    ...selection,
+                    endDate: null,
+                },
+            ]);
+
+
+            setIsStartSelected(true);
+        } else {
+            setDateRange([selection]);
+            setShowPicker(false);
+            setIsStartSelected(false);
+        }
+    };
     const handleAddinvoice = () => {
         navigate('/add-invoice')
     }
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     }
- 
+
     const handleShowPopup = (id, event) => {
         const { top, left, height } = event.target.getBoundingClientRect();
         setPopupPosition({
@@ -92,7 +130,15 @@ const InvoiceList = () => {
     const endIndex = startIndex + itemsPerPage;
     const paginatedInvoices = invoices.slice(startIndex, endIndex);
 
-
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (popupRef.current && !popupRef.current.contains(event.target)) {
+                setShowPopUp(null);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
     return (
 
         <div className="flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative bg-slate-100">
@@ -118,7 +164,7 @@ const InvoiceList = () => {
                                 value={searchTerm}
                                 onChange={handleSearchChange}
                                 placeholder="Search by ID, Support, or Others"
-                                 className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
+                                className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
                             />
                         </div>
 
@@ -127,16 +173,50 @@ const InvoiceList = () => {
                             <label className="text-gray-500 font-Gilroy text-sm font-medium">Filters</label>
                         </div>
 
-                        <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer px-10 py-2 flex items-center gap-2 ">
-                            <Calendar size="16" color="gray" />
-                            <span className="text-gray-500 text-sm font-medium font-Gilroy">April 11 - April 24</span>
+                        <div className="relative col-span-3 bg-slate-100 rounded-lg cursor-pointer">
+                            <div
+                                className="flex items-center cursor-pointer bg-dark"
+                                onClick={() => setShowPicker(!showPicker)}
+                            >
+                                <Calendar
+                                    size="16"
+                                    color="gray"
+                                    className="absolute left-8 top-1/2 transform -translate-y-1/2"
+                                />
+
+                                <input
+                                    type="text"
+                                    value={`${dateRange[0].startDate
+                                        ? moment(dateRange[0].startDate).format("MMMM DD")
+                                        : ""
+                                        } - ${dateRange[0].endDate
+                                            ? moment(dateRange[0].endDate).format("MMMM DD")
+                                            : ""
+                                        }`}
+                                    readOnly
+                                    className="w-full pl-20 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
+                                />
+
+                            </div>
+
+                            {showPicker && (
+                                <div ref={pickerRef} className="absolute top-15 right-0  mt-2 shadow-lg border rounded-lg bg-white z-20">
+                                    <DateRangePicker
+                                        ranges={dateRange}
+                                        onChange={handleSelect}
+                                        moveRangeOnFirstSelection={false}
+                                        editableDateInputs={true}
+                                        locale={enGB}
+                                    />
+                                </div>
+                            )}
                         </div>
 
                     </div>
 
                     <div className="rounded-xl border border-gray-200 max-h-[320px] overflow-y-auto overflow-x-auto mt-3 mb-1">
                         <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-gray-200">
-                            <thead className="bg-gray-100 sticky top-0 z-10">
+                            <thead className="bg-slate-100 sticky top-0 z-10">
                                 <tr>
                                     {["S.No", "Invoice Number", "Contact Person Name", "Email ID", "Mobile No.", "Date", "Amount", ""].map((head, i) => (
                                         <th key={i} className="px-4 py-2 text-center text-gray-600 text-sm font-normal font-Gilroy">
@@ -174,12 +254,12 @@ const InvoiceList = () => {
                                                             className="w-32 bg-slate-100 shadow-lg rounded-md"
                                                         >
                                                             <div
-                                                                className="px-4 py-2 cursor-pointer flex items-center gap-2"
+                                                                className="px-4 py-2 cursor-pointer flex items-center gap-2 font-Gilroy"
                                                             >
                                                                 <Edit size="16" color="#205DA8" className='' /> Edit
                                                             </div>
                                                             <div
-                                                                className="px-4 py-2 cursor-pointer flex items-center gap-2 text-red-700"
+                                                                className="px-4 py-2 cursor-pointer flex items-center gap-2 text-red-700 font-Gilroy"
                                                                 onClick={() => handleDeleteInvoiceList(invoice.clientId)}
                                                             >
                                                                 <Trash size="16" color="#B91C1C" /> Delete

@@ -320,10 +320,10 @@ useEffect(() => {
               <input
                 type="text"
                 value={`${dateRange[0].startDate
-                    ? moment(dateRange[0].startDate).format("MMMM D")
+                    ? moment(dateRange[0].startDate).format("MMMM DD")
                     : ""
                   } - ${dateRange[0].endDate
-                    ? moment(dateRange[0].endDate).format("MMMM YYYY")
+                    ? moment(dateRange[0].endDate).format("MMMM DD")
                     : ""
                   }`}
                 readOnly

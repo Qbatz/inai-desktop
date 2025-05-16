@@ -43,7 +43,7 @@ function CustomerDetails() {
                     </h1>
 
 
-                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-12 p-2 lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3  max-h-[440px] overflow-y-auto ">
+                    <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-12 p-2 lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3 max-h-[440px] overflow-y-auto">
 
                         <>
 

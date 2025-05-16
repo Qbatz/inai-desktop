@@ -64,6 +64,9 @@ const InvoiceList = () => {
     const handleAddinvoice = () => {
         navigate('/add-invoice')
     }
+    const handleInvoiceDetails = (invoiceId) => {
+    navigate(`/invoice-details/${invoiceId}`)
+  }
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     }
@@ -230,7 +233,7 @@ const InvoiceList = () => {
                                     paginatedInvoices.map((invoice, index) => (
                                         <tr key={invoice.id}>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.id}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy hover:underline text-[#205DA8] hover:cursor-pointer"onClick={() => handleInvoiceDetails(invoice.invoiceId)}>{invoice.id}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.name}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.email}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.mobile}</td>

@@ -48,7 +48,7 @@ function ProductDetails() {
     const scrollRef = useRef(null);
     const [previewImage, setPreviewImage] = useState(null);
 
-    console.log("previewImage",previewImage)
+    console.log("previewImage", previewImage)
 
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState({});
@@ -500,6 +500,8 @@ function ProductDetails() {
     }, [editedValue, editingField, errorMessage, productDetails]);
 
 
+    console.log("productDetails", productDetails)
+
 
     return (
         <div className="bg-blueGray-100  w-full">
@@ -554,7 +556,7 @@ function ProductDetails() {
                                             className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
                                             value={productDetails?.productCode || "N/A"}
                                             readOnly
-                                          
+
 
                                         />
                                     </div>
@@ -670,7 +672,7 @@ function ProductDetails() {
                                         onChange={(e) => handleValueChange("currency", e)}
                                         placeholder="Enter Currency"
                                         readOnly
-                                     
+
 
                                     />
                                 </div>
@@ -682,11 +684,15 @@ function ProductDetails() {
                                     <input
                                         ref={editableRef}
                                         className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+
                                         value={
                                             editingField === "price"
                                                 ? editedValues.price
-                                                : productDetails?.price || ""
+                                                : productDetails?.currency
+                                                    ? `${currencySymbols[productDetails.currency] || ''} ${productDetails.price || ''}`
+                                                    : productDetails?.price || ''
                                         }
+
                                         onChange={(e) => handleValueChange("price", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "price", e.target.value)}
                                         placeholder='Enter Price'
@@ -710,13 +716,14 @@ function ProductDetails() {
                                     <input
                                         type="text"
                                         className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails?.quantity || ""}
+                                        value={
+                                            productDetails?.quantity && productDetails.quantity !== "0"
+                                                ? productDetails.quantity
+                                                : "N/A"
+                                        }
                                         onChange={(e) => handleValueChange("quantity", e)}
                                         placeholder="Enter Quantity"
                                         readOnly
-                                       
-
-
                                     />
                                 </div>
 
@@ -731,7 +738,7 @@ function ProductDetails() {
                                         onKeyDown={(e) => handleKeyDown(e, "unit")}
                                         placeholder="Enter Unit of Measurement"
                                         readOnly
-                                        
+
 
 
                                     />
@@ -751,10 +758,15 @@ function ProductDetails() {
                                     <input
                                         type="text"
                                         className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails?.weight || ""}
+                                        value={
+                                            productDetails?.weight && productDetails.weight !== "0"
+                                                ? productDetails.weight
+                                                : "N/A"
+                                        }
+
                                         readOnly
                                         placeholder="Enter Weight"
-                                                                          
+
 
                                     />
                                 </div>
@@ -770,8 +782,11 @@ function ProductDetails() {
                                         value={
                                             editingField === "discount"
                                                 ? editedValues.discount
-                                                : productDetails?.discount ?? ""
+                                                : productDetails?.discount === "0"
+                                                    ? "N/A"
+                                                    : productDetails?.discount ?? "N/A"
                                         }
+
                                         onChange={(e) => handleValueChange("discount", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "discount", e.target.value)}
                                         onBlur={() => setEditingField(null)}
@@ -807,7 +822,9 @@ function ProductDetails() {
                                         value={
                                             editingField === "hsn_code"
                                                 ? editedValues.hsn_code
-                                                : productDetails?.hsnCode ?? "N/A"
+                                                : !productDetails?.hsnCode || productDetails?.hsnCode === "0" ||  productDetails?.hsnCode === ""
+                                                    ? "N/A"
+                                                    : productDetails.hsnCode
                                         }
                                         placeholder="Enter HSN"
                                         onChange={(e) => handleValueChange("hsn_code", e)}
@@ -836,8 +853,8 @@ function ProductDetails() {
                                         onChange={(e) => handleValueChange("gst", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "gst")}
                                         onBlur={() => setEditingField(null)}
-                                         readOnly
-                                        
+                                        readOnly
+
                                     />
                                     {errorMessage.gst && (
                                         <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
@@ -888,7 +905,7 @@ function ProductDetails() {
                                         value={productDetails?.categoryName || ""}
                                         onChange={(e) => handleValueChange("categoryName", e)}
                                         placeholder="Enter Category"
-                                       readOnly
+                                        readOnly
 
                                     />
                                 </div>

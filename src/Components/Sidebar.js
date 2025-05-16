@@ -32,6 +32,7 @@ import PropTypes from 'prop-types';
 import ProductDetails from "../Pages/Product/ProductDetails";
 import InvoiceList from "../Pages/Invoice/InvoiceList";
 import AddInvoice from "../Pages/Invoice/AddInvoice";
+import InvoiceDetails from "../Pages/Invoice/InvoiceDetails";
 
 
 
@@ -275,6 +276,7 @@ function Sidebar({ state }) {
                         <Route path="/product-details/:productId" element={<ProductDetails />} />
                         <Route path="/invoice" element={<InvoiceList />} />
                         <Route path="/add-invoice" element={<AddInvoice />} />
+                        <Route path="/invoice-details/:invoiceId" element={<InvoiceDetails />} />
                         
                     </Routes>
 

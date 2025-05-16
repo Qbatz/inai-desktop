@@ -46,35 +46,20 @@ function ProductDetails() {
     const { productId } = useParams()
     const productDetails = state?.product?.particularProductList
     const scrollRef = useRef(null);
-
     const [previewImage, setPreviewImage] = useState(null);
 
+    console.log("previewImage",previewImage)
 
-
-
-    const [showAll, setShowAll] = useState(false);
-    const [showTechAll, setShowTechAll] = useState(false);
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState({});
 
-
-    const images = productDetails?.images ?? [];
-    const imagesToShow =  images 
-    
-
-
-    const techImages = productDetails?.technicaldocs ?? [];
-    const imagesToShowTech = showTechAll ? techImages : techImages.slice(0, 6);
-  
-
+    const imagesToShow = productDetails?.images ?? [];
+    const imagesToShowTech = productDetails?.technicaldocs ?? [];
     const [editingField, setEditingField] = useState(null);
     const [editedValue, setEditedValue] = useState("");
 
     const editableRef = useRef(null);
-
-
     const [containStates, setContainStates] = useState({});
-
     const [editedValues, setEditedValues] = useState({
         product_name: "",
         description: "",
@@ -84,11 +69,7 @@ function ProductDetails() {
         gst: "",
         manufacturing_year: "",
         origin_country: "",
-
     });
-
-
-
 
 
     const handleImageLoad = (e, index) => {
@@ -100,27 +81,10 @@ function ProductDetails() {
     };
 
 
-    
 
 
 
 
-    const handleEditClick = (fieldKey, currentValue) => {
-        setEditingField(fieldKey);
-        setEditedValue(currentValue || "");
-        setErrorMessage("");
-    };
-
-
-
-
-    const handleOutsideClick = (e) => {
-        if (editableRef.current && !editableRef.current.contains(e.target)) {
-            triggerUpdate();
-            setEditingField(null);
-            setErrorMessage({});
-        }
-    };
 
 
     const requiredFields = [
@@ -156,8 +120,6 @@ function ProductDetails() {
 
         const edited = editedValues?.[editingField]?.toString().trim() || "";
 
-        console.log("currentValue", currentValue, "editingField", editingField);
-
         if (edited === currentValue.toString().trim()) {
             setErrorMessage({
                 [editingField]: `No changes made to ${readableFieldName}`
@@ -191,7 +153,7 @@ function ProductDetails() {
     };
 
 
-    console.log("productDetails full object:", productDetails);
+
 
 
 
@@ -260,7 +222,6 @@ function ProductDetails() {
             if (["state", "origin_country", "manufacturing_year"].includes(field)) {
 
                 const key = fieldKeyMap[field] ?? field;
-                console.log("Checking key:", key, "value:", productDetails[key]);
                 let existingValue = productDetails[key] ?? "";
 
                 if (field === "manufacturing_year") {
@@ -276,7 +237,8 @@ function ProductDetails() {
                     }
                 }
 
-                console.log("existingValue", existingValue,);
+
+
 
                 if (existingValue.toString().trim() === value.toString().trim()) {
                     setErrorMessage({
@@ -299,7 +261,7 @@ function ProductDetails() {
         }
 
 
-       
+
     };
 
 
@@ -476,7 +438,7 @@ function ProductDetails() {
 
 
     useEffect(() => {
-        if (imagesToShow.length > 0 && !previewImage) {
+        if (imagesToShow.length > 0) {
             setPreviewImage(imagesToShow[0].url);
         }
     }, [imagesToShow]);
@@ -522,7 +484,8 @@ function ProductDetails() {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (editableRef.current && !editableRef.current.contains(event.target)) {
-                setErrorMessage({})
+                setEditingField(null);
+                setErrorMessage({});
                 if (editingField) {
                     triggerUpdate();
                 }
@@ -591,7 +554,7 @@ function ProductDetails() {
                                             className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
                                             value={productDetails?.productCode || "N/A"}
                                             readOnly
-                                            disabled
+                                          
 
                                         />
                                     </div>
@@ -707,7 +670,7 @@ function ProductDetails() {
                                         onChange={(e) => handleValueChange("currency", e)}
                                         placeholder="Enter Currency"
                                         readOnly
-                                        disabled
+                                     
 
                                     />
                                 </div>
@@ -750,7 +713,8 @@ function ProductDetails() {
                                         value={productDetails?.quantity || ""}
                                         onChange={(e) => handleValueChange("quantity", e)}
                                         placeholder="Enter Quantity"
-                                        disabled
+                                        readOnly
+                                       
 
 
                                     />
@@ -766,7 +730,9 @@ function ProductDetails() {
                                         onChange={(e) => handleValueChange("unit", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "unit")}
                                         placeholder="Enter Unit of Measurement"
-                                        disabled
+                                        readOnly
+                                        
+
 
                                     />
 
@@ -788,7 +754,7 @@ function ProductDetails() {
                                         value={productDetails?.weight || ""}
                                         readOnly
                                         placeholder="Enter Weight"
-                                        disabled
+                                                                          
 
                                     />
                                 </div>
@@ -870,7 +836,8 @@ function ProductDetails() {
                                         onChange={(e) => handleValueChange("gst", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "gst")}
                                         onBlur={() => setEditingField(null)}
-                                        disabled
+                                         readOnly
+                                        
                                     />
                                     {errorMessage.gst && (
                                         <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
@@ -889,7 +856,7 @@ function ProductDetails() {
                                         placeholder="Enter Serial Numbers"
                                         onChange={(e) => handleValueChange("serialNo", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "serialNo")}
-                                        disabled
+                                        readOnly
 
                                     />
                                     {errorMessage.serialNo && (
@@ -921,7 +888,7 @@ function ProductDetails() {
                                         value={productDetails?.categoryName || ""}
                                         onChange={(e) => handleValueChange("categoryName", e)}
                                         placeholder="Enter Category"
-                                        disabled
+                                       readOnly
 
                                     />
                                 </div>
@@ -934,7 +901,7 @@ function ProductDetails() {
                                         value={productDetails?.subCategoryName || ""}
                                         onChange={(e) => handleValueChange("subCategoryName", e)}
                                         placeholder="Enter Sub - Category"
-                                        disabled
+                                        readOnly
 
                                     />
                                 </div>
@@ -947,7 +914,7 @@ function ProductDetails() {
                                         value={productDetails?.brandName || ""}
                                         onChange={(e) => handleValueChange("brandName", e)}
                                         placeholder="Enter Brand"
-                                        disabled
+                                        readOnly
 
                                     />
                                 </div>

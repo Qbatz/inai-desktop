@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { GET_PARTICULAR_PRODUCT_SAGA, RESET_CODE, EDIT_PARTICULAR_PRODUCT_SAGA } from '../../Utils/Constant'
 import moment from "moment";
 import { Edit, DocumentDownload } from "iconsax-react";
-import Pdf from '../../Asset/Images/pdf.png'
+import Pdf from '../../Asset/Images/pdfImage.png'
 import WordIcon from '../../Asset/Images/doc.png';
 import { InfoCircle } from "iconsax-react";
 import Select from "react-select";
@@ -13,6 +13,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { CalendarDays } from "lucide-react";
 import PropTypes from 'prop-types';
+import { FaDownload } from "react-icons/fa6";
+import { GoDotFill } from "react-icons/go";
 function ProductDetails() {
 
 
@@ -22,7 +24,11 @@ function ProductDetails() {
     const dispatch = useDispatch()
     const state = useSelector(state => state)
     const { productId } = useParams()
-    const productDetails = state.product.particularProductList
+    const productDetails = state?.product?.particularProductList 
+
+
+
+    console.log("productDetails", productDetails)
     const [showAll, setShowAll] = useState(false);
     const [showTechAll, setShowTechAll] = useState(false);
     const [loading, setLoading] = useState(false)
@@ -32,6 +38,7 @@ function ProductDetails() {
     const images = productDetails?.images ?? [];
     const imagesToShow = showAll ? images : images.slice(0, 6);
     const hasMoreImages = images.length > 6;
+    const [techFilesWithSize, setTechFilesWithSize] = useState([]);
 
     const techImages = productDetails?.technicaldocs ?? [];
     const imagesToShowTech = showTechAll ? techImages : techImages.slice(0, 6);
@@ -62,12 +69,12 @@ function ProductDetails() {
         setShowTechAll(true);
     };
 
-
+    console.log("productId", productId)
 
     useEffect(() => {
         dispatch({ type: GET_PARTICULAR_PRODUCT_SAGA, payload: productId });
         setLoading(true)
-    }, []);
+    }, [productId]);
 
     useEffect(() => {
         if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
@@ -463,8 +470,10 @@ function ProductDetails() {
         }),
         singleValue: (base, state) => ({
             ...base,
-            color: state.data.value === '' ? 'oklch(70.8% 0 0)' : 'black'
+            color: state.data.value === '' ? 'oklch(70.8% 0 0)' : 'black',
+            fontSize: "16px",
         }),
+
         indicatorSeparator: () => ({
             display: 'none',
         }),
@@ -483,7 +492,7 @@ function ProductDetails() {
         >
             <input
                 type="text"
-                className="flex-1 font-Gilroy bg-transparent outline-none py-0.5 font-medium text-sm text-slate-500 placeholder-gray-400"
+                className="flex-1 font-Gilroy bg-transparent outline-none py-0.5 text-md font-semibold text-black placeholder-gray-400"
                 value={value}
                 placeholder={placeholder}
                 readOnly
@@ -493,6 +502,51 @@ function ProductDetails() {
     ));
 
     CustomInput.displayName = "CustomInput";
+
+
+
+
+    console.log("imagesToShowTech", imagesToShowTech)
+
+    const fetchFileSize = async (url) => {
+        try {
+            const response = await fetch(url, { method: 'HEAD' });
+            const size = response.headers.get('content-length');
+            return (size / (1024 * 1024)).toFixed(2); // in MB
+        } catch (err) {
+            console.error('Error fetching file size:', err);
+            return null;
+        }
+    };
+
+    useEffect(() => {
+        const fetchSizes = async () => {
+            const listToShow = showTechAll ? techImages : techImages.slice(0, 6);
+
+            const updatedFiles = await Promise.all(
+                listToShow.map(async (file) => {
+                    if (!file.size) {
+                        const size = await fetchFileSize(file.url);
+                        return { ...file, size };
+                    }
+                    return file;
+                })
+            );
+
+            setTechFilesWithSize(updatedFiles);
+        };
+
+        fetchSizes();
+    }, [techImages, showTechAll]);
+
+
+
+
+
+
+
+
+
     return (
         <div className="bg-blueGray-100  w-full">
             <div className="ps-3 pt-6 pe-3 flex flex-col" >
@@ -517,7 +571,7 @@ function ProductDetails() {
                                         <input
                                             ref={editableRef}
                                             className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                            value={productDetails.productName}
+                                            value={productDetails?.productName}
                                             onChange={(e) => handleValueChange("product_name", e)}
                                             placeholder="Enter Product Name"
                                             onKeyDown={(e) => handleKeyDown(e, "product_name")}
@@ -537,7 +591,7 @@ function ProductDetails() {
 
                                         <input
                                             className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                            value={productDetails.productCode || "N/A"}
+                                            value={productDetails?.productCode || "N/A"}
                                             readOnly
 
                                         />
@@ -549,7 +603,7 @@ function ProductDetails() {
                                             rows={4}
                                             ref={editableRef}
                                             className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                            value={productDetails.description || "N/A"}
+                                            value={productDetails?.description || "N/A"}
                                             placeholder="Enter Description"
                                             onChange={handleValueChange}
                                             onKeyDown={(e) => handleKeyDown(e, "description")}
@@ -573,7 +627,7 @@ function ProductDetails() {
                                 <div>
                                     <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Images </p>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4">
-                                        {imagesToShow.length > 0 ? imagesToShow.map((img, index) => {
+                                        {imagesToShow?.length > 0 ? imagesToShow.map((img, index) => {
                                             const isLastVisible = !showAll && index === 5;
                                             return (
                                                 <div
@@ -610,17 +664,7 @@ function ProductDetails() {
 
                             </div>
 
-
-
                         </div>
-
-
-
-
-
-
-
-
 
 
                         {/* images */}
@@ -718,12 +762,8 @@ function ProductDetails() {
                         </div> */}
                         {/* end */}
                         <div className='border border-[#D9D9D9 rounded-xl px-3 py-3 w-full mb-5'>
-
                             <label className='text-xl font-semibold mb-2 font-Gilroy text-[#222222]'>Pricing & Quantity</label>
-
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2 ">
-
-
 
                                 <div>
                                     <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Currency</p>
@@ -731,8 +771,8 @@ function ProductDetails() {
                                         type="text"
                                         className="text-md font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full focus:outline-none"
                                         value={
-                                            productDetails.currency
-                                                ? `${currencySymbols[productDetails.currency] || ''} ${productDetails.currency}`
+                                            productDetails?.currency
+                                                ? `${currencySymbols[productDetails?.currency] || ''} ${productDetails?.currency}`
                                                 : ""
                                         }
                                         onChange={(e) => handleValueChange("currency", e)}
@@ -748,7 +788,7 @@ function ProductDetails() {
                                     <input
                                         ref={editableRef}
                                         className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.price || "N/A"}
+                                        value={productDetails?.price || "N/A"}
                                         onChange={(e) => handleValueChange("price", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "price")}
                                         placeholder='Enter Price'
@@ -771,7 +811,7 @@ function ProductDetails() {
                                     <input
                                         type="text"
                                         className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.quantity || ""}
+                                        value={productDetails?.quantity || ""}
                                         onChange={(e) => handleValueChange("quantity", e)}
                                         placeholder="Enter Quantity"
                                     />
@@ -783,7 +823,7 @@ function ProductDetails() {
                                     <input
                                         ref={editableRef}
                                         className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.unit || "N/A"}
+                                        value={productDetails?.unit || "N/A"}
                                         onChange={(e) => handleValueChange("unit", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "unit")}
                                         placeholder="Enter Unit of Measurement"
@@ -804,7 +844,7 @@ function ProductDetails() {
                                     <input
                                         type="text"
                                         className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.weight || ""}
+                                        value={productDetails?.weight || ""}
                                         readOnly
                                         placeholder="Enter Weight"
                                     />
@@ -818,7 +858,7 @@ function ProductDetails() {
                                         type="text"
                                         placeholder="Enter Discount"
                                         className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.discount ?? ""}
+                                        value={productDetails?.discount ?? ""}
                                         onChange={(e) => handleValueChange("discount", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "discount")}
                                     />
@@ -850,7 +890,7 @@ function ProductDetails() {
                                     <input
                                         ref={editableRef}
                                         className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.hsnCode || "N/A"}
+                                        value={productDetails?.hsnCode || "N/A"}
                                         placeholder="Enter HSN"
                                         onChange={(e) => handleValueChange("hsn_code", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "hsn_code")}
@@ -868,7 +908,7 @@ function ProductDetails() {
                                     <input
                                         ref={editableRef}
                                         className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.gst || "N/A"}
+                                        value={productDetails?.gst || "N/A"}
                                         placeholder="Enter GST"
                                         onChange={(e) => handleValueChange("gst", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "gst")}
@@ -886,7 +926,7 @@ function ProductDetails() {
                                     <input
                                         ref={editableRef}
                                         className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={Array.isArray(productDetails.serialNo) ? productDetails.serialNo.join(", ") : "N/A"}
+                                        value={Array.isArray(productDetails?.serialNo) ? productDetails?.serialNo.join(", ") : "N/A"}
                                         placeholder="Enter Serial Numbers"
                                         onChange={(e) => handleValueChange("serialNo", e)}
                                         onKeyDown={(e) => handleKeyDown(e, "serialNo")}
@@ -917,7 +957,7 @@ function ProductDetails() {
                                     <input
                                         type="text"
                                         className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.categoryName || ""}
+                                        value={productDetails?.categoryName || ""}
                                         onChange={(e) => handleValueChange("categoryName", e)}
                                         placeholder="Enter Category"
                                     />
@@ -928,7 +968,7 @@ function ProductDetails() {
                                     <input
                                         type="text"
                                         className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.subCategoryName || ""}
+                                        value={productDetails?.subCategoryName || ""}
                                         onChange={(e) => handleValueChange("subCategoryName", e)}
                                         placeholder="Enter Sub - Category"
                                     />
@@ -939,7 +979,7 @@ function ProductDetails() {
                                     <input
                                         type="text"
                                         className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={productDetails.brandName || ""}
+                                        value={productDetails?.brandName || ""}
                                         onChange={(e) => handleValueChange("brandName", e)}
                                         placeholder="Enter Brand"
                                     />
@@ -951,7 +991,7 @@ function ProductDetails() {
                                     <div ref={editableRef}>
                                         <Select
                                             options={countryOptions}
-                                            value={countryOptions.find(option => option.value === productDetails.countryOfOrigin)}
+                                            value={countryOptions.find(option => option.value === productDetails?.countryOfOrigin)}
                                             onChange={(selectedOption) => handleValueChange("origin_country", selectedOption.value)}
                                             className="font-Gilroy text-sm w-auto"
                                             classNamePrefix="react-select"
@@ -974,8 +1014,8 @@ function ProductDetails() {
 
                                     <DatePicker
                                         selected={
-                                            productDetails.manufaturingYearAndMonth
-                                                ? new Date(productDetails.manufaturingYearAndMonth)
+                                            productDetails?.manufaturingYearAndMonth
+                                                ? new Date(productDetails?.manufaturingYearAndMonth)
                                                 : null
                                         }
                                         onChange={(date) =>
@@ -983,7 +1023,7 @@ function ProductDetails() {
                                         }
                                         dateFormat="MM/yyyy"
                                         showMonthYearPicker
-                                        className="cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full"
+                                        className="placeholder:oklch(70.8% 0 0) cursor-pointer font-Gilroy font-medium text-sm text-[#222222] w-full"
                                         placeholderText="Month and Year of Manufacture"
                                         customInput={<CustomInput ref={editableRef} />}
                                         wrapperClassName="w-full"
@@ -1005,7 +1045,7 @@ function ProductDetails() {
                                         <Select
                                             options={stateOptions}
                                             value={stateOptions.find(
-                                                (option) => option.value === productDetails.State
+                                                (option) => option.value === productDetails?.State
                                             )}
                                             onChange={(selectedOption) =>
                                                 handleValueChange("state", selectedOption.value)
@@ -1031,233 +1071,100 @@ function ProductDetails() {
 
                         </div>
 
-
-
-
-
-
-
-
-                        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-2 ">
-
-
-
-
-
-
-
-
-
-
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Discount </p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("discount", productDetails.discount)} /></span>
-
-                                </div>
-                                {editingField === "discount" ? (
-                                    <input ref={editableRef}
-                                        type="text"
-                                        placeholder='Enter Discount'
-                                        className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
-                                        value={editedValue}
-                                        onChange={handleValueChange}
-                                        onKeyDown={(e) => handleKeyDown(e, "discount")}
-                                        autoFocus
-                                    />
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
-                                        {productDetails.discount === "" || productDetails.discount === null || productDetails.discount === undefined
-                                            ? "N/A"
-                                            : productDetails.discount === "0" || productDetails.discount === 0
-                                                ? "0"
-                                                : `${productDetails.discount}%`}
-                                    </p>
-                                )}
-
-                                {errorMessage.discount && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.discount}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">HSN </p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("hsn_code", productDetails.hsnCode)} /></span>
-
-                                </div>
-                                {editingField === "hsn_code" ? (
-                                    <input ref={editableRef}
-                                        className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
-                                        value={editedValue}
-                                        placeholder='Enter HSN'
-                                        onChange={handleValueChange}
-                                        onKeyDown={(e) => handleKeyDown(e, "hsn_code")}
-                                        autoFocus
-                                    />
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.hsnCode || "N/A"}
-                                    </p>
-                                )}
-
-                                {errorMessage.hsn_code && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.hsn_code}
-                                    </p>
-                                )}
-
-
-                            </div>
-
-
-
-
-
-
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Country of Origin</p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("origin_country", productDetails.countryOfOrigin)} /></span>
-
-                                </div>
-                                {editingField === "origin_country" ? (
-
-                                    <div ref={editableRef}>
-                                        <Select
-                                            options={countryOptions}
-                                            value={countryOptions.find(option => option.value === editedValue)}
-                                            onChange={(selectedOption) => handleValueChange(null, selectedOption.value)}
-                                            className="font-Gilroy text-sm w-auto"
-                                            classNamePrefix="react-select"
-                                            placeholder="Enter Country of Origin"
-                                            styles={customSelectStyles}
-                                        />
-
-                                    </div>
-
-
-
-
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.countryOfOrigin || "N/A"}
-                                    </p>
-                                )}
-                                {errorMessage.origin_country && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.origin_country}
-                                    </p>
-                                )}
-
-                            </div>
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Month and Year of Manufacture</p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() =>
-                                        handleEditClick("manufacturing_year", productDetails.manufaturingYearAndMonth)
-                                    } /></span>
-
-                                </div>
-                                {editingField === "manufacturing_year" ? (
-
-                                    <DatePicker
-                                        selected={editedValue ? new Date(editedValue) : null}
-                                        onChange={(date) => handleValueChange({ target: { value: date } })}
-                                        dateFormat="MM/yyyy"
-                                        showMonthYearPicker
-                                        className="cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full"
-                                        placeholderText="Month and Year of Manufacture"
-                                        customInput={<CustomInput ref={editableRef} />}
-                                        wrapperClassName="w-full"
-                                        autoFocus
-                                    />
-
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.manufaturingYearAndMonth
-                                            ? moment(productDetails.manufaturingYearAndMonth).format("MMMM YYYY")
-                                            : "N/A"}
-                                    </p>
-                                )}
-                                {errorMessage.manufacturing_year && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.manufacturing_year}
-                                    </p>
-                                )}
-                            </div>
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">State</p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("state", productDetails.State)} /></span>
-
-                                </div>
-                                {editingField === "state" ? (
-
-                                    <div ref={editableRef}>
-                                        <Select
-                                            options={stateOptions}
-                                            value={stateOptions.find(option => option.value === editedValue)}
-                                            onChange={(selectedOption) => handleValueChange(null, selectedOption.value)}
-                                            className="mb-2 font-Gilroy text-sm w-auto"
-                                            classNamePrefix="react-select"
-                                            placeholder="Enter State"
-                                            styles={customSelectStyles}
-                                            autoFocus
-                                        />
-
-                                    </div>
-
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.State || "N/A"}
-                                    </p>
-                                )}
-                                {errorMessage.state && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.state}
-                                    </p>
-                                )}
-
-
-                            </div>
-
-
-
-                        </div> */}
-{
-    productDetails.additional_fields.length > 0 && 
-
-                        <div className='border border-[#D9D9D9 rounded-xl px-3 py-3 w-full mb-5'>
-
-                            <label className='text-xl font-semibold mb-2 font-Gilroy text-[#222222]'>Additional Fields</label>
+                        <div className='border border-[#D9D9D9] rounded-xl px-3 py-3 w-full mb-5'>
+                            <label className='text-xl font-semibold mb-2 font-Gilroy text-[#222222]'>Files & Documents</label>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
-                                {productDetails.additional_fields?.map((field, index) => (
-                                    <div key={index} className="mb-4">
-                                        <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B] capitalize">
-                                            {field.title}
-                                        </p>
-                                        <input
-                                            type="text"
-                                            value={field.value || ""}
-                                            // onChange={(e) => handleAdditionalFieldChange(index, e.target.value)}
-                                            className="text-md font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full capitalize"
-                                            placeholder={`Enter ${field.title}`}
-                                        />
-                                    </div>
-                                ))}
+                                {techFilesWithSize && techFilesWithSize.length > 0 ? (
+                                    techFilesWithSize.map((file, index) => {
+                                        const isPDF = file.url.endsWith('.pdf');
+                                        const isDoc = file.url.endsWith('.doc') || file.url.endsWith('.docx') || file.url.endsWith('.txt');
+                                        const fileType = isPDF ? 'PDF' : isDoc ? 'DOC' : 'Other';
+                                        const fileIcon = isPDF ? Pdf : isDoc ? WordIcon : Pdf;
+                                        const fileName = file.url.split('/').pop();
+                                        const fileSize = file.size ? `${file.size} MB` : '---';
+
+                                        return (
+                                            <div key={index} className='bg-[#F2F8FF] px-3 py-3 rounded-xl border border-[#F2F8FF]'>
+                                                <div className='bg-[#FFF] px-3 py-3 rounded-xl border border-[#F2F8FF]'>
+                                                    <div className='flex space-x-6 items-center'>
+                                                        <div>
+                                                            <div className='flex space-x-2 mb-2'>
+                                                                <img
+                                                                    src={fileIcon}
+                                                                    alt="File"
+                                                                    className="w-[30px] h-[30px] rounded-md"
+                                                                />
+
+                                                                <label
+                                                                    title={file.name || fileName}
+                                                                    className="truncate max-w-[150px] overflow-hidden whitespace-nowrap text-[#222] text-md font-Gilroy font-semibold"
+                                                                >
+                                                                    {file.name || fileName}
+                                                                </label>
+
+
+                                                            </div>
+
+                                                            <div className='flex space-x-6'>
+                                                                <label className='text-gray-500 text-sm font-Gilroy font-semibold'>
+                                                                    {file.pageCount || '---'} pages
+                                                                </label>
+
+                                                                <label className='flex  items-center text-gray-500 text-sm font-Gilroy font-semibold'>
+                                                                    <GoDotFill /> {fileSize}
+                                                                </label>
+
+                                                                <label className='flex  items-center text-gray-500 text-sm font-Gilroy font-semibold'>
+                                                                    <GoDotFill /> {fileType}
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <a href={file.url} download target="_blank" rel="noopener noreferrer">
+                                                            <FaDownload
+                                                                color="#222"
+                                                                variant="Bold"
+                                                                className='cursor-pointer'
+                                                            />
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <p className="text-red-600 font-Gilroy text-sm">No tech files available</p>
+                                )}
                             </div>
 
                         </div>
-}
+
+
+
+                        {Array.isArray(productDetails?.additional_fields) && productDetails.additional_fields.length > 0 && (
+                            <div className='border border-[#D9D9D9] rounded-xl px-3 py-3 w-full mb-5'>
+                                <label className='text-xl font-semibold mb-2 font-Gilroy text-[#222222]'>Additional Fields</label>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
+                                    {productDetails.additional_fields.map((field, index) => (
+                                        <div key={index} className="mb-4">
+                                            <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B] capitalize">
+                                                {field.title}
+                                            </p>
+                                            <input
+                                                type="text"
+                                                value={field.value || ""}
+                                                // onChange={(e) => handleAdditionalFieldChange(index, e.target.value)}
+                                                className="text-md font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full capitalize"
+                                                placeholder={`Enter ${field.title}`}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
                     </div>
 
 

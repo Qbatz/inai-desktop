@@ -42,7 +42,7 @@ CustomInput.propTypes = {
     value: PropTypes.string,
     onClick: PropTypes.func,
     placeholder: PropTypes.string,
-    className:PropTypes.string,
+    className: PropTypes.string,
 };
 
 function ProductDetails() {
@@ -54,7 +54,7 @@ function ProductDetails() {
     const scrollRef = useRef(null);
     const [previewImage, setPreviewImage] = useState(null);
 
-
+    const [fitStyles, setFitStyles] = useState({});
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState({});
 
@@ -76,12 +76,18 @@ function ProductDetails() {
         origin_country: "",
     });
 
-
-    const handleImageLoad = (e, index) => {
+    const handleImageLoad = (e, index, imageUrl) => {
         const { naturalWidth, naturalHeight } = e.target;
+        const fit = naturalHeight > naturalWidth ? "object-contain" : "object-cover";
+
         setContainStates(prev => ({
             ...prev,
             [index]: naturalHeight > naturalWidth
+        }));
+
+        setFitStyles(prev => ({
+            ...prev,
+            [imageUrl]: fit
         }));
     };
 
@@ -602,13 +608,15 @@ function ProductDetails() {
                                 <div className="w-full h-auto">
                                     <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Images</p>
                                     {previewImage && (
-                                        <div className="w-full h-[200px] mb-4 border border-gray-200 rounded-md flex items-center justify-center bg-white">
+                                        <div className="w-full h-[200px] mb-4  rounded-md flex items-center justify-center bg-white">
                                             <img
                                                 src={previewImage}
                                                 alt="Preview"
-                                                className="w-full h-full object-cover rounded-md "
+                                                onLoad={(e) => handleImageLoad(e, null, previewImage)}
+                                                className={`w-full h-[200px] rounded-md ${fitStyles[previewImage] || 'object-cover'}`}
                                             />
                                         </div>
+
                                     )}
 
                                     <div className="flex mt-2 gap-0 relative z-10">
@@ -826,7 +834,7 @@ function ProductDetails() {
                                         value={
                                             editingField === "hsn_code"
                                                 ? editedValues.hsn_code
-                                                : !productDetails?.hsnCode || productDetails?.hsnCode === "0" ||  productDetails?.hsnCode === ""
+                                                : !productDetails?.hsnCode || productDetails?.hsnCode === "0" || productDetails?.hsnCode === ""
                                                     ? "N/A"
                                                     : productDetails.hsnCode
                                         }
@@ -1033,7 +1041,6 @@ function ProductDetails() {
                                         const fileType = isPDF ? 'PDF' : isDoc ? 'DOC' : isImage ? 'Image' : 'Other';
                                         const fileIcon = isPDF ? Pdf : isDoc ? WordIcon : Pdf;
                                         const fileName = file.url.split('/').pop();
-                                        const fileSize = file.size ? `${file.size} MB` : '---';
 
                                         return (
                                             <div key={index} className='bg-[#F2F8FF] px-3 py-3 rounded-xl border border-[#F2F8FF] h-fit'>
@@ -1067,12 +1074,11 @@ function ProductDetails() {
 
                                                                 <div className='flex space-x-6'>
                                                                     <label className='text-gray-500 text-sm font-Gilroy font-semibold'>
-                                                                        {file.pageCount || '---'} pages
+                                                                        {10} pages
                                                                     </label>
 
                                                                     <label className='flex items-center text-gray-500 text-sm font-Gilroy font-semibold'>
-                                                                        <GoDotFill /> {fileSize}
-                                                                    </label>
+                                                                        <GoDotFill /> 20MB                                                                   </label>
 
                                                                     <label className='flex items-center text-gray-500 text-sm font-Gilroy font-semibold'>
                                                                         <GoDotFill /> {fileType}

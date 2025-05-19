@@ -14,7 +14,8 @@ import PropTypes from 'prop-types';
 import { FaDownload } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
 import { FaAngleLeft } from "react-icons/fa6";
-import { FaRegCalendarAlt } from "react-icons/fa";
+
+
 
 
 
@@ -37,7 +38,12 @@ const CustomInput = forwardRef(({ value, onClick, placeholder, className, ...res
         </div>
     );
 });
-
+CustomInput.propTypes = {
+    value: PropTypes.string,
+    onClick: PropTypes.func,
+    placeholder: PropTypes.string,
+    className:PropTypes.string,
+};
 
 function ProductDetails() {
 
@@ -48,7 +54,6 @@ function ProductDetails() {
     const scrollRef = useRef(null);
     const [previewImage, setPreviewImage] = useState(null);
 
-    console.log("previewImage", previewImage)
 
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState({});
@@ -500,7 +505,6 @@ function ProductDetails() {
     }, [editedValue, editingField, errorMessage, productDetails]);
 
 
-    console.log("productDetails", productDetails)
 
 
     return (
@@ -1032,7 +1036,7 @@ function ProductDetails() {
                                         const fileSize = file.size ? `${file.size} MB` : '---';
 
                                         return (
-                                            <div key={index} className='bg-[#F2F8FF] px-3 py-3 rounded-xl border border-[#F2F8FF]'>
+                                            <div key={index} className='bg-[#F2F8FF] px-3 py-3 rounded-xl border border-[#F2F8FF] h-fit'>
                                                 <div className='bg-[#FFF] px-3 py-3 rounded-xl border border-[#F2F8FF]'>
                                                     {isImage ? (
                                                         <div className='flex justify-center'>
@@ -1136,3 +1140,10 @@ ProductDetails.propTypes = {
     placeholder: PropTypes.string,
 };
 export default ProductDetails
+
+
+
+
+
+
+

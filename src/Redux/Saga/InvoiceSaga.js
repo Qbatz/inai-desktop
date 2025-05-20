@@ -23,6 +23,7 @@ import { GetPort, GetPaymentTerm, GetDeliveryTerm, GetAllInvoiceList, GetInvoice
 
 
 
+
 function* handleGetPort() {
     try {
         const response = yield call(GetPort)
@@ -113,7 +114,9 @@ function* handleGetAllInvoiceList(action) {
         const response = yield call(GetAllInvoiceList, action.payload)
         if (response.status === 200) {
 
+
             yield put({ type: GET_ALL_INVOICE_REDUCER, payload: { invoice: response.data } });
+
             yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message } });
         }
         else if (response.status === 201) {
@@ -136,6 +139,7 @@ function* handleGetAllInvoiceList(action) {
     }
 
 }
+
 
 
 function* handleGetSingleInvoiceList(action) {
@@ -178,12 +182,15 @@ function* handleGetSingleInvoiceList(action) {
 
 
 
+
 function* InvoiceSaga() {
     yield takeEvery(GET_PORT_SAGA, handleGetPort)
     yield takeEvery(GET_PAYMENT_TERM_SAGA, handleGetPaymentTerm)
     yield takeEvery(GET_DELIVERY_TERM_SAGA, handleGetDeliveryTerm)
     yield takeEvery(GET_ALL_INVOICE_SAGA, handleGetAllInvoiceList)
+
     yield takeEvery(GET_SINGLE_INVOICE_SAGA, handleGetSingleInvoiceList)
+
 
 }
 export default InvoiceSaga;

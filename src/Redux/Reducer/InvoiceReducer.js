@@ -1,5 +1,9 @@
 
+
 import { GET_PORT_REDUCER, GET_PAYMENT_TERM_REDUCER, GET_DELIVERY_TERM_REDUCER, GET_ALL_INVOICE_REDUCER, GET_SINGLE_INVOICE_REDUCER } from "../../Utils/Constant";
+
+
+
 
 
 export const initialState = {
@@ -8,6 +12,7 @@ export const initialState = {
     deliveryTermList: [],
     invoiceList: [],
     particularInvoiceList : [],
+
 
 
 }
@@ -25,8 +30,10 @@ const InvoiceReducer = (state = initialState, action) => {
             return { ...state, deliveryTermList: action.payload.response }
         case GET_ALL_INVOICE_REDUCER:
             return { ...state, invoiceList: action.payload.invoice, }
+
         case GET_SINGLE_INVOICE_REDUCER:
             return { ...state, particularInvoiceList: action.payload.invoice, }
+
         default:
             return state;
     }

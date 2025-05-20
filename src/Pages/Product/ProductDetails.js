@@ -1,11 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef, forwardRef, } from 'react';
+import React, { useState, useEffect, useRef, forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { GET_PARTICULAR_PRODUCT_SAGA, RESET_CODE, EDIT_PARTICULAR_PRODUCT_SAGA } from '../../Utils/Constant'
-import moment from "moment";
-import { Edit, DocumentDownload } from "iconsax-react";
-import Pdf from '../../Asset/Images/pdf.png'
+import Pdf from '../../Asset/Images/pdfImage.png'
 import WordIcon from '../../Asset/Images/doc.png';
 import { InfoCircle } from "iconsax-react";
 import Select from "react-select";
@@ -13,286 +11,89 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { CalendarDays } from "lucide-react";
 import PropTypes from 'prop-types';
+import { FaDownload } from "react-icons/fa6";
+import { GoDotFill } from "react-icons/go";
+import { FaAngleLeft } from "react-icons/fa6";
+
+
+
+
+
+const CustomInput = forwardRef(({ value, onClick, placeholder, className, ...rest }, ref) => {
+    return (
+        <div
+            ref={ref}
+            onClick={onClick}
+            className={`flex w-full font-Gilroy items-center border border-gray-300 rounded-xl px-3 py-3 text-md text-gray-700 cursor-pointer ${className || ''}`}
+            {...rest}
+        >
+            <input
+                type="text"
+                className="flex-1 font-Gilroy bg-transparent outline-none py-0.5 font-semibold text-sm text-[#222222] placeholder-gray-400 cursor-pointer"
+                value={value}
+                placeholder={placeholder}
+                readOnly
+            />
+            <CalendarDays className="text-gray-400 ml-2 shrink-0 cursor-pointer" size={18} />
+        </div>
+    );
+});
+CustomInput.propTypes = {
+    value: PropTypes.string,
+    onClick: PropTypes.func,
+    placeholder: PropTypes.string,
+    className: PropTypes.string,
+};
+
 function ProductDetails() {
-
-
-
-
 
     const dispatch = useDispatch()
     const state = useSelector(state => state)
     const { productId } = useParams()
-    const productDetails = state.product.particularProductList
-    const [showAll, setShowAll] = useState(false);
-    const [showTechAll, setShowTechAll] = useState(false);
+    const productDetails = state?.product?.particularProductList
+    const scrollRef = useRef(null);
+    const [previewImage, setPreviewImage] = useState(null);
+
+    const [fitStyles, setFitStyles] = useState({});
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState({});
 
-
-    const images = productDetails?.images ?? [];
-    const imagesToShow = showAll ? images : images.slice(0, 6);
-    const hasMoreImages = images.length > 6;
-
-    const techImages = productDetails?.technicaldocs ?? [];
-    const imagesToShowTech = showTechAll ? techImages : techImages.slice(0, 6);
-    const hasMoreTechImages = techImages.length > 6;
-
+    const imagesToShow = productDetails?.images ?? [];
+    const imagesToShowTech = productDetails?.technicaldocs ?? [];
     const [editingField, setEditingField] = useState(null);
     const [editedValue, setEditedValue] = useState("");
 
     const editableRef = useRef(null);
-
-
     const [containStates, setContainStates] = useState({});
+    const [editedValues, setEditedValues] = useState({
+        product_name: "",
+        description: "",
+        price: "",
+        discount: "",
+        hsn_code: "",
+        gst: "",
+        manufacturing_year: "",
+        origin_country: "",
+    });
 
-    const handleImageLoad = (e, index) => {
+    const handleImageLoad = (e, index, imageUrl) => {
         const { naturalWidth, naturalHeight } = e.target;
+        const fit = naturalHeight > naturalWidth ? "object-contain" : "object-cover";
+
         setContainStates(prev => ({
             ...prev,
             [index]: naturalHeight > naturalWidth
         }));
-    };
 
-
-    const handleSeeMoreProductImages = () => {
-        setShowAll(true);
-    };
-
-    const handleSeeMoreTechImages = () => {
-        setShowTechAll(true);
-    };
-
-
-
-    useEffect(() => {
-        dispatch({ type: GET_PARTICULAR_PRODUCT_SAGA, payload: productId });
-        setLoading(true)
-    }, []);
-
-    useEffect(() => {
-        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
-            setLoading(false)
-            setTimeout(() => {
-                dispatch({ type: RESET_CODE })
-            }, 1000)
-        }
-    }, [state.Common?.successCode, state.Common?.code]);
-
-
-    useEffect(() => {
-        if (state.Common?.editStatusCode === 200) {
-            dispatch({ type: GET_PARTICULAR_PRODUCT_SAGA, payload: productId });
-            setLoading(false)
-            setTimeout(() => {
-                dispatch({ type: RESET_CODE })
-            }, 1000)
-        }
-
-    }, [state.Common?.editStatusCode])
-
-    const handleEditClick = (fieldKey, currentValue) => {
-        setEditingField(fieldKey);
-        setEditedValue(currentValue || "");
-        setErrorMessage("");
+        setFitStyles(prev => ({
+            ...prev,
+            [imageUrl]: fit
+        }));
     };
 
 
 
 
-    useEffect(() => {
-        document.addEventListener('mousedown', handleOutsideClick);
-        return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
-        };
-    }, [editingField, editedValue, errorMessage]);
-
-    const handleOutsideClick = (e) => {
-        if (editableRef.current && !editableRef.current.contains(e.target)) {
-            triggerUpdate();
-            setEditingField(null);
-            setErrorMessage({});
-        }
-    };
-
-
-
-
-
-    const triggerUpdate = () => {
-        if (!editingField) return;
-
-        const fieldKeyMap = {
-            product_name: "productName",
-            description: "description",
-            price: "price",
-            discount: "discount",
-            hsn_code: "hsnCode",
-            origin_country: "countryOfOrigin",
-            manufacturing_year: "manufacturingYearAndMonth",
-            state: "State"
-        };
-
-        const currentValue = productDetails[fieldKeyMap[editingField]] || "";
-        const readableFieldName = fieldKeyMap[editingField] || editingField;
-
-
-        if (editedValue.trim() === currentValue.toString().trim()) {
-            setErrorMessage({
-                [editingField]: `No changes made to ${readableFieldName}`
-            });
-            return;
-        }
-
-        if (editedValue !== "" && Object.keys(errorMessage).length === 0) {
-            let finalValue = editedValue;
-
-            if (editingField === "manufacturing_year" && /^\d{8}$/.test(editedValue)) {
-                const year = editedValue.slice(0, 4);
-                const month = editedValue.slice(4, 6);
-                const day = editedValue.slice(6, 8);
-                finalValue = `${year}-${month}-${day}`;
-            }
-
-
-
-            dispatch({
-                type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                payload: {
-                    field: editingField,
-                    value: finalValue,
-                    uniqueProductCode: productDetails.uniqueProductCode
-                }
-            });
-
-            setLoading(true);
-            setEditingField(null);
-        }
-    };
-
-
-
-    const handleValueChange = (e, customValue = null) => {
-        let inputValue = customValue ?? e.target.value;
-
-
-        if (inputValue instanceof Date && editingField === "manufacturing_year") {
-            const year = inputValue.getFullYear();
-            const month = String(inputValue.getMonth() + 1).padStart(2, '0');
-            inputValue = `${year}-${month}`;
-        }
-
-
-        let value = typeof inputValue === 'string' ? inputValue : inputValue?.toString?.() ?? '';
-        let tempError = {};
-        let finalValue = value;
-
-        const fieldKey = fieldKeyMap[editingField] || editingField;
-        const currentValue = productDetails[fieldKey];
-
-        const readableFieldName = editingField.replace(/_/g, ' ');
-        const capitalizedField = readableFieldName.charAt(0).toUpperCase() + readableFieldName.slice(1);
-        setEditedValue(value);
-
-        if (editingField === "manufacturing_year") {
-            const trimmedValue = value.trim();
-
-            if (trimmedValue.length === 7 && /^\d{4}-\d{2}$/.test(trimmedValue)) {
-                if (trimmedValue === currentValue?.toString().trim()) {
-                    setErrorMessage({
-                        [editingField]: `No changes made to ${readableFieldName}`
-                    });
-                    return;
-                }
-
-                finalValue = trimmedValue;
-
-                dispatch({
-                    type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                    payload: {
-                        field: editingField,
-                        value: finalValue,
-                        uniqueProductCode: productDetails.uniqueProductCode
-                    }
-                });
-
-                setErrorMessage({});
-                setLoading(true);
-                setEditingField(null);
-                return;
-            } else {
-                tempError[editingField] = `${capitalizedField} must be in YYYY-MM format`;
-                setErrorMessage(tempError);
-                return;
-            }
-        }
-
-        else if (["price", "discount"].includes(editingField)) {
-            value = inputValue.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
-            const trimmedValue = value.trim();
-
-            if (trimmedValue === "" || isNaN(parseFloat(trimmedValue)) || !/^\d*\.?\d*$/.test(trimmedValue)) {
-                tempError[editingField] = `${capitalizedField} is required`;
-                setErrorMessage(tempError);
-                setEditedValue(trimmedValue);
-                return;
-            }
-
-            if (trimmedValue === currentValue?.toString().trim()) {
-                setErrorMessage({
-                    [editingField]: `No changes made to ${readableFieldName}`
-                });
-                return;
-            }
-
-            finalValue = trimmedValue;
-            setEditedValue(trimmedValue);
-        }
-
-        else if (editingField === "origin_country") {
-            value = inputValue.replace(/[^a-zA-Z\s]/g, '');
-            finalValue = value;
-
-            if (value.trim() === currentValue?.toString().trim()) {
-                setErrorMessage({
-                    [editingField]: `No changes made to ${readableFieldName}`
-                });
-                return;
-            }
-
-            setEditedValue(value);
-        }
-
-        if (requiredFields.includes(editingField)) {
-            const trimmed = value.trim();
-            if (trimmed === "") {
-                tempError[editingField] = `Enter the ${readableFieldName}`;
-                setErrorMessage(tempError);
-                setEditedValue(value);
-                return;
-            } else {
-                setErrorMessage(prev => {
-                    const newErr = { ...prev };
-                    delete newErr[editingField];
-                    return newErr;
-                });
-            }
-        }
-
-        if (["state", "origin_country", "manufacturing_year"].includes(editingField)) {
-            dispatch({
-                type: EDIT_PARTICULAR_PRODUCT_SAGA,
-                payload: {
-                    field: editingField,
-                    value: finalValue,
-                    uniqueProductCode: productDetails.uniqueProductCode
-                }
-            });
-
-            setLoading(true);
-            setEditingField(null);
-            return;
-        }
-    };
 
 
 
@@ -317,29 +118,183 @@ function ProductDetails() {
         discount: "discount",
         hsn_code: "hsnCode",
         origin_country: "countryOfOrigin",
-        manufacturing_year: "manufacturingYearAndMonth",
+        manufacturing_year: "manufaturingYearAndMonth",
         state: "State"
     };
 
-    const handleKeyDown = (e, fieldKey) => {
-        if (e.key === "Enter") {
-            let error = {};
 
-            if (!editedValue && requiredFields.includes(fieldKey)) {
+    const triggerUpdate = () => {
+        if (!editingField) return;
+
+        const currentValue = productDetails[fieldKeyMap[editingField]] || "";
+        const readableFieldName = fieldKeyMap[editingField] || editingField;
+
+        const edited = editedValues?.[editingField]?.toString().trim() || "";
+
+        if (edited === currentValue.toString().trim()) {
+            setErrorMessage({
+                [editingField]: `No changes made to ${readableFieldName}`
+            });
+            return;
+        }
+
+        if (edited !== "" && Object.keys(errorMessage).length === 0) {
+            let finalValue = edited;
+
+            if (editingField === "manufacturing_year" && /^\d{8}$/.test(edited)) {
+                const year = edited.slice(0, 4);
+                const month = edited.slice(4, 6);
+                const day = edited.slice(6, 8);
+                finalValue = `${year}-${month}-${day}`;
+            }
+
+
+            dispatch({
+                type: EDIT_PARTICULAR_PRODUCT_SAGA,
+                payload: {
+                    field: editingField,
+                    value: finalValue,
+                    uniqueProductCode: productDetails.uniqueProductCode
+                }
+            });
+
+            setLoading(true);
+            setEditingField(null);
+        }
+    };
+
+
+
+
+
+
+    const handleValueChange = (field, e, customValue = null) => {
+        setErrorMessage({})
+        let inputValue = customValue ?? e?.target?.value ?? '';
+
+        setEditingField(field);
+
+
+        if (inputValue instanceof Date && field === "manufacturing_year") {
+            const year = inputValue.getFullYear();
+            const month = String(inputValue.getMonth() + 1).padStart(2, '0');
+            inputValue = `${year}-${month}`;
+        }
+
+        let value = typeof inputValue === 'string' ? inputValue : String(inputValue ?? '');
+
+        const readableFieldName = field.replace(/_/g, ' ');
+        const capitalizedField = readableFieldName.charAt(0).toUpperCase() + readableFieldName.slice(1);
+
+
+        setEditedValues(prev => ({
+            ...prev,
+            [field]: value
+        }));
+
+
+        let tempError = { ...errorMessage };
+
+
+        if (requiredFields.includes(field) && value.trim() === "") {
+            tempError[field] = `Enter the ${readableFieldName}`;
+        } else {
+            delete tempError[field];
+        }
+
+
+        if (field === "manufacturing_year") {
+            if (!/^\d{4}-\d{2}$/.test(value.trim())) {
+                tempError[field] = `${capitalizedField} must be in YYYY-MM format`;
+            }
+        }
+
+        if (["price", "discount"].includes(field)) {
+            let cleanedValue = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+            setEditedValues(prev => ({
+                ...prev,
+                [field]: cleanedValue
+            }));
+            if (!cleanedValue || isNaN(cleanedValue)) {
+                tempError[field] = `${capitalizedField} is required and must be a valid number`;
+            }
+        }
+
+        if (field === "origin_country") {
+            let cleanedValue = value.replace(/[^a-zA-Z\s]/g, '');
+            setEditedValues(prev => ({
+                ...prev,
+                [field]: cleanedValue
+            }));
+        }
+
+        setErrorMessage(tempError);
+        if (Object.keys(tempError).length === 0) {
+            if (["state", "origin_country", "manufacturing_year"].includes(field)) {
+
+                const key = fieldKeyMap[field] ?? field;
+                let existingValue = productDetails[key] ?? "";
+
+                if (field === "manufacturing_year") {
+
+                    if (typeof existingValue === "string" && /^\d{4}-\d{2}-\d{2}T/.test(existingValue)) {
+                        existingValue = existingValue.slice(0, 7);
+                    }
+
+                    if (existingValue instanceof Date) {
+                        const year = existingValue.getFullYear();
+                        const month = String(existingValue.getMonth() + 1).padStart(2, '0');
+                        existingValue = `${year}-${month}`;
+                    }
+                }
+
+
+
+
+                if (existingValue.toString().trim() === value.toString().trim()) {
+                    setErrorMessage({
+                        [field]: `No changes made to ${capitalizedField}`
+                    });
+                    return;
+                }
+
+                dispatch({
+                    type: EDIT_PARTICULAR_PRODUCT_SAGA,
+                    payload: {
+                        field,
+                        value,
+                        uniqueProductCode: productDetails.uniqueProductCode
+                    }
+                });
+                setLoading(true);
+                setEditingField(null);
+            }
+        }
+
+
+
+    };
+
+
+
+    const handleKeyDown = (e, fieldKey, currentTypedValue) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+
+            let error = {};
+            const trimmedEdited = currentTypedValue?.toString().trim();
+
+            const actualKey = fieldKeyMap[fieldKey] || fieldKey;
+            const currentValue = productDetails[actualKey]?.toString().trim();
+
+
+            if (!trimmedEdited && requiredFields.includes(fieldKey)) {
                 error[fieldKey] = `Enter the ${fieldKey.replace(/_/g, ' ')}`;
                 setErrorMessage(prev => ({ ...prev, ...error }));
                 return;
             }
 
-            const actualKey = fieldKeyMap[fieldKey] || fieldKey;
-            const currentValue = productDetails[actualKey];
-
-
-
-            const trimmedEdited = editedValue?.toString().trim();
-            const trimmedCurrent = currentValue?.toString().trim();
-
-            if (trimmedEdited === (trimmedCurrent || "")) {
+            if (trimmedEdited === currentValue) {
                 setErrorMessage({
                     [fieldKey]: `No changes made to ${fieldKey.replace(/_/g, ' ')}`
                 });
@@ -352,7 +307,7 @@ function ProductDetails() {
                 type: EDIT_PARTICULAR_PRODUCT_SAGA,
                 payload: {
                     field: fieldKey,
-                    value: editedValue,
+                    value: trimmedEdited,
                     uniqueProductCode: productDetails.uniqueProductCode
                 }
             });
@@ -366,6 +321,8 @@ function ProductDetails() {
             });
         }
     };
+
+
 
 
 
@@ -415,10 +372,10 @@ function ProductDetails() {
         control: (base) => ({
             ...base,
             borderColor: '#D1D5DB',
-            borderRadius: '0.5rem',
+            borderRadius: '12px',
             boxShadow: 'none',
             cursor: 'pointer',
-            padding: '6px 1px',
+            padding: '8px 1px',
             minHeight: '46px',
             '&:hover': {
                 borderColor: '#D1D5DB',
@@ -463,8 +420,10 @@ function ProductDetails() {
         }),
         singleValue: (base, state) => ({
             ...base,
-            color: state.data.value === '' ? 'oklch(70.8% 0 0)' : 'black'
+            color: state.data.value === '' ? 'oklch(70.8% 0 0)' : 'black',
+            fontSize: "16px",
         }),
+
         indicatorSeparator: () => ({
             display: 'none',
         }),
@@ -475,28 +434,90 @@ function ProductDetails() {
         }),
     };
 
-    const CustomInput = forwardRef(({ value, onClick, placeholder }, ref) => (
-        <div
-            className="flex w-full font-Gilroy items-center border border-gray-300 rounded-md px-3 py-2.5 text-md text-gray-700 cursor-pointer"
-            onClick={onClick}
-            ref={ref}
-        >
-            <input
-                type="text"
-                className="flex-1 font-Gilroy bg-transparent outline-none py-0.5 font-medium text-sm text-slate-500 placeholder-gray-400"
-                value={value}
-                placeholder={placeholder}
-                readOnly
-            />
-            <CalendarDays className="text-gray-400 ml-2 shrink-0" size={18} />
-        </div>
-    ));
-
     CustomInput.displayName = "CustomInput";
+
+
+
+    const handleScrollToLeftPhotos = () => {
+        scrollRef.current?.scrollBy({ left: -500, behavior: 'smooth' });
+    };
+
+    const handleScrollToRightPhotos = () => {
+        scrollRef.current?.scrollBy({ left: 500, behavior: 'smooth' });
+    };
+
+
+
+    useEffect(() => {
+        if (imagesToShow.length > 0) {
+            setPreviewImage(imagesToShow[0].url);
+        }
+    }, [imagesToShow]);
+
+
+
+    useEffect(() => {
+        if (editingField && productDetails) {
+            setEditedValues((prev) => ({
+                ...prev,
+                [editingField]: productDetails[editingField]
+            }));
+        }
+    }, [editingField, productDetails]);
+
+
+    useEffect(() => {
+        dispatch({ type: GET_PARTICULAR_PRODUCT_SAGA, payload: productId });
+        setLoading(true)
+    }, [productId]);
+
+    useEffect(() => {
+        if (state.Common?.successCode === 200 || state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 1000)
+        }
+    }, [state.Common?.successCode, state.Common?.code]);
+
+
+    useEffect(() => {
+        if (state.Common?.editStatusCode === 200) {
+            dispatch({ type: GET_PARTICULAR_PRODUCT_SAGA, payload: productId });
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 1000)
+        }
+
+    }, [state.Common?.editStatusCode])
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (editableRef.current && !editableRef.current.contains(event.target)) {
+                setEditingField(null);
+                setErrorMessage({});
+                if (editingField) {
+                    triggerUpdate();
+                }
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [editedValue, editingField, errorMessage, productDetails]);
+
+
+
+
     return (
         <div className="bg-blueGray-100  w-full">
-            <div className="p-3  flex flex-col" >
-                <h1 className="text-xl font-semibold mb-2 font-Gilroy text-black sticky sticky top-0 bg-blueGray-100 z-10 ps-2">Product Detail</h1>
+
+            <div className="ps-3 pt-6 pe-3 flex flex-col" >
+                <h1 className="text-xl mb-3 font-semibold font-Gilroy text-black sticky sticky top-0 bg-blueGray-100 z-10 ps-2">Product Detail</h1>
 
 
                 <div className="p-6 bg-white  rounded-2xl relative ">
@@ -506,485 +527,608 @@ function ProductDetails() {
                         </div>
                     )}
                     <div className='lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-6  max-h-[460px] overflow-y-auto'>
-                        <div className="grid grid-cols-2 gap-8 mb-3 p-2">
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Images </p>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4">
-                                    {imagesToShow.length > 0 ? imagesToShow.map((img, index) => {
-                                        const isLastVisible = !showAll && index === 5;
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="relative   w-full h-[120px] cursor-pointer font-Gilroy border border-gray-200 rounded-md"
-                                                onClick={isLastVisible ? handleSeeMoreProductImages : undefined}
-                                            >
-                                                <img
-                                                    src={img.url}
-                                                    alt={`Product ${index}`}
-                                                    onLoad={(e) => handleImageLoad(e, index)}
-                                                    className={`rounded-md w-full h-full ${containStates[index] ? 'object-contain' : 'object-cover'}`}
-                                                />
 
 
-                                                {isLastVisible && hasMoreImages && (
-                                                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-md">
-                                                        <span className="text-white font-semibold text-lg">See More</span>
-                                                    </div>
-                                                )}
-                                            </div>
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-2 items-start">
+                            <div className=" md:col-span-7 w-full flex flex-col h-full">
+                                <div>
+                                    <div className='w-full mb-2 '>
+                                        <p className="text-sm font-normal mb-4 font-Gilroy text-[#4B4B4B]">Product Name</p>
+                                        <div ref={editableRef}>
+                                            <input
 
-                                        );
-                                    })
+                                                className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                                value={editingField === "product_name"
+                                                    ? editedValues.product_name
+                                                    : productDetails?.productName || ""
+                                                }
+                                                onChange={(e) => handleValueChange("product_name", e)}
+                                                placeholder="Enter Product Name"
+                                                onKeyDown={(e) => handleKeyDown(e, "product_name", e.target.value)}
+                                                onBlur={() => {
+                                                    setEditingField(null);
+                                                    setEditedValue('');
+                                                }}
+                                            />
+                                        </div>
+                                        {errorMessage.product_name && (
+                                            <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                {errorMessage.product_name}
+                                            </p>
+                                        )}
+                                    </div>
 
-                                        :
-                                        <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600">No product images available</label>
+                                    <div className='mb-2'>
+                                        <p className="text-sm font-normal mb-4 font-Gilroy text-[#4B4B4B]">Product Code </p>
+
+                                        <input
+                                            className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                            value={productDetails?.productCode || "N/A"}
+                                            readOnly
 
 
+                                        />
+                                    </div>
+                                    <div className='mb-2' >
+                                        <p className="text-sm font-normal mb-4 font-Gilroy text-[#4B4B4B]">Description</p>
 
-                                    }
+                                        <textarea
+                                            rows={5}
+                                            ref={editableRef}
+                                            className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                            value={
+                                                editingField === "description"
+                                                    ? editedValues.description
+                                                    : productDetails?.description || ""
+                                            }
+                                            onBlur={() => setEditingField(null)}
+                                            placeholder="Enter Description"
+                                            onChange={(e) => handleValueChange("description", e)}
+                                            onKeyDown={(e) => handleKeyDown(e, "description", e.target.value)}
+
+
+                                        />
+
+                                        {errorMessage.description && (
+                                            <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                                <InfoCircle size={14} color="#DC2626" />
+                                                {errorMessage.description}
+                                            </p>
+                                        )}
+                                    </div>
+
                                 </div>
                             </div>
 
 
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Tech Images </p>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4">
-                                    {imagesToShowTech.length > 0 ? imagesToShowTech?.map((img, index) => {
-                                        const isLastVisible = !showTechAll && index === 5;
-                                        const isPDF = img.url.endsWith(".pdf");
-                                        const isDoc = img.url.endsWith(".doc") || img.url.endsWith(".docx") || img.url.endsWith(".txt");
-                                        return (
-                                            <div
-                                                key={index}
-                                                className="relative w-full h-[120px] cursor-pointer font-Gilroy border border-gray-200 rounded-md group hover:bg-gray-800 hover:bg-opacity-30"
-                                                onClick={isLastVisible ? handleSeeMoreTechImages : undefined}
-                                            >
-                                                {isPDF ? (
-                                                    <a
-                                                        href={img.url}
-                                                        rel="noopener noreferrer"
-                                                        download
-                                                        className="w-full h-full flex flex-col items-center justify-center p-2 relative "
+                            <div className="col-span-5 w-full flex flex-col h-full">
+
+
+                                <div className="w-full h-auto">
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Images</p>
+                                    {previewImage && (
+                                        <div className="w-full h-[200px] mb-4  rounded-md flex items-center justify-center bg-white">
+                                            <img
+                                                src={previewImage}
+                                                alt="Preview"
+                                                onLoad={(e) => handleImageLoad(e, null, previewImage)}
+                                                className={`w-full h-[200px] rounded-md ${fitStyles[previewImage] || 'object-cover'}`}
+                                            />
+                                        </div>
+
+                                    )}
+
+                                    <div className="flex mt-2 gap-0 relative z-10">
+
+                                        {imagesToShow.length > 2 && (
+                                            <div onClick={handleScrollToLeftPhotos} className="absolute left-[0px] top-1/2 -translate-y-1/2 z-20 p-1 bg-opacity-90 bg-white rounded-full">
+                                                <FaAngleLeft className="w-6 h-6 cursor-pointer text-[#205DA8]" alt="prev" />
+                                            </div>
+                                        )}
+
+                                        <div
+                                            ref={scrollRef}
+                                            className="flex flex-row items-center min-w-[100px]   overflow-x-scroll pg-red-100"
+                                        >
+                                            <div className="bg-white flex flex-row  gap-4 ">
+                                                {imagesToShow.map((img, index) => {
+                                                    const isSelected = previewImage === img.url;
+                                                    return <div
+                                                        key={index} onClick={() => setPreviewImage(img.url)}
+                                                        className="relative min-w-[140px] h-[140px]   cursor-pointer font-Gilroy border border-gray-200 rounded-md"
                                                     >
-                                                        <img
-                                                            src={Pdf}
-                                                            alt="PDF"
-                                                            className="w-[100px] h-[120px] object-cover rounded-md"
-                                                        />
-                                                        <span className="hidden group-hover:flex items-center justify-center p-2 rounded-full bg-white bg-opacity-70 absolute top-2 right-2">
-                                                            <DocumentDownload
-                                                                size="24"
-                                                                color="#205DA8"
-                                                                variant="Bold"
-                                                                className='cursor-pointer'
-                                                            />
-                                                        </span>
-                                                    </a>
-                                                ) : isDoc ? (
-                                                    <a
-                                                        href={img.url}
-                                                        rel="noopener noreferrer"
-                                                        download
-                                                        className="w-full h-full flex flex-col items-center justify-center p-2 relative"
-                                                    >
-                                                        <img
-                                                            src={WordIcon}
-                                                            alt="DOC File"
-                                                            className="w-[100px] h-[120px] object-contain rounded-md "
-                                                        />
-                                                        <p className="absolute bottom-1 text-xs text-black text-center truncate w-[90%] bg-white bg-opacity-80 px-1 rounded">{img.name}</p>
-                                                        <span className="hidden group-hover:flex items-center justify-center p-2 rounded-full bg-white bg-opacity-70 absolute top-2 right-2">
-                                                            <DocumentDownload
-                                                                size="24"
-                                                                color="#205DA8"
-                                                                variant="Bold"
-                                                                className='cursor-pointer'
-                                                            />
-                                                        </span>
-                                                    </a>
-                                                ) : (
-                                                    <div className="relative w-full h-full">
                                                         <img
                                                             src={img.url}
                                                             alt={`Product ${index}`}
-                                                            className="w-full h-[120px] object-cover rounded-md"
+                                                            onLoad={(e) => handleImageLoad(e, index)}
+                                                            className={`rounded-md w-full h-full ${containStates[index] ? 'object-contain' : 'object-cover'}`}
                                                         />
+                                                        {!isSelected && (
+                                                            <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-50 rounded-md pointer-events-none" />
+                                                        )}
                                                     </div>
-                                                )}
-
-
-                                                {isLastVisible && hasMoreTechImages && (
-                                                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-md">
-                                                        <span className="text-white font-semibold text-lg">See More</span>
-                                                    </div>
-                                                )}
+                                                })}
                                             </div>
+                                        </div>
 
 
-                                        );
-                                    })
-                                        :
-
-
-                                        <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600">No tech images available</label>
-
-
-
-                                    }
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12 p-2 ">
-
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Code </p>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap ">{productDetails.productCode || "N/A"}</p>
-                            </div>
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Product Name</p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("product_name", productDetails.productName)} /></span>
+                                        {imagesToShow.length > 2 && (
+                                            <div onClick={handleScrollToRightPhotos} className=" absolute right-[0px] top-1/2 -translate-y-1/2 z-20 p-1 bg-opacity-90 bg-white rounded-full ">
+                                                <FaAngleLeft className="w-6 h-6 rotate-180 cursor-pointer text-[#205DA8]" alt="prev" />
+                                            </div>
+                                        )}
+                                    </div>
 
                                 </div>
-                                {editingField === "product_name" ? (
-                                    <input ref={editableRef}
-                                        className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
-                                        value={editedValue}
-                                        onChange={handleValueChange}
-                                        placeholder='Enter Product Name'
-                                        onKeyDown={(e) => handleKeyDown(e, "product_name")}
-                                        autoFocus
-                                    />
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.productName || "N/A"}
-                                    </p>
-                                )}
-                                {errorMessage.product_name && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.product_name}
-                                    </p>
-                                )}
-                            </div>
 
-
-                        </div>
-
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-12 p-2 ">
-
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Description </p>
-                                    <span className='flex mb-2 cursor-pointer'>
-                                        <Edit size="16" color="#205DA8" onClick={() => handleEditClick("description", productDetails.description)} /></span>
-
-                                </div>
-                                {editingField === "description" ? (
-                                    <input ref={editableRef}
-                                        className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-[500px]"
-                                        value={editedValue}
-                                        placeholder='Enter Description'
-                                        onChange={handleValueChange}
-                                        onKeyDown={(e) => handleKeyDown(e, "description")}
-                                        autoFocus
-                                    />
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222]  capitalize">
-                                        {productDetails.description || "N/A"}
-                                    </p>
-                                )}
-
-                                {errorMessage.description && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.description}
-                                    </p>
-                                )}
                             </div>
 
                         </div>
 
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-2 ">
+                        <div className='border border-[#D9D9D9 rounded-xl px-3 py-3 w-full mb-5'>
+                            <label className='text-xl font-semibold mb-2 font-Gilroy text-[#222222]'>Pricing & Quantity</label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2 ">
 
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Available Quantity  </p>
-
-                                </div>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.quantity || "N/A"}</p>
-                            </div>
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Unit of Measurement </p>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.unit || "N/A"}</p>
-                            </div>
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Price </p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("price", productDetails.price)} /></span>
-
-                                </div>
-                                {editingField === "price" ? (
-                                    <input ref={editableRef}
-                                        className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
-                                        value={editedValue}
-                                        onChange={handleValueChange}
-                                        onKeyDown={(e) => handleKeyDown(e, "price")}
-                                        placeholder='Enter Price'
-                                        autoFocus
-                                    />
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.price || "N/A"}
-                                    </p>
-                                )}
-
-                                {errorMessage.price && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.price}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Currency </p>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
-                                    {productDetails.currency ? `${currencySymbols[productDetails.currency] || ''} ${productDetails.currency}` : "N/A"}
-                                </p>
-                            </div>
-
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Weight </p>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.weight || "N/A"}</p>
-                            </div>
-
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Discount </p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("discount", productDetails.discount)} /></span>
-
-                                </div>
-                                {editingField === "discount" ? (
-                                    <input ref={editableRef}
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Currency</p>
+                                    <input
                                         type="text"
-                                        placeholder='Enter Discount'
-                                        className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
-                                        value={editedValue}
-                                        onChange={handleValueChange}
-                                        onKeyDown={(e) => handleKeyDown(e, "discount")}
-                                        autoFocus
+                                        className="text-md font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full focus:outline-none"
+                                        value={
+                                            productDetails?.currency
+                                                ? `${currencySymbols[productDetails?.currency] || ''} ${productDetails?.currency}`
+                                                : ""
+                                        }
+                                        onChange={(e) => handleValueChange("currency", e)}
+                                        placeholder="Enter Currency"
+                                        readOnly
+
+
                                     />
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
-                                        {productDetails.discount === "" || productDetails.discount === null || productDetails.discount === undefined
-                                            ? "N/A"
-                                            : productDetails.discount === "0" || productDetails.discount === 0
-                                                ? "0"
-                                                : `${productDetails.discount}%`}
-                                    </p>
-                                )}
-
-                                {errorMessage.discount && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.discount}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">HSN </p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("hsn_code", productDetails.hsnCode)} /></span>
-
                                 </div>
-                                {editingField === "hsn_code" ? (
-                                    <input ref={editableRef}
-                                        className=" placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-fit"
-                                        value={editedValue}
-                                        placeholder='Enter HSN'
-                                        onChange={handleValueChange}
-                                        onKeyDown={(e) => handleKeyDown(e, "hsn_code")}
-                                        autoFocus
+                                <div>
+                                    <div className='flex items-center space-x-3'>
+                                        <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Price Per Unit</p>
+                                    </div>
+
+                                    <input
+                                        ref={editableRef}
+                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+
+                                        value={
+                                            editingField === "price"
+                                                ? editedValues.price
+                                                : productDetails?.currency
+                                                    ? `${currencySymbols[productDetails.currency] || ''} ${productDetails.price || ''}`
+                                                    : productDetails?.price || ''
+                                        }
+
+                                        onChange={(e) => handleValueChange("price", e)}
+                                        onKeyDown={(e) => handleKeyDown(e, "price", e.target.value)}
+                                        placeholder='Enter Price'
+                                        onBlur={() => setEditingField(null)}
+
                                     />
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.hsnCode || "N/A"}
-                                    </p>
-                                )}
 
-                                {errorMessage.hsn_code && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.hsn_code}
-                                    </p>
-                                )}
+                                    {errorMessage.price && (
+                                        <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                            <InfoCircle size={14} color="#DC2626" />
+                                            {errorMessage.price}
+                                        </p>
+                                    )}
+                                </div>
+
+
+                                <div>
+                                    <div className='flex items-center space-x-3'>
+                                        <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Available Quantity</p>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={
+                                            productDetails?.quantity && productDetails.quantity !== "0"
+                                                ? productDetails.quantity
+                                                : "N/A"
+                                        }
+                                        onChange={(e) => handleValueChange("quantity", e)}
+                                        placeholder="Enter Quantity"
+                                        readOnly
+                                    />
+                                </div>
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Unit of Measurement</p>
+
+                                    <input
+                                        ref={editableRef}
+                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={productDetails?.unit || "N/A"}
+                                        onChange={(e) => handleValueChange("unit", e)}
+                                        onKeyDown={(e) => handleKeyDown(e, "unit")}
+                                        placeholder="Enter Unit of Measurement"
+                                        readOnly
+
+
+
+                                    />
+
+                                    {errorMessage.unit && (
+                                        <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                            <InfoCircle size={14} color="#DC2626" />
+                                            {errorMessage.unit}
+                                        </p>
+                                    )}
+                                </div>
+
+
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Total Weight</p>
+                                    <input
+                                        type="text"
+                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={
+                                            productDetails?.weight && productDetails.weight !== "0"
+                                                ? productDetails.weight
+                                                : "N/A"
+                                        }
+
+                                        readOnly
+                                        placeholder="Enter Weight"
+
+
+                                    />
+                                </div>
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Discount</p>
+
+                                    <input
+                                        ref={editableRef}
+                                        type="text"
+                                        placeholder="Enter Discount"
+                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={
+                                            editingField === "discount"
+                                                ? editedValues.discount
+                                                : productDetails?.discount === "0"
+                                                    ? "N/A"
+                                                    : productDetails?.discount ?? "N/A"
+                                        }
+
+                                        onChange={(e) => handleValueChange("discount", e)}
+                                        onKeyDown={(e) => handleKeyDown(e, "discount", e.target.value)}
+                                        onBlur={() => setEditingField(null)}
+                                    />
+
+                                    {errorMessage.discount && (
+                                        <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                            <InfoCircle size={14} color="#DC2626" />
+                                            {errorMessage.discount}
+                                        </p>
+                                    )}
+                                </div>
 
 
                             </div>
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">GST</p>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">
-                                    {productDetails.gst ? `${productDetails.gst}%` : "N/A"}
-                                </p>
+
+                        </div>
+
+
+
+
+                        <div className='border border-[#D9D9D9 rounded-xl px-3 py-3 w-full mb-5'>
+
+                            <label className='text-xl font-semibold mb-2 font-Gilroy text-[#222222]'>Tax & Product Identification</label>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2 ">
+
+                                <div className="w-full">
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">HSN</p>
+                                    <input
+                                        ref={editableRef}
+                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={
+                                            editingField === "hsn_code"
+                                                ? editedValues.hsn_code
+                                                : !productDetails?.hsnCode || productDetails?.hsnCode === "0" || productDetails?.hsnCode === ""
+                                                    ? "N/A"
+                                                    : productDetails.hsnCode
+                                        }
+                                        placeholder="Enter HSN"
+                                        onChange={(e) => handleValueChange("hsn_code", e)}
+                                        onKeyDown={(e) => handleKeyDown(e, "hsn_code", e.target.value)}
+                                        onBlur={() => setEditingField(null)}
+                                    />
+                                    {errorMessage.hsn_code && (
+                                        <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                            <InfoCircle size={14} color="#DC2626" />
+                                            {errorMessage.hsn_code}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">GST %</p>
+                                    <input
+                                        ref={editableRef}
+                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={
+                                            editingField === "gst"
+                                                ? editedValues.gst
+                                                : productDetails?.gst ?? "N/A"
+                                        }
+                                        placeholder="Enter GST"
+                                        onChange={(e) => handleValueChange("gst", e)}
+                                        onKeyDown={(e) => handleKeyDown(e, "gst")}
+                                        onBlur={() => setEditingField(null)}
+                                        readOnly
+
+                                    />
+                                    {errorMessage.gst && (
+                                        <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                            <InfoCircle size={14} color="#DC2626" />
+                                            {errorMessage.gst}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Serial No</p>
+                                    <input
+                                        ref={editableRef}
+                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={Array.isArray(productDetails?.serialNo) ? productDetails?.serialNo.join(", ") : "N/A"}
+                                        placeholder="Enter Serial Numbers"
+                                        onChange={(e) => handleValueChange("serialNo", e)}
+                                        onKeyDown={(e) => handleKeyDown(e, "serialNo")}
+                                        readOnly
+
+                                    />
+                                    {errorMessage.serialNo && (
+                                        <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                            <InfoCircle size={14} color="#DC2626" />
+                                            {errorMessage.serialNo}
+                                        </p>
+                                    )}
+                                </div>
+
+
+
                             </div>
 
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Serial No</p>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                    {Array.isArray(productDetails.serialNo) && productDetails.serialNo.length > 0
-                                        ? productDetails.serialNo.join(", ")
-                                        : "N/A"}
-                                </p>
-                            </div>
+                        </div>
 
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Category</p>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap">{productDetails.categoryName || "N/A"}</p>
-                            </div>
+                        <div className='border border-[#D9D9D9 rounded-xl px-3 py-3 w-full mb-5'>
 
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Sub - Category</p>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">{productDetails.subCategoryName || "N/A"}</p>
-                            </div>
+                            <label className='text-xl font-semibold mb-2 font-Gilroy text-[#222222]'>Others</label>
 
-                            <div>
-                                <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Brand</p>
-                                <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">{productDetails.brandName || "N/A"}</p>
-                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2 ">
 
-                            <div>
-                                <div className='flex items-center space-x-3'>
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Category</p>
+                                    <input
+                                        type="text"
+                                        className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={productDetails?.categoryName || ""}
+                                        onChange={(e) => handleValueChange("categoryName", e)}
+                                        placeholder="Enter Category"
+                                        readOnly
+
+                                    />
+                                </div>
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Sub - Category</p>
+                                    <input
+                                        type="text"
+                                        className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={productDetails?.subCategoryName || ""}
+                                        onChange={(e) => handleValueChange("subCategoryName", e)}
+                                        placeholder="Enter Sub - Category"
+                                        readOnly
+
+                                    />
+                                </div>
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Brand</p>
+                                    <input
+                                        type="text"
+                                        className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
+                                        value={productDetails?.brandName || ""}
+                                        onChange={(e) => handleValueChange("brandName", e)}
+                                        placeholder="Enter Brand"
+                                        readOnly
+
+                                    />
+                                </div>
+
+                                <div>
                                     <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Country of Origin</p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("origin_country", productDetails.countryOfOrigin)} /></span>
-
-                                </div>
-                                {editingField === "origin_country" ? (
 
                                     <div ref={editableRef}>
                                         <Select
                                             options={countryOptions}
-                                            value={countryOptions.find(option => option.value === editedValue)}
-                                            onChange={(selectedOption) => handleValueChange(null, selectedOption.value)}
+                                            value={countryOptions.find(option => option.value === productDetails?.countryOfOrigin)}
+                                            onChange={(selectedOption) => handleValueChange("origin_country", null, selectedOption.value)}
                                             className="font-Gilroy text-sm w-auto"
                                             classNamePrefix="react-select"
                                             placeholder="Enter Country of Origin"
                                             styles={customSelectStyles}
                                         />
-
                                     </div>
 
-
-
-
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.countryOfOrigin || "N/A"}
-                                    </p>
-                                )}
-                                {errorMessage.origin_country && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.origin_country}
-                                    </p>
-                                )}
-
-                            </div>
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Month and Year of Manufacture</p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() =>
-                                        handleEditClick("manufacturing_year", productDetails.manufaturingYearAndMonth)
-                                    } /></span>
-
+                                    {errorMessage.origin_country && (
+                                        <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                            <InfoCircle size={14} color="#DC2626" />
+                                            {errorMessage.origin_country}
+                                        </p>
+                                    )}
                                 </div>
-                                {editingField === "manufacturing_year" ? (
+
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Month and Year of Manufacture</p>
+
 
                                     <DatePicker
-                                        selected={editedValue ? new Date(editedValue) : null}
-                                        onChange={(date) => handleValueChange({ target: { value: date } })}
+                                        selected={productDetails?.manufaturingYearAndMonth}
+                                        onChange={(date) => handleValueChange("manufacturing_year", null, date)}
                                         dateFormat="MM/yyyy"
                                         showMonthYearPicker
-                                        className="cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full"
+                                        showFullMonthYearPicker={true}
                                         placeholderText="Month and Year of Manufacture"
-                                        customInput={<CustomInput ref={editableRef} />}
+                                        customInput={<CustomInput placeholder="Month and Year of Manufacture" />}
                                         wrapperClassName="w-full"
-                                        autoFocus
                                     />
-                                  
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.manufaturingYearAndMonth
-                                            ? moment(productDetails.manufaturingYearAndMonth).format("MMMM YYYY")
-                                            : "N/A"}
-                                    </p>
-                                )}
-                                {errorMessage.manufacturing_year && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.manufacturing_year}
-                                    </p>
-                                )}
-                            </div>
-                            <div>
-                                <div className='flex items-center space-x-3'>
-                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">State</p>
-                                    <span className='flex mb-2 cursor-pointer'> <Edit size="16" color="#205DA8" onClick={() => handleEditClick("state", productDetails.State)} /></span>
 
+
+                                    {errorMessage.manufacturing_year && (
+                                        <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                            <InfoCircle size={14} color="#DC2626" />
+                                            {errorMessage.manufacturing_year}
+                                        </p>
+                                    )}
                                 </div>
-                                {editingField === "state" ? (
+
+                                <div>
+                                    <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">State</p>
 
                                     <div ref={editableRef}>
                                         <Select
                                             options={stateOptions}
-                                            value={stateOptions.find(option => option.value === editedValue)}
-                                            onChange={(selectedOption) => handleValueChange(null, selectedOption.value)}
+                                            value={stateOptions.find(
+                                                (option) => option.value === productDetails?.State
+                                            )}
+                                            onChange={(selectedOption) =>
+                                                handleValueChange("state", null, selectedOption.value)
+                                            }
                                             className="mb-2 font-Gilroy text-sm w-auto"
                                             classNamePrefix="react-select"
                                             placeholder="Enter State"
                                             styles={customSelectStyles}
-                                            autoFocus
-                                        />
 
+                                        />
                                     </div>
 
-                                ) : (
-                                    <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                        {productDetails.State || "N/A"}
-                                    </p>
-                                )}
-                                {errorMessage.state && (
-                                    <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
-                                        <InfoCircle size={14} color="#DC2626" />
-                                        {errorMessage.state}
-                                    </p>
-                                )}
+                                    {errorMessage.state && (
+                                        <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
+                                            <InfoCircle size={14} color="#DC2626" />
+                                            {errorMessage.state}
+                                        </p>
+                                    )}
+                                </div>
 
 
                             </div>
 
+                        </div>
+
+                        <div className='border border-[#D9D9D9] rounded-xl px-3 py-3 w-full mb-5'>
+                            <label className='text-xl font-semibold mb-2 font-Gilroy text-[#222222]'>Files & Documents</label>
+
+                            <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
+                                {imagesToShowTech && imagesToShowTech.length > 0 ? (
+                                    imagesToShowTech.map((file, index) => {
+                                        const isPDF = file.url.endsWith('.pdf');
+                                        const isDoc = file.url.endsWith('.doc') || file.url.endsWith('.docx') || file.url.endsWith('.txt');
+                                        const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(file.url);
+                                        const fileType = isPDF ? 'PDF' : isDoc ? 'DOC' : isImage ? 'Image' : 'Other';
+                                        const fileIcon = isPDF ? Pdf : isDoc ? WordIcon : Pdf;
+                                        const fileName = file.url.split('/').pop();
+
+                                        return (
+                                            <div key={index} className='bg-[#F2F8FF] px-3 py-3 rounded-xl border border-[#F2F8FF] h-fit'>
+                                                <div className='bg-[#FFF] px-3 py-3 rounded-xl border border-[#F2F8FF]'>
+                                                    {isImage ? (
+                                                        <div className='flex justify-center'>
+
+                                                            <img
+                                                                src={file.url}
+                                                                alt="Preview"
+                                                                className="w-full h-[100px] object-contain rounded-md"
+                                                            />
+
+                                                        </div>
+                                                    ) : (
+                                                        <div className='flex space-x-6 items-center flex-wrap'>
+                                                            <div>
+                                                                <div className='flex space-x-2 mb-2'>
+                                                                    <img
+                                                                        src={fileIcon}
+                                                                        alt="File"
+                                                                        className="w-[30px] h-[30px] rounded-md"
+                                                                    />
+                                                                    <label
+                                                                        title={file.name || fileName}
+                                                                        className="truncate max-w-[150px] overflow-hidden whitespace-nowrap text-[#222] text-md font-Gilroy font-semibold"
+                                                                    >
+                                                                        {file.name || fileName}
+                                                                    </label>
+                                                                </div>
+
+                                                                <div className='flex space-x-6'>
+                                                                    <label className='text-gray-500 text-sm font-Gilroy font-semibold'>
+                                                                        {10} pages
+                                                                    </label>
+
+                                                                    <label className='flex items-center text-gray-500 text-sm font-Gilroy font-semibold'>
+                                                                        <GoDotFill /> 20MB                                                                   </label>
+
+                                                                    <label className='flex items-center text-gray-500 text-sm font-Gilroy font-semibold'>
+                                                                        <GoDotFill /> {fileType}
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+
+                                                            <a href={file.url} download target="_blank" rel="noopener noreferrer">
+                                                                <FaDownload
+                                                                    color="#222"
+                                                                    className='cursor-pointer'
+                                                                />
+                                                            </a>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <p className="text-red-600 font-Gilroy text-sm">No tech files available</p>
+                                )}
+                            </div>
 
 
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-12 p-2 ">
-                            {productDetails.additional_fields?.map((field, index) => (
-                                field.value && field.value.toString().trim().length > 0 && (
-                                    <div key={index} className="mb-4 ">
-                                        <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B] capitalize">{field.title}</p>
-                                        <p className="text-md font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize">
-                                            {field.value}
-                                        </p>
-                                    </div>
-                                )
-                            ))}
 
-                        </div>
 
+                        {Array.isArray(productDetails?.additional_fields) && productDetails.additional_fields.length > 0 && (
+                            <div className='border border-[#D9D9D9] rounded-xl px-3 py-3 w-full mb-5'>
+                                <label className='text-xl font-semibold mb-2 font-Gilroy text-[#222222]'>Additional Fields</label>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-2">
+                                    {productDetails.additional_fields.map((field, index) => (
+                                        <div key={index} className="mb-4">
+                                            <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B] capitalize">
+                                                {field.title}
+                                            </p>
+                                            <input
+                                                type="text"
+                                                value={field.value || ""}
+                                                className="text-md focus:outline-none font-semibold mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full capitalize"
+                                                placeholder={`Enter ${field.title}`}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                     </div>
 
@@ -1002,3 +1146,10 @@ ProductDetails.propTypes = {
     placeholder: PropTypes.string,
 };
 export default ProductDetails
+
+
+
+
+
+
+

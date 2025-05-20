@@ -74,8 +74,10 @@ const InvoiceList = () => {
         navigate('/add-invoice')
     }
     const handleInvoiceDetails = (invoiceId) => {
+
         navigate(`/invoice-details/${invoiceId}`)
     }
+
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     }
@@ -325,12 +327,14 @@ const InvoiceList = () => {
                                     paginatedInvoices.map((invoice, index) => (
                                         <tr key={invoice.id}>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy hover:underline hover:text-[#205DA8] hover:cursor-pointer " onClick={() => handleInvoiceDetails(invoice.invoiceNo)}>{invoice.invoiceNo}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.contact_person}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.email}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.contact_number}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.invoiceDate}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.products[0]?.price}</td>
+
                                             <td className="px-4 py-2 text-center relative">
                                                 <div
                                                     onClick={(e) => handleShowPopup(index, e)}

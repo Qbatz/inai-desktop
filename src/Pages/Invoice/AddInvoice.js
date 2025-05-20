@@ -8,7 +8,8 @@ import InvoiceAddProduct from "../../Pages/Invoice/InvoiceAddProduct";
 import AddBox from "../../Pages/Invoice/AddBox";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
-import { GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA, GET_PAYMENT_TERM_SAGA, GET_DELIVERY_TERM_SAGA } from '../../Utils/Constant';
+import { GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA, GET_PAYMENT_TERM_SAGA, GET_DELIVERY_TERM_SAGA, GET_PRODUCT_SAGA } from '../../Utils/Constant';
+
 import { format } from 'date-fns';
 import { InfoCircle } from "iconsax-react";
 
@@ -32,6 +33,13 @@ function AddInvoice() {
     const [showBox, setShowBox] = useState(false)
     const [showProduct, setShowProduct] = useState(false)
     const [customerOptions, setCustomerOptions] = useState([])
+    const [productList, setProductsList] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState({});
+    const [filteredSuggestions, setFilteredSuggestions] = useState({});
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0, index: null });
+    const debounceTimeout = useRef(null);
+
+
 
     const [formData, setFormData] = useState({
         customer: "",
@@ -65,8 +73,6 @@ function AddInvoice() {
 
     const [itemErrors, setItemErrors] = useState([]);
     const rowItemsRefs = useRef([]);
-
-
 
 
 
@@ -151,7 +157,7 @@ function AddInvoice() {
     const destinationCountryRef = useRef();
     const deliveryTermRef = useRef();
     const paymentTermRef = useRef();
-      const bankPaymentRefNoRef = useRef();
+    const bankPaymentRefNoRef = useRef();
     const freightRef = useRef();
     const insuranceRef = useRef();
     const placeRef = useRef();
@@ -174,76 +180,46 @@ function AddInvoice() {
         setRows(newRows);
     };
 
-    const handleInputChange = (index, field, value) => {
-        const formattedValue = field === 'date' ? format(value, 'yyyy/MM/dd') : value;
-        const updatedRows = [...rows];
-        updatedRows[index][field] = formattedValue;
-        setRows(updatedRows);
-        setErrors((prevErrors) => {
-            const updatedRowErrors = [...(prevErrors.rowErrors || [])];
-            if (updatedRowErrors[index]) {
-                updatedRowErrors[index] = { ...updatedRowErrors[index], [field]: '' };
+
+
+
+
+    const handleItemChange = (index, field, value) => {
+        if (field === 'qty' || field === 'unitCost') {
+
+            let filteredValue = value.replace(/[^0-9.]/g, '');
+
+
+            const parts = filteredValue.split('.');
+            if (parts.length > 2) {
+                filteredValue = parts[0] + '.' + parts.slice(1).join('');
             }
 
-            return {
-                ...prevErrors,
-                rowErrors: updatedRowErrors,
+            value = filteredValue;
+        }
+
+        setItems(prevItems => {
+            const updated = [...prevItems];
+
+            updated[index] = {
+                ...updated[index],
+                [field]: value,
             };
+
+            if (field === 'qty' || field === 'unitCost') {
+                const qty = parseFloat(updated[index].qty) || 0;
+                const unitCost = parseFloat(updated[index].unitCost) || 0;
+                updated[index].total = (qty * unitCost).toFixed(2);
+            }
+
+            return updated;
         });
     };
 
-    const handleItemChange = (index, field, value) => {
-        const updatedItems = [...items];
-        const updatedErrors = [...itemErrors];
-
-
-        if ((field === 'qty' || field === 'unitCost' || field === 'packageNo') && !/^\d*\.?\d*$/.test(value)) {
-            return;
-        }
-
-        updatedItems[index][field] = value;
-
-
-        if (updatedErrors[index]) {
-            switch (field) {
-                case 'itemNo':
-                case 'description':
-                case 'hsn':
-                case 'packageNo':
-                    if (value.trim()) {
-                        delete updatedErrors[index][field];
-                    }
-                    break;
-                case 'qty':
-                case 'unitCost':
-                    if (value && !isNaN(value)) {
-                        delete updatedErrors[index][field];
-                    }
-
-                    break;
-                default:
-
-                    break;
-            }
-        }
-
-
-        if (field === 'qty' || field === 'unitCost') {
-            const qty = parseFloat(updatedItems[index].qty) || 0;
-            const unit = parseFloat(updatedItems[index].unitCost) || 0;
-            updatedItems[index].total = (qty * unit).toFixed(2);
-        }
-
-        setItems(updatedItems);
-        setItemErrors(updatedErrors);
-    };
-
-
 
     const grandTotal = items.reduce((sum, item) => {
-        const total = parseFloat(item.total || item.totalCost || 0);
-        return sum + total;
-    }, 0);
+        return sum + (parseFloat(item.total) || 0);
+    }, 0).toFixed(2);
 
 
 
@@ -636,7 +612,7 @@ function AddInvoice() {
             const rowError = {};
 
             if (!item.itemNo.trim()) {
-                rowError.itemNo = 'Please enter Item No.';
+                rowError.itemNo = 'Please enter Item No';
                 if (!focusSet) {
                     rowItemsRefs.current[index]?.itemNo?.focus();
                     focusSet = true;
@@ -644,7 +620,7 @@ function AddInvoice() {
             }
 
             if (!item.description.trim()) {
-                rowError.description = 'Please enter Description.';
+                rowError.description = 'Please enter Description';
                 if (!focusSet) {
                     rowItemsRefs.current[index]?.description?.focus();
                     focusSet = true;
@@ -652,7 +628,7 @@ function AddInvoice() {
             }
 
             if (!item.hsn.trim()) {
-                rowError.hsn = 'Please enter HSN.';
+                rowError.hsn = 'Please enter HSN';
                 if (!focusSet) {
                     rowItemsRefs.current[index]?.hsn?.focus();
                     focusSet = true;
@@ -660,7 +636,7 @@ function AddInvoice() {
             }
 
             if (!item.qty || isNaN(item.qty)) {
-                rowError.qty = 'Enter valid Quantity.';
+                rowError.qty = 'Enter valid Quantity';
                 if (!focusSet) {
                     rowItemsRefs.current[index]?.qty?.focus();
                     focusSet = true;
@@ -668,7 +644,7 @@ function AddInvoice() {
             }
 
             if (!item.unitCost || isNaN(item.unitCost)) {
-                rowError.unitCost = 'Enter valid Unit Cost.';
+                rowError.unitCost = 'Enter valid Unit Cost';
                 if (!focusSet) {
                     rowItemsRefs.current[index]?.unitCost?.focus();
                     focusSet = true;
@@ -676,7 +652,7 @@ function AddInvoice() {
             }
 
             if (!item.packageNo.trim()) {
-                rowError.packageNo = 'Please enter Package No.';
+                rowError.packageNo = 'Enter Package No';
                 if (!focusSet) {
                     rowItemsRefs.current[index]?.packageNo?.focus();
                     focusSet = true;
@@ -726,6 +702,112 @@ function AddInvoice() {
             alert('validation success')
         }
     }
+
+
+    const handleInputChange = (index, field, value) => {
+        const updatedRows = [...rows];
+        updatedRows[index] = {
+            ...updatedRows[index],
+            [field]: value
+        };
+
+        setRows(updatedRows);
+
+        setErrors((prevErrors) => {
+            const updatedRowErrors = [...(prevErrors.rowErrors || [])];
+            if (updatedRowErrors[index]) {
+                updatedRowErrors[index] = {
+                    ...updatedRowErrors[index],
+                    [field]: ''
+                };
+            }
+            return {
+                ...prevErrors,
+                rowErrors: updatedRowErrors,
+            };
+        });
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const handleAutoCompleteInputChange = (index, e) => {
+        const value = e.target.value;
+
+        setItems(prevItems => {
+            const updated = [...prevItems];
+            updated[index] = {
+                ...updated[index],
+                description: value
+            };
+            return updated;
+        });
+
+
+        clearTimeout(debounceTimeout.current);
+        debounceTimeout.current = setTimeout(() => {
+            if (value.length > 0) {
+                const filtered = productList.filter(p =>
+                    p.productName?.toLowerCase().includes(value.toLowerCase())
+                );
+
+                setFilteredSuggestions(prev => ({
+                    ...prev,
+                    [index]: filtered,
+                }));
+                setShowSuggestions(prev => ({
+                    ...prev,
+                    [index]: true
+                }));
+            } else {
+                setFilteredSuggestions(prev => ({
+                    ...prev,
+                    [index]: []
+                }));
+                setShowSuggestions(prev => ({
+                    ...prev,
+                    [index]: false
+                }));
+            }
+        }, 200);
+    };
+
+
+
+
+    const handleSuggestionClick = (index, product) => {
+
+
+        setItems(prevItems => {
+            const updated = [...prevItems];
+            updated[index] = {
+                ...updated[index],
+                description: product.productName,
+                hsn: product.hsnCode || '',
+                uniqueProductCode: product.uniqueProductCode || '',
+                unitCost: product.price,
+
+            };
+            return updated;
+        });
+
+        setShowSuggestions(prev => ({
+            ...prev,
+            [index]: false
+        }));
+    };
+
+
+
 
 
 
@@ -801,6 +883,29 @@ function AddInvoice() {
             setShippingAddress(ShippingAddress || []);
         }
     }, [state.customer?.customerDetails]);
+
+
+
+    const productData = useSelector((state) => state.product?.productList || []);
+
+    useEffect(() => {
+        dispatch({ type: GET_PRODUCT_SAGA, payload: { searchKeyword: "" } });
+    }, []);
+
+    useEffect(() => {
+        if (productData) {
+            setProductsList(productData);
+        }
+    }, [productData]);
+
+
+
+
+    useEffect(() => {
+        setItems(prevItems =>
+            prevItems.map((item, idx) => ({ ...item, itemNo: (idx + 1).toString() }))
+        );
+    }, [items.length]);
 
 
 
@@ -1368,13 +1473,14 @@ function AddInvoice() {
                                             PO Number <span className='text-red-500'>*</span>
                                         </label>
                                         <input
-                                            type='text'
-                                            placeholder='Enter PO Number'
+                                            type="text"
+                                            placeholder="Enter PO Number"
                                             value={row.poNumber}
                                             ref={rowRefs.current[index]?.po}
                                             onChange={(e) => handleInputChange(index, 'poNumber', e.target.value)}
-                                            className='w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800'
+                                            className="w-full px-3 py-3 border rounded-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
                                         />
+
 
 
                                         {errors?.rowErrors?.[index]?.poNumber && (
@@ -1451,17 +1557,17 @@ function AddInvoice() {
                 {
                     value === 3 &&
                     <>
-                        <div className='h-fit overflow-y-auto  lg:scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent pe-3 ' >
+                        <div className='h-fit' >
                             <div
                                 className="">
-                                <div className='rounded-xl border border-slate-200 max-h-[250px] overflow-y-auto p-0 mt-4 '>
+                                <div className='rounded-xl border border-slate-200 max-h-[250px] overflow-y-auto p-0 mt-4 w-fit '>
 
                                     <table className="w-full table-auto border-collapse rounded-xl border-b-0 border-[#E1E8F0]">
                                         <thead className="bg-[#205DA8] sticky top-0 z-10">
                                             <tr>
-                                                <th className="px-4 py-2 text-center text-[#fff] text-base font-medium font-Gilroy">Item No.
+                                                <th className="px-4 py-2 text-center text-[#fff] text-sm font-medium font-Gilroy w-[100px]">Serial No.
                                                 </th>
-                                                <th className="px-4 py-2 text-center text-[#fff] text-sm font-medium font-Gilroy">Description</th>
+                                                <th className="px-4 py-2 text-center text-[#fff] text-sm font-medium font-Gilroy w-[300px]">Description</th>
                                                 <th className="px-4 py-2 text-center text-[#fff] text-sm font-medium font-Gilroy">HSN</th>
                                                 <th className="px-4 py-2 text-center text-[#fff] text-sm font-medium font-Gilroy">Quantity</th>
                                                 <th className="px-4 py-2 text-center text-[#fff] text-sm font-medium font-Gilroy">Per Unit <br /> <span className='text-center text-[#fff] text-xs font-medium font-Gilroy'>Cost in USD</span></th>
@@ -1470,111 +1576,194 @@ function AddInvoice() {
                                             </tr>
                                         </thead>
 
+
+
                                         <tbody>
                                             {items.map((item, index) => (
-                                                <tr key={index} className="border-0">
-                                                    <td className="px-2 py-2 text-center">
-                                                        <input type="text"
-                                                            ref={getInputRef('itemNo', index)}
-                                                            value={item.itemNo}
-                                                            onChange={(e) => handleItemChange(index, 'itemNo', e.target.value)}
-                                                            placeholder="Enter Item No." className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
+                                                <tr key={index} className="border-0 h-fit">
+                                                    <td className="px-2 py-2 ">
+                                                        <div className="flex flex-col">
+                                                            <input
+                                                                type="text"
+                                                                ref={getInputRef('itemNo', index)}
+                                                                value={index + 1}
+                                                                onChange={(e) => handleItemChange(index, 'itemNo', e.target.value)}
+                                                                readOnly
+                                                                placeholder="SerialNo."
+                                                                className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center"
+                                                            />
+                                                            {itemErrors[index]?.itemNo && (
+                                                                <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                    {itemErrors[index].itemNo}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </td>
 
-                                                        {itemErrors[index]?.itemNo && (
-                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
 
-                                                                {itemErrors[index].itemNo}
-                                                            </div>
+                                                    <td className="px-2 py-2  relative">
+                                                        <div className="relative w-full">
+                                                            <input
+                                                                type="text"
+                                                                ref={getInputRef('description', index)}
+                                                                value={item.description || ""}
+                                                                onChange={(e) => handleAutoCompleteInputChange(index, e)}
+                                                                onFocus={() => {
+                                                                    const rect = rowItemsRefs.current?.[index]?.['description']?.getBoundingClientRect();
+                                                                    if (rect) {
+                                                                        setDropdownPosition({
+                                                                            top: rect.bottom + window.scrollY,
+                                                                            left: rect.left + window.scrollX,
+                                                                            width: rect.width,
+                                                                            index: index
+                                                                        });
+                                                                        setShowSuggestions(prev => ({ ...prev, [index]: true }));
+                                                                    }
+                                                                }}
+
+
+
+                                                                onBlur={() => {
+                                                                    setTimeout(() => {
+                                                                        setShowSuggestions(prev => ({ ...prev, [index]: false }));
+                                                                    }, 100);
+                                                                }}
+                                                                placeholder="Enter Product Name"
+                                                                className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none font-Gilroy"
+                                                            />
+                                                            {itemErrors[index]?.description && (
+                                                                <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                    {itemErrors[index].description}
+                                                                </div>
+                                                            )}
+
+                                                        </div>
+
+                                                        {dropdownPosition.index === index && showSuggestions[index] && filteredSuggestions[index]?.length > 0 && (
+                                                            <ul
+                                                                className="fixed z-50 bg-white border rounded-md max-h-[120px] w-fit overflow-y-auto shadow-md scrollbar-thin scrollbar-thumb-[#dbdbdb] scrollbar-track-transparent"
+                                                                style={{
+                                                                    top: dropdownPosition.top,
+                                                                    left: dropdownPosition.left,
+                                                                    width: dropdownPosition.width,
+                                                                    position: 'fixed'
+                                                                }}
+                                                            >
+                                                                {filteredSuggestions[index].map((name, idx) => (
+                                                                    <li
+                                                                        key={idx}
+                                                                        className="px-3 py-2 cursor-pointer text-sm hover:bg-[#205DA8] hover:text-white select-none font-Gilroy text-start"
+                                                                        onMouseDown={() => handleSuggestionClick(index, name)}
+                                                                    >
+                                                                        {name.productName}
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
                                                         )}
 
 
                                                     </td>
-                                                    <td className="px-2 py-2 text-center">
-                                                        <input type="text"
-                                                            ref={getInputRef('description', index)}
-                                                            value={item.description}
-                                                            onChange={(e) => handleItemChange(index, 'description', e.target.value)}
-                                                            placeholder="Enter Description" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
 
-                                                        {itemErrors[index]?.description && (
-                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
-                                                                {itemErrors[index].description}
-                                                            </div>
-                                                        )}
+
+
+                                                    <td className="px-2 py-2 ">
+                                                        <div className="flex flex-col">
+                                                            <input
+                                                                type="text"
+                                                                value={item.hsn}
+                                                                onChange={(e) => handleItemChange(index, 'hsn', e.target.value)}
+                                                                placeholder="Enter HSN"
+                                                                className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none"
+                                                            />
+                                                            {itemErrors[index]?.hsn && (
+                                                                <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                    {itemErrors[index].hsn}
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </td>
-                                                    <td className="px-2 py-2 text-center">
-                                                        <input type="text"
-                                                            value={item.hsn}
-                                                            ref={getInputRef('hsn', index)}
-                                                            onChange={(e) => handleItemChange(index, 'hsn', e.target.value)}
-                                                            placeholder="Enter HSN" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
-                                                        {itemErrors[index]?.hsn && (
-                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
 
-                                                                {itemErrors[index].hsn}
+
+                                                    <td className="px-2 py-2">
+                                                        <div className="flex flex-col">
+                                                            <input
+                                                                type="text"
+                                                                value={item.qty}
+                                                                ref={getInputRef('qty', index)}
+                                                                onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
+                                                                placeholder="Enter Item QTY"
+                                                                className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center"
+                                                            />
+                                                            <div className="min-h-[18px] mt-1">
+                                                                {itemErrors[index]?.qty && (
+                                                                    <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                        {itemErrors[index].qty}
+                                                                    </div>
+                                                                )}
                                                             </div>
-                                                        )}
 
+                                                        </div>
                                                     </td>
-                                                    <td className="px-2 py-2 text-center">
-                                                        <input type="text"
-                                                            value={item.qty}
-                                                            ref={getInputRef('qty', index)}
-                                                            onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
-                                                            placeholder="Enter Item QTY" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
-
-                                                        {itemErrors[index]?.qty && (
-                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
-
-                                                                {itemErrors[index].qty}
-                                                            </div>
-                                                        )}
 
 
-                                                    </td>
-                                                    <td className="px-2 py-2 text-center">
-                                                        <input type="text"
+                                                    <td className="px-2 py-2 ">
+                                                        <input
+                                                            type="text"
                                                             value={item.unitCost}
                                                             ref={getInputRef('unitCost', index)}
                                                             onChange={(e) => handleItemChange(index, 'unitCost', e.target.value)}
-                                                            placeholder="Enter Per Unit" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
-
-
+                                                            placeholder="Enter Per Unit"
+                                                            className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center"
+                                                        />
                                                         {itemErrors[index]?.unitCost && (
                                                             <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
-
                                                                 {itemErrors[index].unitCost}
                                                             </div>
                                                         )}
-
                                                     </td>
-                                                    <td className="px-2 py-2 text-center">
 
-                                                        <input type="text" value={item.total}
-                                                            readOnly placeholder="Total" className={`w-full px-3 py-3 border rounded-xl text-sm focus:outline-none ${itemErrors[index] && Object.keys(itemErrors[index]).length > 0 ? "mb-5" : "mb-0"
-                                                                }`} />
+                                                  
+                                                    <td className="px-2 py-2">
+                                                        <input
+                                                            type="text"
+                                                            value={item.total}
+                                                            readOnly
+                                                            placeholder="Total"
+                                                            className={`w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center ${itemErrors[index] && Object.keys(itemErrors[index]).length > 0 ? "mb-5" : "mb-0"
+                                                                }`}
+                                                        />
                                                     </td>
-                                                    <td className="px-2 py-2 text-center">
-                                                        <input type="text" value={item.packageNo}
+
+                                                  
+                                                    <td className="px-2 py-2 block">
+                                                        <input
+                                                            type="text"
+                                                            value={item.packageNo}
                                                             ref={getInputRef('packageNo', index)}
                                                             onChange={(e) => handleItemChange(index, 'packageNo', e.target.value)}
-                                                            placeholder="Enter No" className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none" />
-
+                                                            placeholder="Enter No"
+                                                            className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center"
+                                                        />
                                                         {itemErrors[index]?.packageNo && (
                                                             <div className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-Gilroy">
                                                                 {itemErrors[index].packageNo}
                                                             </div>
                                                         )}
-
-
                                                     </td>
                                                 </tr>
                                             ))}
                                         </tbody>
 
+
+
+
                                     </table>
 
+
                                 </div>
+                            </div>
+                            <div className='flex justify-start items-center w-full mt-4 ml-3 mb-3'>
+                                <label className='font-Gilroy text-base font-semibold text-[#205DA8] hover:underline cursor-pointer' onClick={handleAddItem}>+ Add Item</label>
                             </div>
 
 
@@ -1584,14 +1773,12 @@ function AddInvoice() {
                                     placeholder='Total Value'
                                     value={grandTotal}
                                     readOnly
-                                    className=' w-[250px]  px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
+                                    className='w-[250px]  px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                 />
                             </div>
 
 
-                            <div className='flex justify-end  items-center w-full mt-4'>
-                                <label className='font-Gilroy text-base font-semibold text-[#205DA8] hover:underline cursor-pointer' onClick={handleAddItem}>+ Add Item</label>
-                            </div>
+
 
                         </div>
 
@@ -1603,7 +1790,8 @@ function AddInvoice() {
                             <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleNextPackageDetail}>Next</button>
 
                         </div>
-                    </>}
+                    </>
+                }
 
 
                 {
@@ -1713,7 +1901,6 @@ function AddInvoice() {
         </div>
     )
 }
-
 
 
 AddInvoice.propTypes = {

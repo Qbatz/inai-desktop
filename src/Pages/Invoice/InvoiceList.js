@@ -224,7 +224,7 @@ const InvoiceList = () => {
 
         return () => clearTimeout(delayApi);
     }, [startDate, endDate]);
-
+ 
     return (
 
         <div className="flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative bg-slate-100 relative">
@@ -323,7 +323,7 @@ const InvoiceList = () => {
                             <tbody>
                                 {paginatedInvoices.length > 0 ? (
                                     paginatedInvoices.map((invoice, index) => (
-                                        <tr key={invoice.id}>
+                                        <tr key={index}>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy hover:underline hover:text-[#205DA8] hover:cursor-pointer " onClick={() => handleInvoiceDetails(invoice.invoiceNo)}>{invoice.invoiceNo}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.contact_person}</td>

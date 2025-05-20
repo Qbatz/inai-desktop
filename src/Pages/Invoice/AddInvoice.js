@@ -8,7 +8,7 @@ import InvoiceAddProduct from "../../Pages/Invoice/InvoiceAddProduct";
 import AddBox from "../../Pages/Invoice/AddBox";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
-import { GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA, GET_PAYMENT_TERM_SAGA, GET_DELIVERY_TERM_SAGA, GET_PRODUCT_SAGA } from '../../Utils/Constant';
+import { ADD_INVOICE_SAGA, GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA, GET_PAYMENT_TERM_SAGA, GET_DELIVERY_TERM_SAGA, GET_PRODUCT_SAGA } from '../../Utils/Constant';
 
 import { format } from 'date-fns';
 import { InfoCircle } from "iconsax-react";
@@ -66,6 +66,7 @@ function AddInvoice() {
         insurance: ''
     });
 
+    console.log("formData", formData)
 
     const [items, setItems] = useState([
         { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '' }
@@ -685,10 +686,49 @@ function AddInvoice() {
 
     const handleSaveExitForCustomerDetail = () => {
         if (validateCustomerForm()) {
-            alert('validation success')
-        }
+
+            const payload = {
+                customerId: formData.customer,
+                shippingAddress: 1,
+                billingAddress: 1,
+                invoiceType: formData.invoiceType,
+                currencyId: formData.currency,
+                invoiceDate: formData.invoiceDate,
+                orginOfGoods: formData.originOfGoods,
+                loadingPort: formData.portOfLoading,
+                dischargePort: formData.portOfDischarge,
+                destination: formData.destinationCountry,
+                deliveryTerm: formData.deliveryTerm,
+                deliveryPlace: formData.place,
+                paymentTerm: formData.paymentTerm,
+                shippingBillNo: formData.shippingBillNo,
+                shippingBillDate: formData.shippingBillDate,
+                paymentReferenceNo: formData.bankPaymentRefNo,
+                ladingBill: formData.billOfLading,
+                laddingBillDate: formData.billOfLadingDate,
+                freight: parseFloat(formData.freight) || 0,
+                inssuranceAmount: parseFloat(formData.insurance) || 0,
+
+                poDetails: rows.map(row => ({
+                    poNumber: row.poNumber,
+                    poDate: row.date
+                })),
+ 
+                InvoiceItems: items.map(item => ({
+                    productId: item.productId,
+                    hsnCode: item.hsn,
+                    quantity: parseFloat(item.qty),
+                    price: parseFloat(item.unitCost)
+                }))
+            };
+
+            dispatch({ type: ADD_INVOICE_SAGA, payload: payload})
+    }
     }
 
+
+
+    console.log("table items",items)
 
     const handleSaveExitForInvoiceDetail = () => {
         if (validateInvoiceForm()) {
@@ -872,7 +912,7 @@ function AddInvoice() {
 
     const customer = formData.customer ? state.customer?.customerDetails : {};
 
-
+    console.log("customer", customer)
 
     useEffect(() => {
         if (formData.customer) {
@@ -906,6 +946,17 @@ function AddInvoice() {
             prevItems.map((item, idx) => ({ ...item, itemNo: (idx + 1).toString() }))
         );
     }, [items.length]);
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1722,7 +1773,7 @@ function AddInvoice() {
                                                         )}
                                                     </td>
 
-                                                  
+
                                                     <td className="px-2 py-2">
                                                         <input
                                                             type="text"
@@ -1734,7 +1785,7 @@ function AddInvoice() {
                                                         />
                                                     </td>
 
-                                                  
+
                                                     <td className="px-2 py-2 block">
                                                         <input
                                                             type="text"

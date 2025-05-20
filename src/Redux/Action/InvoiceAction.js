@@ -39,3 +39,10 @@ export async function GetAllInvoiceList(invoice) {
 
     return await AxiosConfig.get(`/invoices?${queryParams}`);
 }
+
+
+export async function AddInvoice(invoice) {
+  return await AxiosConfig.patch('/invoices', invoice, {
+    data: invoice
+  });
+}

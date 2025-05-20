@@ -11,11 +11,13 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import DeleteInvoiceList from './DeleteInvoiceList';
 import moment from 'moment';
 import { enGB } from "date-fns/locale";
-
+import { GET_ALL_INVOICE_SAGA, RESET_CODE } from '../../Utils/Constant'
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const InvoiceList = () => {
-
+    const dispatch = useDispatch();
+    const state = useSelector(state => state)
     const navigate = useNavigate();
     const popupRef = useRef(null);
     const [showPicker, setShowPicker] = useState(false);
@@ -27,8 +29,13 @@ const InvoiceList = () => {
     const [deleteInvoiceId, setDeleteInvoiceId] = useState('')
     const [showDeleteInvoiceList, setShowDeleteInvoiceList] = useState(false);
     const [isStartSelected, setIsStartSelected] = useState(false);
+    const [invoiceList, setInvoiceList] = useState([])
+    const [loading, setLoading] = useState(false)
+    const timeoutRef = useRef(null);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
-
+ 
 
     const [dateRange, setDateRange] = useState([
         {
@@ -42,7 +49,8 @@ const InvoiceList = () => {
 
     const handleSelect = (ranges) => {
         const selection = ranges.selection;
-
+        const selectedStart = selection.startDate;
+        const selectedEnd = selection.endDate;
 
         if (!isStartSelected) {
 
@@ -52,11 +60,12 @@ const InvoiceList = () => {
                     endDate: null,
                 },
             ]);
-
-
+            setStartDate(moment(selectedStart).format("YYYY-MM-DD"));
+            setEndDate("");
             setIsStartSelected(true);
         } else {
             setDateRange([selection]);
+            setEndDate(moment(selectedEnd).format("YYYY-MM-DD"));
             setShowPicker(false);
             setIsStartSelected(false);
         }
@@ -65,8 +74,10 @@ const InvoiceList = () => {
         navigate('/add-invoice')
     }
     const handleInvoiceDetails = (invoiceId) => {
-    navigate(`/invoice-details/${invoiceId}`)
-  }
+
+        navigate(`/invoice-details/${invoiceId}`)
+    }
+
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     }
@@ -89,30 +100,7 @@ const InvoiceList = () => {
     const handleCloseForDeleteInvoiceList = () => {
         setShowDeleteInvoiceList(false);
     };
-    const invoices = [
-        { id: '#0019F12723', name: 'Kellie Turcotte', email: 'kellie@gmail.com', mobile: '+91 9856543210', date: '22-07-2024', amount: '₹2500' },
-        { id: '#0019F12724', name: 'Tatiana Rosser', email: 'tatiana@gmail.com', mobile: '+91 9856543210', date: '23-07-2024', amount: '₹3000' },
-        { id: '#0019F12725', name: 'John Doe', email: 'john@gmail.com', mobile: '+91 9856543211', date: '24-07-2024', amount: '₹3500' },
-        { id: '#0019F12726', name: 'Jane Smith', email: 'jane@gmail.com', mobile: '+91 9856543212', date: '25-07-2024', amount: '₹4000' },
-        { id: '#0019F12727', name: 'Robert Johnson', email: 'robert@gmail.com', mobile: '+91 9856543213', date: '26-07-2024', amount: '₹4500' },
-        { id: '#0019F12728', name: 'Maria Williams', email: 'maria@gmail.com', mobile: '+91 9856543214', date: '27-07-2024', amount: '₹5000' },
-        { id: '#0019F12729', name: 'Michael Brown', email: 'michael@gmail.com', mobile: '+91 9856543215', date: '28-07-2024', amount: '₹5500' },
-        { id: '#0019F12730', name: 'David Davis', email: 'david@gmail.com', mobile: '+91 9856543216', date: '29-07-2024', amount: '₹6000' },
-        { id: '#0019F12731', name: 'Elizabeth Moore', email: 'elizabeth@gmail.com', mobile: '+91 9856543217', date: '30-07-2024', amount: '₹6500' },
-        { id: '#0019F12732', name: 'James Taylor', email: 'james@gmail.com', mobile: '+91 9856543218', date: '31-07-2024', amount: '₹7000' },
-        { id: '#0019F12733', name: 'Patricia Anderson', email: 'patricia@gmail.com', mobile: '+91 9856543219', date: '01-08-2024', amount: '₹7500' },
-        { id: '#0019F12734', name: 'Charles Thomas', email: 'charles@gmail.com', mobile: '+91 9856543220', date: '02-08-2024', amount: '₹8000' },
-        { id: '#0019F12735', name: 'Sarah Jackson', email: 'sarah@gmail.com', mobile: '+91 9856543221', date: '03-08-2024', amount: '₹8500' },
-        { id: '#0019F12736', name: 'Daniel White', email: 'daniel@gmail.com', mobile: '+91 9856543222', date: '04-08-2024', amount: '₹9000' },
-        { id: '#0019F12737', name: 'Nancy Harris', email: 'nancy@gmail.com', mobile: '+91 9856543223', date: '05-08-2024', amount: '₹9500' },
-        { id: '#0019F12738', name: 'William Clark', email: 'william@gmail.com', mobile: '+91 9856543224', date: '06-08-2024', amount: '₹10000' },
-        { id: '#0019F12739', name: 'Linda Lewis', email: 'linda@gmail.com', mobile: '+91 9856543225', date: '07-08-2024', amount: '₹10500' },
-        { id: '#0019F12740', name: 'Joseph Walker', email: 'joseph@gmail.com', mobile: '+91 9856543226', date: '08-08-2024', amount: '₹11000' },
-        { id: '#0019F12741', name: 'Karen Young', email: 'karen@gmail.com', mobile: '+91 9856543227', date: '09-08-2024', amount: '₹11500' },
-        { id: '#0019F12742', name: 'Thomas King', email: 'thomas@gmail.com', mobile: '+91 9856543228', date: '10-08-2024', amount: '₹12000' },
-        { id: '#0019F12743', name: 'Betty Scott', email: 'betty@gmail.com', mobile: '+91 9856543229', date: '11-08-2024', amount: '₹12500' },
-        { id: '#0019F12744', name: 'Steven Adams', email: 'steven@gmail.com', mobile: '+91 9856543230', date: '12-08-2024', amount: '₹13000' },
-    ];
+
 
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -128,10 +116,10 @@ const InvoiceList = () => {
         }
     };
 
-    const totalPages = Math.ceil(invoices.length / itemsPerPage);
+    const totalPages = Math.ceil(invoiceList.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const paginatedInvoices = invoices.slice(startIndex, endIndex);
+    const paginatedInvoices = invoiceList?.slice(startIndex, endIndex);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -142,9 +130,115 @@ const InvoiceList = () => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+  useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (pickerRef.current && !pickerRef.current.contains(e.target)) {
+                setShowPicker(false);
+            }
+        };
+
+        if (showPicker) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [showPicker]);
+    useEffect(() => {
+        dispatch({ type: GET_ALL_INVOICE_SAGA, payload: { searchKeyword: "" } })
+        setLoading(true)
+    }, []);
+
+
+
+
+    useEffect(() => {
+        const updatedTotalPages = Math.ceil(invoiceList.length / itemsPerPage);
+
+        if (currentPage > updatedTotalPages && updatedTotalPages > 0) {
+            setCurrentPage(updatedTotalPages);
+        }
+    }, [invoiceList, itemsPerPage, currentPage]);
+
+
+    useEffect(() => {
+        if (state.Common.successCode === 200) {
+            setInvoiceList(state.invoice.invoiceList);
+            setLoading(false);
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+
+            timeoutRef.current = setTimeout(() => {
+                dispatch({ type: RESET_CODE });
+            }, 300);
+        }
+
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, [state.Common.successCode]);
+
+    useEffect(() => {
+        if (state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 100)
+        }
+    }, [state.Common?.code]);
+
+    useEffect(() => {
+        const delayApi = setTimeout(() => {
+            if (searchTerm.trim().length >= 1) {
+                dispatch({
+                    type: GET_ALL_INVOICE_SAGA,
+                    payload: { searchKeyword: searchTerm.trim() },
+                });
+                setLoading(true);
+            } else if (searchTerm.trim().length === 0) {
+                dispatch({
+                    type: GET_ALL_INVOICE_SAGA,
+                    payload: { searchKeyword: "" },
+                });
+            }
+        }, 500);
+
+        return () => clearTimeout(delayApi);
+    }, [searchTerm]);
+
+
+    useEffect(() => {
+        const delayApi = setTimeout(() => {
+            if (startDate && endDate) {
+                dispatch({
+                    type: GET_ALL_INVOICE_SAGA,
+                    payload: { startDate: startDate, endDate: endDate },
+                });
+                setShowPicker(false)
+            } else {
+                dispatch({ type: GET_ALL_INVOICE_SAGA, payload: { startDate: null, endDate: null } })
+
+            }
+        }, 500);
+
+        return () => clearTimeout(delayApi);
+    }, [startDate, endDate]);
+
     return (
 
-        <div className="flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative bg-slate-100">
+        <div className="flex-1 flex w-full p-4 rounded-tl-lg rounded-tr-lg m-0 relative bg-slate-100 relative">
+
+
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                    <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                </div>
+            )}
+
+
             {isVisible && (
                 <div className="bg-white flex-1 flex flex-col rounded-2xl p-4 relative h-[515px] w-full">
 
@@ -233,12 +327,14 @@ const InvoiceList = () => {
                                     paginatedInvoices.map((invoice, index) => (
                                         <tr key={invoice.id}>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy hover:underline text-[#205DA8] hover:cursor-pointer"onClick={() => handleInvoiceDetails(invoice.invoiceId)}>{invoice.id}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.name}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.email}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.mobile}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.date}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.amount}</td>
+
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy hover:underline hover:text-[#205DA8] hover:cursor-pointer " onClick={() => handleInvoiceDetails(invoice.invoiceNo)}>{invoice.invoiceNo}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.contact_person}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.email}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.contact_number}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.invoiceDate}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.products[0]?.price}</td>
+
                                             <td className="px-4 py-2 text-center relative">
                                                 <div
                                                     onClick={(e) => handleShowPopup(index, e)}
@@ -284,7 +380,7 @@ const InvoiceList = () => {
                         </table>
                     </div>
 
-                    {invoices.length > 10 && (
+                    {invoiceList.length > 10 && (
                         <nav className="absolute right-4 bottom-5 flex flex-col xs:flex-row sm:flex-row md:flex-row justify-end items-center bg-white mt-5 rounded-lg -mb-3">
 
                             <div className="flex items-center gap-2">

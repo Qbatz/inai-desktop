@@ -42,7 +42,7 @@ export async function GetAllInvoiceList(invoice) {
 
 
 export async function AddInvoice(invoice) {
-  return await AxiosConfig.patch('/invoices', invoice, {
+  return await AxiosConfig.post('/invoices', invoice, {
     data: invoice
   });
 }

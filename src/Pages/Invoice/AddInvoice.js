@@ -9,7 +9,7 @@ import AddBox from "../../Pages/Invoice/AddBox";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
 import { ADD_INVOICE_SAGA, GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA, GET_PAYMENT_TERM_SAGA, GET_DELIVERY_TERM_SAGA, GET_PRODUCT_SAGA } from '../../Utils/Constant';
-
+import moment from 'moment';
 import { format } from 'date-fns';
 import { InfoCircle } from "iconsax-react";
 
@@ -69,7 +69,7 @@ function AddInvoice() {
     console.log("formData", formData)
 
     const [items, setItems] = useState([
-        { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '' }
+        { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '', productCode: '', }
     ]);
 
     const [itemErrors, setItemErrors] = useState([]);
@@ -89,40 +89,40 @@ function AddInvoice() {
 
     const options = [
         { value: "", label: "Select Country", isPlaceholder: true },
-        { value: "India", label: "India" },
-        { value: "United States", label: "United States" },
-        { value: "United Kingdom", label: "United Kingdom" },
-        { value: "Australia", label: "Australia" },
-        { value: "Canada", label: "Canada" },
-        { value: "Germany", label: "Germany" },
-        { value: "France", label: "France" },
-        { value: "Italy", label: "Italy" },
-        { value: "Singapore", label: "Singapore" },
-        { value: "Japan", label: "Japan" },
-        { value: "China", label: "China" },
+        { value: "1", label: "India" },
+        { value: "2", label: "United States" },
+        { value: "3", label: "United Kingdom" },
+        { value: "4", label: "Australia" },
+        { value: "5", label: "Canada" },
+        { value: "6", label: "Germany" },
+        { value: "7", label: "France" },
+        { value: "8", label: "Italy" },
+        { value: "9", label: "Singapore" },
+        { value: "10", label: "Japan" },
+        { value: "11", label: "China" },
     ];
 
     const InvoiceOptions = [
         { value: "", label: "Select Type", isPlaceholder: true },
-        { value: "EXPORT", label: "EXPORT" },
-        { value: "DOMESTIC", label: "DOMESTIC" },
+        { value: "1", label: "EXPORT" },
+        { value: "2", label: "DOMESTIC" },
     ]
 
 
     const beneficiaryCurrencyOptions = [
         { value: "", label: "Select Currency", isPlaceholder: true },
-        { value: "USD", label: "USD" },
-        { value: "INR", label: "INR" },
-        { value: "EUR", label: "EUR" },
-        { value: "GBP", label: "GBP" },
-        { value: "JPY", label: "JPY" }
+        { value: "1", label: "USD" },
+        { value: "2", label: "INR" },
+        { value: "3", label: "EUR" },
+        { value: "4", label: "GBP" },
+        { value: "5", label: "JPY" }
     ];
 
 
     const portOptions = [
         { value: "", label: "Select Port", isPlaceholder: true },
         ...state.invoice.portList.map((port) => ({
-            value: port.portCode,
+            value: port.portId,
             label: `${port.portCode} - ${port.city}`
         }))
     ];
@@ -167,7 +167,7 @@ function AddInvoice() {
     const handleAddItem = () => {
         setItems([
             ...items,
-            { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '' }
+            { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '', productCode: '', uniqueProductCode: '' }
         ]);
     };
 
@@ -231,9 +231,9 @@ function AddInvoice() {
                 setValue(id);
             }
         } else if (id === 3) {
-            if (validateInvoiceForm()) {
-                setValue(id);
-            }
+            // if (validateInvoiceForm()) {
+            setValue(id);
+            // }
         } else if (id === 4) {
             if (validateItemsForm()) {
                 setValue(id);
@@ -689,11 +689,73 @@ function AddInvoice() {
 
             const payload = {
                 customerId: formData.customer,
-                shippingAddress: 1,
-                billingAddress: 1,
+                shippingAddress: 5,
+                billingAddress: 6,
+                invoiceType: parseInt(formData.invoiceType),
+                currencyId: parseInt(formData.currency),
+
+                invoiceDate: formData.invoiceDate
+                    ? moment(formData.invoiceDate).format('YYYY-MM-DD')
+                    : null,
+
+                orginOfGoods: formData.originOfGoods,
+                loadingPort: parseInt(formData.portOfLoading),
+                dischargePort: parseInt(formData.portOfDischarge),
+                deliveryPlace: formData.place,
+                paymentTerm: parseInt(formData.paymentTerm),
+
+                shippingBillNo: formData.shippingBillNo,
+                shippingBillDate: formData.shippingBillDate
+                    ? moment(formData.shippingBillDate).format('YYYY-MM-DD')
+                    : null,
+
+                paymentReferenceNo: formData.bankPaymentRefNo,
+                ladingBill: formData.billOfLading,
+                laddingBillDate: formData.billOfLadingDate
+                    ? moment(formData.billOfLadingDate).format('YYYY-MM-DD')
+                    : null,
+
+                freight: parseFloat(formData.freight) || 0,
+                inssuranceAmount: parseFloat(formData.insurance) || 0,
+
+                poDetails: rows.map(row => ({
+                    poNumber: row.poNumber,
+                    poDate: row.date
+                        ? moment(row.date).format('YYYY-MM-DD')
+                        : null
+                })),
+
+                InvoiceItems: items.map(item => ({
+                    productId: item.productCode,
+                    hsnCode: item.hsn,
+                    quantity: parseFloat(item.qty),
+                    price: parseFloat(item.unitCost)
+                }))
+            };
+
+
+            console.log("payload", payload)
+            dispatch({ type: ADD_INVOICE_SAGA, payload: payload })
+        }
+    }
+
+
+
+    console.log("table items", items)
+
+    const handleSaveExitForInvoiceDetail = () => {
+        if (validateInvoiceForm()) {
+            const payload = {
+                customerId: formData.customer,
+                shippingAddress: 5,
+                billingAddress: 6,
                 invoiceType: formData.invoiceType,
                 currencyId: formData.currency,
-                invoiceDate: formData.invoiceDate,
+
+                invoiceDate: formData.invoiceDate
+                    ? moment(formData.invoiceDate).format('YYYY-MM-DD')
+                    : null,
+
                 orginOfGoods: formData.originOfGoods,
                 loadingPort: formData.portOfLoading,
                 dischargePort: formData.portOfDischarge,
@@ -701,45 +763,93 @@ function AddInvoice() {
                 deliveryTerm: formData.deliveryTerm,
                 deliveryPlace: formData.place,
                 paymentTerm: formData.paymentTerm,
+
                 shippingBillNo: formData.shippingBillNo,
-                shippingBillDate: formData.shippingBillDate,
+                shippingBillDate: formData.shippingBillDate
+                    ? moment(formData.shippingBillDate).format('YYYY-MM-DD')
+                    : null,
+
                 paymentReferenceNo: formData.bankPaymentRefNo,
                 ladingBill: formData.billOfLading,
-                laddingBillDate: formData.billOfLadingDate,
+                laddingBillDate: formData.billOfLadingDate
+                    ? moment(formData.billOfLadingDate).format('YYYY-MM-DD')
+                    : null,
+
                 freight: parseFloat(formData.freight) || 0,
                 inssuranceAmount: parseFloat(formData.insurance) || 0,
 
                 poDetails: rows.map(row => ({
                     poNumber: row.poNumber,
                     poDate: row.date
+                        ? moment(row.date).format('YYYY-MM-DD')
+                        : null
                 })),
- 
+
                 InvoiceItems: items.map(item => ({
-                    productId: item.productId,
+                    productId: item.productCode,
                     hsnCode: item.hsn,
                     quantity: parseFloat(item.qty),
                     price: parseFloat(item.unitCost)
                 }))
             };
 
-            dispatch({ type: ADD_INVOICE_SAGA, payload: payload})
-    }
-    }
-
-
-
-    console.log("table items",items)
-
-    const handleSaveExitForInvoiceDetail = () => {
-        if (validateInvoiceForm()) {
-            alert('validation success')
+            dispatch({ type: ADD_INVOICE_SAGA, payload: payload })
         }
     }
 
 
     const handleSaveExitForItemDetail = () => {
         if (validateItemsForm()) {
-            alert('validation success')
+            const payload = {
+                customerId: formData.customer,
+                shippingAddress: 5,
+                billingAddress: 6,
+                invoiceType: formData.invoiceType,
+                currencyId: formData.currency,
+
+                invoiceDate: formData.invoiceDate
+                    ? moment(formData.invoiceDate).format('YYYY-MM-DD')
+                    : null,
+
+                orginOfGoods: formData.originOfGoods,
+                loadingPort: formData.portOfLoading,
+                dischargePort: formData.portOfDischarge,
+                destination: formData.destinationCountry,
+                deliveryTerm: formData.deliveryTerm,
+                deliveryPlace: formData.place,
+                paymentTerm: formData.paymentTerm,
+
+                shippingBillNo: formData.shippingBillNo,
+                shippingBillDate: formData.shippingBillDate
+                    ? moment(formData.shippingBillDate).format('YYYY-MM-DD')
+                    : null,
+
+                paymentReferenceNo: formData.bankPaymentRefNo,
+                ladingBill: formData.billOfLading,
+                laddingBillDate: formData.billOfLadingDate
+                    ? moment(formData.billOfLadingDate).format('YYYY-MM-DD')
+                    : null,
+
+                freight: parseFloat(formData.freight) || 0,
+                inssuranceAmount: parseFloat(formData.insurance) || 0,
+
+                poDetails: rows.map(row => ({
+                    poNumber: row.poNumber,
+                    poDate: row.date
+                        ? moment(row.date).format('YYYY-MM-DD')
+                        : null
+                })),
+
+                InvoiceItems: items.map(item => ({
+                    productId: item.productCode,
+                    hsnCode: item.hsn,
+                    quantity: parseFloat(item.qty),
+                    price: parseFloat(item.unitCost)
+                }))
+            };
+
+            dispatch({ type: ADD_INVOICE_SAGA, payload: payload })
+
         }
     }
 
@@ -835,7 +945,7 @@ function AddInvoice() {
                 hsn: product.hsnCode || '',
                 uniqueProductCode: product.uniqueProductCode || '',
                 unitCost: product.price,
-
+                productCode: product.productCode
             };
             return updated;
         });
@@ -847,7 +957,7 @@ function AddInvoice() {
     };
 
 
-
+    console.log("items*******************", items)
 
 
 

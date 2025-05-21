@@ -182,8 +182,8 @@ export const ADD_INVOICE_SAGA = "Add_Invoice_Saga";
 
 
 
-
-
+export const GET_INVOICE_TYPE_REDUCER = "Get_Invoice_Type_Reducer"
+export const GET_INVOICE_TYPE_SAGA= "Get_Invoice_Type_Saga"
 
 
 

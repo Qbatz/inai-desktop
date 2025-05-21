@@ -8,11 +8,11 @@ import InvoiceAddProduct from "../../Pages/Invoice/InvoiceAddProduct";
 import AddBox from "../../Pages/Invoice/AddBox";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
-import { ADD_INVOICE_SAGA, GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA, GET_PAYMENT_TERM_SAGA, GET_DELIVERY_TERM_SAGA, GET_PRODUCT_SAGA } from '../../Utils/Constant';
+import { GET_INVOICE_TYPE_SAGA, RESET_CODE, GET_MASTER_SAGA, ADD_INVOICE_SAGA, GET_CUSTOMER_LIST_SAGA, GET_CUSTOMER_DETAILS_SAGA, GET_PORT_SAGA, GET_PAYMENT_TERM_SAGA, GET_DELIVERY_TERM_SAGA, GET_PRODUCT_SAGA } from '../../Utils/Constant';
 import moment from 'moment';
 import { format } from 'date-fns';
 import { InfoCircle } from "iconsax-react";
-
+import { useNavigate } from 'react-router-dom';
 
 
 function AddInvoice() {
@@ -20,8 +20,9 @@ function AddInvoice() {
 
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const state = useSelector(state => state);
-
+    const [loading, setLoading] = useState(false)
     const [officeAddress, setOfficeAddress] = useState('')
     const [shippingAddress, setShippingAddress] = useState('')
     const [rows, setRows] = useState([
@@ -38,7 +39,6 @@ function AddInvoice() {
     const [filteredSuggestions, setFilteredSuggestions] = useState({});
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0, index: null });
     const debounceTimeout = useRef(null);
-
 
 
     const [formData, setFormData] = useState({
@@ -66,10 +66,10 @@ function AddInvoice() {
         insurance: ''
     });
 
-    console.log("formData", formData)
+
 
     const [items, setItems] = useState([
-        { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '', productCode: '', }
+        { itemNo: '', description: '', hsn: '', qty: '', unitCost: '', total: '', packageNo: '', productCode: '', uniqueProductCode: '' }
     ]);
 
     const [itemErrors, setItemErrors] = useState([]);
@@ -87,35 +87,24 @@ function AddInvoice() {
 
     ];
 
+
+
     const options = [
         { value: "", label: "Select Country", isPlaceholder: true },
-        { value: "1", label: "India" },
-        { value: "2", label: "United States" },
-        { value: "3", label: "United Kingdom" },
-        { value: "4", label: "Australia" },
-        { value: "5", label: "Canada" },
-        { value: "6", label: "Germany" },
-        { value: "7", label: "France" },
-        { value: "8", label: "Italy" },
-        { value: "9", label: "Singapore" },
-        { value: "10", label: "Japan" },
-        { value: "11", label: "China" },
+        ...(state.Common?.country || []).map((item) => ({
+            value: item.id,
+            label: item.name
+        }))
+
     ];
-
-    const InvoiceOptions = [
-        { value: "", label: "Select Type", isPlaceholder: true },
-        { value: "1", label: "EXPORT" },
-        { value: "2", label: "DOMESTIC" },
-    ]
-
 
     const beneficiaryCurrencyOptions = [
         { value: "", label: "Select Currency", isPlaceholder: true },
-        { value: "1", label: "USD" },
-        { value: "2", label: "INR" },
-        { value: "3", label: "EUR" },
-        { value: "4", label: "GBP" },
-        { value: "5", label: "JPY" }
+        ...(state.Common?.country || []).map((item) => ({
+            value: item.id,
+            label: item.currency_code
+        }))
+
     ];
 
 
@@ -143,7 +132,13 @@ function AddInvoice() {
         }))
     ];
 
-
+    const InvoiceOptions = [
+        { value: "", label: "Select Invoice Type", isPlaceholder: true },
+        ...state.invoice.invoiceType.map((type) => ({
+            value: type.typeId,
+            label: type.typeName
+        }))
+    ];
 
 
 
@@ -215,6 +210,16 @@ function AddInvoice() {
 
             return updated;
         });
+        setItemErrors(prevErrors => {
+            const updatedErrors = [...prevErrors];
+            if (updatedErrors[index]?.[field]) {
+                updatedErrors[index] = {
+                    ...updatedErrors[index],
+                    [field]: '',
+                };
+            }
+            return updatedErrors;
+        });
     };
 
 
@@ -226,23 +231,25 @@ function AddInvoice() {
 
 
     const handleTabClick = (id) => {
+        if (!validateCustomerForm()) {
+            return;
+        }
+
         if (id === 2) {
-            if (validateCustomerForm()) {
+            setValue(id);
+        } else if (id === 3) {
+            if (validateInvoiceForm()) {
                 setValue(id);
             }
-        } else if (id === 3) {
-            // if (validateInvoiceForm()) {
-            setValue(id);
-            // }
         } else if (id === 4) {
             if (validateItemsForm()) {
                 setValue(id);
             }
-
         } else {
             setValue(id);
         }
     };
+
 
 
     const handleNextInvoiceDetail = () => {
@@ -681,16 +688,129 @@ function AddInvoice() {
 
 
 
+    // Save & Exist For Both Customer Details & Invoice details
+
+
+    // const handleSaveExitForCustomerDetail = () => {
+    //     if (validateCustomerForm()) {
+
+    //         const payload = {
+    //             customerId: formData.customer,
+    //               shippingAddress: shippingAddress[0]?.id,
+    //             billingAddress: officeAddress[0]?.id,
+    //             invoiceType: parseInt(formData.invoiceType),
+    //             currencyId: parseInt(formData.currency),
+
+    //             invoiceDate: formData.invoiceDate
+    //                 ? moment(formData.invoiceDate).format('YYYY-MM-DD')
+    //                 : null,
+
+    //             orginOfGoods: formData.originOfGoods,
+    //             loadingPort: parseInt(formData.portOfLoading),
+    //             dischargePort: parseInt(formData.portOfDischarge),
+    //             destination: formData.destinationCountry,
+    //             deliveryTerm: formData.deliveryTerm,
+    //             deliveryPlace: formData.place,
+    //             paymentTerm: parseInt(formData.paymentTerm),
+
+    //             shippingBillNo: formData.shippingBillNo,
+    //             shippingBillDate: formData.shippingBillDate
+    //                 ? moment(formData.shippingBillDate).format('YYYY-MM-DD')
+    //                 : null,
+
+    //             paymentReferenceNo: formData.bankPaymentRefNo,
+    //             ladingBill: formData.billOfLading,
+    //             laddingBillDate: formData.billOfLadingDate
+    //                 ? moment(formData.billOfLadingDate).format('YYYY-MM-DD')
+    //                 : null,
+
+    //             freight: parseFloat(formData.freight) || 0,
+    //             inssuranceAmount: parseFloat(formData.insurance) || 0,
+
+    //             poDetails: rows.map(row => ({
+    //                 poNumber: row.poNumber,
+    //                 poDate: row.date
+    //                     ? moment(row.date).format('YYYY-MM-DD')
+    //                     : null
+    //             })),
+
+    //             InvoiceItems: items.map(item => ({
+    //                 productId: item.uniqueProductCode,
+    //                 hsnCode: item.hsn,
+    //                 quantity: parseFloat(item.qty),
+    //                 price: parseFloat(item.unitCost)
+    //             }))
+    //         };
+
+    //         dispatch({ type: ADD_INVOICE_SAGA, payload: payload })
+    //         setLoading(true)
+    //     }
+    // }
 
 
 
-    const handleSaveExitForCustomerDetail = () => {
-        if (validateCustomerForm()) {
+    // const handleSaveExitForInvoiceDetail = () => {
+    //     if (validateInvoiceForm()) {
+    //         const payload = {
+    //             customerId: formData.customer,
+    //             shippingAddress: shippingAddress[0]?.id,
+    //             billingAddress: officeAddress[0]?.id,
+    //             invoiceType: parseInt(formData.invoiceType),
+    //             currencyId: parseInt(formData.currency),
 
+    //             invoiceDate: formData.invoiceDate
+    //                 ? moment(formData.invoiceDate).format('YYYY-MM-DD')
+    //                 : null,
+
+    //             orginOfGoods: formData.originOfGoods,
+    //             loadingPort: parseInt(formData.portOfLoading),
+    //             dischargePort: parseInt(formData.portOfDischarge),
+    //             destination: formData.destinationCountry,
+    //             deliveryTerm: formData.deliveryTerm,
+    //             deliveryPlace: formData.place,
+    //             paymentTerm: parseInt(formData.paymentTerm),
+
+    //             shippingBillNo: formData.shippingBillNo,
+    //             shippingBillDate: formData.shippingBillDate
+    //                 ? moment(formData.shippingBillDate).format('YYYY-MM-DD')
+    //                 : null,
+
+    //             paymentReferenceNo: formData.bankPaymentRefNo,
+    //             ladingBill: formData.billOfLading,
+    //             laddingBillDate: formData.billOfLadingDate
+    //                 ? moment(formData.billOfLadingDate).format('YYYY-MM-DD')
+    //                 : null,
+
+    //             freight: parseFloat(formData.freight) || 0,
+    //             inssuranceAmount: parseFloat(formData.insurance) || 0,
+
+    //             poDetails: rows.map(row => ({
+    //                 poNumber: row.poNumber,
+    //                 poDate: row.date
+    //                     ? moment(row.date).format('YYYY-MM-DD')
+    //                     : null
+    //             })),
+
+    //             InvoiceItems: items.map(item => ({
+    //                 productId: item.uniqueProductCode,
+    //                 hsnCode: item.hsn,
+    //                 quantity: parseFloat(item.qty),
+    //                 price: parseFloat(item.unitCost)
+    //             }))
+    //         };
+
+    //         dispatch({ type: ADD_INVOICE_SAGA, payload: payload })
+    //         setLoading(true)
+    //     }
+    // }
+
+
+    const handleSaveExitForItemDetail = () => {
+        if (validateItemsForm()) {
             const payload = {
                 customerId: formData.customer,
-                shippingAddress: 5,
-                billingAddress: 6,
+                shippingAddress: shippingAddress[0]?.id,
+                billingAddress: officeAddress[0]?.id,
                 invoiceType: parseInt(formData.invoiceType),
                 currencyId: parseInt(formData.currency),
 
@@ -701,6 +821,8 @@ function AddInvoice() {
                 orginOfGoods: formData.originOfGoods,
                 loadingPort: parseInt(formData.portOfLoading),
                 dischargePort: parseInt(formData.portOfDischarge),
+                destination: formData.destinationCountry,
+                deliveryTerm: formData.deliveryTerm,
                 deliveryPlace: formData.place,
                 paymentTerm: parseInt(formData.paymentTerm),
 
@@ -726,67 +848,7 @@ function AddInvoice() {
                 })),
 
                 InvoiceItems: items.map(item => ({
-                    productId: item.productCode,
-                    hsnCode: item.hsn,
-                    quantity: parseFloat(item.qty),
-                    price: parseFloat(item.unitCost)
-                }))
-            };
-
-
-            console.log("payload", payload)
-            dispatch({ type: ADD_INVOICE_SAGA, payload: payload })
-        }
-    }
-
-
-
-    console.log("table items", items)
-
-    const handleSaveExitForInvoiceDetail = () => {
-        if (validateInvoiceForm()) {
-            const payload = {
-                customerId: formData.customer,
-                shippingAddress: 5,
-                billingAddress: 6,
-                invoiceType: formData.invoiceType,
-                currencyId: formData.currency,
-
-                invoiceDate: formData.invoiceDate
-                    ? moment(formData.invoiceDate).format('YYYY-MM-DD')
-                    : null,
-
-                orginOfGoods: formData.originOfGoods,
-                loadingPort: formData.portOfLoading,
-                dischargePort: formData.portOfDischarge,
-                destination: formData.destinationCountry,
-                deliveryTerm: formData.deliveryTerm,
-                deliveryPlace: formData.place,
-                paymentTerm: formData.paymentTerm,
-
-                shippingBillNo: formData.shippingBillNo,
-                shippingBillDate: formData.shippingBillDate
-                    ? moment(formData.shippingBillDate).format('YYYY-MM-DD')
-                    : null,
-
-                paymentReferenceNo: formData.bankPaymentRefNo,
-                ladingBill: formData.billOfLading,
-                laddingBillDate: formData.billOfLadingDate
-                    ? moment(formData.billOfLadingDate).format('YYYY-MM-DD')
-                    : null,
-
-                freight: parseFloat(formData.freight) || 0,
-                inssuranceAmount: parseFloat(formData.insurance) || 0,
-
-                poDetails: rows.map(row => ({
-                    poNumber: row.poNumber,
-                    poDate: row.date
-                        ? moment(row.date).format('YYYY-MM-DD')
-                        : null
-                })),
-
-                InvoiceItems: items.map(item => ({
-                    productId: item.productCode,
+                    productId: item.uniqueProductCode,
                     hsnCode: item.hsn,
                     quantity: parseFloat(item.qty),
                     price: parseFloat(item.unitCost)
@@ -794,61 +856,7 @@ function AddInvoice() {
             };
 
             dispatch({ type: ADD_INVOICE_SAGA, payload: payload })
-        }
-    }
-
-
-    const handleSaveExitForItemDetail = () => {
-        if (validateItemsForm()) {
-            const payload = {
-                customerId: formData.customer,
-                shippingAddress: 5,
-                billingAddress: 6,
-                invoiceType: formData.invoiceType,
-                currencyId: formData.currency,
-
-                invoiceDate: formData.invoiceDate
-                    ? moment(formData.invoiceDate).format('YYYY-MM-DD')
-                    : null,
-
-                orginOfGoods: formData.originOfGoods,
-                loadingPort: formData.portOfLoading,
-                dischargePort: formData.portOfDischarge,
-                destination: formData.destinationCountry,
-                deliveryTerm: formData.deliveryTerm,
-                deliveryPlace: formData.place,
-                paymentTerm: formData.paymentTerm,
-
-                shippingBillNo: formData.shippingBillNo,
-                shippingBillDate: formData.shippingBillDate
-                    ? moment(formData.shippingBillDate).format('YYYY-MM-DD')
-                    : null,
-
-                paymentReferenceNo: formData.bankPaymentRefNo,
-                ladingBill: formData.billOfLading,
-                laddingBillDate: formData.billOfLadingDate
-                    ? moment(formData.billOfLadingDate).format('YYYY-MM-DD')
-                    : null,
-
-                freight: parseFloat(formData.freight) || 0,
-                inssuranceAmount: parseFloat(formData.insurance) || 0,
-
-                poDetails: rows.map(row => ({
-                    poNumber: row.poNumber,
-                    poDate: row.date
-                        ? moment(row.date).format('YYYY-MM-DD')
-                        : null
-                })),
-
-                InvoiceItems: items.map(item => ({
-                    productId: item.productCode,
-                    hsnCode: item.hsn,
-                    quantity: parseFloat(item.qty),
-                    price: parseFloat(item.unitCost)
-                }))
-            };
-
-            dispatch({ type: ADD_INVOICE_SAGA, payload: payload })
+            setLoading(true)
 
         }
     }
@@ -882,14 +890,6 @@ function AddInvoice() {
 
 
 
-
-
-
-
-
-
-
-
     const handleAutoCompleteInputChange = (index, e) => {
         const value = e.target.value;
 
@@ -902,6 +902,16 @@ function AddInvoice() {
             return updated;
         });
 
+        setItemErrors(prevErrors => {
+            const updatedErrors = [...prevErrors];
+            if (updatedErrors[index]?.description) {
+                updatedErrors[index] = {
+                    ...updatedErrors[index],
+                    description: ''
+                };
+            }
+            return updatedErrors;
+        });
 
         clearTimeout(debounceTimeout.current);
         debounceTimeout.current = setTimeout(() => {
@@ -957,21 +967,19 @@ function AddInvoice() {
     };
 
 
-    console.log("items*******************", items)
-
 
 
     useEffect(() => {
         dispatch({ type: GET_PORT_SAGA })
         dispatch({ type: GET_PAYMENT_TERM_SAGA })
         dispatch({ type: GET_DELIVERY_TERM_SAGA })
+        dispatch({ type: GET_MASTER_SAGA })
+        dispatch({ type: GET_INVOICE_TYPE_SAGA })
+        dispatch({ type: GET_PRODUCT_SAGA, payload: { searchKeyword: "" } });
+        dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { searchKeyword: "" } });
     }, [])
 
 
-
-    useEffect(() => {
-        dispatch({ type: GET_CUSTOMER_LIST_SAGA, payload: { searchKeyword: "" } });
-    }, []);
 
 
     useEffect(() => {
@@ -1022,7 +1030,6 @@ function AddInvoice() {
 
     const customer = formData.customer ? state.customer?.customerDetails : {};
 
-    console.log("customer", customer)
 
     useEffect(() => {
         if (formData.customer) {
@@ -1038,9 +1045,7 @@ function AddInvoice() {
 
     const productData = useSelector((state) => state.product?.productList || []);
 
-    useEffect(() => {
-        dispatch({ type: GET_PRODUCT_SAGA, payload: { searchKeyword: "" } });
-    }, []);
+
 
     useEffect(() => {
         if (productData) {
@@ -1058,10 +1063,30 @@ function AddInvoice() {
     }, [items.length]);
 
 
+    useEffect(() => {
+        if (state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 6000)
+        }
+    }, [state.Common?.code]);
 
+    useEffect(() => {
+        if (state.Common.successCode === 200) {
+            setLoading(false)
+            setTimeout(() => {
+                dispatch({ type: RESET_CODE })
+            }, 100)
+        }
+    }, [state.Common.successCode]);
 
+    useEffect(() => {
+        if (state.Common.isVisible === 1) {
+            navigate('/invoice')
+        }
 
-
+    }, [state.Common.isVisible])
 
 
 
@@ -1073,8 +1098,12 @@ function AddInvoice() {
 
     return (
         <div className='bg-slate-100 flex flex-1 flex-col p-2 sm:p-2 md:p-2 lg:p-4 rounded-t-2xl'>
-            <div className='bg-white  rounded-2xl ps-5 pt-3 pe-5 pb-5 relative h-fit'>
-
+            <div className='bg-white  rounded-2xl ps-5 pt-3 pe-5 pb-5 relative h-fit relative'>
+                {loading && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
+                        <div className="loader border-t-4 border-[#205DA8] border-solid rounded-full w-10 h-10 animate-spin"></div>
+                    </div>
+                )}
                 <div className='flex items-center justify-between pe-12 mb-1'>
                     <h2 className="text-xl font-semibold  font-Gilroy text[#222222]">Add Invoice</h2>
                 </div>
@@ -1088,8 +1117,8 @@ function AddInvoice() {
                             <button
                                 key={tab.id}
                                 className={`px-0 py-2 font-Gilroy ${value === tab.id
-                                    ? "border-b-4 border-[#205DA8] text-[#205DA8] font-semibold text-base"
-                                    : "text-gray-500 border-neutral-100 border-b-4 text-base"
+                                    ? "border-b-4 border-[#205DA8] text-[#205DA8] font-semibold text-base "
+                                    : "text-gray-500 border-neutral-100 border-b-4 text-base "
                                     } transition-all duration-600`}
                                 onClick={() => handleTabClick(tab.id)}
                             >
@@ -1108,7 +1137,9 @@ function AddInvoice() {
                 </div>
 
 
-
+                {
+                    state.Common?.errorMessage && <label className="block  mb-2 text-start font-Gilroy font-normal text-md text-red-600"> {state.Common.errorMessage} </label>
+                }
 
 
 
@@ -1221,7 +1252,7 @@ function AddInvoice() {
                         <div className="flex justify-end gap-3 h-fit items-center mt-8">
 
 
-                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold" onClick={handleSaveExitForCustomerDetail}  >Save & Exit</button>
+                            {/* <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold" onClick={handleSaveExitForCustomerDetail}  >Save & Exit</button> */}
 
                             <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleNextInvoiceDetail} >Next</button>
 
@@ -1551,7 +1582,7 @@ function AddInvoice() {
                                     />
                                 </div>
 
-                                <div className='mb-2 items-center'>
+                                {/* <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>No of Package</label>
 
                                     <input
@@ -1584,7 +1615,8 @@ function AddInvoice() {
                                         onChange={(e) => handleInputChangeForInvoice('grossWeight', e.target.value)}
                                         className='w-full px-3 py-3 border rounded-xl focus:outline-none    font-Gilroy font-medium text-sm text-neutral-800'
                                     />
-                                </div>
+                                </div> */}
+
 
                                 <div className='mb-2 items-center'>
                                     <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Freight <span className='text-red-500'>*</span></label>
@@ -1704,7 +1736,7 @@ function AddInvoice() {
                         <div className="flex justify-end gap-3 h-fit items-center mt-4">
 
 
-                            <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold" onClick={handleSaveExitForInvoiceDetail} >Save & Exit</button>
+                            {/* <button className="w-[167px] px-10 py-2  border border-[#205DA8] rounded-lg text-[#205DA8] font-Montserrat text-base font-semibold" onClick={handleSaveExitForInvoiceDetail} >Save & Exit</button> */}
 
                             <button className="w-[167px] px-10 py-2 bg-[#205DA8] rounded-lg text-white font-Montserrat text-base font-semibold" onClick={handleNextItemDetail} >Next</button>
 
@@ -1753,11 +1785,13 @@ function AddInvoice() {
                                                                 placeholder="SerialNo."
                                                                 className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center"
                                                             />
-                                                            {itemErrors[index]?.itemNo && (
-                                                                <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
-                                                                    {itemErrors[index].itemNo}
-                                                                </div>
-                                                            )}
+                                                            <div className="min-h-[15px] mt-1 text-[12px] text-red-500 font-Gilroy flex items-center gap-1">
+                                                                {itemErrors[index]?.itemNo && (
+                                                                    <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                        {itemErrors[index].itemNo}
+                                                                    </div>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </td>
 
@@ -1792,11 +1826,14 @@ function AddInvoice() {
                                                                 placeholder="Enter Product Name"
                                                                 className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none font-Gilroy"
                                                             />
-                                                            {itemErrors[index]?.description && (
-                                                                <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
-                                                                    {itemErrors[index].description}
-                                                                </div>
-                                                            )}
+                                                            <div className="min-h-[15px] mt-1 text-[12px] text-red-500 font-Gilroy flex items-center gap-1">
+                                                                {itemErrors[index]?.description && (
+                                                                    <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                        {itemErrors[index].description}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+
 
                                                         </div>
 
@@ -1834,13 +1871,15 @@ function AddInvoice() {
                                                                 value={item.hsn}
                                                                 onChange={(e) => handleItemChange(index, 'hsn', e.target.value)}
                                                                 placeholder="Enter HSN"
-                                                                className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none"
+                                                                className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none focus:outline-none font-Gilroy text-center"
                                                             />
-                                                            {itemErrors[index]?.hsn && (
-                                                                <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
-                                                                    {itemErrors[index].hsn}
-                                                                </div>
-                                                            )}
+                                                            <div className="min-h-[15px] mt-1 text-[12px] text-red-500 font-Gilroy flex items-center gap-1">
+                                                                {itemErrors[index]?.hsn && (
+                                                                    <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                        {itemErrors[index].hsn}
+                                                                    </div>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                     </td>
 
@@ -1853,9 +1892,9 @@ function AddInvoice() {
                                                                 ref={getInputRef('qty', index)}
                                                                 onChange={(e) => handleItemChange(index, 'qty', e.target.value)}
                                                                 placeholder="Enter Item QTY"
-                                                                className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center"
+                                                                className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none font-Gilroy  text-center"
                                                             />
-                                                            <div className="min-h-[18px] mt-1">
+                                                            <div className="min-h-[15px] mt-1 text-[12px] text-red-500 font-Gilroy flex items-center gap-1">
                                                                 {itemErrors[index]?.qty && (
                                                                     <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
                                                                         {itemErrors[index].qty}
@@ -1874,13 +1913,15 @@ function AddInvoice() {
                                                             ref={getInputRef('unitCost', index)}
                                                             onChange={(e) => handleItemChange(index, 'unitCost', e.target.value)}
                                                             placeholder="Enter Per Unit"
-                                                            className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center"
+                                                            className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none font-Gilroy text-center"
                                                         />
-                                                        {itemErrors[index]?.unitCost && (
-                                                            <div className="text-red-500 text-[12px] mt-1 flex items-center gap-1 font-Gilroy">
-                                                                {itemErrors[index].unitCost}
-                                                            </div>
-                                                        )}
+                                                        <div className="min-h-[15px] mt-1 text-[12px] text-red-500 font-Gilroy flex items-center gap-1">
+                                                            {itemErrors[index]?.unitCost && (
+                                                                <div className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                    {itemErrors[index].unitCost}
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </td>
 
 
@@ -1890,9 +1931,12 @@ function AddInvoice() {
                                                             value={item.total}
                                                             readOnly
                                                             placeholder="Total"
-                                                            className={`w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center ${itemErrors[index] && Object.keys(itemErrors[index]).length > 0 ? "mb-5" : "mb-0"
-                                                                }`}
+                                                            className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none font-Gilroy text-center"
+
                                                         />
+                                                        <div className="min-h-[15px] mt-1 text-[12px] text-red-500 font-Gilroy flex items-center gap-1">
+
+                                                        </div>
                                                     </td>
 
 
@@ -1903,13 +1947,15 @@ function AddInvoice() {
                                                             ref={getInputRef('packageNo', index)}
                                                             onChange={(e) => handleItemChange(index, 'packageNo', e.target.value)}
                                                             placeholder="Enter No"
-                                                            className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center"
+                                                            className="w-full px-3 py-3 border rounded-xl text-sm focus:outline-none text-center font-Gilroy"
                                                         />
-                                                        {itemErrors[index]?.packageNo && (
-                                                            <div className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-Gilroy">
-                                                                {itemErrors[index].packageNo}
-                                                            </div>
-                                                        )}
+                                                        <div className="min-h-[15px] mt-1 text-[12px] text-red-500 font-Gilroy flex items-center gap-1">
+                                                            {itemErrors[index]?.packageNo && (
+                                                                <div className="text-red-500 text-[11px] mt-1 flex items-center gap-1 font-Gilroy">
+                                                                    {itemErrors[index].packageNo}
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))}

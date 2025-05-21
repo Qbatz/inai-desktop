@@ -15,7 +15,9 @@ export async function GetDeliveryTerm() {
     return await AxiosConfig.get('/payments/delivery-terms')
 }
 
-
+export async function GetInvoiceType() {
+    return await AxiosConfig.get('/invoice/invoice-type')
+}
 
 export async function GetAllInvoiceList(invoice) {
 
@@ -26,13 +28,13 @@ export async function GetAllInvoiceList(invoice) {
             startDate: invoice.startDate || '',
             endDate: invoice.endDate || ''
         }).toString();
-    } else if (invoice.searchKeyword) {
+    } else if (invoice.keyword) {
         queryParams = new URLSearchParams({
-            searchKeyword: invoice.searchKeyword || ''
+            keyword: invoice.keyword || ''
         }).toString();
     }
 
-    if (!invoice.startDate && !invoice.endDate && !invoice.searchKeyword) {
+    if (!invoice.startDate && !invoice.endDate && !invoice.keyword) {
         return await AxiosConfig.get('/invoices');
     }
 
@@ -46,3 +48,4 @@ export async function AddInvoice(invoice) {
     data: invoice
   });
 }
+

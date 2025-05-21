@@ -143,7 +143,7 @@ const InvoiceList = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [showPicker]);
     useEffect(() => {
-        dispatch({ type: GET_ALL_INVOICE_SAGA, payload: { searchKeyword: "" } })
+        dispatch({ type: GET_ALL_INVOICE_SAGA, payload: { keyword: "" } })
         setLoading(true)
     }, []);
 
@@ -193,13 +193,13 @@ const InvoiceList = () => {
             if (searchTerm.trim().length >= 1) {
                 dispatch({
                     type: GET_ALL_INVOICE_SAGA,
-                    payload: { searchKeyword: searchTerm.trim() },
+                    payload: { keyword: searchTerm.trim() },
                 });
                 setLoading(true);
             } else if (searchTerm.trim().length === 0) {
                 dispatch({
                     type: GET_ALL_INVOICE_SAGA,
-                    payload: { searchKeyword: "" },
+                    payload: { keyword: "" },
                 });
             }
         }, 500);
@@ -258,7 +258,7 @@ const InvoiceList = () => {
                                 type="text"
                                 value={searchTerm}
                                 onChange={handleSearchChange}
-                                placeholder="Search by ID, Support, or Others"
+                                placeholder="Search by Invoice Number"
                                 className="w-full bg-slate-100 border-slate-100 pl-10 pr-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#205DA8] text-gray-500 font-Gilroy  text-sm font-medium"
                             />
                         </div>
@@ -325,12 +325,12 @@ const InvoiceList = () => {
                                     paginatedInvoices.map((invoice, index) => (
                                         <tr key={invoice.id}>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy hover:underline hover:text-[#205DA8] hover:cursor-pointer " onClick={() => handleInvoiceDetails(invoice.invoiceNo)}>{invoice.invoiceNo}</td>
+                                            <td className="px-4 py-2 text-center  text-sm font-medium font-Gilroy hover:underline text-[#205DA8] hover:cursor-pointer " onClick={() => handleInvoiceDetails(invoice.invoiceNo)}>{invoice.invoiceNo}</td>
                                             <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.contact_person}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.email}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.contact_number}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.invoiceDate}</td>
-                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.products[0]?.price}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.email || "N/A"}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.customerDetails.contact_number || "N/A"}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.invoiceDate || "-"}</td>
+                                            <td className="px-4 py-2 text-center text-black text-sm font-medium font-Gilroy">{invoice.products[0]?.total_amount}</td>
                                             <td className="px-4 py-2 text-center relative">
                                                 <div
                                                     onClick={(e) => handleShowPopup(index, e)}

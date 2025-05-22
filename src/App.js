@@ -17,7 +17,7 @@ import { LOG_OUT } from './Utils/Constant'
 import Cookies from 'universal-cookie';
 import { useDispatch } from 'react-redux';
 import ResetPassword from './Pages/AccountManagement/ResetPassword';
-
+import Dashboard from './Pages/Dashboard/Dashboard';
 
 function App({ isLogged_In }) {
   const dispatch = useDispatch();
@@ -71,6 +71,7 @@ function App({ isLogged_In }) {
 
 
 
+
   return (
     <div>
       <ToastContainer position="bottom-center"
@@ -80,23 +81,19 @@ function App({ isLogged_In }) {
         {
           isLogged_In || successLogin ? (
             <>
-              <Routes>
-                <Route path="/*" element={<Sidebar />} />
-
-              </Routes>
+              <Sidebar />
             </>
           )
-            : 
+            :
             (
               <Routes>
-                <Route path="/:token/:type"  element={<Login />} />
+                <Route path="/:type/:token" element={<Dashboard />} />
                 <Route path="/" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/register" element={<CreateAccount />} />
                 <Route path="/forgot-user-name" element={<ForgotUserName />} />
                 <Route path="/password" element={<ForgotPassword />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             )
         }

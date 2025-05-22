@@ -603,8 +603,6 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
 
-
-
     const handleSaveAndExit = () => {
         const { tempErrors, contactErrors, isValid } = validateForm(formData, contacts, natureOfBusiness);
         setIsChanged('');
@@ -1474,11 +1472,11 @@ function AddCustomer({ editCustomerDetails }) {
         control: (base) => ({
             ...base,
             borderColor: '#E5E7EB',
-            borderRadius: '0.6rem',
             boxShadow: 'none',
             cursor: 'pointer',
             padding: '4px 1px',
             minHeight: '40px',
+            borderRight: 'none',
             '&:hover': {
                 borderColor: '#E5E7EB',
             },
@@ -1533,9 +1531,6 @@ function AddCustomer({ editCustomerDetails }) {
             fontSize: "14px",
             fontWeight: 500,
             fontFamily: "Gilroy, sans-serif",
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -1547,9 +1542,12 @@ function AddCustomer({ editCustomerDetails }) {
         }),
     };
 
-
-
-    
+    const options = [
+        { value: '', label: 'Select' },
+        { value: 'mr', label: 'Mr' },
+        { value: 'miss', label: 'Miss' },
+        { value: 'mrs', label: 'Mrs' },
+    ];
     const countryCodeOptions = [
         { value: '', label: 'Select' },
         ...(state.Common?.country?.map(item => ({
@@ -1616,7 +1614,6 @@ function AddCustomer({ editCustomerDetails }) {
             display: 'none',
         }),
     };
-
 
     return (
         <div className='bg-slate-100 flex flex-1 flex-col p-2 sm:p-2 md:p-2 lg:p-2 rounded-t-2xl'>
@@ -1863,8 +1860,8 @@ function AddCustomer({ editCustomerDetails }) {
                                         <div className="flex">
                                             <Select
                                                 ref={surNameRef}
-                                                options={titleOptions}
-                                                 value={titleOptions.find(opt => String(opt.value) === String(formData.surName))}
+                                                options={options}
+                                                value={options.find(opt => opt.value === formData.surName)}
                                                 onChange={(selected) => handleInputChange('surName', selected.value)}
                                                 className="w-[100px]"
                                                 styles={customStyles}
@@ -1982,7 +1979,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <Select
                                                 ref={countryCodeRef}
                                                 options={countryCodeOptions}
-                                                value={countryCodeOptions.find(opt => String(opt.value) === String(formData.countryCode))}
+                                                value={countryCodeOptions.find(opt => opt.value === formData.countryCode)}
                                                 onChange={(selected) => handleInputChange('countryCode', selected.value)}
                                                 className="w-[100px]"
                                                 styles={customStyles}
@@ -2092,7 +2089,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     </label>
                                                     <div className="flex">
                                                         <Select
-                                                            value={titleOptions.find(opt => String(opt.value) === String(contact.surName))}
+                                                            value={titleOptions.find(opt => opt.value === contact.surName)}
                                                             onChange={(selected) => handleChange(index, 'surName', selected ? selected.value : '')}
                                                             className="w-[100px]"
                                                             classNamePrefix="react-select"
@@ -2134,7 +2131,63 @@ function AddCustomer({ editCustomerDetails }) {
                                                         </>
                                                     )}
                                                 </div>
-                                              
+
+
+                                                {/* <div>
+                                                    <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
+                                                        Contact Number <span className="text-red-500">*</span>
+                                                    </label>
+
+                                                    <div className="flex">
+                                                        <select
+                                                            value={contact.countryCode}
+                                                            ref={contactRefs.current[index]?.countryCode}
+                                                            onChange={(e) => handleChange(index, 'countryCode', e.target.value)}
+                                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
+                                                        >
+                                                            <option value="">Select</option>
+                                                            {state.Common?.country?.map((item) => (
+                                                                <option key={item.id} value={item.id} className='text-neutral-500'>
+                                                                    {item.phone}
+                                                                </option>
+                                                            ))}
+
+                                                        </select>
+                                                        <input
+                                                            type="text"
+                                                            ref={contactRefs.current[index]?.number}
+                                                            placeholder="Enter Contact Number"
+                                                            value={contact.number}
+                                                            maxLength={10}
+                                                            onChange={(e) => handleChange(index, "number", e.target.value)}
+                                                            className="w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
+                                                        />
+                                                    </div>
+
+                                                    {errors.contactErrors?.[index]?.countryCode && errors.contactErrors?.[index]?.number ? (
+                                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                            <InfoCircle size={14} color="#DC2626" className='' />
+                                                            <p className='mt-0.5'>Country code & Number is required</p>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            {errors.contactErrors?.[index]?.countryCode && (
+                                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                    <InfoCircle size={14} color="#DC2626" className='mt-0.5' />
+                                                                    <p>{errors.contactErrors[index].countryCode}</p>
+                                                                </div>
+                                                            )}
+
+                                                            {errors.contactErrors?.[index]?.number && (
+                                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
+                                                                    <InfoCircle size={14} color="#DC2626" className='mt-0.5' />
+                                                                    <p>{errors.contactErrors[index].number}</p>
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    )}
+
+                                                </div> */}
 
                                                 <div>
                                                     <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
@@ -2143,7 +2196,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                                     <div className="flex">
                                                         <Select
-                                                            value={countryCodeOptions.find(opt => String(opt.value) === String(formData.countryCode))}
+                                                            value={countryCodeOptions.find(opt => opt.value === contact.countryCode)}
                                                             onChange={(selected) => handleChange(index, 'countryCode', selected ? selected.value : '')}
                                                             options={countryCodeOptions}
                                                             className="w-[100px]"

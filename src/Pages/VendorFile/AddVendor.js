@@ -1683,7 +1683,7 @@ function BasicVendor({ vendorDetails }) {
 
                                         <div className="flex">
                                             <Select
-                                                value={titleOptions.find((option) => String(option.value) === String(surName))}
+                                                value={titleOptions.find((option) => option.value === surName)}
                                                 onChange={(selected) => handleSurNameChange({ target: { value: selected ? selected.value : '' } })}
                                                 options={titleOptions}
                                                 className="w-[100px]"
@@ -1729,7 +1729,7 @@ function BasicVendor({ vendorDetails }) {
 
                                         <div className="flex">
                                             <Select
-                                                value={countryCodeOptions.find((option) => String(option.value) === String(countryCode))}
+                                                value={countryCodeOptions.find((option) => option.value === countryCode)}
                                                 onChange={(selected) => handleCountryCodeChange({ target: { value: selected ? selected.value : '' } })}
                                                 options={countryCodeOptions}
                                                 className="w-[100px]"
@@ -1847,7 +1847,7 @@ function BasicVendor({ vendorDetails }) {
 
                                                     <div className="flex">
                                                         <Select
-                                                            value={titleOptions.find((option) => String(option.value) === String(contact.surName))}
+                                                            value={titleOptions.find((option) => option.value === contact.surName)}
                                                             onChange={(selected) =>
                                                                 handleAdditionalContactChange(index, 'surName', selected ? selected.value : '')
                                                             }
@@ -1894,7 +1894,7 @@ function BasicVendor({ vendorDetails }) {
                                                     </label>
                                                     <div className="flex">
                                                         <Select
-                                                            value={countryOptions.find((option) => String(option.value) === String(contact.countryCode))}
+                                                            value={countryOptions.find((option) => option.value === contact.countryCode)}
                                                             onChange={(selected) =>
                                                                 handleAdditionalContactChange(index, 'countryCode', selected ? selected.value : '')
                                                             }

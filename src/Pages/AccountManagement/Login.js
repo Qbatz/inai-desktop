@@ -12,7 +12,7 @@ import Cookies from 'universal-cookie';
 import { encryptData } from '../../Crypto/crypto';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Login({ message, loginStatusCode }) {
 
@@ -21,7 +21,6 @@ function Login({ message, loginStatusCode }) {
   const dispatch = useDispatch();
   const state = useSelector(state => state)
 
-  const { token, type } = useParams();
 
   const [clientId, setClientId] = useState('');
   const [userId, setUserId] = useState('');
@@ -116,36 +115,7 @@ function Login({ message, loginStatusCode }) {
 
   };
 
-  useEffect(() => {
-    if (!state.userInfo.isLoggedIn) {
-      if (token) {
-        dispatch({ type: LOG_IN })
-        const encryptData_Login = encryptData(JSON.stringify(true));
-        localStorage.setItem("inai_login", encryptData_Login.toString());
-        const cookies = new Cookies();
-        cookies.set('inai-token', token, { path: '/' });
-        if(type){
-        switch (type) {
-          case "client":
-            navigate("/client");
-            break;
-          case "product":
-            navigate("/product");
-            break;
-          case "vendor":
-            navigate("/vendor");
-            break;
-          case "invoice":
-            navigate("/invoice");
-            break;
-          default:
-
-            break;
-        }
-      }
-      }
-    }
-  }, [token]);
+ 
 
 
 

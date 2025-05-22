@@ -36,8 +36,6 @@ import InvoiceDetails from "../Pages/Invoice/InvoiceDetails";
 
 
 
-
-
 function Sidebar({ state }) {
 
     const dispatch = useDispatch();
@@ -75,6 +73,34 @@ function Sidebar({ state }) {
     };
 
 
+
+    
+
+    useEffect(() => {
+        const saved = localStorage.getItem('lastPage');
+        if (saved) {
+            const { page, path } = JSON.parse(saved);
+            setActiveItem(page);
+            navigate(path);
+        }
+    }, []);
+
+
+   
+
+
+
+    const handleNavigation = (page, path) => {
+        setActiveItem(page);
+              navigate(path);
+        };
+
+
+
+
+
+
+
     useEffect(() => {
         const path = window.location.pathname;
         if (path === "/product") {
@@ -85,11 +111,15 @@ function Sidebar({ state }) {
             setActiveItem("client");
         } else if (path === "/") {
             setActiveItem("dashboard");
-        }else if(path === "/invoice"){
- setActiveItem("invoice");
+        } else if (path === "/invoice") {
+            setActiveItem("invoice");
         }
 
     }, [window.location.pathname]);
+
+
+
+
 
 
 
@@ -120,10 +150,7 @@ function Sidebar({ state }) {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 rounded-lg cursor-pointer 
   ${activeItem === "dashboard" ? "text-[#205DA8]" : "text-black"}`}
-                            onClick={() => {
-                                setActiveItem('dashboard')
-                                navigate("/")
-                            }}
+                            onClick={() => handleNavigation('dashboard', '/')}
                         >
                             <Chart2 size="22" color={activeItem === "dashboard" ? "#205DA8" : "#0F172A"} />
                             <span className="hidden lg:inline">Dashboard</span>
@@ -131,10 +158,7 @@ function Sidebar({ state }) {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "client" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => {
-                                setActiveItem('client')
-                                navigate("/client")
-                            }}
+                            onClick={() => handleNavigation('client', '/client')}
                         >
                             <img src={activeItem === "client" ? ClientBlue : ClientIcon} alt="VendorIcon" />
                             <span className="hidden lg:inline">Client</span>
@@ -142,10 +166,7 @@ function Sidebar({ state }) {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "vendor" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => {
-                                setActiveItem("vendor")
-                                navigate("/vendor")
-                            }}
+                            onClick={() => handleNavigation('vendor', '/vendor')}
                         >
                             <img src={activeItem === "vendor" ? VendorBlue : VendorIcon} alt="VendorIcon" />
                             <span className="hidden lg:inline">Vendor</span>
@@ -153,10 +174,7 @@ function Sidebar({ state }) {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "product" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => {
-                                setActiveItem("product")
-                                navigate('/product')
-                            }}
+                            onClick={() => handleNavigation('product', '/product')}
                         >
                             <img src={activeItem === "product" ? ProductBlue : ProductIcon} alt="ProductIcon" />
                             <span className="hidden lg:inline">Product</span>
@@ -164,9 +182,7 @@ function Sidebar({ state }) {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "invoice" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => {setActiveItem("invoice")
-                                navigate('/invoice')
-                            }}
+                            onClick={() => handleNavigation('invoice', '/invoice')}
                         >
                             <img src={activeItem === "invoice" ? InvoiceBlue : InvoiceIcon} alt="InvoiceIcon" />
                             <span className="hidden lg:inline">Invoice</span>
@@ -174,7 +190,7 @@ function Sidebar({ state }) {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "einvoice" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => setActiveItem("einvoice")}
+                            onClick={() => handleNavigation('einvoice', '/')}
                         >
                             <Receipt1 size={activeItem === "einvoice" ? "22" : "22"} color={activeItem === "einvoice" ? "#205DA8" : "#0F172A"} />
                             <span className="hidden lg:inline">E-Invoice</span>
@@ -182,7 +198,7 @@ function Sidebar({ state }) {
                         <li
                             className={`grid grid-cols-[auto_1fr] items-center gap-3 font-Gilroy font-semibold text-base p-2 cursor-pointer ${activeItem === "ewaybill" ? "text-[#205DA8]" : "text-black"
                                 }`}
-                            onClick={() => setActiveItem("ewaybill")}
+                            onClick={() => handleNavigation('ewaybill', '/')}
                         >
                             <Receipt2 size={activeItem === "ewaybill" ? "22" : "22"} color={activeItem === "ewaybill" ? "#205DA8" : "#0F172A"} />
                             <span className="hidden lg:inline">E-WayBill</span>
@@ -263,10 +279,11 @@ function Sidebar({ state }) {
 
                 <div className="flex flex-1">
                     <Routes>
+                        <Route path="/:token/:type"  element={<Dashboard />} />
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/client" element={<CustomerList />} />
                         <Route path="/vendor" element={<Vendor />} />
-                        <Route path="/product" element={<ProductList />} />
+                         <Route path="/product" element={<ProductList />} />
                         <Route path="/add-products" element={<AddProduct />} />
                         <Route path="/add-customer" element={<AddCustomer />} />
                         <Route path="/customer-details/:customerId" element={<CustomerDetails />} />
@@ -277,10 +294,12 @@ function Sidebar({ state }) {
                         <Route path="/invoice" element={<InvoiceList />} />
                         <Route path="/add-invoice" element={<AddInvoice />} />
                         <Route path="/invoice-details/:invoiceId" element={<InvoiceDetails />} />
-                        
+
+
                     </Routes>
 
                 </div>
+
 
 
 

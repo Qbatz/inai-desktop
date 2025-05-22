@@ -18,6 +18,8 @@ AxiosConfig.interceptors.request.use(
   (config) => {
       const token = cookies.get('inai-token');
      
+console.log("Axios config",token)
+
       if (token) {
           config.headers['Authorization'] = `Bearer ${token}`;
       }

@@ -231,6 +231,7 @@ function* handleGetUserInfo() {
 
         if (response.status === 200) {
             yield put({ type: GET_USER_INFO_REDUCER, payload: { users: response.data } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status, isValidToken: 1 } });
         } else if (response.status === 201) {
             yield put({
                 type: ERROR_CODE,

@@ -17,7 +17,7 @@ import { LOG_OUT } from './Utils/Constant'
 import Cookies from 'universal-cookie';
 import { useDispatch } from 'react-redux';
 import ResetPassword from './Pages/AccountManagement/ResetPassword';
-import Dashboard from './Pages/Dashboard/Dashboard';
+
 
 function App({ isLogged_In }) {
   const dispatch = useDispatch();
@@ -86,10 +86,10 @@ function App({ isLogged_In }) {
               </Routes>
             </>
           )
-            :
+            : 
             (
               <Routes>
-                <Route path="/:token/:type"  element={<Dashboard />} />
+                <Route path="/:token/:type"  element={<Login />} />
                 <Route path="/" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/sign-up" element={<SignUp />} />

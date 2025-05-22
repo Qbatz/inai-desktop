@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import LoginImage from '../../Asset/Images/Login_Image.svg';
 import InaiLogo from '../../Asset/Images/Inai_Logo.svg';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom'
 import ReCAPTCHA from 'react-google-recaptcha';
 import './ReCaptcha.css'
 import { InfoCircle } from "iconsax-react";
@@ -13,7 +12,7 @@ import Cookies from 'universal-cookie';
 import { encryptData } from '../../Crypto/crypto';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
+import { useParams, useNavigate } from "react-router-dom";
 
 function Login({ message, loginStatusCode }) {
 
@@ -22,7 +21,7 @@ function Login({ message, loginStatusCode }) {
   const dispatch = useDispatch();
   const state = useSelector(state => state)
 
-
+  const { token, type } = useParams();
 
   const [clientId, setClientId] = useState('');
   const [userId, setUserId] = useState('');
@@ -116,6 +115,45 @@ function Login({ message, loginStatusCode }) {
     setCaptchaValue(value);
 
   };
+
+  useEffect(() => {
+    if (!state.userInfo.isLoggedIn) {
+      if (token) {
+        dispatch({ type: LOG_IN })
+        const encryptData_Login = encryptData(JSON.stringify(true));
+        localStorage.setItem("inai_login", encryptData_Login.toString());
+        const cookies = new Cookies();
+        cookies.set('inai-token', token, { path: '/' });
+        if(type){
+        switch (type) {
+          case "client":
+            navigate("/client");
+            break;
+          case "product":
+            navigate("/product");
+            break;
+          case "vendor":
+            navigate("/vendor");
+            break;
+          case "invoice":
+            navigate("/invoice");
+            break;
+          default:
+
+            break;
+        }
+      }
+      }
+    }
+  }, [token]);
+
+
+
+
+
+
+
+
 
 
 
@@ -218,7 +256,7 @@ function Login({ message, loginStatusCode }) {
                 />
                 {clientIdError &&
                   <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                    <InfoCircle size="14" color="#DC2626" className='mt-0.5'/> <p className='text-red-500 text-xs mt-1 font-Gilroy'>{clientIdError}</p>
+                    <InfoCircle size="14" color="#DC2626" className='mt-0.5' /> <p className='text-red-500 text-xs mt-1 font-Gilroy'>{clientIdError}</p>
 
                   </div>
                 }
@@ -237,7 +275,7 @@ function Login({ message, loginStatusCode }) {
                 />
                 {userIdError &&
                   <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                    <InfoCircle size="14" color="#DC2626"className='mt-0.5' />
+                    <InfoCircle size="14" color="#DC2626" className='mt-0.5' />
 
                     <p className='text-red-500 text-xs mt-1 font-Gilroy'>{userIdError}</p>
                   </div>}
@@ -264,7 +302,7 @@ function Login({ message, loginStatusCode }) {
 
                 {passwordError &&
                   <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                    <InfoCircle size="14" color="#DC2626"className='mt-0.5' />
+                    <InfoCircle size="14" color="#DC2626" className='mt-0.5' />
                     <p className='text-red-500 text-xs mt-1 font-Gilroy'>{passwordError}</p>
                   </div>
                 }
@@ -274,10 +312,10 @@ function Login({ message, loginStatusCode }) {
 
 
               <div className='mb-4 flex items-center justify-between flex-wrap' >
-                <div> 
-                   <input id='staySignedIn' type='checkbox' className='mr-2 bg-white border border-gray-300 rounded shadow-inner ' />
+                <div>
+                  <input id='staySignedIn' type='checkbox' className='mr-2 bg-white border border-gray-300 rounded shadow-inner ' />
                   <label htmlFor='staySignedIn' className='text-black font-Gilroy text-sm font-medium'>Stay signed in</label>
-                  </div>
+                </div>
                 <div>
                   <label className="text-[#205DA8] font-Gilroy text-sm font-medium">
                     <span

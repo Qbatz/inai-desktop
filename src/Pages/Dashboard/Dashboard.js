@@ -19,9 +19,7 @@ function Dashboard() {
     if (token) {
       const cookies = new Cookies();
       cookies.set('inai-token', token, { path: '/' });
-    } else {
-      console.log("No token found in URL.");
-    }
+    } 
   }, [token]);
 
 
@@ -45,7 +43,7 @@ function Dashboard() {
           navigate("/invoice");
           break;
         default:
-          console.warn("type in URL");
+         
           break;
       }
     }

@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GET_PRODUCT_SAGA, RESET_CODE } from '../../Utils/Constant'
 import moment from 'moment';
 import Cloth from '../../Asset/Images/Cloth.png'
-import { useParams } from 'react-router-dom';
+
 
 
 function ProductList() {
@@ -43,15 +43,7 @@ function ProductList() {
 
 
 
-    const { token } = useParams();
-
-    useEffect(() => {
-        console.log("Token from URL:", token);
-
-        if (token) {
-            localStorage.setItem("token", token);
-        }
-    }, [token]);
+   
 
     const [dateRange, setDateRange] = useState([
         {

@@ -76,14 +76,14 @@ function Sidebar({ state }) {
 
     
 
-    useEffect(() => {
-        const saved = localStorage.getItem('lastPage');
-        if (saved) {
-            const { page, path } = JSON.parse(saved);
-            setActiveItem(page);
-            navigate(path);
-        }
-    }, []);
+    // useEffect(() => {
+    //     const saved = localStorage.getItem('lastPage');
+    //     if (saved) {
+    //         const { page, path } = JSON.parse(saved);
+    //         setActiveItem(page);
+    //         navigate(path);
+    //     }
+    // }, []);
 
 
    

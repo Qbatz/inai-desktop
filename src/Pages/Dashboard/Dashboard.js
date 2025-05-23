@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { GET_USER_INFO_SAGA, LOG_IN, LOG_OUT } from '../../Utils/Constant';
-import { encryptData } from '../../Crypto/crypto';
+import { encryptData} from '../../Crypto/crypto';
 
 
 
@@ -20,9 +20,9 @@ function Dashboard() {
   const cookies = new Cookies();
 
 
-  
+  console.log("type, token ", type, token)
 
-  const [tokenAccessDenied, setTokenAccessDenied] = useState(Number(cookies.get('access-denied-inai') || 0));
+
 
 
   useEffect(() => {
@@ -31,27 +31,6 @@ function Dashboard() {
     }
   }, [token]);
 
-
-
-
-  useEffect(() => {
-    if (tokenAccessDenied === 206) {
-      dispatch({ type: LOG_OUT });
-      const encryptDataLogin = encryptData(JSON.stringify(false));
-      localStorage.setItem("inai_login", encryptDataLogin.toString());
-      cookies.set('access-denied-inai', null, { path: '/', expires: new Date(0) });
-      navigate("/")
-    }
-  }, [tokenAccessDenied]);
-
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTokenAccessDenied(Number(cookies.get('access-denied-inai')));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
 
 
 

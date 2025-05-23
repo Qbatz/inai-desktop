@@ -19,11 +19,17 @@ import { useDispatch } from 'react-redux';
 import ResetPassword from './Pages/AccountManagement/ResetPassword';
 import Dashboard from './Pages/Dashboard/Dashboard';
 
+
+
 function App({ isLogged_In }) {
   const dispatch = useDispatch();
   const cookies = new Cookies();
   const [successLogin, setSuccessLogin] = useState(null)
   const [inaiLogin, setInaiLogin] = useState(localStorage.getItem("inai_login"));
+
+
+
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -45,11 +51,12 @@ function App({ isLogged_In }) {
 
   const [tokenAccessDenied, setTokenAccessDenied] = useState(Number(cookies.get('access-denied-inai') || 0));
 
-
+  console.log("tokenAccessDenied", tokenAccessDenied)
 
   useEffect(() => {
     if (tokenAccessDenied === 206) {
       dispatch({ type: LOG_OUT });
+
       localStorage.removeItem("inai_login");
       setSuccessLogin(false);
       cookies.set('access-denied-inai', null, { path: '/', expires: new Date(0) });
@@ -68,8 +75,9 @@ function App({ isLogged_In }) {
 
 
 
+  console.log("isLogged_In", isLogged_In, "successLogin", successLogin)
 
-
+  
 
 
   return (
@@ -88,12 +96,13 @@ function App({ isLogged_In }) {
             (
               <Routes>
                 <Route path="/:type/:token" element={<Dashboard />} />
-                <Route path="/" element={<Login />} />
+                <Route index path="/" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/register" element={<CreateAccount />} />
                 <Route path="/forgot-user-name" element={<ForgotUserName />} />
                 <Route path="/password" element={<ForgotPassword />} />
+                
               </Routes>
             )
         }

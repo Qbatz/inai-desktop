@@ -228,7 +228,7 @@ function* handleAccountRegister(action) {
 function* handleGetUserInfo() {
     try {
         const response = yield call(GetUserInfo);
-
+console.log("response",response)
         if (response.status === 200) {
             yield put({ type: GET_USER_INFO_REDUCER, payload: { users: response.data } });
             yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status, isValidToken: 1 } });

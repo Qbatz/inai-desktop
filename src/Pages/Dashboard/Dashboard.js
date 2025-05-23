@@ -20,8 +20,7 @@ function Dashboard() {
   const cookies = new Cookies();
 
 
-  console.log("Type:", type);
-  console.log("Token:", token);
+  
 
   const [tokenAccessDenied, setTokenAccessDenied] = useState(Number(cookies.get('access-denied-inai') || 0));
 

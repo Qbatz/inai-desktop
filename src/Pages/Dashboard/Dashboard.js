@@ -1,10 +1,10 @@
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import { useDispatch, useSelector } from 'react-redux';
-import { GET_USER_INFO_SAGA, LOG_IN, LOG_OUT } from '../../Utils/Constant';
+import { GET_USER_INFO_SAGA, LOG_IN } from '../../Utils/Constant';
 import { encryptData } from '../../Crypto/crypto';
 
 

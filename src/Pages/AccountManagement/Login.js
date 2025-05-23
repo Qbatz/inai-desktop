@@ -120,13 +120,6 @@ function Login({ message, loginStatusCode }) {
 
 
 
-
-
-
-
-
-
-
   useEffect(() => {
     if (loginStatusCode) {
       setLoading(false)
@@ -145,7 +138,7 @@ function Login({ message, loginStatusCode }) {
 
 
   useEffect(() => {
-    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402) {
+    if (state.Common.successCode === 200 || state.Common.code === 400 || state.Common.code === 401 || state.Common.code === 402 || state.Common.code === 206) {
       setLoading(false)
       setTimeout(() => {
         dispatch({ type: RESET_CODE })
@@ -164,7 +157,6 @@ function Login({ message, loginStatusCode }) {
         : process.env.REACT_APP_RECAPTCHA_LIVE_KEY;
     setSiteKey(selectedKey)
   }, [])
-
 
 
 

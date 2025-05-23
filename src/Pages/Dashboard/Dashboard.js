@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import { useDispatch, useSelector } from 'react-redux';
 import { GET_USER_INFO_SAGA, LOG_IN, LOG_OUT } from '../../Utils/Constant';
-import { encryptData} from '../../Crypto/crypto';
+import { encryptData } from '../../Crypto/crypto';
 
 
 
@@ -18,11 +18,6 @@ function Dashboard() {
   const navigate = useNavigate();
   const state = useSelector(state => state)
   const cookies = new Cookies();
-
-
-  console.log("type, token ", type, token)
-
-
 
 
   useEffect(() => {
@@ -41,22 +36,18 @@ function Dashboard() {
   useEffect(() => {
     if (state.Common.successCode === 200) {
       switch (type) {
-        case "client":
-          navigate("/client");
-          break;
-        case "product":
-          navigate("/product");
-          break;
-        case "vendor":
-          navigate("/vendor");
-          break;
-        case "invoice":
-          navigate("/invoice");
-          break;
-        default:
-
-          break;
-      }
+            case "customer":
+              navigate("/client");
+              break;
+            case "supplier":
+              navigate("/vendor");
+              break;
+            case "invoice":
+              navigate("/invoice");
+              break;
+            default:
+              break;
+          }
     }
   }, [state.Common.successCode]);
 
@@ -71,13 +62,10 @@ function Dashboard() {
         cookies.set('inai-token', token, { path: '/' });
         if (type) {
           switch (type) {
-            case "client":
+            case "customer":
               navigate("/client");
               break;
-            case "product":
-              navigate("/product");
-              break;
-            case "vendor":
+            case "supplier":
               navigate("/vendor");
               break;
             case "invoice":
@@ -91,6 +79,9 @@ function Dashboard() {
       }
     }
   }, [token]);
+
+
+
 
 
   return (

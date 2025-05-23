@@ -52,7 +52,6 @@ function Sidebar({ state }) {
 
     const handleConfirmLogout = () => {
         dispatch({ type: LOG_OUT });
-        navigate("/")
         const encryptDataLogin = encryptData(JSON.stringify(false));
         localStorage.setItem("inai_login", encryptDataLogin.toString());
         setIsLogout(false)
@@ -76,21 +75,10 @@ function Sidebar({ state }) {
 
 
 
-
-
-
-
-
-
-
     const handleNavigation = (page, path) => {
         setActiveItem(page);
         navigate(path);
     };
-
-
-
-
 
 
 
@@ -272,7 +260,7 @@ function Sidebar({ state }) {
 
                 <div className="flex flex-1">
                     <Routes>
-                        <Route path="/:type/:token" element={<Dashboard />} />
+
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/client" element={<CustomerList />} />
                         <Route path="/vendor" element={<Vendor />} />
@@ -287,6 +275,7 @@ function Sidebar({ state }) {
                         <Route path="/invoice" element={<InvoiceList />} />
                         <Route path="/add-invoice" element={<AddInvoice />} />
                         <Route path="/invoice-details/:invoiceId" element={<InvoiceDetails />} />
+                        <Route path="/:type/:token" element={<Dashboard />} />
 
 
                     </Routes>

@@ -2425,7 +2425,7 @@ function AddProduct() {
                                 <DatePicker
                                     selected={selectedDate}
                                     onChange={handleDateChange}
-                                    dateFormat="MM/yyyy"
+                                     dateFormat="MMMM/yyyy"
                                     showMonthYearPicker
                                     className="cursor-pointer font-Gilroy font-medium text-sm text-slate-400 w-full"
                                     placeholderText="Month and Year of Manufacture"

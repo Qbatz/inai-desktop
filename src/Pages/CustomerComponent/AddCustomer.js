@@ -1476,7 +1476,8 @@ function AddCustomer({ editCustomerDetails }) {
             cursor: 'pointer',
             padding: '4px 1px',
             minHeight: '40px',
-            borderRight: 'none',
+            // borderRight: 'none',
+             borderRadius: '0.75rem',
             '&:hover': {
                 borderColor: '#E5E7EB',
             },
@@ -2922,7 +2923,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     }
                                                     options={[
 
-                                                        { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
+                                                        // { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
                                                         { value: 'India', label: 'India' },
                                                         { value: 'United States', label: 'United States' },
                                                         { value: 'United Kingdom', label: 'United Kingdom' },

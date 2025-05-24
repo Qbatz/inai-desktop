@@ -851,23 +851,26 @@ function ProductDetails() {
                                     )}
                                 </div>
 
+
                                 <div>
                                     <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">GST %</p>
-                                    <input
-                                        ref={editableRef}
-                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={
-                                            editingField === "gst"
-                                                ? editedValues.gst
-                                                : productDetails?.gst ?? "N/A"
-                                        }
-                                        placeholder="Enter GST"
-                                        onChange={(e) => handleValueChange("gst", e)}
-                                        onKeyDown={(e) => handleKeyDown(e, "gst")}
-                                        onBlur={() => setEditingField(null)}
-                                        readOnly
-
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            ref={editableRef}
+                                            className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full pr-8" // Added pr-8
+                                            value={
+                                                editingField === "gst"
+                                                    ? editedValues.gst
+                                                    : productDetails?.gst ?? "N/A"
+                                            }
+                                            placeholder="Enter GST"
+                                            onChange={(e) => handleValueChange("gst", e)}
+                                            onKeyDown={(e) => handleKeyDown(e, "gst")}
+                                            onBlur={() => setEditingField(null)}
+                                            readOnly
+                                        />
+                                        <span className="absolute left-6 top-3 text-[#222222] font-semibold text-md pointer-events-none">%</span>
+                                    </div>
                                     {errorMessage.gst && (
                                         <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
                                             <InfoCircle size={14} color="#DC2626" />
@@ -979,7 +982,7 @@ function ProductDetails() {
                                     <DatePicker
                                         selected={productDetails?.manufaturingYearAndMonth}
                                         onChange={(date) => handleValueChange("manufacturing_year", null, date)}
-                                        dateFormat="MM/yyyy"
+                                        dateFormat="MMMM/yyyy"
                                         showMonthYearPicker
                                         showFullMonthYearPicker={true}
                                         placeholderText="Month and Year of Manufacture"

@@ -1,5 +1,4 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { refreshToken } from "../../Token_Access/Token";
 import { GetActivities, signIn, ForgotAction, ForgotPasswordAction, ReSetPageAction, ReSetPassword, CreateAction, Verification, OtpSend, OtpVerified, AccountRegister, GetUserInfo } from "../Action/UserAction";
 import {
     GET_ACTIVITIES_SAGA, GET_ACTIVITIES_REDUCER,
@@ -12,7 +11,7 @@ function* handleSignIn(action) {
         const response = yield call(signIn, action.payload);
         if (response.status === 200) {
             yield put({ type: SIGN_IN_REDUCER, payload: { token: response.data.access } });
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status , isLoginSuccess: true} });
 
         } else if (response.status === 201) {
             yield put({ type: ERROR_CODE, payload: { message: response.data.detail, statusCode: response.status } });
@@ -230,7 +229,7 @@ function* handleGetUserInfo() {
         const response = yield call(GetUserInfo);
         if (response.status === 200) {
             yield put({ type: GET_USER_INFO_REDUCER, payload: { users: response.data } });
-            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status, isValidToken: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status, } });
         } else if (response.status === 201) {
             yield put({
                 type: ERROR_CODE,
@@ -246,13 +245,11 @@ function* handleGetUserInfo() {
                 payload: {
                     message: response.data.message || response.message,
                     statusCode: response.status,
-                },
+                    isValidToken: 1 
+                                    },
             });
         }
-        if (response) {
-            refreshToken(response);
-        }
-
+       
     } catch (error) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });

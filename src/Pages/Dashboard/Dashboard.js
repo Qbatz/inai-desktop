@@ -1,6 +1,6 @@
 
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect} from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,32 +28,38 @@ function Dashboard() {
 
 
 
-
   useEffect(() => {
     dispatch({ type: GET_USER_INFO_SAGA });
-  }, []);
+     }, []);
 
   useEffect(() => {
-    if (state.Common.successCode === 200) {
-      switch (type) {
-            case "customer":
-              navigate("/client");
-              break;
-            case "supplier":
-              navigate("/vendor");
-              break;
-            case "invoice":
-              navigate("/invoice");
-              break;
-            default:
-              break;
-          }
+    if (state.Common.successCode === 200 && type) {
+      setTimeout(() => {
+        switch (type) {
+          case "customer":
+            navigate("/client");
+            break;
+          case "supplier":
+            navigate("/vendor");
+            break;
+          case "invoice":
+            navigate("/invoice");
+            break;
+          default:
+            break;
+        }
+      }, 0);
     }
-  }, [state.Common.successCode]);
+  }, [state.Common.successCode, type]);
+
+
+const value = localStorage.getItem("isLoginSuccess");
+const isLogin = value !== null ? JSON.parse(value) : false;
+
 
 
   useEffect(() => {
-    if (!state.userInfo.isLoggedIn) {
+    if (!isLogin) {
       if (token) {
         dispatch({ type: LOG_IN })
         const encryptData_Login = encryptData(JSON.stringify(true));
@@ -78,11 +84,16 @@ function Dashboard() {
         }
       }
     }
-  }, [token]);
+  }, [isLogin]);
 
 
 
 
+ 
+
+
+
+ 
 
   return (
     <div className='bg-slate-100  h-screen w-full p-4 rounded-tl-lg rounded-tr-lg   m-0 '>

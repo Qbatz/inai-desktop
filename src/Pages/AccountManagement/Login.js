@@ -14,7 +14,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 
-function Login({ message, loginStatusCode }) {
+function Login({ message, isLoginSuccess }) {
 
   const navigate = useNavigate()
   const [siteKey, setSiteKey] = useState('')
@@ -115,17 +115,19 @@ function Login({ message, loginStatusCode }) {
 
   };
 
- 
+
 
 
 
 
   useEffect(() => {
-    if (loginStatusCode) {
+    if (isLoginSuccess) {
       setLoading(false)
       dispatch({ type: LOG_IN })
       const encryptData_Login = encryptData(JSON.stringify(true));
       localStorage.setItem("inai_login", encryptData_Login.toString());
+      localStorage.setItem("isLoginSuccess", JSON.stringify(true));
+
       const token = state.userInfo.token;
       if (token) {
         const cookies = new Cookies();
@@ -134,7 +136,9 @@ function Login({ message, loginStatusCode }) {
       dispatch({ type: RESET_CODE })
     }
 
-  }, [loginStatusCode])
+  }, [isLoginSuccess])
+
+
 
 
   useEffect(() => {
@@ -350,12 +354,14 @@ const mapsToProps = (state) => {
   return {
     message: state.Common.errorMessage,
     loginStatusCode: state.Common.successCode,
+    isLoginSuccess: state.Common.isLoginSuccess
   }
 }
 
 Login.propTypes = {
   loginStatusCode: PropTypes.number,
-  message: PropTypes.string
+  message: PropTypes.string,
+  isLoginSuccess:PropTypes.bool
 }
 
 

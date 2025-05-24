@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import Login from './Pages/AccountManagement/Login'
 import './App.css'
-import { BrowserRouter as Router, Route, Routes,Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import CreateAccount from './Pages/AccountManagement/CreateAccount';
 import ForgotUserName from './Pages/AccountManagement/ForgotUserName';
 import Sidebar from './Components/Sidebar';
@@ -21,11 +21,12 @@ import Dashboard from './Pages/Dashboard/Dashboard';
 
 
 
-function App({ isLogged_In }) {
+function App({ isLogged_In}) {
   const dispatch = useDispatch();
   const cookies = new Cookies();
   const [successLogin, setSuccessLogin] = useState(null)
   const [inaiLogin, setInaiLogin] = useState(localStorage.getItem("inai_login"));
+
 
 
 
@@ -53,12 +54,12 @@ function App({ isLogged_In }) {
 
   useEffect(() => {
     if (tokenAccessDenied === 206) {
-      dispatch({ type: LOG_OUT });
-
-      localStorage.removeItem("inai_login");
-      setSuccessLogin(false);
-      cookies.set('access-denied-inai', null, { path: '/', expires: new Date(0) });
-
+           dispatch({ type: LOG_OUT });
+          localStorage.setItem("isLoginSuccess", JSON.stringify(false));
+        localStorage.removeItem("inai_login");
+        setSuccessLogin(false);
+        cookies.set('access-denied-inai', null, { path: '/', expires: new Date(0) });
+     
     }
   }, [tokenAccessDenied]);
 
@@ -71,7 +72,8 @@ function App({ isLogged_In }) {
     return () => clearInterval(interval);
   }, []);
 
- 
+
+
 
 
   return (
@@ -89,14 +91,13 @@ function App({ isLogged_In }) {
             :
             (
               <Routes>
-               
+                <Route path="/:type/:token" element={<Dashboard />} />
                 <Route index path="/" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/register" element={<CreateAccount />} />
                 <Route path="/forgot-user-name" element={<ForgotUserName />} />
                 <Route path="/password" element={<ForgotPassword />} />
-                 <Route path="/:type/:token" element={<Dashboard />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
 
               </Routes>
@@ -111,9 +112,10 @@ function App({ isLogged_In }) {
 
 
 const mapsToProps = (state) => {
+ 
   return {
-    isLogged_In: state.userInfo.isLoggedIn
-  }
+    isLogged_In: state.userInfo.isLoggedIn,
+     }
 }
 
 App.propTypes = {

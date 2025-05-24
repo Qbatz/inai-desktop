@@ -17,7 +17,8 @@ const AxiosConfig = axios.create({
 AxiosConfig.interceptors.request.use(
   (config) => {
     const token = cookies.get('inai-token');
-    if (token) {
+
+   if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;

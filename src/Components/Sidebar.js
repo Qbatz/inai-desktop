@@ -22,7 +22,7 @@ import { Chart2, LoginCurve, Setting2, I24Support, Receipt1, Receipt2 } from "ic
 import { useDispatch, connect } from 'react-redux';
 import { LOG_OUT } from "../Utils/Constant";
 import { encryptData } from "../Crypto/crypto";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 import AddCustomer from "../Pages/CustomerComponent/AddCustomer";
 import AddVendor from "../Pages/VendorFile/AddVendor";
 import VendorDetails from "../Pages/VendorFile/VendorDetails";
@@ -54,6 +54,8 @@ function Sidebar({ state }) {
         dispatch({ type: LOG_OUT });
         const encryptDataLogin = encryptData(JSON.stringify(false));
         localStorage.setItem("inai_login", encryptDataLogin.toString());
+       localStorage.setItem("isLoginSuccess", JSON.stringify(false));
+        navigate("/")
         setIsLogout(false)
     }
 
@@ -86,6 +88,7 @@ function Sidebar({ state }) {
         const path = window.location.pathname;
         if (path === "/product") {
             setActiveItem("product");
+
         } else if (path === "/vendor") {
             setActiveItem("vendor");
         } else if (path === "/client") {
@@ -97,10 +100,6 @@ function Sidebar({ state }) {
         }
 
     }, [window.location.pathname]);
-
-
-
-
 
 
 
@@ -260,7 +259,7 @@ function Sidebar({ state }) {
 
                 <div className="flex flex-1">
                     <Routes>
-
+                        <Route path="/:type/:token" element={<Dashboard />} />
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/client" element={<CustomerList />} />
                         <Route path="/vendor" element={<Vendor />} />
@@ -275,9 +274,7 @@ function Sidebar({ state }) {
                         <Route path="/invoice" element={<InvoiceList />} />
                         <Route path="/add-invoice" element={<AddInvoice />} />
                         <Route path="/invoice-details/:invoiceId" element={<InvoiceDetails />} />
-                        <Route path="/:type/:token" element={<Dashboard />} />
-
-
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
 
                 </div>
@@ -328,6 +325,7 @@ function Sidebar({ state }) {
 }
 
 const mapsToProps = (stateInfo) => {
+  
     return {
         state: stateInfo.userInfo?.userDetails,
     };

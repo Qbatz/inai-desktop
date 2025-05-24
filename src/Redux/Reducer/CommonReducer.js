@@ -13,12 +13,15 @@ export const initialState = {
     successCode: 0,
     editStatusCode: 0,
     successMessage: "",
+    isLoginSuccess: false,
     emailid: "",
     resetPassword: "",
     isVisible: 0,
     isTriggerMessage: 0,
     country: [],
     titles: [],
+    isValidToken: 0,
+
 
 }
 
@@ -26,7 +29,7 @@ export const initialState = {
 const CommonReducer = (state = initialState, action) => {
     switch (action.type) {
         case ERROR_CODE:
-            return { ...state, code: action.payload.statusCode, errorMessage: action.payload.message }
+            return { ...state, code: action.payload.statusCode, errorMessage: action.payload.message ,  isValidToken: action.payload.isValidToken}
         case SUCCESS_CODE: {
             const data = action.payload.response?.data || {};
             return {
@@ -40,6 +43,7 @@ const CommonReducer = (state = initialState, action) => {
                 resetUser: data.resetUser || '',
                 resetpage: data.message || '',
                 resetverify: data.message || '',
+                isLoginSuccess: action.payload.isLoginSuccess
             }
         }
 

@@ -1488,7 +1488,6 @@ function AddCustomer({ editCustomerDetails }) {
             cursor: 'pointer',
             padding: '4px 1px',
             minHeight: '40px',
-            borderRadius: '0.75rem',
             '&:hover': {
                 borderColor: '#E5E7EB',
             },

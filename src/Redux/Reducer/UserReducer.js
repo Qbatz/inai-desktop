@@ -13,6 +13,7 @@ export const initialState = {
     userDetails: [],
     activitiesList: [],
     otpSendSuccessCode: 0,
+   
 }
 
 const UserReducer = (state = initialState, action) => {

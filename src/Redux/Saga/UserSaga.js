@@ -1,8 +1,7 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import { refreshToken } from "../../Token_Access/Token";
 import { GetActivities, signIn, ForgotAction, ForgotPasswordAction, ReSetPageAction, ReSetPassword, CreateAction, Verification, OtpSend, OtpVerified, AccountRegister, GetUserInfo } from "../Action/UserAction";
 import {
-    GET_ACTIVITIES_SAGA,GET_ACTIVITIES_REDUCER,
+    GET_ACTIVITIES_SAGA, GET_ACTIVITIES_REDUCER,
     SIGN_IN_REDUCER, SIGN_IN_SAGA, FORGOT_PASSWORD_API_CALL,
     FORGOT_USER_API_CALL, RESET_PAGE_API_CALL, RESET_PASSWORD_API_CALL, ACCOUNT_REGISTER_SAGA, ACCOUNT_REGISTER_REDUCER, OTP_VERIFY_SAGA, OTP_VERIFY_REDUCER, OTP_SEND_REDUCER, OTP_SEND_SAGA, CREATE_ACCOUNT_API_CALL, ERROR_CODE, SUCCESS_CODE, SIGN_UP_VERIFICATION_SAGA, SIGN_UP_VERIFICATION_REDUCER, GET_USER_INFO_REDUCER, GET_USER_INFO_SAGA,
 } from "../../Utils/Constant";
@@ -12,7 +11,7 @@ function* handleSignIn(action) {
         const response = yield call(signIn, action.payload);
         if (response.status === 200) {
             yield put({ type: SIGN_IN_REDUCER, payload: { token: response.data.access } });
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status } });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status , isLoginSuccess: true} });
 
         } else if (response.status === 201) {
             yield put({ type: ERROR_CODE, payload: { message: response.data.detail, statusCode: response.status } });
@@ -32,7 +31,7 @@ function* handleForgotPassword(forgot) {
     try {
         const response = yield call(ForgotAction, forgot.payload);
         if (response?.success || response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status, message: response.data.message} });
+            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status, message: response.data.message } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });
@@ -41,7 +40,7 @@ function* handleForgotPassword(forgot) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -53,7 +52,7 @@ function* handleForgotUser(user) {
     try {
         const response = yield call(ForgotPasswordAction, user.payload);
         if (response?.success || response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { response ,statusCode: response.status , message: response.data.message || response.message} });
+            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status, message: response.data.message || response.message } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });
@@ -62,7 +61,7 @@ function* handleForgotUser(user) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -74,7 +73,7 @@ function* handleResetPage(reset) {
 
         const response = yield call(ReSetPageAction, reset.payload);
         if (response?.success || response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { response , statusCode: response.status , message: response.data.message || response.message } });
+            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status, message: response.data.message || response.message } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });
@@ -83,7 +82,7 @@ function* handleResetPage(reset) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -94,7 +93,7 @@ function* handleResetPassword(verify) {
     try {
         const response = yield call(ReSetPassword, verify.payload);
         if (response?.success || response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status , message: response.data.message || response.message ,isVisible: 1 } });
+            yield put({ type: SUCCESS_CODE, payload: { response, statusCode: response.status, message: response.data.message || response.message, isVisible: 1 } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Something went wrong", statusCode: response.status } });
@@ -103,7 +102,7 @@ function* handleResetPassword(verify) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -116,7 +115,7 @@ function* handleCreateAccount(action) {
         const response = yield call(CreateAction, action.payload);
 
         if (response?.status && response?.status === 200) {
-            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status ,message: response.data.message || response.message, response, isTriggerMessage: 1} });
+            yield put({ type: SUCCESS_CODE, payload: { statusCode: response.status, message: response.data.message || response.message, response, isTriggerMessage: 1 } });
         }
         else if (response?.status === 400) {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || "Invalid request", statusCode: response.status } });
@@ -128,7 +127,7 @@ function* handleCreateAccount(action) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -151,7 +150,7 @@ function* handleVerification(action) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -163,7 +162,7 @@ function* handleSendOtp(action) {
         const response = yield call(OtpSend, action.payload);
         if (response?.status && response?.status === 200) {
             yield put({ type: OTP_SEND_REDUCER, payload: { response: response.data, statusCode: response.status } });
-            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message  } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message } });
         }
         else {
             yield put({ type: ERROR_CODE, payload: { message: response?.message || response?.data?.message, statusCode: response.status } });
@@ -172,7 +171,7 @@ function* handleSendOtp(action) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -194,7 +193,7 @@ function* handleOtpVerified(action) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -217,7 +216,7 @@ function* handleAccountRegister(action) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -228,9 +227,9 @@ function* handleAccountRegister(action) {
 function* handleGetUserInfo() {
     try {
         const response = yield call(GetUserInfo);
-
         if (response.status === 200) {
             yield put({ type: GET_USER_INFO_REDUCER, payload: { users: response.data } });
+            yield put({ type: SUCCESS_CODE, payload: { message: response?.data?.message, statusCode: response.status, } });
         } else if (response.status === 201) {
             yield put({
                 type: ERROR_CODE,
@@ -240,16 +239,22 @@ function* handleGetUserInfo() {
                 },
             });
         }
-
-        if (response) {
-            refreshToken(response);
+        else if (response.status === 206) {
+            yield put({
+                type: ERROR_CODE,
+                payload: {
+                    message: response.data.message || response.message,
+                    statusCode: response.status,
+                    isValidToken: 1 
+                                    },
+            });
         }
-
+       
     } catch (error) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }
@@ -273,7 +278,7 @@ function* handleGetActivities(action) {
         if (error.code === "ERR_NETWORK") {
             yield put({ type: ERROR_CODE, payload: { message: "Network error or content too large", statusCode: 400 } });
         } else {
-            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message ;
+            const errorMessage = error?.response?.data?.detail || error?.response?.data?.message || error?.message;
             const statusCode = error?.response?.status || error?.status;
             yield put({ type: ERROR_CODE, payload: { message: errorMessage, statusCode } });
         }

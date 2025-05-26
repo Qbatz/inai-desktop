@@ -1476,8 +1476,7 @@ function AddCustomer({ editCustomerDetails }) {
             cursor: 'pointer',
             padding: '4px 1px',
             minHeight: '40px',
-            // borderRight: 'none',
-             borderRadius: '0.75rem',
+            borderRadius: '0.75rem',
             '&:hover': {
                 borderColor: '#E5E7EB',
             },
@@ -1500,7 +1499,9 @@ function AddCustomer({ editCustomerDetails }) {
             transition: 'all 0.3s ease-in-out',
             transformOrigin: 'top',
             overscrollBehaviorY: 'contain',
+
         }),
+
         menuList: (base) => ({
             ...base,
             maxHeight: '120px',
@@ -1578,7 +1579,7 @@ function AddCustomer({ editCustomerDetails }) {
             fontFamily: 'Gilroy',
             fontSize: '14px',
             fontWeight: 500,
-            width: '100px',
+            width: '110px',
             boxShadow: 'none',
             '&:hover': {
                 border: '1px solid #d1d5db',
@@ -1604,12 +1605,23 @@ function AddCustomer({ editCustomerDetails }) {
             ...base,
             fontSize: '13px',
             fontFamily: 'Gilroy',
-            color: 'Gray',
+            color: 'black',
         }),
         menu: (base) => ({
             ...base,
-            zIndex: 9999,
             fontSize: '13px',
+            maxHeight: '100px',
+            overflowY: 'auto',
+            scrollBehavior: 'smooth',
+            transition: 'all 0.3s ease-in-out',
+            transformOrigin: 'top',
+            overscrollBehaviorY: 'contain',
+            backgroundColor: 'white',
+            border: '1px solid #E5E7EB',
+            borderRadius: '0.75rem',
+            marginTop: '4px',
+            zIndex: 100,
+            boxSizing: 'border-box',
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -2922,8 +2934,6 @@ function AddCustomer({ editCustomerDetails }) {
                                                         handleBankingChange(index, 'bankCountry', selectedOption?.value || '')
                                                     }
                                                     options={[
-
-                                                        // { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
                                                         { value: 'India', label: 'India' },
                                                         { value: 'United States', label: 'United States' },
                                                         { value: 'United Kingdom', label: 'United Kingdom' },

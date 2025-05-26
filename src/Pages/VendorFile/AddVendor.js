@@ -72,7 +72,6 @@ function BasicVendor({ vendorDetails }) {
     const additionalRefs = useRef([]);
 
 
-
     const officeAddress1Ref = useRef(null);
     const cityRef = useRef(null);
     const postalCodeRef = useRef(null);
@@ -1398,15 +1397,41 @@ function BasicVendor({ vendorDetails }) {
         }
     }, [vendorDetails]);
 
-    useEffect(() => {
-        if (compareData(officeAddress1, shippingAddress1) && compareData(officeAddress2, shippingAddress2) && compareData(officeAddress3, shippingAddress3) && compareData(city, city)) {
-            setSameAsOffice(true)
-        }
-        else {
-            setSameAsOffice(false)
-        }
-    }, [officeAddress1, officeAddress2, officeAddress3, city, shippingAddress1, shippingAddress2, shippingAddress3, city])
 
+    useEffect(() => {
+        const allFieldsMatch =
+            compareData(officeAddress1, shippingAddress1) &&
+            compareData(officeAddress2, shippingAddress2) &&
+            compareData(officeAddress3, shippingAddress3) &&
+            compareData(officeAddress4, shippingAddress4) &&
+            compareData(city, shippingCity) &&
+            compareData(officeState, shippingState) &&
+            compareData(country, shippingCountry) &&
+            compareData(postalCode, shippingPostalCode) &&
+            compareData(landmark, shippingLandmark) &&
+            compareData(googleMap, shippingGoogleMap);
+
+        const anyFieldNotEmpty =
+            officeAddress1.trim() !== "" || shippingAddress1.trim() !== "" ||
+            officeAddress2.trim() !== "" || shippingAddress2.trim() !== "" ||
+            officeAddress3.trim() !== "" || shippingAddress3.trim() !== "" ||
+            officeAddress4.trim() !== "" || shippingAddress4.trim() !== "" ||
+            city.trim() !== "" || shippingCity.trim() !== "" ||
+            officeState.trim() !== "" || shippingState.trim() !== "" ||
+            country.trim() !== "" || shippingCountry.trim() !== "" ||
+            postalCode.trim() !== "" || shippingPostalCode.trim() !== "" ||
+            landmark.trim() !== "" || shippingLandmark.trim() !== "" ||
+            googleMap.trim() !== "" || shippingGoogleMap.trim() !== "";
+
+      
+        setSameAsOffice(allFieldsMatch && anyFieldNotEmpty);
+    }, [
+        officeAddress1, officeAddress2, officeAddress3, officeAddress4,
+        city, officeState, country, postalCode, landmark, googleMap,
+        shippingAddress1, shippingAddress2, shippingAddress3, shippingAddress4,
+        shippingCity, shippingState, shippingCountry, shippingPostalCode,
+        shippingLandmark, shippingGoogleMap
+    ]);
 
 
 
@@ -1683,7 +1708,7 @@ function BasicVendor({ vendorDetails }) {
 
                                         <div className="flex">
                                             <Select
-                                                value={titleOptions.find((option) => option.value === surName)}
+                                                value={titleOptions.find((option) => String(option.value) === String(surName))}
                                                 onChange={(selected) => handleSurNameChange({ target: { value: selected ? selected.value : '' } })}
                                                 options={titleOptions}
                                                 className="w-[100px]"
@@ -1729,7 +1754,7 @@ function BasicVendor({ vendorDetails }) {
 
                                         <div className="flex">
                                             <Select
-                                                value={countryCodeOptions.find((option) => option.value === countryCode)}
+                                                value={countryCodeOptions.find((option) => String(option.value) === String(countryCode))}
                                                 onChange={(selected) => handleCountryCodeChange({ target: { value: selected ? selected.value : '' } })}
                                                 options={countryCodeOptions}
                                                 className="w-[100px]"
@@ -1847,7 +1872,7 @@ function BasicVendor({ vendorDetails }) {
 
                                                     <div className="flex">
                                                         <Select
-                                                            value={titleOptions.find((option) => option.value === contact.surName)}
+                                                            value={titleOptions.find((option) => String(option.value) === String(contact.surName))}
                                                             onChange={(selected) =>
                                                                 handleAdditionalContactChange(index, 'surName', selected ? selected.value : '')
                                                             }
@@ -1894,7 +1919,7 @@ function BasicVendor({ vendorDetails }) {
                                                     </label>
                                                     <div className="flex">
                                                         <Select
-                                                            value={countryOptions.find((option) => option.value === contact.countryCode)}
+                                                            value={countryOptions.find((option) => String(option.value) === String(contact.countryCode))}
                                                             onChange={(selected) =>
                                                                 handleAdditionalContactChange(index, 'countryCode', selected ? selected.value : '')
                                                             }

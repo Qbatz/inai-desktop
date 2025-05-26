@@ -16,6 +16,7 @@ import moment from 'moment';
 import Cloth from '../../Asset/Images/Cloth.png'
 
 
+
 function ProductList() {
 
 
@@ -42,7 +43,7 @@ function ProductList() {
 
 
 
-
+   
 
     const [dateRange, setDateRange] = useState([
         {
@@ -318,6 +319,8 @@ function ProductList() {
 
 
 
+
+
     return (
         <div className='bg-slate-100 p-4 rounded-tl-lg rounded-tr-lg m-0 relative w-full'>
             {loading && (
@@ -377,13 +380,13 @@ function ProductList() {
                             />
                             <input
                                 type="text"
-                               value={`${dateRange[0].startDate
-                                                   ? moment(dateRange[0].startDate).format("MMMM DD")
-                                                   : ""
-                                                 } - ${dateRange[0].endDate
-                                                   ? moment(dateRange[0].endDate).format("MMMM DD")
-                                                   : ""
-                                                 }`}
+                                value={`${dateRange[0].startDate
+                                    ? moment(dateRange[0].startDate).format("MMMM DD")
+                                    : ""
+                                    } - ${dateRange[0].endDate
+                                        ? moment(dateRange[0].endDate).format("MMMM DD")
+                                        : ""
+                                    }`}
                                 readOnly
                                 className="w-full pl-10 pr-4 py-2 bg-transparent outline-none cursor-pointer block text-gray-500 font-Gilroy text-sm font-medium"
                             />

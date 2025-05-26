@@ -44,8 +44,7 @@ function AddCustomer({ editCustomerDetails }) {
 
     const [natureOfBusiness, setNatureOfBusiness] = useState([]);
 
-
-
+   
     const [contacts, setContacts] = useState([]);
 
 
@@ -601,6 +600,8 @@ function AddCustomer({ editCustomerDetails }) {
         });
         return { tempErrors, contactErrors, isValid };
     };
+
+
 
 
     const handleSaveAndExit = () => {
@@ -1423,8 +1424,18 @@ function AddCustomer({ editCustomerDetails }) {
     };
 
     useEffect(() => {
-        const isSame = JSON.stringify(officeAddress) === JSON.stringify(shippingAddress);
-        setContactAddressSameAsOfficeAddress(isSame);
+        const isAllFieldsEmpty = (address) => {
+            return Object.values(address).every(value => value.trim() === "");
+        };
+
+        const isAllEmpty = isAllFieldsEmpty(officeAddress) && isAllFieldsEmpty(shippingAddress);
+
+        if (!isAllEmpty) {
+            const isSame = JSON.stringify(officeAddress) === JSON.stringify(shippingAddress);
+            setContactAddressSameAsOfficeAddress(isSame);
+        } else {
+            setContactAddressSameAsOfficeAddress(false);
+        }
     }, [officeAddress, shippingAddress]);
 
 
@@ -1472,11 +1483,11 @@ function AddCustomer({ editCustomerDetails }) {
         control: (base) => ({
             ...base,
             borderColor: '#E5E7EB',
+            borderRadius: '0.6rem',
             boxShadow: 'none',
             cursor: 'pointer',
             padding: '4px 1px',
             minHeight: '40px',
-            borderRight: 'none',
             '&:hover': {
                 borderColor: '#E5E7EB',
             },
@@ -1499,7 +1510,9 @@ function AddCustomer({ editCustomerDetails }) {
             transition: 'all 0.3s ease-in-out',
             transformOrigin: 'top',
             overscrollBehaviorY: 'contain',
+
         }),
+
         menuList: (base) => ({
             ...base,
             maxHeight: '120px',
@@ -1531,6 +1544,9 @@ function AddCustomer({ editCustomerDetails }) {
             fontSize: "14px",
             fontWeight: 500,
             fontFamily: "Gilroy, sans-serif",
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
         }),
         indicatorSeparator: () => ({
             display: 'none',
@@ -1542,12 +1558,9 @@ function AddCustomer({ editCustomerDetails }) {
         }),
     };
 
-    const options = [
-        { value: '', label: 'Select' },
-        { value: 'mr', label: 'Mr' },
-        { value: 'miss', label: 'Miss' },
-        { value: 'mrs', label: 'Mrs' },
-    ];
+
+
+
     const countryCodeOptions = [
         { value: '', label: 'Select' },
         ...(state.Common?.country?.map(item => ({
@@ -1577,7 +1590,7 @@ function AddCustomer({ editCustomerDetails }) {
             fontFamily: 'Gilroy',
             fontSize: '14px',
             fontWeight: 500,
-            width: '100px',
+            width: '110px',
             boxShadow: 'none',
             '&:hover': {
                 border: '1px solid #d1d5db',
@@ -1603,17 +1616,29 @@ function AddCustomer({ editCustomerDetails }) {
             ...base,
             fontSize: '13px',
             fontFamily: 'Gilroy',
-            color: 'Gray',
+            color: 'black',
         }),
         menu: (base) => ({
             ...base,
-            zIndex: 9999,
             fontSize: '13px',
+            maxHeight: '100px',
+            overflowY: 'auto',
+            scrollBehavior: 'smooth',
+            transition: 'all 0.3s ease-in-out',
+            transformOrigin: 'top',
+            overscrollBehaviorY: 'contain',
+            backgroundColor: 'white',
+            border: '1px solid #E5E7EB',
+            borderRadius: '0.75rem',
+            marginTop: '4px',
+            zIndex: 100,
+            boxSizing: 'border-box',
         }),
         indicatorSeparator: () => ({
             display: 'none',
         }),
     };
+
 
     return (
         <div className='bg-slate-100 flex flex-1 flex-col p-2 sm:p-2 md:p-2 lg:p-2 rounded-t-2xl'>
@@ -1860,8 +1885,8 @@ function AddCustomer({ editCustomerDetails }) {
                                         <div className="flex">
                                             <Select
                                                 ref={surNameRef}
-                                                options={options}
-                                                value={options.find(opt => opt.value === formData.surName)}
+                                                options={titleOptions}
+                                                value={titleOptions.find(opt => String(opt.value) === String(formData.surName))}
                                                 onChange={(selected) => handleInputChange('surName', selected.value)}
                                                 className="w-[100px]"
                                                 styles={customStyles}
@@ -1907,69 +1932,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                     </div>
 
-                                    {/* <div>
-                                        <label className='block  mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>Contact  Number <span className='text-red-500'>*</span></label>
-
-
-                                        <div className="flex">
-                                            <select
-                                                ref={countryCodeRef}
-                                                value={formData.countryCode}
-                                                onChange={(e) => handleInputChange('countryCode', e.target.value)}
-                                                className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
-                                            >
-                                                <option value="">Select</option>
-                                                {state.Common?.country?.map((item) => (
-                                                    <option key={item.id} value={item.id} className='text-neutral-500'>
-                                                        {item.phone}
-                                                    </option>
-                                                ))}
-
-                                            </select>
-
-                                            <input
-                                                ref={contactNumberRef}
-                                                type='text'
-                                                value={formData.contactNumber}
-                                                onChange={(e) => handleInputChange('contactNumber', e.target.value)}
-                                                placeholder='Enter Contact  Number'
-                                                maxLength={10}
-                                                inputMode="numeric"
-                                                pattern="[0-9]*"
-                                                className='w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none   font-Gilroy font-medium text-sm text-neutral-800'
-                                            />
-
-                                        </div>
-                                        {errors.countryCode && errors.contactNumber ? (
-                                            <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                <InfoCircle size={14} color="#DC2626" />
-                                                <span className="text-red-500 text-xs flex items-center gap-1 mt-0.5 font-Gilroy">
-                                                    Country Code & Contact Number is required
-                                                </span>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                {errors.countryCode && (
-                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={14} color="#DC2626" />
-                                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                            {errors.countryCode}
-                                                        </span>
-                                                    </div>
-                                                )}
-                                                {errors.contactNumber && (
-                                                    <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                        <InfoCircle size={14} color="#DC2626" />
-                                                        <span className="text-red-500 text-xs flex items-center gap-1 mt-1 font-Gilroy">
-                                                            {errors.contactNumber}
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </>
-                                        )}
-
-
-                                    </div> */}
+                                  
                                     <div>
                                         <label className='block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800'>
                                             Contact Number <span className='text-red-500'>*</span>
@@ -1979,7 +1942,7 @@ function AddCustomer({ editCustomerDetails }) {
                                             <Select
                                                 ref={countryCodeRef}
                                                 options={countryCodeOptions}
-                                                value={countryCodeOptions.find(opt => opt.value === formData.countryCode)}
+                                                value={countryCodeOptions.find(opt => String(opt.value) === String(formData.countryCode))}
                                                 onChange={(selected) => handleInputChange('countryCode', selected.value)}
                                                 className="w-[100px]"
                                                 styles={customStyles}
@@ -2089,7 +2052,7 @@ function AddCustomer({ editCustomerDetails }) {
                                                     </label>
                                                     <div className="flex">
                                                         <Select
-                                                            value={titleOptions.find(opt => opt.value === contact.surName)}
+                                                            value={titleOptions.find(opt => String(opt.value) === String(contact.surName))}
                                                             onChange={(selected) => handleChange(index, 'surName', selected ? selected.value : '')}
                                                             className="w-[100px]"
                                                             classNamePrefix="react-select"
@@ -2133,62 +2096,6 @@ function AddCustomer({ editCustomerDetails }) {
                                                 </div>
 
 
-                                                {/* <div>
-                                                    <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
-                                                        Contact Number <span className="text-red-500">*</span>
-                                                    </label>
-
-                                                    <div className="flex">
-                                                        <select
-                                                            value={contact.countryCode}
-                                                            ref={contactRefs.current[index]?.countryCode}
-                                                            onChange={(e) => handleChange(index, 'countryCode', e.target.value)}
-                                                            className="cursor-pointer px-3 py-3 border border-r-0 rounded-tr-none rounded-br-none rounded-tl-xl rounded-bl-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-500 w-[100px]"
-                                                        >
-                                                            <option value="">Select</option>
-                                                            {state.Common?.country?.map((item) => (
-                                                                <option key={item.id} value={item.id} className='text-neutral-500'>
-                                                                    {item.phone}
-                                                                </option>
-                                                            ))}
-
-                                                        </select>
-                                                        <input
-                                                            type="text"
-                                                            ref={contactRefs.current[index]?.number}
-                                                            placeholder="Enter Contact Number"
-                                                            value={contact.number}
-                                                            maxLength={10}
-                                                            onChange={(e) => handleChange(index, "number", e.target.value)}
-                                                            className="w-full px-3 py-3 border border-l-0 rounded-tl-none rounded-bl-none rounded-tr-xl rounded-br-xl focus:outline-none font-Gilroy font-medium text-sm text-neutral-800"
-                                                        />
-                                                    </div>
-
-                                                    {errors.contactErrors?.[index]?.countryCode && errors.contactErrors?.[index]?.number ? (
-                                                        <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                            <InfoCircle size={14} color="#DC2626" className='' />
-                                                            <p className='mt-0.5'>Country code & Number is required</p>
-                                                        </div>
-                                                    ) : (
-                                                        <>
-                                                            {errors.contactErrors?.[index]?.countryCode && (
-                                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                    <InfoCircle size={14} color="#DC2626" className='mt-0.5' />
-                                                                    <p>{errors.contactErrors[index].countryCode}</p>
-                                                                </div>
-                                                            )}
-
-                                                            {errors.contactErrors?.[index]?.number && (
-                                                                <div className='flex items-center text-red-500 text-xs font-Gilroy gap-1 mt-1'>
-                                                                    <InfoCircle size={14} color="#DC2626" className='mt-0.5' />
-                                                                    <p>{errors.contactErrors[index].number}</p>
-                                                                </div>
-                                                            )}
-                                                        </>
-                                                    )}
-
-                                                </div> */}
-
                                                 <div>
                                                     <label className="block mb-2 text-start font-Gilroy font-normal text-md text-neutral-800">
                                                         Contact Number <span className="text-red-500">*</span>
@@ -2196,7 +2103,7 @@ function AddCustomer({ editCustomerDetails }) {
 
                                                     <div className="flex">
                                                         <Select
-                                                            value={countryCodeOptions.find(opt => opt.value === contact.countryCode)}
+                                                            value={countryCodeOptions.find(opt => String(opt.value) === String(formData.countryCode))}
                                                             onChange={(selected) => handleChange(index, 'countryCode', selected ? selected.value : '')}
                                                             options={countryCodeOptions}
                                                             className="w-[100px]"
@@ -2921,8 +2828,6 @@ function AddCustomer({ editCustomerDetails }) {
                                                         handleBankingChange(index, 'bankCountry', selectedOption?.value || '')
                                                     }
                                                     options={[
-
-                                                        { value: 'Select Country', label: 'Select Country', isPlaceholder: true },
                                                         { value: 'India', label: 'India' },
                                                         { value: 'United States', label: 'United States' },
                                                         { value: 'United Kingdom', label: 'United Kingdom' },

@@ -115,10 +115,14 @@ function VendorDetails() {
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Bank Address 1</p>
                           <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails?.[0]?.address1 || 'N/A'}</p>
                         </div>
+
                         <div>
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Bank Country</p>
-                          <p className="font-semibold font-Gilroy text-sm pt-2">{vendor?.bankDetails?.[0]?.country || 'N/A'}</p>
+                          <p className="font-semibold font-Gilroy text-sm pt-2">
+                            {(!vendor?.bankDetails?.[0]?.country || vendor.bankDetails[0].country === 'IN') ? 'N/A' : vendor.bankDetails[0].country}
+                          </p>
                         </div>
+
 
                         <div>
                           <p className="text-[#4B4B4B] text-xs font-medium font-Gilroy">Intermediary Routing Bank</p>

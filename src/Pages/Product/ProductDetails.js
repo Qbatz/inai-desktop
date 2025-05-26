@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import { FaDownload } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
 import { FaAngleLeft } from "react-icons/fa6";
+import { Edit } from "iconsax-react";
 
 
 
@@ -64,6 +65,7 @@ function ProductDetails() {
     const [editedValue, setEditedValue] = useState("");
 
     const editableRef = useRef(null);
+    const inputRef = useRef(null);
     const [containStates, setContainStates] = useState({});
     const [editedValues, setEditedValues] = useState({
         product_name: "",
@@ -534,13 +536,14 @@ function ProductDetails() {
                                 <div>
                                     <div className='w-full mb-2 '>
                                         <p className="text-sm font-normal mb-4 font-Gilroy text-[#4B4B4B]">Product Name</p>
-                                        <div ref={editableRef}>
+                                        <div className="relative">
                                             <input
-
-                                                className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                                value={editingField === "product_name"
-                                                    ? editedValues.product_name
-                                                    : productDetails?.productName || ""
+                                                ref={inputRef}
+                                                className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full pr-10"
+                                                value={
+                                                    editingField === "product_name"
+                                                        ? editedValues.product_name
+                                                        : productDetails?.productName || ""
                                                 }
                                                 onChange={(e) => handleValueChange("product_name", e)}
                                                 placeholder="Enter Product Name"
@@ -550,7 +553,18 @@ function ProductDetails() {
                                                     setEditedValue('');
                                                 }}
                                             />
+
+                                            <div
+                                                className="absolute bottom-5 right-3 text-gray-400 cursor-pointer"
+                                                onClick={() => {
+                                                    setEditingField("product_name");
+                                                    setTimeout(() => inputRef.current?.focus(), 0);
+                                                }}
+                                            >
+                                                <Edit size="19" color="#205DA8" />
+                                            </div>
                                         </div>
+
                                         {errorMessage.product_name && (
                                             <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
                                                 <InfoCircle size={14} color="#DC2626" />
@@ -572,23 +586,32 @@ function ProductDetails() {
                                     </div>
                                     <div className='mb-2' >
                                         <p className="text-sm font-normal mb-4 font-Gilroy text-[#4B4B4B]">Description</p>
+                                        <div className="relative">
+                                            <textarea
+                                                rows={5}
+                                                ref={editableRef}
+                                                className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full pr-10"
+                                                value={
+                                                    editingField === "description"
+                                                        ? editedValues.description
+                                                        : productDetails?.description || ""
+                                                }
+                                                onBlur={() => setEditingField(null)}
+                                                placeholder="Enter Description"
+                                                onChange={(e) => handleValueChange("description", e)}
+                                                onKeyDown={(e) => handleKeyDown(e, "description", e.target.value)}
+                                            />
 
-                                        <textarea
-                                            rows={5}
-                                            ref={editableRef}
-                                            className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                            value={
-                                                editingField === "description"
-                                                    ? editedValues.description
-                                                    : productDetails?.description || ""
-                                            }
-                                            onBlur={() => setEditingField(null)}
-                                            placeholder="Enter Description"
-                                            onChange={(e) => handleValueChange("description", e)}
-                                            onKeyDown={(e) => handleKeyDown(e, "description", e.target.value)}
-
-
-                                        />
+                                            <div
+                                                className="absolute bottom-32 right-3 text-gray-400 cursor-pointer"
+                                                onClick={() => {
+                                                    setEditingField("description");
+                                                    setTimeout(() => editableRef.current?.focus(), 0);
+                                                }}
+                                            >
+                                                <Edit size="19" color="#205DA8" />
+                                            </div>
+                                        </div>
 
                                         {errorMessage.description && (
                                             <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
@@ -692,25 +715,33 @@ function ProductDetails() {
                                     <div className='flex items-center space-x-3'>
                                         <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Price Per Unit</p>
                                     </div>
+                                    <div className="relative">
+                                        <input
+                                            ref={editableRef}
+                                            className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full pr-10"
+                                            value={
+                                                editingField === "price"
+                                                    ? editedValues.price
+                                                    : productDetails?.currency
+                                                        ? `${currencySymbols[productDetails.currency] || ''} ${productDetails.price || ''}`
+                                                        : productDetails?.price || ''
+                                            }
+                                            onChange={(e) => handleValueChange("price", e)}
+                                            onKeyDown={(e) => handleKeyDown(e, "price", e.target.value)}
+                                            placeholder="Enter Price"
+                                            onBlur={() => setEditingField(null)}
+                                        />
 
-                                    <input
-                                        ref={editableRef}
-                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-
-                                        value={
-                                            editingField === "price"
-                                                ? editedValues.price
-                                                : productDetails?.currency
-                                                    ? `${currencySymbols[productDetails.currency] || ''} ${productDetails.price || ''}`
-                                                    : productDetails?.price || ''
-                                        }
-
-                                        onChange={(e) => handleValueChange("price", e)}
-                                        onKeyDown={(e) => handleKeyDown(e, "price", e.target.value)}
-                                        placeholder='Enter Price'
-                                        onBlur={() => setEditingField(null)}
-
-                                    />
+                                        <div
+                                            className="absolute bottom-5 right-3 text-gray-400 cursor-pointer"
+                                            onClick={() => {
+                                                setEditingField("price");
+                                                setTimeout(() => editableRef.current?.focus(), 0);
+                                            }}
+                                        >
+                                            <Edit size="19" color="#205DA8" />
+                                        </div>
+                                    </div>
 
                                     {errorMessage.price && (
                                         <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
@@ -785,24 +816,34 @@ function ProductDetails() {
 
                                 <div>
                                     <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">Discount</p>
+                                    <div className="relative">
+                                        <input
+                                            ref={editableRef}
+                                            type="text"
+                                            placeholder="Enter Discount"
+                                            className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full pr-10"
+                                            value={
+                                                editingField === "discount"
+                                                    ? editedValues.discount
+                                                    : productDetails?.discount === "0"
+                                                        ? "N/A"
+                                                        : productDetails?.discount ?? "N/A"
+                                            }
+                                            onChange={(e) => handleValueChange("discount", e)}
+                                            onKeyDown={(e) => handleKeyDown(e, "discount", e.target.value)}
+                                            onBlur={() => setEditingField(null)}
+                                        />
+                                        <div
+                                            className="absolute bottom-5 right-3 text-gray-400 cursor-pointer"
+                                            onClick={() => {
+                                                setEditingField("discount");
+                                                setTimeout(() => editableRef.current?.focus(), 0);
+                                            }}
+                                        >
+                                            <Edit size="19" color="#205DA8" />
+                                        </div>
+                                    </div>
 
-                                    <input
-                                        ref={editableRef}
-                                        type="text"
-                                        placeholder="Enter Discount"
-                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={
-                                            editingField === "discount"
-                                                ? editedValues.discount
-                                                : productDetails?.discount === "0"
-                                                    ? "N/A"
-                                                    : productDetails?.discount ?? "N/A"
-                                        }
-
-                                        onChange={(e) => handleValueChange("discount", e)}
-                                        onKeyDown={(e) => handleKeyDown(e, "discount", e.target.value)}
-                                        onBlur={() => setEditingField(null)}
-                                    />
 
                                     {errorMessage.discount && (
                                         <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
@@ -828,21 +869,36 @@ function ProductDetails() {
 
                                 <div className="w-full">
                                     <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">HSN</p>
-                                    <input
-                                        ref={editableRef}
-                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={
-                                            editingField === "hsn_code"
-                                                ? editedValues.hsn_code
-                                                : !productDetails?.hsnCode || productDetails?.hsnCode === "0" || productDetails?.hsnCode === ""
-                                                    ? "N/A"
-                                                    : productDetails.hsnCode
-                                        }
-                                        placeholder="Enter HSN"
-                                        onChange={(e) => handleValueChange("hsn_code", e)}
-                                        onKeyDown={(e) => handleKeyDown(e, "hsn_code", e.target.value)}
-                                        onBlur={() => setEditingField(null)}
-                                    />
+
+
+                                    <div className="relative">
+                                        <input
+                                            ref={editableRef}
+                                            className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full pr-10"
+                                            value={
+                                                editingField === "hsn_code"
+                                                    ? editedValues.hsn_code
+                                                    : !productDetails?.hsnCode || productDetails?.hsnCode === "0" || productDetails?.hsnCode === ""
+                                                        ? "N/A"
+                                                        : productDetails.hsnCode
+                                            }
+                                            placeholder="Enter HSN"
+                                            onChange={(e) => handleValueChange("hsn_code", e)}
+                                            onKeyDown={(e) => handleKeyDown(e, "hsn_code", e.target.value)}
+                                            onBlur={() => setEditingField(null)}
+                                        />
+
+                                        <div
+                                            className="absolute bottom-5 right-3 text-gray-400 cursor-pointer"
+                                            onClick={() => {
+                                                setEditingField("hsn_code");
+                                                setTimeout(() => editableRef.current?.focus(), 0);
+                                            }}
+                                        >
+                                            <Edit size="19" color="#205DA8" />
+                                        </div>
+                                    </div>
+
                                     {errorMessage.hsn_code && (
                                         <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
                                             <InfoCircle size={14} color="#DC2626" />
@@ -851,23 +907,26 @@ function ProductDetails() {
                                     )}
                                 </div>
 
+
                                 <div>
                                     <p className="text-sm font-normal mb-2 font-Gilroy text-[#4B4B4B]">GST %</p>
-                                    <input
-                                        ref={editableRef}
-                                        className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full"
-                                        value={
-                                            editingField === "gst"
-                                                ? editedValues.gst
-                                                : productDetails?.gst ?? "N/A"
-                                        }
-                                        placeholder="Enter GST"
-                                        onChange={(e) => handleValueChange("gst", e)}
-                                        onKeyDown={(e) => handleKeyDown(e, "gst")}
-                                        onBlur={() => setEditingField(null)}
-                                        readOnly
-
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            ref={editableRef}
+                                            className="placeholder:oklch(70.8% 0 0) placeholder:text-sm placeholder:font-medium text-md font-semibold focus:outline-none mb-2 font-Gilroy text-[#222222] border border-gray-300 rounded-xl px-3 py-3 w-full pr-8"
+                                            value={
+                                                editingField === "gst"
+                                                    ? editedValues.gst
+                                                    : productDetails?.gst ?? "N/A"
+                                            }
+                                            placeholder="Enter GST"
+                                            onChange={(e) => handleValueChange("gst", e)}
+                                            onKeyDown={(e) => handleKeyDown(e, "gst")}
+                                            onBlur={() => setEditingField(null)}
+                                            readOnly
+                                        />
+                                        <span className="absolute left-6 top-3 text-[#222222] font-semibold text-md pointer-events-none">%</span>
+                                    </div>
                                     {errorMessage.gst && (
                                         <p className="text-red-500 text-xs flex items-center gap-1 font-Gilroy mt-2 mb-2">
                                             <InfoCircle size={14} color="#DC2626" />
@@ -979,7 +1038,7 @@ function ProductDetails() {
                                     <DatePicker
                                         selected={productDetails?.manufaturingYearAndMonth}
                                         onChange={(date) => handleValueChange("manufacturing_year", null, date)}
-                                        dateFormat="MM/yyyy"
+                                        dateFormat="MMMM/yyyy"
                                         showMonthYearPicker
                                         showFullMonthYearPicker={true}
                                         placeholderText="Month and Year of Manufacture"

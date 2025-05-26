@@ -27,7 +27,7 @@ function CustomerDetails() {
         }
     };
 
-    
+
 
     return (
         <div className="bg-blueGray-100  w-full">
@@ -124,10 +124,14 @@ function CustomerDetails() {
                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Bank Address </p>
                                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap capitalize'>{bank.address1 || 'N/A'}{" "}{bank.address2}</p>
                                                 </div>
+
                                                 <div>
                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Bank Country</p>
-                                                    <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.country || 'N/A'}</p>
+                                                    <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>
+                                                        {(!bank.country || bank.country === 'IN') ? 'N/A' : bank.country}
+                                                    </p>
                                                 </div>
+
                                                 <div>
                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Intermediary Routing Bank</p>
                                                     <p className='text-sm font-semibold mb-2 font-Gilroy text-[#222222] overflow-hidden text-ellipsis whitespace-nowrap'>{bank.routingBank || 'N/A'}</p>
@@ -199,30 +203,30 @@ function CustomerDetails() {
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">City</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.city || 'N/A'}</p>
                                                                 </div>
-                                                                </div>
-                                                                 <div className="grid grid-cols-12 gap-4 mt-1 w-full">
+                                                            </div>
+                                                            <div className="grid grid-cols-12 gap-4 mt-1 w-full">
                                                                 <div className='col-span-12 md:col-span-4'>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Landmark</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.landMark || 'N/A'}</p>
                                                                 </div>
                                                                 <div className='col-span-12 md:col-span-8 w-full'>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Google Map</p>
-                                                                     <div className="max-w-full sm:max-w-[1000px] md:max-w-[1000px] overflow-hidden">
-                                                                    {isValidUrl(item.mapLink) ? (
-                                                                        <a
-                                                                            href={item.mapLink}
-                                                                            target="_blank"
-                                                                            rel="noopener noreferrer"
-                                                                            title={item.mapLink}
-                                                                            className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline overflow-hidden text-ellipsis whitespace-nowrap block max-w-[100%]"
-                                                                        >
-                                                                            {item.mapLink}
-                                                                        </a>
-                                                                    ) : (
-                                                                        <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">
-                                                                            {item.mapLink || 'N/A'}
-                                                                        </p>
-                                                                    )}
+                                                                    <div className="max-w-full sm:max-w-[1000px] md:max-w-[1000px] overflow-hidden">
+                                                                        {isValidUrl(item.mapLink) ? (
+                                                                            <a
+                                                                                href={item.mapLink}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                title={item.mapLink}
+                                                                                className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline overflow-hidden text-ellipsis whitespace-nowrap block max-w-[100%]"
+                                                                            >
+                                                                                {item.mapLink}
+                                                                            </a>
+                                                                        ) : (
+                                                                            <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">
+                                                                                {item.mapLink || 'N/A'}
+                                                                            </p>
+                                                                        )}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -261,31 +265,31 @@ function CustomerDetails() {
                                                                     <p className="text-xs font-semibold mb-2 font-Gilroy text-[#4B4B4B]">City</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.city || 'N/A'}</p>
                                                                 </div>
-                                                                </div>
-                                                                <div className="grid grid-cols-12 gap-4 mt-1 w-full">
-                                                                
+                                                            </div>
+                                                            <div className="grid grid-cols-12 gap-4 mt-1 w-full">
+
                                                                 <div className='col-span-12 md:col-span-4'>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Landmark</p>
                                                                     <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">{item.landMark || 'N/A'}</p>
                                                                 </div>
                                                                 <div className='col-span-12 md:col-span-8'>
                                                                     <p className="text-xs font-medium mb-2 font-Gilroy text-[#4B4B4B]">Google Map</p>
-                                                                     <div className="max-w-full sm:max-w-[600px] md:max-w-[600px] overflow-hidden">
-                                                                    {isValidUrl(item.mapLink) ? (
-                                                                        <a
-                                                                            href={item.mapLink}
-                                                                            target="_blank"
-                                                                            rel="noopener noreferrer"
-                                                                            title={item.mapLink}
-                                                                            className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline overflow-hidden text-ellipsis whitespace-nowrap block max-w-[100%]"
-                                                                        >
-                                                                            {item.mapLink}
-                                                                        </a>
-                                                                    ) : (
-                                                                        <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">
-                                                                            {item.mapLink || 'N/A'}
-                                                                        </p>
-                                                                    )}
+                                                                    <div className="max-w-full sm:max-w-[600px] md:max-w-[600px] overflow-hidden">
+                                                                        {isValidUrl(item.mapLink) ? (
+                                                                            <a
+                                                                                href={item.mapLink}
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                title={item.mapLink}
+                                                                                className="text-sm font-semibold mb-2 font-Gilroy text-blue-500 underline overflow-hidden text-ellipsis whitespace-nowrap block max-w-[100%]"
+                                                                            >
+                                                                                {item.mapLink}
+                                                                            </a>
+                                                                        ) : (
+                                                                            <p className="text-sm font-semibold mb-2 font-Gilroy text-[#222222]">
+                                                                                {item.mapLink || 'N/A'}
+                                                                            </p>
+                                                                        )}
                                                                     </div>
                                                                 </div>
                                                             </div>

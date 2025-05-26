@@ -182,7 +182,7 @@ const InvoiceList = () => {
     }, [state.Common.successCode]);
 
     useEffect(() => {
-        if (state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402) {
+        if (state.Common?.code === 400 || state.Common?.code === 401 || state.Common?.code === 402 || state.Common?.code === 206) {
             setLoading(false)
             setTimeout(() => {
                 dispatch({ type: RESET_CODE })

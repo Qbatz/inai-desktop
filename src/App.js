@@ -72,10 +72,7 @@ function App({ isLogged_In}) {
     return () => clearInterval(interval);
   }, []);
 
-
-
-
-
+if (isLogged_In === null || successLogin === null) return<label>Loading...</label>
   return (
     <div>
       <ToastContainer position="bottom-center"
